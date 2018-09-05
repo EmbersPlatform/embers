@@ -41,7 +41,7 @@ defmodule Embers.Repo do
       |> Repo.paginate(opts)
 
   """
-  def paginate(queryable, opts \\ []) do
+  def paginate(queryable, opts \\ %{}) do
     opts = normalize_pagination_opts(opts)
 
     limit_plus_one = opts.limit + 1

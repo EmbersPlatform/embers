@@ -117,7 +117,7 @@ defmodule Embers.Feed do
     Post.changeset(post, %{})
   end
 
-  def get_timeline(user_id, opts \\ []) do
+  def get_timeline(user_id, opts \\ %{}) do
     Activity
     |> where([activity], activity.user_id == ^user_id)
     |> order_by([activity], desc: activity.id)
