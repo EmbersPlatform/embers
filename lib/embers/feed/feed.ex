@@ -7,8 +7,7 @@ defmodule Embers.Feed do
   alias Embers.Repo
   alias Ecto.Multi
 
-  alias Embers.Feed.{Post, User, Activity}
-  alias Embers.Feed.Subscriptions.UserSubscription
+  alias Embers.Feed.{Post, Activity}
 
   @doc """
   Returns the list of posts.
@@ -66,8 +65,8 @@ defmodule Embers.Feed do
 
         {:ok, post}
 
-      {:error, failed_operation, failed_value, changes_so_far} ->
-        {:error, failed_operation, failed_value, changes_so_far}
+      {:error, _failed_operation, failed_value, _changes_so_far} ->
+        {:error, failed_value}
     end
   end
 

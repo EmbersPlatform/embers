@@ -76,8 +76,8 @@ defmodule Embers.Accounts do
       {:ok, results} ->
         {:ok, results.user}
 
-      {:error, failed_operation, failed_value, changes_so_far} ->
-        {:error, failed_operation, failed_value, changes_so_far}
+      {:error, _failed_operation, failed_value, _changes_so_far} ->
+        {:error, failed_value}
     end
   end
 

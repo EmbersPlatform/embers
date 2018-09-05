@@ -5,8 +5,8 @@ defmodule EmbersWeb.SessionController do
   alias Embers.Accounts
   alias Phauxth.Confirm.Login
 
-  plug :guest_check when action in [:new, :create]
-  plug :id_check when action in [:delete]
+  plug(:guest_check when action in [:new, :create])
+  plug(:id_check when action in [:delete])
 
   def new(conn, _) do
     render(conn, "new.html")
@@ -15,17 +15,19 @@ defmodule EmbersWeb.SessionController do
   # If you are using Argon2 or Pbkdf2, add crypto: Comeonin.Argon2
   # or crypto: Comeonin.Pbkdf2 to Login.verify (after Accounts)
   def create(conn, %{"id" => identifier, "password" => password}) do
-    user_params = case Regex.match?(~r/@/, identifier) do
-      true -> %{"email" => identifier, "password" => password}
-      false -> %{"canonical" => identifier, "password" => password}
-    end
+    user_params =
+      case Regex.match?(~r/@/, identifier) do
+        true -> %{"email" => identifier, "password" => password}
+        false -> %{"canonical" => identifier, "password" => password}
+      end
 
-    case Login.verify(user_params, Accounts, crypto: Comeonin.Pbkdf2 ) do
+    case Login.verify(user_params, Accounts, crypto: Comeonin.Pbkdf2) do
       {:ok, user} ->
         session_id = Login.gen_session_id("F")
         Accounts.add_session(user, session_id, System.system_time(:second))
 
         Login.add_session(conn, session_id, user.id)
+        |> add_remember_me(user.id, user_params)
         |> render(EmbersWeb.UserView, "user.json", user: user)
 
       {:error, message} ->
@@ -49,5 +51,6 @@ defmodule EmbersWeb.SessionController do
   defp add_remember_me(conn, user_id, %{"remember_me" => "true"}) do
     Phauxth.Remember.add_rem_cookie(conn, user_id)
   end
+
   defp add_remember_me(conn, _, _), do: conn
 end

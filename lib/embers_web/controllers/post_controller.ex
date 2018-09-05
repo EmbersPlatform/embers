@@ -5,7 +5,7 @@ defmodule EmbersWeb.PostController do
   alias Embers.Feed
   alias Embers.Feed.Post
 
-  plug :user_check when action in [:new, :create, :edit, :update, :delete]
+  plug(:user_check when action in [:new, :create, :edit, :update, :delete])
 
   def index(conn, _params) do
     posts = Feed.list_posts()
@@ -17,14 +17,15 @@ defmodule EmbersWeb.PostController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create( %Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, %{"post" => post_params}) do
-  	post_params = Map.put(post_params, "user_id", user_id)
+  def create(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, %{"post" => post_params}) do
+    post_params = Map.put(post_params, "user_id", user_id)
 
     case Feed.create_post(post_params) do
       {:ok, post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
         |> redirect(to: post_path(conn, :show, post))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -32,7 +33,7 @@ defmodule EmbersWeb.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Feed.get_post!(id)
-    IO.inspect post
+    IO.inspect(post)
     render(conn, "show.json", post: post)
   end
 
@@ -50,6 +51,7 @@ defmodule EmbersWeb.PostController do
         conn
         |> put_flash(:info, "Post updated successfully.")
         |> redirect(to: post_path(conn, :show, post))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "show.json", post: post, changeset: changeset)
     end

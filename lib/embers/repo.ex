@@ -80,7 +80,7 @@ defmodule Embers.Repo do
     %{entries: entries, next: next, last_page: last_page}
   end
 
-  defp normalize_pagination_opts(opts \\ []) do
+  defp normalize_pagination_opts(opts) do
     valid_opts = []
 
     valid_opts =
