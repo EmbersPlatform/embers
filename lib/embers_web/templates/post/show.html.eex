@@ -1,0 +1,11 @@
+<h2>Show Post</h2>
+
+<p>
+	<strong><%= @post.user.username %></strong> dijo:
+</p>
+<p>
+	<%= @post.body %>
+</p>
+
+<span><%= link "Edit", to: post_path(@conn, :edit, @post) %></span>
+<span><%= link "Back", to: post_path(@conn, :index) %></span>

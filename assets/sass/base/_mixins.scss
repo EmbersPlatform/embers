@@ -1,0 +1,269 @@
+// _mixins.scss
+//tamaño de la fuente
+@mixin font-size($v: 0){
+	@if $v > 0{
+		$n_v: $fontsize+$v;
+		font-size: unquote($n_v+'px');
+	}@else{
+		font-size: unquote($fontsize+'px');
+	}
+
+}
+// este mixin es solo valido para display:flex
+@mixin d_flex(){
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+}
+@mixin flex-flow($type, $mode){
+	-webkit-box-orient: if($type == row, horizontal, vertical);
+	-webkit-box-direction: if(str-index($type, reverse), reverse, normal);
+	-ms-flex-flow: $type $mode;
+	flex-flow: $type $mode;
+}
+@mixin justify-content($v){
+	$_v: str-replace($v, 'flex-', '');
+	$n_v: map-get((
+		space-between: justify,
+		space-around : distribute,
+		center: center,
+		start: start,
+		end: end
+	), $_v);
+	@if $n_v != distribute{
+		-webkit-box-pack: $n_v;
+	}
+	-ms-flex-pack: $n_v;
+	justify-content: $v;
+}
+@mixin align-items($v){
+	$_v: str-replace($v, 'flex-', '');
+	-webkit-box-align: $_v;
+	-ms-flex-align: $_v;
+	align-items: $v;
+}
+// flexbox en una sola linea
+// ej: row, nowrap, space-around, strecth
+@mixin flexbox($t, $m, $j, $a, $d: flex){
+	@if $d != flex{
+		display: $d;
+	}@else{
+		@include d_flex();
+	}
+	@include flex-flow($t, $m);
+	@include justify-content($j);
+	@include align-items($a);
+}
+
+@mixin flex($v){
+	-webkit-box-flex: nth($v, 1); //toma el primer valor numerico de $v
+	-ms-flex: $v;
+	flex: $v;
+}
+
+// inicia COLUMNS
+@mixin columns($v){
+	-webkit-columns: $v;
+	-moz-columns: $v;
+	columns: $v;
+}
+@mixin column-width($v){
+	-webkit-column-width: $v;
+	-moz-column-width: $v;
+	column-width: $v;
+}
+@mixin column-count($v){
+	-webkit-column-count: $v;
+	-moz-column-count: $v;
+	column-count: $v;
+}
+@mixin column-gap($v){
+	-webkit-column-gap: $v;
+	-moz-column-gap: $v;
+	column-gap: $v;
+}
+// termina COLUMNS
+
+
+/// Mixin printing a linear-gradient 
+/// as well as a plain color fallback 
+/// and the `-webkit-` prefixed declaration
+/// @access public
+/// @param {String | List | Angle} $direction - Linear gradient direction
+/// @param {Arglist} $color-stops - List of color-stops composing the gradient
+@mixin linear-gradient($direction, $color-stops...) {
+	@if is-direction($direction) == false {
+		$color-stops: ($direction, $color-stops);
+		$direction: 180deg;
+	}
+
+	background: nth(nth($color-stops, 1), 1);
+	background: -webkit-linear-gradient(legacy-direction($direction), $color-stops);
+	background: linear-gradient($direction, $color-stops);
+}
+
+
+
+// Flexbox Mixins
+// http://philipwalton.github.io/solved-by-flexbox/
+// https://github.com/philipwalton/solved-by-flexbox
+// 
+// Copyright (c) 2013 Brian Franco
+
+@mixin flex-direction($value: row) {
+	@if $value == row-reverse {
+		-webkit-box-direction: reverse;
+		-webkit-box-orient: horizontal;
+	} @else if $value == column {
+		-webkit-box-direction: normal;
+		-webkit-box-orient: vertical;
+	} @else if $value == column-reverse {
+		-webkit-box-direction: reverse;
+		-webkit-box-orient: vertical;
+	} @else {
+		-webkit-box-direction: normal;
+		-webkit-box-orient: horizontal;
+	}
+	-webkit-flex-direction: $value;
+	-moz-flex-direction: $value;
+	-ms-flex-direction: $value;
+	flex-direction: $value;
+}
+@mixin flex-wrap($value: nowrap) {
+	// No Webkit Box fallback.
+	-webkit-flex-wrap: $value;
+	-moz-flex-wrap: $value;
+	@if $value == nowrap {
+		-ms-flex-wrap: none;
+	} @else { 
+		-ms-flex-wrap: $value; 
+	}
+	flex-wrap: $value;
+}
+@mixin order($int: 0) {
+	-webkit-box-ordinal-group: $int + 1;
+	-webkit-order: $int;
+	-moz-order: $int;
+	-ms-flex-order: $int;
+	order: $int;
+}
+
+/*
+
+	Mixins
+	Author - Andy Crone | @andycrone_
+	+ Popular mixins including vendor prefixes for cross-browser support
+
+*/
+
+// === Standard layout & styling
+
+@mixin box-sizing($v){
+	-webkit-box-sizing: $v;
+	-moz-box-sizing: $v;
+	box-sizing: $v;
+}
+@mixin box-shadow($v){
+	-webkit-box-shadow: $v;
+	-moz-box-shadow: $v;
+	box-shadow: $v;
+}
+@mixin border-radius($v){
+	-moz-border-radius: $v;
+	-webkit-border-radius: $v;
+	border-radius: $v;
+}
+@mixin background-size($v){
+	-o-background-size: $v;
+	-webkit-background-size: $v;
+	-moz-background-size: $v;
+	background-size: $v;
+}
+// @mixin linear-gradient($angle, $gradient1, $gradient2) {
+// 	// background-color: $gradient2; /* Fallback Color */
+// 	background-image: -webkit-gradient(linear, $angle, from($gradient1), to($gradient2)); /* Saf4+, Chrome */
+// 	background-image: -webkit-linear-gradient($angle, $gradient1, $gradient2); /* Chrome 10+, Saf5.1+, iOS 5+ */
+// 	background-image:    -moz-linear-gradient($angle, $gradient1, $gradient2); /* FF3.6 */
+// 	background-image:     -ms-linear-gradient($angle, $gradient1, $gradient2); /* IE10 */
+// 	background-image:      -o-linear-gradient($angle, $gradient1, $gradient2); /* Opera 11.10+ */
+// 	background-image:         linear-gradient($angle, $gradient1, $gradient2);
+// 	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=$angle,StartColorStr='#{$gradient1}', EndColorStr='#{$gradient2}');
+// }
+
+// === Animations
+
+@mixin transition($v...) {
+	-webkit-transition: $v;
+	transition: $v;
+}
+@mixin transform($v) {
+	-o-transform: $v;
+	-ms-transform: $v;
+	-webkit-transform: $v;
+	transform: $v;
+}
+@mixin transform-origin ($v) {
+	-o-transform-origin: $v;
+	-ms-transform-origin: $v;
+	-webkit-transform-origin: $v;
+	transform-origin: $v;
+}
+@mixin animation($v...){
+	-o-animation: $v;
+	-moz-animation: $v;
+	-webkit-animation: $v;
+	animation: $v;
+}
+@mixin animation-delay($v){
+	-o-animation: $v;
+	-moz-animation: $v;
+	-webkit-animation: $v;
+	animation: $v;
+}
+// @mixin keyframes($v) {
+// 	@-webkit-keyframes #{$v} {
+// 		@content;
+// 	}
+// 	@-moz-keyframes #{$v} {
+// 		@content;
+// 	}
+// 	@-o-keyframes #{$v} {
+// 		@content;
+// 	}
+// 	@keyframes #{$v} {
+// 		@content;
+// 	}
+// }
+
+// === Filters
+
+@mixin filter($v){
+	-o-filter: $v;
+	-ms-filter: $v;
+	-webkit-filter: $v;
+	-moz-filter: $v;
+	filter: $v;
+}
+
+// === Browser mods
+
+@mixin appearance($v){
+	-moz-appearance: $v;
+	-webkit-appearance: $v;
+	appearance: $v;
+}
+@mixin user-select($v){
+	-webkit-touch-callout: $v;
+	-webkit-user-select: $v;
+	-khtml-user-select: $v;
+	-moz-user-select: $v;
+	-ms-user-select: $v;
+	user-select: $v;
+}
+
+//https://gist.github.com/nickspiel/10331551
+@mixin blur($amount, $unit: px) {
+	filter: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'><filter%20id='blur'><feGaussianBlur%20stdDeviation=\'#{$amount}\'/></filter></svg>#blur");
+	-webkit-filter: blur($amount + $unit);
+	filter: blur($amount + $unit);
+}

@@ -1,0 +1,61 @@
+// main.scss
+@import 'base/module';
+@import 'components/module';
+@import 'pseudo/module';
+body{
+	width: 100%;
+	font-family: 'Work Sans', sans-serif;
+	background: $darker;
+	&::-webkit-scrollbar{
+		width: 7px;
+		background-color: #000;
+	}
+	&::-webkit-scrollbar-thumb{
+		border-width:0;
+	}
+}
+//inicia BODY CHILDS
+	#loader{
+		~ #appex{
+			display: none;
+		}
+	}
+	#appex{
+		z-index: 0;
+		&[class*="blur"]{
+			#navigation{
+				z-index: 0 !important;
+			}
+			#main{
+				z-index: 1 !important;
+				&[data-layout-type="chat"]{
+					#content{
+						overflow-y:hidden;
+					}
+				}
+				#sidebar{
+					&:empty{
+						z-index: 0;
+					}
+				}
+				#content{
+					&:before{
+						display: block !important;
+					}
+				}
+			}
+			.signals{
+				display: none;
+			}
+		}
+		&[class*="fixed"]{
+			max-height: 100vh;
+			overflow: hidden;
+		}
+	}
+	//inicia #APPEX CHILDS
+		@import 'layout/module';
+	//termina #APPEX CHILDS
+//termina BODY CHILDS
+@import 'queries/module';
+

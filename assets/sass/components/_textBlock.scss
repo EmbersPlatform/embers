@@ -1,0 +1,161 @@
+//inicia MULTI TEXT BLOCK
+.block{
+	z-index: 0;
+	margin: 0 auto;
+	@include box-sizing(border-box);
+	&[data-layout-type="wide"]{
+		width: 100%;
+		min-height: calc(100vh - 70px);
+		padding: 30px;
+		@include flexbox(column, nowrap, center, center);
+	}
+	&[data-layout-type="form"]{
+		min-height: calc(100vh - 70px);
+		padding: 30px 0;
+		width: unquote('calc(('+$column_width+' / 3) * 2)');
+		max-width: 100%;
+		@include flexbox(column, nowrap, center, stretch);
+	}
+	&[data-layout-type="column"]{
+		min-height: calc(100vh - 70px);
+		padding: 30px 0;
+		width: $column_width;
+		max-width: 100%;
+	}
+	h1, h2, h3, h4, h5, h6{
+		&:not([data-clear]){
+			font-weight: 400;
+			&:not(h3):not(h4):not(h5):not(h6){
+				// estilos h1 & h2
+				margin-bottom: 1.5em;
+				color: $primary;
+				&:not(h2){
+					// estilos h1
+					@include font-size(10);
+					p{
+						font-weight: inherit;
+						font-size: inherit;
+						margin-bottom: 0;
+					}
+				}
+				&:not(h1){
+					// estilos h2
+					@include font-size(8);
+				}
+			}
+			&:not(h1):not(h2){
+				// estilos h3, h4, h5, h6
+				color: $secondary;
+				&:not(h5):not(h6){
+					// estilos h3, h4
+					margin-bottom: 1em;
+					@include font-size(8);
+				}
+				&:not(h3):not(h4){
+					// estilos h5, h6
+					margin-bottom: 0.5em;
+					@include font-size(6);
+				}
+			}
+			*:not(a){
+				font-weight:inherit;
+				font-size: inherit;
+				color: inherit;
+			}
+		}
+	}
+	p{
+		&:not([data-clear]){
+			color: $secondary;
+			margin-bottom: 1.5em;
+			@include font-size(4);
+		}
+	}
+	ol, ul{
+		&:not([data-clear]){
+			// list-style: initial;
+			// list-style-position: inside;
+			margin: 0 1.5em 1.5em;
+			padding: 1em 0 1em 1.5em;
+			border-left: 4px solid negro(1);
+			li{
+				color: $secondary;
+				font-style: italic;
+				margin-bottom: 1.5em;
+				@include font-size(2);
+				&:last-child{
+					margin-bottom: 0;
+				}
+			}
+		}
+	}
+	img{
+		margin-bottom: 1.5em;
+		@include border-radius(3px);
+	}
+	a{
+		&:not([data-clear]){
+			color: $narrojo;
+			@include font-size(4);
+			&:hover{
+				text-decoration: underline;
+			}
+		}
+	}
+	form{
+		&:not([data-clear]){
+			*{
+				&:last-child{
+					margin-bottom: 0;
+				}
+			}
+			h3{
+				margin-bottom: 3em;
+			}
+			input[type="text"], input[type="email"], input[type="password"], textarea:not(.markup), .button{
+				margin-bottom: 3em;
+
+			}
+			a, label:not([for]), .error{
+				margin-bottom: 5px;
+				@include font-size();
+			}
+			._line{
+				margin-bottom: 3em;
+			}
+		}
+	}
+	.cover{
+		display: block;
+		width: 100%;
+		height: 340px;
+		margin-bottom: 3em;
+		background: negro(1);
+		@include border-radius(3px);
+		@include background-size(cover);
+		> hr{
+			display: block;
+			z-index: 0;
+			width: calc(100% - 8px);
+			height: calc(100% - 8px);
+			position:absolute;
+			top: 4px;
+			left: 4px;
+			background-position: 50% 50%;//horizontal, vertical
+			background-repeat: repeat;
+			overflow: hidden;
+			@include background-size(cover);
+			@include border-radius(3px);
+			@include box-sizing(border-box);
+			&:before{
+				content: '';
+				display: block;
+				width: 100%;
+				height: 100%;
+				opacity: .3;
+				background: transparent url($d_doted) repeat;
+			}
+		}
+	}
+}
+//termina MULTI TEXT BLOCK

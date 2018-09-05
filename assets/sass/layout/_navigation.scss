@@ -1,0 +1,417 @@
+#navigation{
+	width: 55px;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 2;
+	padding: 75px 0 0 0;
+	overflow: visible;
+	@include flexbox(column, nowrap, flex-end, center);
+	@include box-sizing(border-box);
+	~ #main{
+		margin: 0 0 0 55px;
+		@include box-shadow(-5px -5px 25px negro(5));
+	}
+	h1{
+		width: 35px;
+		height: 35px;
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		z-index: 0;
+		a{
+			width: inherit;
+			height: inherit;
+			display: block;
+			svg{
+				*{
+					fill: $narrojo;
+					@include transition(.3s all ease-out);
+				}
+			}
+			img{
+				background: none;
+			}
+		}
+	}
+}
+// inicia #NAVIGATION CHILDS
+	.nav-icon{
+		width: auto;
+		> li{
+			user-select: none; // unselectable
+			touch-action: manipulation; // disables tap zoom
+			width: 25px;
+			height: 25px;
+			overflow:visible;
+			&:not(.active):not(.open){
+				&:hover{
+					*{
+						opacity: .7;
+						cursor: pointer;
+					}
+				}
+			}
+			a, label, span{
+				z-index: 0;
+				width: inherit;
+				height: inherit;
+				display: block;
+			}
+			.page{
+				&:before, &:after{
+					content: '';
+					display: none;
+					background: $narrojo;
+					width: 2px;
+					height: 45px;
+					position: absolute;
+				}
+			}
+		}
+		.active:not(#nav_user_pic){
+			.page{
+				width: 25px;
+				height: 25px;
+				&:before{
+					display: block;
+					bottom: -10px;
+					left: -15px;
+				}
+			}
+		}
+	}
+	#nav_page{
+		@include flex(1 1 auto);
+		z-index: 0;
+		li{
+			margin: 0 0 30px 0;
+		}
+	}
+	#nav_dropdown{
+		display: none;
+		z-index: 0;
+		position: absolute;
+		left: 45px;
+		bottom: 15px;
+		max-height: calc(100vh - 30px);
+		border-top:30px solid $dark;
+		border-bottom:10px solid $dark;
+		overflow: visible;
+		background: $dark;
+		@include box-sizing(border-box);
+		@include box-shadow(0 5px 15px negro(25));
+		@include border-radius(3px);
+		&[class*='active']{
+			z-index: 2;
+			@include flexbox(row, nowrap, flex-start, stretch);
+		}
+		&[class*='active'] ~ #nav_alerts{
+			z-index: 3;
+			li{
+				&[class*='open']{
+					background: $dark;
+					width: 40px;
+					height: 45px;
+					margin: 20px 5px 0 0;
+					border-top-left-radius: 50%;
+					border-bottom-left-radius: 50%;
+					& + li{
+						margin-top: 20px;
+					}
+					svg{
+						background: $narrojo;
+						width: 35px;
+						height: 35px;
+						padding: 5px;
+						margin: 5px 0 0 5px;
+						@include border-radius(50%);
+						@include box-sizing(border-box);
+						*{
+							fill:$dark;
+							@include transition(.3s all ease-out);
+						}
+					}
+				}
+			}
+		}
+		&:before{
+			content: attr(data-name);
+			z-index: 1;
+			position: absolute;
+			top:-25px;
+			left:15px;
+			line-height: 15px;
+			font-weight: 300;
+			color: $secondary;
+			text-transform: capitalize;
+			@include font-size();
+		}
+		ul{
+			z-index: 0;
+			width: 230px;
+			height: auto;
+			min-height: 255px;
+			padding: 0 10px 0 15px;
+			overflow:auto;
+			@include box-sizing(border-box);
+			li{
+				width: 100%;
+				height: auto;
+				background: negro(1);
+				padding: 5px;
+				border-right: 5px solid negro(1);
+				@include border-radius(3px);
+				@include box-sizing(border-box);
+				@include transition(.1s background ease-out);
+				&:not(:last-child){
+					margin-bottom: 10px;
+				}
+				&:hover{
+					background: blanco(1);
+					a{
+						.tip{
+							color: $primary;
+							p{
+								strong{
+									color: #fff;
+								}
+							}
+							span{
+								color: $primary;
+							}
+						}
+					}
+				}
+				&[class*='unread']{
+					background: blanco(1);
+					&:hover{
+						background: $narrojo;
+						a{
+							.avatar{
+								a, span{
+									background: negro(2);
+								}
+							}
+							.tip{
+								color: negro(5);
+								p{
+									strong{
+										color: negro(9);
+									}
+								}
+							}
+						}
+					}
+				}
+				a{
+					overflow: hidden;
+					height: auto;
+					height: auto;
+					@include flexbox(row, nowrap, flex-start, flex-start);
+					.avatar{
+						display: block;
+						width: 35px;
+						height: 35px;
+						margin: 0 5px auto 0;
+						@include flex(0 0 auto);
+					}
+					.tip{
+						display: block;
+						width: auto;
+						height: auto;
+						color: $secondary;
+						overflow: hidden;
+						@include flex(1 1 auto);
+						p{
+							display: block;
+							width: auto;
+							height: auto;
+							white-space: normal;
+							font-weight: 400;
+							strong{
+								color: $primary;
+								font-weight: inherit;
+							}
+						}
+						span{
+							display: block;
+							margin: 5px 0 0 0;
+							@include font-size();
+						}
+					}
+				}
+			}
+		}
+	}
+	#nav_alerts{
+		z-index: 0;
+		li{
+			margin: 30px auto 0 auto;
+		}
+	}
+	// inicia #NAV_ALERTS CHILDS
+		.alert:not(.open):not(.active){
+			&:before{
+				content: '';
+				display: block;
+				width: 50%;
+				height: 50%;
+				z-index: 1;
+				border: 3px solid $darker;
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				animation: colorSwitch 3s linear infinite;
+				@include box-sizing(border-box);
+				@include border-radius(50%);
+			}
+
+			svg * {
+				fill: $narrojo;
+			}
+		}
+	// temina #NAV_ALERTS CHILDS
+	#nav_user{
+		z-index: 1;
+		li{
+			margin: 30px auto 0 auto;
+			z-index: 0;
+			&:last-child{
+				margin: 30px auto;
+			}
+			ul{
+				z-index: 0;
+				display: none;
+				position: absolute;
+				top: 0;
+				left:40px;
+				width: 230px;
+				height: auto;
+				padding: 30px 10px 10px 15px;
+				background: $dark;
+				@include box-sizing(border-box);
+				@include border-radius(3px);
+				border-top-left-radius: 0; //override border radius;
+				&:before{
+					content: attr(data-name);
+					z-index: 1;
+					position: absolute;
+					top:5px;
+					left:15px;
+					line-height: 15px;
+					font-weight: 300;
+					color: $secondary;
+					text-transform: capitalize;
+					@include font-size();
+				}
+				li{
+					width: auto;
+					height: auto;
+					margin: 0 0 10px 0;
+					padding: 5px 10px;
+					background: negro(1);
+					@include border-radius(3px);
+					a, span{
+						color: $secondary;
+						@include flexbox(row, nowrap, flex-start, center);
+						p{
+							white-space: nowrap;
+							font-weight: 300;
+							&:first-letter{
+								text-transform: capitalize;
+							}
+						}
+						svg{
+							width: 15px;
+							height: 15px;
+							margin: 0 10px 0 0;
+							*{
+								fill: $secondary;
+								@include transition(.3s all ease-out);
+							}
+						}
+					}
+					&:hover{
+						cursor: pointer;
+						background: blanco(1);
+						a, span{
+							color: #fff;
+							svg{
+								*{
+									fill: #fff;
+									@include transition(.3s all ease-out);
+								}
+							}
+						}
+					}
+					&:last-child{
+						margin: 0;
+					}
+				}
+				.is-profile{
+					display: none;
+				}
+			}
+		}
+	}
+	// inicia #NAV_USER CHILDS
+		#nav_user_pic{
+			margin: 30px 0 0 0;
+			width: 35px;
+			height: 35px;
+			z-index: 1;
+			&[class*='active'] ~ li:last-child{
+				margin: 25px 10px 30px 10px;
+			}
+			&[data-user]{
+				.page{
+					&:after{
+						display: block;
+						bottom: -5px;
+						left: -10px;
+					}
+				}
+			}
+			&[class*='active']{
+				overflow: visible;
+				background: $dark;
+				width: 40px;
+				height: 45px;
+				margin: 25px 5px 0 0;
+				border-top-left-radius: 50%;
+				border-bottom-left-radius: 50%;
+				@include filter(drop-shadow(0 5px 15px negro(25)));
+				.page{
+					&:after{
+						bottom: 0;
+						left: -5px;
+					}
+				}
+				> a, > span{
+					display: block;
+					padding: 5px 0 0 5px;
+					img{
+						width: 35px;
+						height: 35px;
+						margin: 0;
+						@include border-radius(50%);
+					}
+				}
+				ul{
+					display: block;
+				}
+			}
+			span, a{
+				z-index: 1;
+				img{
+					height: 100%;
+					border: 2px solid #fff;
+					@include border-radius(50%);
+					@include box-sizing(border-box);
+				}
+			}
+		}
+	//temina #NAV_USER CHILS
+// termina #NAVIGATION CHILDS

@@ -1,0 +1,40 @@
+//inicia EXTERNAL SERVICES
+.external{
+	overflow:hidden;
+	margin-bottom: 15px;
+	color:#fff;
+	font-weight: 100;
+	user-select: none; // unselectable
+	touch-action: manipulation; // disables tap zoom
+	@include transition(.3s all ease-out);
+	@include box-sizing(border-box);
+	@include border-radius(3px);
+	&:hover{
+		@include filter(brightness(130%));
+	}
+	&[data-service='discord']{
+		height: 55px;
+		letter-spacing: 0.001em;
+		@include linear-gradient(45deg, lighten($discord, 3), darken($discord, 3));
+		@include flexbox(row, nowrap, space-around, center);
+		img{
+			width: 25px;
+			height: auto;
+			margin-top: 1px;
+		}
+	}
+	&[data-service='ko-fi']{
+		height: 35px;
+		@include linear-gradient(45deg, lighten($ko-fi, 3), darken($ko-fi, 3));
+		@include flexbox(row, nowrap, center, center);
+		img{
+			height: 15px;
+			margin-right: 10px;
+		}
+	}
+	img{
+		width: auto;
+		height: auto;
+	}
+}
+//termina EXTERNAL SERVICES

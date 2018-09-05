@@ -1,0 +1,96 @@
+// _normalizacion.scss
+// inicia: NORMALIZACION
+*{
+	margin: 0;
+	z-index: 1;
+	padding: 0;
+	border: 0;
+	position: relative;
+	font-family:inherit;
+	font-weight: 300;
+	@include font-size(2);
+	@include appearance(none);
+	&::-webkit-scrollbar{
+		width: 13px;
+		background-color: $dark;
+	}
+	&::-webkit-scrollbar-track{
+		-webkit-box-shadow: none;
+	}
+	&::-webkit-scrollbar-thumb{
+		background-color: $secondary;
+		border-style: solid;
+		border-width: 0 3px;
+		border-color:$dark;
+		&:hover{
+			background-color: $primary;
+		}
+	}
+	&:active, &:focus, &:hover{
+		outline: 0;
+	}
+	&:before, &:after{
+		line-height: 1.2em;
+		@include box-sizing(inherit);
+	}
+}
+ul, ol{
+	list-style: none;
+}
+a{
+	text-decoration: none;
+}
+a, button, label{
+	> hr{
+		display: none;
+	}
+}
+textarea{
+	resize:none;
+}
+p{
+	/* These are technically the same, but use both */
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	-ms-word-break: break-all;
+	/* This is the dangerous one in WebKit, as it breaks things wherever */
+	// word-break: break-all;
+	/* Instead use this non-standard one: */
+	word-break: break-word;
+
+	/* Adds a hyphen where the word breaks, if supported (No Blink) */
+	-ms-hyphens: auto;
+	-moz-hyphens: auto;
+	-webkit-hyphens: auto;
+	hyphens: auto;
+}
+strong{
+	font-weight:500;
+	font-size: inherit;
+}
+small{
+	@include font-size();
+}
+code{
+	font-family: "Courier New", Courier, monospace;
+}
+svg{
+	width: inherit;
+	height: inherit;
+	*{
+		fill: #fff;
+	}
+}
+::-webkit-input-placeholder{
+	color: $secondary;
+}
+::-moz-placeholder{
+	color: $secondary;
+}
+:-ms-input-placeholder{
+	color: $secondary;
+}
+:-moz-placeholder{
+	color: $secondary;
+}
+// termina: NORMALIZACION

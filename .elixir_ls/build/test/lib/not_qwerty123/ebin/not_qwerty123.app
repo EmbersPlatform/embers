@@ -1,0 +1,12 @@
+{application,not_qwerty123,
+             [{applications,[kernel,stdlib,elixir,logger,gettext]},
+              {description,"Library to check password strength and generate random passwords.\n"},
+              {modules,['Elixir.NotQwerty123','Elixir.NotQwerty123.Gettext',
+                        'Elixir.NotQwerty123.PasswordStrength',
+                        'Elixir.NotQwerty123.RandomPassword',
+                        'Elixir.NotQwerty123.Supervisor',
+                        'Elixir.NotQwerty123.WordlistManager']},
+              {registered,[]},
+              {vsn,"2.3.0"},
+              {extra_applications,[logger]},
+              {mod,{'Elixir.NotQwerty123',[]}}]}.

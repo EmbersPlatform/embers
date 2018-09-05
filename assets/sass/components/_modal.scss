@@ -1,0 +1,77 @@
+#modals-container {
+  z-index: 3 !important;
+}
+
+.v--modal-overlay {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.v--modal {
+  background-color: $dark !important;
+  box-shadow: 0 20px 60px -2px rgba(0, 0, 0, 0.5) !important;
+  color: $primary;
+
+	.dialog-c-text form * {
+		font-size: 16px;
+		line-height: 1.2em;
+
+		li {
+			list-style: disc;
+			margin-left: 20px;
+		}
+	}
+
+	a {
+		color: $narrojo;
+	}
+
+	.dialog-c-text {
+		padding: 10px;
+
+		p {
+			margin: 0;
+		}
+	}
+	.dialog-c-title {
+		padding: 10px;
+	}
+}
+
+.vue-dialog-buttons {
+	border: none!important;
+	justify-content: center;
+
+	.button {
+		margin: 0 10px 10px 10px;
+		padding: 5px;
+		height: 2.5em;
+		font-size: 1em;
+	}
+
+	.success{
+		background-color: darken($verde, 10%);
+	}
+	.warning{
+		background-color: $amarillo;
+	}
+	.danger{
+		background-color: $narrojo;
+	}
+}
+
+.vue-dialog-button:not(:first-of-type) {
+	border: none;
+}
+
+.modal-buttons {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	padding: 10px;
+	box-sizing: border-box;
+	.button {
+		&:not(:first-child) {
+			margin-left: 10px;
+		}
+	}
+}

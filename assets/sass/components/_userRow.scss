@@ -1,0 +1,37 @@
+.user-row {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: stretch;
+  padding: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  a.u_name {
+    flex: 1 1 auto;
+    margin: 0 10px;
+    color: #fff;
+    font-weight: 400;
+    white-space: nowrap;
+    font-size: inherit;
+    text-shadow: inherit;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .u_mutual {
+    margin: 0 10px;
+    color: blanco('50');
+    font-weight: 400;
+    white-space: nowrap;
+    font-size: inherit;
+    text-shadow: inherit;
+    font-style: italic;
+  }
+}

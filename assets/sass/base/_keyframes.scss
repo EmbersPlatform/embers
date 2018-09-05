@@ -1,0 +1,31 @@
+
+@keyframes colorSwitch {
+	0%{
+		background-color:red;
+	}
+	50.0%{
+		background-color:yellow;
+	}
+	100.0%{
+		background-color:red;
+	}
+}
+@keyframes pulse {
+	0% {
+		@include box-shadow(0 0 0 0 rgba($narrojo, 0.4));
+	}
+	70% {
+		@include box-shadow(0 0 0 10px rgba($narrojo, 0));
+	}
+	100% {
+		@include box-shadow(0 0 0 0 rgba($narrojo, 0));
+	}
+}
+@keyframes spin {
+	0% {
+		@include transform(rotate(0deg));
+	}
+	100% {
+		@include transform(rotate(360deg));
+	}
+}
