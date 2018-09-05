@@ -5,7 +5,7 @@ defmodule Embers.Accounts do
 
   import Ecto.{Query, Changeset}, warn: false
   alias Phauxth.Log
-  alias Embers.{Accounts.User, Accounts.Settings.Setting, Profile.Meta, Repo}
+  alias Embers.{Accounts.User, Profile.Settings.Setting, Profile.Meta, Repo}
   alias Ecto.Multi
 
   def list_users do

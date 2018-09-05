@@ -1,4 +1,4 @@
-defmodule Embers.Accounts.Settings.Setting do
+defmodule Embers.Profile.Settings.Setting do
   use Ecto.Schema
   import Ecto.Changeset
 

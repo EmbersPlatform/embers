@@ -4,18 +4,18 @@ defmodule Embers.Accounts.User do
   alias Embers.Accounts.User
 
   schema "users" do
-  	field :username, :string
-  	field :canonical, :string
-    field :email, :string
-    field :password, :string, virtual: true
-    field :password_hash, :string
-    field :confirmed_at, :utc_datetime
-    field :reset_sent_at, :utc_datetime
-    field :sessions, {:map, :integer}, default: %{}
+    field(:username, :string)
+    field(:canonical, :string)
+    field(:email, :string)
+    field(:password, :string, virtual: true)
+    field(:password_hash, :string)
+    field(:confirmed_at, :utc_datetime)
+    field(:reset_sent_at, :utc_datetime)
+    field(:sessions, {:map, :integer}, default: %{})
 
-    has_one :meta, Embers.Profile.Meta
-    has_one :settings, Embers.Accounts.Settings.Setting
-    has_many :posts, Embers.Feed.Post
+    has_one(:meta, Embers.Profile.Meta)
+    has_one(:settings, Embers.Profile.Settings.Setting)
+    has_many(:posts, Embers.Feed.Post)
 
     timestamps()
   end
@@ -54,8 +54,7 @@ defmodule Embers.Accounts.User do
   end
 
   # If you are using Argon2 or Pbkdf2, change Bcrypt to Argon2 or Pbkdf2
-  defp put_pass_hash(%Ecto.Changeset{valid?: true, changes:
-      %{password: password}} = changeset) do
+  defp put_pass_hash(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
     change(changeset, Comeonin.Pbkdf2.add_hash(password))
   end
 
@@ -70,9 +69,11 @@ defmodule Embers.Accounts.User do
 
   # Inserts a lowercase version of the username in the canonical column
   # Canonical purpose is to make faster and case insensitive username searchs
-  defp put_canonical_username(%Ecto.Changeset{valid?: true, changes:
-  	%{username: username}} = changeset) do
-  		change(changeset, canonical: String.downcase(username))
+  defp put_canonical_username(
+         %Ecto.Changeset{valid?: true, changes: %{username: username}} = changeset
+       ) do
+    change(changeset, canonical: String.downcase(username))
   end
+
   defp put_canonical_username(changeset), do: changeset
 end
