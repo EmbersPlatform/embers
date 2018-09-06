@@ -11,9 +11,6 @@ defmodule EmbersWeb.FeedView do
   end
 
   def render("activity.json", %{activity: activity}) do
-    %{
-      id: activity.id,
-      post: render_one(activity.post, PostView, "post.json")
-    }
+    render_one(activity.post, PostView, "post.json")
   end
 end

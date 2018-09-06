@@ -123,7 +123,11 @@ defmodule Embers.Feed do
     |> order_by([activity], desc: activity.id)
     |> join(:left, [activity], post in assoc(activity, :post))
     |> join(:left, [activity, post], user in assoc(post, :user))
-    |> preload([activity, post, user], post: {post, user: user})
+    |> join(:left, [activity, post, user], meta in assoc(user, :meta))
+    |> preload(
+      [activity, post, user, meta],
+      post: {post, user: {user, meta: meta}}
+    )
     |> Repo.paginate(opts)
   end
 

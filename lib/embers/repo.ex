@@ -65,10 +65,16 @@ defmodule Embers.Repo do
       end
 
     all_entries = Repo.all(query)
-    last_entry = List.last(all_entries)
-    entries = Enum.drop(all_entries, -1)
     entries_count = Enum.count(all_entries)
+    last_entry = List.last(all_entries)
     last_page = entries_count <= opts.limit
+
+    entries =
+      if last_page do
+        all_entries
+      else
+        Enum.drop(all_entries, -1)
+      end
 
     next =
       if last_page or is_nil(last_entry) do

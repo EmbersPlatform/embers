@@ -11,9 +11,7 @@ defmodule EmbersWeb.MetaView do
   end
 
   def render("meta.json", %{meta: meta}) do
-    %{id: meta.id,
-      bio: meta.bio,
-      avatar: meta.avatar,
-      cover: meta.cover_name}
+    meta = meta |> Embers.Profile.Meta.load_avatar_map()
+    %{id: meta.id, bio: meta.bio, avatar: meta.avatar, cover: meta.cover_name}
   end
 end

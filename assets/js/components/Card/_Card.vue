@@ -12,28 +12,28 @@
     </div>
     <div class="card-wrapper" :class="{'locked' : locked, 'is-picker': isPicker}">
       <header class="header">
-        <avatar :avatar="post.user.avatar.small" :user="post.user.name" :isShared="isShared" :sharers="sharers"></avatar>
+        <avatar :avatar="post.user.meta.avatar.small" :user="post.user.username" :isShared="isShared" :sharers="sharers"></avatar>
         <div class="header-content">
           <h4>
             <template v-if="isShared">
               <template v-if="sharers.length == 2">
-                <router-link class="username" :to="`/@${sharers[sharers.length-1].name}`" :data-badge="`${sharers[sharers.length-1].badges[0]}`">
-                  {{ sharers[sharers.length-1].name }}
+                <router-link class="username" :to="`/@${sharers[sharers.length-1].username}`" :data-badge="`${sharers[sharers.length-1].badges[0]}`">
+                  {{ sharers[sharers.length-1].username }}
                 </router-link>
                 <p>&nbsp;y&nbsp;</p>
               </template>
-              <router-link class="username" :to="`/@${sharers[0].name}`" :data-badge="`${sharers[0].badges[0]}`">
-                {{ sharers[0].name }}
+              <router-link class="username" :to="`/@${sharers[0].username}`" :data-badge="`${sharers[0].badges[0]}`">
+                {{ sharers[0].username }}
               </router-link>
               <p v-html="s_message"></p>
-              <router-link class="username" :to="`/@${post.user.name}`" :data-badge="`${post.user.badges[0]}`">
-                {{post.user.name}}
+              <router-link class="username" :to="`/@${post.user.username}`" :data-badge="`${post.user.badges[0]}`">
+                {{post.user.username}}
               </router-link>
               <p>:</p>
             </template>
             <template v-else>
-              <router-link class="username" :to="`/@${post.user.name}`" :data-badge="`${post.user.badges[0]}`">
-                {{post.user.name}}
+              <router-link class="username" :to="`/@${post.user.username}`" :data-badge="`${post.user.badges[0]}`">
+                {{post.user.username}}
               </router-link>
               <p>compartio:</p>
             </template>
@@ -93,7 +93,7 @@
                 No es NSFW
               </span>
             </li>
-            <li v-if="user.can('user.avatar.delete_third_party')">
+            <li v-if="user.can('user.meta.avatar.delete_third_party')">
               <span @click.prevent="deleteAvatar">
                 <i class="fas fa-user-circle"></i>
                 Quitar avatar
@@ -127,7 +127,7 @@
           </div>
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>
           <LinkEmbed :link="post.attachment" :post="post" v-if="post.attachment.type === 'link'"></LinkEmbed>
-          <AudioPlayer :url="post.attachment.url" :avatar="post.user.avatar.small" v-if="post.attachment.type === 'audio'"></AudioPlayer>
+          <AudioPlayer :url="post.attachment.url" :avatar="post.user.meta.avatar.small" v-if="post.attachment.type === 'audio'"></AudioPlayer>
           <p v-if="attachmentError">Hubo un error al cargar el archivo adjunto :c</p>
         </template>
         <div class="card-wrapper-content-tags" v-if="post.tags && post.tags.length">
@@ -187,439 +187,489 @@
 </template>
 
 <script>
-  import post from '../../api/post';
-  import user from '../../api/user';
-  import attachment from '../../api/attachment';
+import post from "../../api/post";
+import user from "../../api/user";
+import attachment from "../../api/attachment";
 
-  import VideoEmbed from './VideoEmbed.vue';
-  import LinkEmbed from './LinkEmbed.vue';
-  import AudioPlayer from './AudioPlayer.vue';
+import VideoEmbed from "./VideoEmbed.vue";
+import LinkEmbed from "./LinkEmbed.vue";
+import AudioPlayer from "./AudioPlayer.vue";
 
-  import helpers from '../../helpers';
-  import formatter from '../../helpers/formatter';
-  import avatar from '../avatar';
+import helpers from "../../helpers";
+import formatter from "../../helpers/formatter";
+import avatar from "../avatar";
 
-  import ReactionsModal from '../ReactionsModal/ReactionsModal';
+import ReactionsModal from "../ReactionsModal/ReactionsModal";
 
-  import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
-  export default {
-    props: {
-      post: {
-        type: Object,
-        required: true
-      },
-      isShared: {
-        type: Boolean,
-        'default': false,
-        required: false
-      },
-      sharers: {
-        type: Array,
-        required: false
-      },
-      showThumbnail: {
-        type: Boolean,
-        'default': false,
-        required: false
-      },
-      size: {
-        type: String,
-        'default': 'medium',
-        required: false
-      }
+export default {
+  props: {
+    post: {
+      type: Object,
+      required: true
     },
-    components: {
-      VideoEmbed,
-      LinkEmbed,
-      AudioPlayer,
-      avatar
+    isShared: {
+      type: Boolean,
+      default: false,
+      required: false
     },
-    computed: {
-      isPostView(){
-        return this.$route.path === this.post.url;
-      },
-      loggedUser() {
-        return this.$store.getters.user;
-      },
-      /**
-       * All supported reactions
-       */
-      reactions() {
-        return ['thumbsup', 'thumbsdown', 'tada', 'cry', 'heart', 'cookie', 'eggplant', 'hot_pepper', 'point_up', 'grin', 'thinking', 'angry_sock']
-      },
+    sharers: {
+      type: Array,
+      required: false
+    },
+    showThumbnail: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
+    size: {
+      type: String,
+      default: "medium",
+      required: false
+    }
+  },
+  components: {
+    VideoEmbed,
+    LinkEmbed,
+    AudioPlayer,
+    avatar
+  },
+  computed: {
+    isPostView() {
+      return this.$route.path === this.post.url;
+    },
+    loggedUser() {
+      return this.$store.getters.user;
+    },
+    /**
+     * All supported reactions
+     */
+    reactions() {
+      return [
+        "thumbsup",
+        "thumbsdown",
+        "tada",
+        "cry",
+        "heart",
+        "cookie",
+        "eggplant",
+        "hot_pepper",
+        "point_up",
+        "grin",
+        "thinking",
+        "angry_sock"
+      ];
+    },
 
-      /**
-       * Whether the current user is the post owner
-       */
-      isOwner() {
-        if(!this.$store.getters.user){
-          return false
-        };
-        return this.post.user.id === this.$store.getters.user.id;
-      },
-
-      /**
-       * Returns the numeric ID for this post
-       */
-      id() {
-        return helpers.base64int.encode(this.post.id);
-      },
-
-      /**
-       * Formats post body
-       */
-      formattedBody() {
-        return formatter.format(this.post.body);
-      },
-
-      /**
-       * Check whether the body has too many lines
-       */
-      bodyTooLong() {
-        if(!this.isPostView){
-          if(!this.post.body){
-            return false
-          }
-          return this.post.body.split(/[\r\n]/).length > 8;
-        }
+    /**
+     * Whether the current user is the post owner
+     */
+    isOwner() {
+      if (!this.$store.getters.user) {
         return false;
-      },
-      /**
-       * Big text body
-       */
-      bigTextBody() {
-        return (this.post.body.length <= 85 && !/\r|\n/.exec(this.post.body) && !this.post.attachment);
-      },
-      /**
-       * Gets image thumbnail URL
-       */
-      thumbnailUrl() {
-        if (this.post.attachment.url.indexOf('.gif') !== -1){
-          return this.post.attachment.url;
-        }
-        return `//rsz.io/${this.post.attachment.url.replace(/(^\w+:|^)\/\//, '')}?mode=max&width=${Math.round(window.innerWidth / 1.4)}`;
-      },
-      //shared message
-      s_message(){
-        if(this.sharers.length > 1){
-          if(this.sharers.length > 2){
-            var usuarios = '@'+this.sharers[0].name;
-            for(var i = 1; i < this.sharers.length; i++){
-              if(i == this.sharers.length - 1){
-                usuarios += ' y @'+this.sharers[i].name;
-              }else{
-                usuarios += ', @'+this.sharers[i].name;
-              }
-            }
-            return 'y <strong data-tip="'+usuarios+' compartieron esta publicacion" data-tip-position="bottom" data-tip-text>varios mas</strong> compartieron via';
-          }else{
-            return 'compartieron via';
-          }
-        }
-        return 'compartio via';
-      },
-      hasReactions(){
-        if(jQuery.isEmptyObject(this.post.stats.reactions)){
+      }
+      return this.post.user.id === this.$store.getters.user.id;
+    },
+
+    /**
+     * Returns the numeric ID for this post
+     */
+    id() {
+      return helpers.base64int.encode(this.post.id);
+    },
+
+    /**
+     * Formats post body
+     */
+    formattedBody() {
+      return formatter.format(this.post.body);
+    },
+
+    /**
+     * Check whether the body has too many lines
+     */
+    bodyTooLong() {
+      if (!this.isPostView) {
+        if (!this.post.body) {
           return false;
         }
-        return true;
-      },
+        return this.post.body.split(/[\r\n]/).length > 8;
+      }
+      return false;
     },
-
-    methods: {
-      /**
-       * Unfolds the post
-       */
-      unfold() {
-        this.unfolded = true;
-      },
-      toggleLock() {
-        this.locked = !this.locked;
-      },
-      /**
-       * Shares the post with subscribers
-       */
-      share() {
-        if(!this.loggedUser ||this.isOwner || this.post.alreadyShared){
-          return;
-        }
-        this.$modal.show('dialog', {
-          text: '¿Compartir este post con tus seguidores?',
-          buttons: [
-            { title: 'Nah',
-              class: 'button'
-            },
-            { title: 'Oh, sí',
-              default: true,
-              class: 'button success',
-              handler: () => {
-                post.share(this.post.id)
-                  .then(() => {
-                    this.$notify({
-                      group: 'top',
-                      text: 'El post fue compartido :)',
-                      type: "success",
-                    });
-                });
-                this.$modal.hide('dialog');
-            }}
-          ],
-          adaptive: true
-        })
-
-      },
-      /**
-       * Delete this post
-       * @param post Post object
-       */
-      deletePost(postObject) {
-        this.$modal.show('dialog', {
-          title: '¿Seguro que quieres eliminar este post?',
-          text: 'Si lo haces se perderá para siempre. ¡Eso es mucho tiempo!',
-          buttons: [
-            { title: 'Cancelar',
-              class: 'button'
-            },
-            { title: 'Eliminar',
-              default: true,
-              class: 'button danger',
-              handler: () => {
-                post.deletePost(postObject.id).then(() => {
-                  this.$store.dispatch('removeFeedPost', postObject);
-                  this.$emit('deleted');
-                });
-                this.$modal.hide('dialog');
-            }}
-          ],
-          adaptive: true
-        })
-      },
-
-      /**
-       * Follows the post owner
-       */
-      follow() {
-        user.follow(this.post.user.id).then(user => {
-          this.post.user.following = true;
-          if (user.mutual) {
-            this.$store.dispatch('addMutual', user);
+    /**
+     * Big text body
+     */
+    bigTextBody() {
+      return (
+        this.post.body.length <= 85 &&
+        !/\r|\n/.exec(this.post.body) &&
+        !this.post.attachment
+      );
+    },
+    /**
+     * Gets image thumbnail URL
+     */
+    thumbnailUrl() {
+      if (this.post.attachment.url.indexOf(".gif") !== -1) {
+        return this.post.attachment.url;
+      }
+      return `//rsz.io/${this.post.attachment.url.replace(
+        /(^\w+:|^)\/\//,
+        ""
+      )}?mode=max&width=${Math.round(window.innerWidth / 1.4)}`;
+    },
+    //shared message
+    s_message() {
+      if (this.sharers.length > 1) {
+        if (this.sharers.length > 2) {
+          var usuarios = "@" + this.sharers[0].username;
+          for (var i = 1; i < this.sharers.length; i++) {
+            if (i == this.sharers.length - 1) {
+              usuarios += " y @" + this.sharers[i].username;
+            } else {
+              usuarios += ", @" + this.sharers[i].username;
+            }
           }
-        });
-      },
-
-      /**
-       * Unfollows the post owner
-       */
-      unfollow() {
-        user.unfollow(this.post.user.id).then(user => {
-          this.post.user.following = false;
-          if (!user.mutual) {
-            this.$store.dispatch('removeMutual', user);
-          }
-        });
-      },
-
-      /**
-       * Adds a reaction to this post
-       * @todo Implement multiple reactions
-       */
-      react(reaction) {
-        this.isPicker = false;
-        if(this.isOwner) {
-          return;
-        }
-        if(this.post.stats.reactions[reaction] && this.post.stats.reactions[reaction].reacted) {
-          post.deleteReaction(this.post.id, reaction).then(res => {
-            this.post.reacted = true;
-            this.post.stats = res;
-          });
+          return (
+            'y <strong data-tip="' +
+            usuarios +
+            ' compartieron esta publicacion" data-tip-position="bottom" data-tip-text>varios mas</strong> compartieron via'
+          );
         } else {
-          post.addReaction(this.post.id, reaction).then(res => {
-            this.post.reacted = true;
-            this.post.stats = res;
-          });
+          return "compartieron via";
         }
-      },
-
-      /**
-       * Show the detailed reactions
-       */
-      reactionsDetails() {
-        post.getReactionsDetails(this.post.id)
-          .then(res => {
-            this.$modal.show(ReactionsModal,
-              {reactions: res},
-              { adaptive: true,
-                height: 'auto'});
-          });
-      },
-
-      toggleFav() {
-        if(!this.post.isFaved) {
-          post.favorite(this.post.id).then(res => {
-            this.post.isFaved = true;
-            this.post.stats = res;
-          });
-        } else{
-          post.unfavorite(this.post.id).then(res => {
-            this.post.isFaved = false;
-            this.post.stats = res;
-          });
-        }
-      },
-
-      /**
-       * Removes the user avatar
-       */
-      deleteAvatar() {
-        user.settings.deleteAvatar(this.post.user.id).then(() => {
-          this.$notify({
-            group: 'top',
-            text: 'El avatar ha sido eliminado.',
-            type: "success",
-          });
-        });
-      },
-
-      /**
-       * Removes the user cover image
-       */
-      deleteCover() {
-        user.settings.deleteCover(this.post.user.id).then(() =>{
-          this.$notify({
-            group: 'top',
-            text: 'La portada ha sido eliminada.',
-            type: "success",
-          });
-        });
-      },
-
-      /**
-       * Kicks user
-       */
-      kick() {
-        this.$modal.show('dialog', {
-          text: '¿De verdad quieres expulsar a este usuario?',
-          buttons: [
-            { title: 'Cancelar',
-              class: 'button'
-            },
-            { title: 'Expulsar',
-              default: true,
-              class: 'button danger',
-              handler: () => {
-                user.kick(this.post.user.id).then(() => {
-                  this.$notify({
-                    group: 'top',
-                    text: 'El usuario ha sido expulsado.',
-                    type: "success",
-                  });
-                  this.post.user.active = false;
-                });
-                this.$modal.hide('dialog');
-            }}
-          ],
-          adaptive: true,
-        });
-      },
-
-      /**
-       * Unkicks a user
-       */
-      unkick() {
-        this.$modal.show('dialog', {
-          text: '¿Quieres rehabilitar a este usuario?',
-          buttons: [
-            { title: 'Cancelar',
-              class: 'button'
-            },
-            { title: 'Rehabilitar',
-              default: true,
-              class: 'button success',
-              handler: () => {
-                user.unkick(this.post.user.id).then(() => {
-                  this.$notify({
-                    group: 'top',
-                    text: 'El usuario ha sido rehabilitado',
-                    type: "success",
-                  });
-                  this.post.user.active = true;
-                });
-                this.$modal.hide('dialog');
-            }}
-          ],
-          adaptive: true,
-        });
-      },
-
-      /**
-       * Marks the post as Not Safe For Work
-       */
-      markAsNsfw() {
-        post.nsfw(this.post.id, true).then(res => {
-          this.post.nsfw = true;
-          this.show = !this.post.nsfw || this.$store.getters.settings.content_nsfw !== 'hide';
-          this.locked = this.post.nsfw && this.$store.getters.settings.content_nsfw === 'ask';
-        });
-      },
-      /**
-       * Unmarks the post as Not Safe For Work
-       */
-      unmarkAsNsfw() {
-        post.nsfw(this.post.id, false).then(res => {
-          this.post.nsfw = false;
-          this.show = !this.post.nsfw || this.$store.getters.settings.content_nsfw !== 'hide';
-          this.locked = this.post.nsfw && this.$store.getters.settings.content_nsfw === 'ask';
-          if(this.locked) {
-            this.lock();
-          }
-          if(!this.locked) {
-            this.unlock();
-          }
-        });
       }
+      return "compartio via";
     },
-
-    /**
-     * Component data
-     */
-    data() {
-      return {
-        App: this.$store.state.appData,
-        show: false,
-        locked: false,
-        unfolded: false,
-        imageTooLarge: false,
-        imageSize: null,
-        showImage: true,
-        attachmentError: false,
-        isPicker: false,
-        user
+    hasReactions() {
+      if (jQuery.isEmptyObject(this.post.stats.reactions)) {
+        return false;
       }
-    },
-
-    /**
-     * Triggered when an instance of this component gets created
-     */
-    created() {
-      this.show = !this.post.nsfw || this.$store.getters.settings.content_nsfw !== 'hide';
-      this.locked = this.post.nsfw && this.$store.getters.settings.content_nsfw === 'ask';
-    },
-    mounted() {
-      $(this.$refs.trg_picker).on({'click tap': () => {
-        this.isPicker = true;
-      }})
-
-      $(window).on('click tap', e => {
-        let isChild = !!$(e.target).parents('span.picker-switch').length;
-        let isMenu = $(this.$refs.picker).is(e.target);
-        let isTrigger = $(this.$refs.trg_picker).is(e.target.closest('span'));
-        if( !isChild && !isMenu && !isTrigger ) {
-          // If click is issued outside user menu and outside menu's trigger
-          this.isPicker = false;
-        }
-      })
+      return true;
     }
+  },
+
+  methods: {
+    /**
+     * Unfolds the post
+     */
+    unfold() {
+      this.unfolded = true;
+    },
+    toggleLock() {
+      this.locked = !this.locked;
+    },
+    /**
+     * Shares the post with subscribers
+     */
+    share() {
+      if (!this.loggedUser || this.isOwner || this.post.alreadyShared) {
+        return;
+      }
+      this.$modal.show("dialog", {
+        text: "¿Compartir este post con tus seguidores?",
+        buttons: [
+          {
+            title: "Nah",
+            class: "button"
+          },
+          {
+            title: "Oh, sí",
+            default: true,
+            class: "button success",
+            handler: () => {
+              post.share(this.post.id).then(() => {
+                this.$notify({
+                  group: "top",
+                  text: "El post fue compartido :)",
+                  type: "success"
+                });
+              });
+              this.$modal.hide("dialog");
+            }
+          }
+        ],
+        adaptive: true
+      });
+    },
+    /**
+     * Delete this post
+     * @param post Post object
+     */
+    deletePost(postObject) {
+      this.$modal.show("dialog", {
+        title: "¿Seguro que quieres eliminar este post?",
+        text: "Si lo haces se perderá para siempre. ¡Eso es mucho tiempo!",
+        buttons: [
+          {
+            title: "Cancelar",
+            class: "button"
+          },
+          {
+            title: "Eliminar",
+            default: true,
+            class: "button danger",
+            handler: () => {
+              post.deletePost(postObject.id).then(() => {
+                this.$store.dispatch("removeFeedPost", postObject);
+                this.$emit("deleted");
+              });
+              this.$modal.hide("dialog");
+            }
+          }
+        ],
+        adaptive: true
+      });
+    },
+
+    /**
+     * Follows the post owner
+     */
+    follow() {
+      user.follow(this.post.user.id).then(user => {
+        this.post.user.following = true;
+        if (user.mutual) {
+          this.$store.dispatch("addMutual", user);
+        }
+      });
+    },
+
+    /**
+     * Unfollows the post owner
+     */
+    unfollow() {
+      user.unfollow(this.post.user.id).then(user => {
+        this.post.user.following = false;
+        if (!user.mutual) {
+          this.$store.dispatch("removeMutual", user);
+        }
+      });
+    },
+
+    /**
+     * Adds a reaction to this post
+     * @todo Implement multiple reactions
+     */
+    react(reaction) {
+      this.isPicker = false;
+      if (this.isOwner) {
+        return;
+      }
+      if (
+        this.post.stats.reactions[reaction] &&
+        this.post.stats.reactions[reaction].reacted
+      ) {
+        post.deleteReaction(this.post.id, reaction).then(res => {
+          this.post.reacted = true;
+          this.post.stats = res;
+        });
+      } else {
+        post.addReaction(this.post.id, reaction).then(res => {
+          this.post.reacted = true;
+          this.post.stats = res;
+        });
+      }
+    },
+
+    /**
+     * Show the detailed reactions
+     */
+    reactionsDetails() {
+      post.getReactionsDetails(this.post.id).then(res => {
+        this.$modal.show(
+          ReactionsModal,
+          { reactions: res },
+          {
+            adaptive: true,
+            height: "auto"
+          }
+        );
+      });
+    },
+
+    toggleFav() {
+      if (!this.post.isFaved) {
+        post.favorite(this.post.id).then(res => {
+          this.post.isFaved = true;
+          this.post.stats = res;
+        });
+      } else {
+        post.unfavorite(this.post.id).then(res => {
+          this.post.isFaved = false;
+          this.post.stats = res;
+        });
+      }
+    },
+
+    /**
+     * Removes the user avatar
+     */
+    deleteAvatar() {
+      user.settings.deleteAvatar(this.post.user.id).then(() => {
+        this.$notify({
+          group: "top",
+          text: "El avatar ha sido eliminado.",
+          type: "success"
+        });
+      });
+    },
+
+    /**
+     * Removes the user cover image
+     */
+    deleteCover() {
+      user.settings.deleteCover(this.post.user.id).then(() => {
+        this.$notify({
+          group: "top",
+          text: "La portada ha sido eliminada.",
+          type: "success"
+        });
+      });
+    },
+
+    /**
+     * Kicks user
+     */
+    kick() {
+      this.$modal.show("dialog", {
+        text: "¿De verdad quieres expulsar a este usuario?",
+        buttons: [
+          {
+            title: "Cancelar",
+            class: "button"
+          },
+          {
+            title: "Expulsar",
+            default: true,
+            class: "button danger",
+            handler: () => {
+              user.kick(this.post.user.id).then(() => {
+                this.$notify({
+                  group: "top",
+                  text: "El usuario ha sido expulsado.",
+                  type: "success"
+                });
+                this.post.user.active = false;
+              });
+              this.$modal.hide("dialog");
+            }
+          }
+        ],
+        adaptive: true
+      });
+    },
+
+    /**
+     * Unkicks a user
+     */
+    unkick() {
+      this.$modal.show("dialog", {
+        text: "¿Quieres rehabilitar a este usuario?",
+        buttons: [
+          {
+            title: "Cancelar",
+            class: "button"
+          },
+          {
+            title: "Rehabilitar",
+            default: true,
+            class: "button success",
+            handler: () => {
+              user.unkick(this.post.user.id).then(() => {
+                this.$notify({
+                  group: "top",
+                  text: "El usuario ha sido rehabilitado",
+                  type: "success"
+                });
+                this.post.user.active = true;
+              });
+              this.$modal.hide("dialog");
+            }
+          }
+        ],
+        adaptive: true
+      });
+    },
+
+    /**
+     * Marks the post as Not Safe For Work
+     */
+    markAsNsfw() {
+      post.nsfw(this.post.id, true).then(res => {
+        this.post.nsfw = true;
+        this.show =
+          !this.post.nsfw ||
+          this.$store.getters.settings.content_nsfw !== "hide";
+        this.locked =
+          this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
+      });
+    },
+    /**
+     * Unmarks the post as Not Safe For Work
+     */
+    unmarkAsNsfw() {
+      post.nsfw(this.post.id, false).then(res => {
+        this.post.nsfw = false;
+        this.show =
+          !this.post.nsfw ||
+          this.$store.getters.settings.content_nsfw !== "hide";
+        this.locked =
+          this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
+        if (this.locked) {
+          this.lock();
+        }
+        if (!this.locked) {
+          this.unlock();
+        }
+      });
+    }
+  },
+
+  /**
+   * Component data
+   */
+  data() {
+    return {
+      App: this.$store.state.appData,
+      show: false,
+      locked: false,
+      unfolded: false,
+      imageTooLarge: false,
+      imageSize: null,
+      showImage: true,
+      attachmentError: false,
+      isPicker: false,
+      user
+    };
+  },
+
+  /**
+   * Triggered when an instance of this component gets created
+   */
+  created() {
+    this.show =
+      !this.post.nsfw || this.$store.getters.settings.content_nsfw !== "hide";
+    this.locked =
+      this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
+  },
+  mounted() {
+    $(this.$refs.trg_picker).on({
+      "click tap": () => {
+        this.isPicker = true;
+      }
+    });
+
+    $(window).on("click tap", e => {
+      let isChild = !!$(e.target).parents("span.picker-switch").length;
+      let isMenu = $(this.$refs.picker).is(e.target);
+      let isTrigger = $(this.$refs.trg_picker).is(e.target.closest("span"));
+      if (!isChild && !isMenu && !isTrigger) {
+        // If click is issued outside user menu and outside menu's trigger
+        this.isPicker = false;
+      }
+    });
   }
+};
 </script>

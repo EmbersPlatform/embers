@@ -97,6 +97,7 @@
 			id: <%= @user.id %>,
 			username: "<%= @user.username %>",
 			email:"<%= @user.email %>",
+      permissions: [],
       meta: {
         bio: "<%= @user.meta.bio %>",
         cover: "<%= @user.meta.cover_name %>",

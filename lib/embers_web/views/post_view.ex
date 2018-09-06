@@ -8,10 +8,7 @@ defmodule EmbersWeb.PostView do
   end
 
   def render("post.json", %{post: post}) do
-    view =
-	    %{id: post.id,
-	      body: post.body
-	    }
+    view = %{id: post.id, body: post.body, stats: []}
 
     view =
       if Ecto.assoc_loaded?(post.user) do
@@ -20,6 +17,6 @@ defmodule EmbersWeb.PostView do
         view
       end
 
-	  view
+    view
   end
 end
