@@ -6,16 +6,14 @@
 use Mix.Config
 
 # General application configuration
-config :embers,
-  ecto_repos: [Embers.Repo]
+config :embers, ecto_repos: [Embers.Repo]
 
 # Configures the endpoint
 config :embers, EmbersWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "HZe8bMvclknQMj38U8sozwTxlyQsABzs3ARC4vKpAsQseTzRntb+/6TC7LZ2gCmY",
   render_errors: [view: EmbersWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Embers.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Embers.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Phauxth authentication configuration
 config :phauxth,
@@ -23,8 +21,7 @@ config :phauxth,
   endpoint: EmbersWeb.Endpoint
 
 # Mailer configuration
-config :embers, Embers.Mailer,
-  adapter: Bamboo.LocalAdapter
+config :embers, Embers.Mailer, adapter: Bamboo.LocalAdapter
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -33,4 +30,4 @@ config :logger, :console,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

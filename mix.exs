@@ -44,9 +44,7 @@ defmodule Embers.Mixfile do
       {:pbkdf2_elixir, "~> 0.12.3"},
       {:bamboo, "~> 0.8"},
       {:cowboy, "~> 1.0"},
-      {:not_qwerty123, "~> 2.3"},
-      {:mogrify, "~> 0.6.1"},
-      {:paginator, "~> 0.4.0"}
+      {:not_qwerty123, "~> 2.3"}
     ]
   end
 
