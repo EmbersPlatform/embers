@@ -12,38 +12,38 @@
 </template>
 
 <script>
-	import user from '../../api/user';
+import user from "../../api/user";
 
-	import formatter from '../../helpers/formatter';
-	import avatar from '../avatar';
+import formatter from "../../helpers/formatter";
+import avatar from "../avatar";
 
-	export default {
-		components: {avatar},
+export default {
+  components: { avatar },
 
-		data() {
-			return {
-				loading: false,
-				followers: null,
-				followed: null
-			}
-		},
-		computed: {
-			user() {
-				return this.$store.state.userProfile
-			},
-			formattedBio(){
-				return formatter.format(this.user.meta.bio);
-			}
-		},
-		methods: {
-			fetchUser() {
-				user.getFollowing({id: this.user.id}).then(res => {
-					this.followers = res.items.slice(0,12);
-				});
-			}
-		},
-		created() {
-			this.fetchUser();
-		}
-	}
+  data() {
+    return {
+      loading: false,
+      followers: null,
+      followed: null
+    };
+  },
+  computed: {
+    user() {
+      return this.$store.state.userProfile;
+    },
+    formattedBio() {
+      return formatter.format(this.user.bio);
+    }
+  },
+  methods: {
+    fetchUser() {
+      user.getFollowing({ id: this.user.id }).then(res => {
+        this.followers = res.items.slice(0, 12);
+      });
+    }
+  },
+  created() {
+    this.fetchUser();
+  }
+};
 </script>

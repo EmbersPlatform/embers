@@ -12,7 +12,7 @@
     </div>
     <div class="card-wrapper" :class="{'locked' : locked, 'is-picker': isPicker}">
       <header class="header">
-        <avatar :avatar="post.user.meta.avatar.small" :user="post.user.username" :isShared="isShared" :sharers="sharers"></avatar>
+        <avatar :avatar="post.user.avatar.small" :user="post.user.username" :isShared="isShared" :sharers="sharers"></avatar>
         <div class="header-content">
           <h4>
             <template v-if="isShared">
@@ -93,7 +93,7 @@
                 No es NSFW
               </span>
             </li>
-            <li v-if="user.can('user.meta.avatar.delete_third_party')">
+            <li v-if="user.can('user.avatar.delete_third_party')">
               <span @click.prevent="deleteAvatar">
                 <i class="fas fa-user-circle"></i>
                 Quitar avatar
@@ -127,7 +127,7 @@
           </div>
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>
           <LinkEmbed :link="post.attachment" :post="post" v-if="post.attachment.type === 'link'"></LinkEmbed>
-          <AudioPlayer :url="post.attachment.url" :avatar="post.user.meta.avatar.small" v-if="post.attachment.type === 'audio'"></AudioPlayer>
+          <AudioPlayer :url="post.attachment.url" :avatar="post.user.avatar.small" v-if="post.attachment.type === 'audio'"></AudioPlayer>
           <p v-if="attachmentError">Hubo un error al cargar el archivo adjunto :c</p>
         </template>
         <div class="card-wrapper-content-tags" v-if="post.tags && post.tags.length">

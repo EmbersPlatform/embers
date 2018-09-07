@@ -9,15 +9,6 @@ defmodule EmbersWeb.Router do
     plug(:put_secure_browser_headers)
     plug(Phauxth.Authenticate)
     plug(Phauxth.Remember)
-
-    plug(
-      Plug.Static,
-      at: "/",
-      from: :embers,
-      gzip: true,
-      only:
-        ~w(css fonts img js favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
-    )
   end
 
   scope "/", EmbersWeb do
@@ -34,6 +25,7 @@ defmodule EmbersWeb.Router do
       scope "/v1" do
         resources("/users", UserController, only: [:index, :show, :create, :update, :delete])
         resources("/users/profile/metas", MetaController, only: [:show, :update])
+        post("/users/profile/avatar", MetaController, :upload_avatar)
         resources("/posts", PostController, only: [:index, :show, :create, :update, :delete])
 
         get("/feed", FeedController, :timeline)

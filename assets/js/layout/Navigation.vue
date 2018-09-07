@@ -2,7 +2,7 @@
 	<nav id="navigation">
 		<h1>
 			<router-link to="/" exact>
-				<img v-if="efemerides" :src="`/img/efemerides/${efemerides.image}.svg`" :title="efemerides.description"></img>
+				<img v-if="efemerides" :src="`/img/efemerides/${efemerides.image}.svg`" :title="efemerides.description" />
 				<svgicon name="elogo" v-else></svgicon>
 			</router-link>
 		</h1>
@@ -49,7 +49,7 @@
 			</li>
 			<li id="nav_user_pic" :class="{active: show_userMenu}" :data-user="isUser" data-tip="ver opciones" data-tip-position="right">
 				<span class="page" id="menu-switch" ref="trg_userMenu">
-					<img :data-user="$store.getters.user.id" :src="$store.getters.user.meta.avatar.small">
+					<img :data-user="$store.getters.user.id" :src="$store.getters.user.avatar.small">
 				</span>
 				<ul data-name="opciones" ref="userMenu">
 					<li :class="{'is-profile' : $route.path == '/@'+$store.getters.user.username}">
@@ -76,119 +76,119 @@
 </template>
 
 <script>
-	import auth from '../api/auth';
-	import notifications from '../components/Notifications.vue';
-	import { mapGetters } from 'vuex';
-	import _ from 'lodash'
+import auth from "../api/auth";
+import notifications from "../components/Notifications.vue";
+import { mapGetters } from "vuex";
+import _ from "lodash";
 
-	export default {
-		components: {
-			name: 'Navigation',
-			notifications
-		},
-		data() {
-			return {
-				show_notif: false,
-				show_userMenu: false,
-				openSidebar: false
-			}
-		},
-		computed: {
-			...mapGetters({
-				notifications_count: 'notifications_count',
-				newActivity: 'newActivity',
-			}),
-			...mapGetters('chat', ['unread_messages', 'new_message']),
-			n_notif: function () {
-				if(this.notifications_count > 0){
-					return true
-				}
-				return false
-			},
-			isUser: function(){
-				if(this.$store.getters.user.username == this.$route.params.name){
-					return true;
-				}
-				return false;
-			},
-			isNewActivity: function() {
-				return this.newActivity > 0;
-			},
-			efemerides() {
-				let today = this.$moment(new Date()).format("DD/MM/YYYY");
-				let efemeridesList = window.efemerides;
+export default {
+  components: {
+    name: "Navigation",
+    notifications
+  },
+  data() {
+    return {
+      show_notif: false,
+      show_userMenu: false,
+      openSidebar: false
+    };
+  },
+  computed: {
+    ...mapGetters({
+      notifications_count: "notifications_count",
+      newActivity: "newActivity"
+    }),
+    ...mapGetters("chat", ["unread_messages", "new_message"]),
+    n_notif: function() {
+      if (this.notifications_count > 0) {
+        return true;
+      }
+      return false;
+    },
+    isUser: function() {
+      if (this.$store.getters.user.username == this.$route.params.name) {
+        return true;
+      }
+      return false;
+    },
+    isNewActivity: function() {
+      return this.newActivity > 0;
+    },
+    efemerides() {
+      let today = this.$moment(new Date()).format("DD/MM/YYYY");
+      let efemeridesList = window.efemerides;
 
-				let efemeride = _.find(efemeridesList, o => {
-					return o.date == today;
-				});
+      let efemeride = _.find(efemeridesList, o => {
+        return o.date == today;
+      });
 
-				return efemeride;
-			}
-		},
-		methods: {
-			logout() {
-				auth.logout().then(() => window.location.reload(true));
-			},
-			switchSidebar(){
-				if(this.openSidebar){
-					this.openSidebar = false;
-					this.$root.$emit('closeSidebar');
-				}else{
-					this.openSidebar = true;
-					this.$root.$emit('openSidebar');
-				}
-			},
-			readMessages() {
-				this.$store.dispatch('chat/updateUnreadMessagesCount', 0);
-			},
-			hideMobileSidebar() {
-				console.log(this.$mq);
-				if(this.$mq === 'sm') {
-					this.openSidebar = false;
-					this.$root.$emit('closeSidebar');
-				}
-			}
-		},
-		mounted() {
-			$(this.$refs.trg_notif).on({
-				'click tap': () => {
-					this.show_notif = true;
-					this.$root.$emit('update-notifications-tab');
-				},
-			})
+      return efemeride;
+    }
+  },
+  methods: {
+    logout() {
+      auth.logout().then(() => window.location.reload(true));
+    },
+    switchSidebar() {
+      if (this.openSidebar) {
+        this.openSidebar = false;
+        this.$root.$emit("closeSidebar");
+      } else {
+        this.openSidebar = true;
+        this.$root.$emit("openSidebar");
+      }
+    },
+    readMessages() {
+      this.$store.dispatch("chat/updateUnreadMessagesCount", 0);
+    },
+    hideMobileSidebar() {
+      console.log(this.$mq);
+      if (this.$mq === "sm") {
+        this.openSidebar = false;
+        this.$root.$emit("closeSidebar");
+      }
+    }
+  },
+  mounted() {
+    $(this.$refs.trg_notif).on({
+      "click tap": () => {
+        this.show_notif = true;
+        this.$root.$emit("update-notifications-tab");
+      }
+    });
 
-			$(window).on('click tap', e => {
-				let isChild = !!$(e.target).parents('div#nav_dropdown').length;
-				let isMenu = $(this.$refs.notif).is(e.target);
-				let isTrigger = $(this.$refs.trg_notif).is(e.target.closest('a'));
+    $(window).on("click tap", e => {
+      let isChild = !!$(e.target).parents("div#nav_dropdown").length;
+      let isMenu = $(this.$refs.notif).is(e.target);
+      let isTrigger = $(this.$refs.trg_notif).is(e.target.closest("a"));
 
-				if( !isChild && !isMenu && !isTrigger ) {
-					// If click is issued outside notification menu and outside menu's trigger
-					this.show_notif = false;
-				}
-			})
+      if (!isChild && !isMenu && !isTrigger) {
+        // If click is issued outside notification menu and outside menu's trigger
+        this.show_notif = false;
+      }
+    });
 
-			$(this.$refs.trg_userMenu).on({
-				'click tap': () => {
-					this.show_userMenu = true;
-				},
-			})
+    $(this.$refs.trg_userMenu).on({
+      "click tap": () => {
+        this.show_userMenu = true;
+      }
+    });
 
-			$(window).on('click tap', e => {
-				let isChild = !!$(e.target).parents('span#menu-switch').length;
-				let isMenu = $(this.$refs.userMenu).is(e.target);
-				let isTrigger = $(this.$refs.trg_userMenu).is(e.target.closest('span'));
+    $(window).on("click tap", e => {
+      let isChild = !!$(e.target).parents("span#menu-switch").length;
+      let isMenu = $(this.$refs.userMenu).is(e.target);
+      let isTrigger = $(this.$refs.trg_userMenu).is(e.target.closest("span"));
 
-				if( !isChild && !isMenu && !isTrigger ) {
-					// If click is issued outside user menu and outside menu's trigger
-					this.show_userMenu = false;
-				}
-			})
-		},
-		sockets: {
-			new_chat_message() {
-				this.$store.dispatch('chat/newMessage', true);
-			}
-		}
-	}
+      if (!isChild && !isMenu && !isTrigger) {
+        // If click is issued outside user menu and outside menu's trigger
+        this.show_userMenu = false;
+      }
+    });
+  },
+  sockets: {
+    new_chat_message() {
+      this.$store.dispatch("chat/newMessage", true);
+    }
+  }
+};
 </script>

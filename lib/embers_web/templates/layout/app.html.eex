@@ -98,15 +98,15 @@
 			username: "<%= @user.username %>",
 			email:"<%= @user.email %>",
       permissions: [],
-      meta: {
-        bio: "<%= @user.meta.bio %>",
-        cover: "<%= @user.meta.cover_name %>",
-        avatar: {
-          small: "<%= @user.meta.avatar.small %>",
-          medium: "<%= @user.meta.avatar.medium %>",
-          big: "<%= @user.meta.avatar.big %>"
-        },
+
+      bio: "<%= @user.meta.bio %>",
+      cover: "<%= @user.meta.cover_name %>",
+      avatar: {
+        small: "<%= @user.meta.avatar.small %>",
+        medium: "<%= @user.meta.avatar.medium %>",
+        big: "<%= @user.meta.avatar.big %>"
       },
+
       settings: {
         content_nsfw: "<%= @user.settings.content_nsfw %>",
         content_lowres_images: <%= @user.settings.content_lowres_images %>,

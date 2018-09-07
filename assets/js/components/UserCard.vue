@@ -7,13 +7,13 @@
 		<div class="profile-info">
 			<h2>
 				<template v-if="type == 'compact'">
-					<avatar :avatar="user.meta.avatar.medium" :status="user.online" :user="user.name"></avatar>
+					<avatar :avatar="user.avatar.medium" :status="user.online" :user="user.name"></avatar>
 					<span>
 						@<router-link :to="`/@${user.username}`" class="u_name" :data-badge="`${user.badges[0]}`">{{ user.username }}</router-link> en Embers
 					</span>
 				</template>
 				<template v-else>
-					<avatar :avatar="user.meta.avatar.medium" :status="user.online"></avatar>
+					<avatar :avatar="user.avatar.medium" :status="user.online"></avatar>
 					<span>
 						@<span class="u_name" :data-badge="`${user.badges[0]}`">{{ user.username }}</span> en Embers
 					</span>
@@ -69,74 +69,74 @@
 	</div>
 </template>
 <script>
-	import user from '../api/user';
-	import formatter from '../helpers/formatter';
-	import avatar from './avatar';
+import user from "../api/user";
+import formatter from "../helpers/formatter";
+import avatar from "./avatar";
 
-	export default {
-		components: {
-			avatar
-		},
-		props: {
-			user: {
-				type: Object
-			},
-			type: {
-				type: String
-			}
-		},
-		data() {
-			return {
-				mouseInUnfollow: false,
-				mouseInFollow: false
-			}
-		},
-		computed: {
-			isAuthUser(){
-				if(!this.$store.getters.user) return false;
-				return this.user.id === this.$store.getters.user.id; 
-			},
-			formattedBio() {
-				return formatter.format(this.user.meta.bio);
-			}
-		},
-		methods: {
-			/**
-			 * Follows the user
-			 */
-			follow() {
-				user.follow(this.user.id).then(user => {
-					this.user.following = true;
+export default {
+  components: {
+    avatar
+  },
+  props: {
+    user: {
+      type: Object
+    },
+    type: {
+      type: String
+    }
+  },
+  data() {
+    return {
+      mouseInUnfollow: false,
+      mouseInFollow: false
+    };
+  },
+  computed: {
+    isAuthUser() {
+      if (!this.$store.getters.user) return false;
+      return this.user.id === this.$store.getters.user.id;
+    },
+    formattedBio() {
+      return formatter.format(this.user.bio);
+    }
+  },
+  methods: {
+    /**
+     * Follows the user
+     */
+    follow() {
+      user.follow(this.user.id).then(user => {
+        this.user.following = true;
 
-					if (user.mutual) {
-						this.$store.dispatch('addMutual', user);
-					}
-				});
-			},
+        if (user.mutual) {
+          this.$store.dispatch("addMutual", user);
+        }
+      });
+    },
 
-			/**
-			 * Unfollows the user
-			 */
-			unfollow() {
-				user.unfollow(this.user.id).then(user => {
-					this.user.following = false;
+    /**
+     * Unfollows the user
+     */
+    unfollow() {
+      user.unfollow(this.user.id).then(user => {
+        this.user.following = false;
 
-					if (!user.mutual) {
-						this.$store.dispatch('removeMutual', user);
-					}
-				});
-			},
+        if (!user.mutual) {
+          this.$store.dispatch("removeMutual", user);
+        }
+      });
+    },
 
-			block() {
-				user.block(this.user.id).then(res => {
-					this.user.blocked = true;
-				});
-			},
-			unblock() {
-				user.unblock(this.user.id).then(res => {
-					this.user.blocked = false;
-				});
-			}
-		}
-	}
+    block() {
+      user.block(this.user.id).then(res => {
+        this.user.blocked = true;
+      });
+    },
+    unblock() {
+      user.unblock(this.user.id).then(res => {
+        this.user.blocked = false;
+      });
+    }
+  }
+};
 </script>

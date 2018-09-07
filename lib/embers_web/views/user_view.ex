@@ -16,12 +16,17 @@ defmodule EmbersWeb.UserView do
       username: user.username,
       email: user.email,
       badges: [],
-      permissions: []
+      permissions: [],
+      stats: %{
+        posts: 0,
+        followers: 0,
+        following: 0
+      }
     }
 
     view =
       if Ecto.assoc_loaded?(user.meta) do
-        Map.put(view, "meta", render_one(user.meta, MetaView, "meta.json"))
+        Map.merge(view, render_one(user.meta, MetaView, "meta.json"))
       else
         view
       end

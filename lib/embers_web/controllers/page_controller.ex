@@ -21,8 +21,6 @@ defmodule EmbersWeb.PageController do
 
     user = %{user | meta: user.meta |> Embers.Profile.Meta.load_avatar_map()}
 
-    IO.inspect(user)
-
     render(conn, "index.html", user: user)
   end
 end
