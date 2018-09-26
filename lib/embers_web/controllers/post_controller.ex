@@ -17,14 +17,16 @@ defmodule EmbersWeb.PostController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, %{"post" => post_params}) do
-    post_params = Map.put(post_params, "user_id", user_id)
+  def create(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
+    params = Map.put(params, "user_id", user.id)
 
-    case Feed.create_post(post_params) do
+    case Feed.create_post(params) do
       {:ok, post} ->
+        user = Embers.Accounts.get_with_meta(user.canonical)
+        post = %{post | user: user}
+
         conn
-        |> put_flash(:info, "Post created successfully.")
-        |> redirect(to: post_path(conn, :show, post))
+        |> render("show.json", post: post)
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)

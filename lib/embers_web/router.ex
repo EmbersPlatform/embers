@@ -16,17 +16,28 @@ defmodule EmbersWeb.Router do
 
     get("/", PageController, :index)
 
-    resources("/sessions", SessionController, only: [:create, :delete])
+    get("/login", SessionController, :new)
+    post("/login", SessionController, :create)
+    delete("/sessions", SessionController, :delete)
     get("/confirm", ConfirmController, :index)
-    resources("/password_resets", PasswordResetController, only: [:create])
-    put("/password_resets", PasswordResetController, :update)
+
+    get("/password_resets/new", PasswordResetController, :new)
+    post("/password_resets/new", PasswordResetController, :create)
+    get("/password_resets/edit", PasswordResetController, :edit)
+    put("/password_resets/edit", PasswordResetController, :update)
+
+    post("/register", AccountController, :create)
 
     scope "/api" do
       scope "/v1" do
-        resources("/users", UserController, only: [:index, :show, :create, :update, :delete])
-        resources("/users/profile/metas", MetaController, only: [:show, :update])
+        get("/users/:id", UserController, :show)
+        put("/users/profile/meta", MetaController, :update)
         post("/users/profile/avatar", MetaController, :upload_avatar)
-        resources("/posts", PostController, only: [:index, :show, :create, :update, :delete])
+        post("/users/profile/cover", MetaController, :upload_cover)
+
+        put("/users/settings", SettingController, :update)
+
+        resources("/posts", PostController, only: [:show, :create, :update, :delete])
 
         get("/feed", FeedController, :timeline)
       end

@@ -1,5 +1,4 @@
 defmodule EmbersWeb.Authorize do
-
   import Plug.Conn
   import Phoenix.Controller
   import EmbersWeb.Router.Helpers
@@ -46,7 +45,7 @@ defmodule EmbersWeb.Authorize do
         _opts
       ) do
     (id == to_string(current_user.id) and conn) ||
-      error(conn, "You are not authorized to view this page", user_path(conn, :index))
+      error(conn, "You are not authorized to view this page", "/login")
   end
 
   def success(conn, message, path) do

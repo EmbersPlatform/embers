@@ -28,37 +28,37 @@
 			</li>
 			<template v-if="!user">
 				<li>
-					<router-link to="/register" tag="button" class="button" data-button-size="medium" data-button-font="medium" data-button-uppercase>
+					<a href="/register" class="button" data-button-size="medium" data-button-font="medium" data-button-uppercase>
 						registrate
-					</router-link>
+					</a>
 				</li>
 				<li>
-					<router-link to="/login">
+					<a href="/login">
 						inicia sesion
-					</router-link>
+					</a>
 				</li>
 			</template>
 		</ul>
 	</nav>
 </template>
 <script>
-	import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
-	export default {
-		data(){
-			return{
-				isHamburguer: false
-			}
-		},
-		computed: {
-			...mapGetters({
-				user: 'user'
-			})
-		},
-		methods: {
-			tgr_hamburguer() {
-				this.isHamburguer = !this.isHamburguer
-			}
-		}
-	}
+export default {
+  data() {
+    return {
+      isHamburguer: false
+    };
+  },
+  computed: {
+    ...mapGetters({
+      user: "user"
+    })
+  },
+  methods: {
+    tgr_hamburguer() {
+      this.isHamburguer = !this.isHamburguer;
+    }
+  }
+};
 </script>

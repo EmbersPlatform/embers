@@ -8,7 +8,7 @@ defmodule EmbersWeb.ConfirmController do
     case Phauxth.Confirm.verify(params, Accounts) do
       {:ok, user} ->
         Accounts.confirm_user(user)
-        message = "Your account has been confirmed"
+        message = "Tu cuenta ha sido confirmada, ¡Ya puedes iniciar sesión!"
         Accounts.Message.confirm_success(user.email)
         success(conn, message, session_path(conn, :new))
 

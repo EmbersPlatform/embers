@@ -34,7 +34,7 @@ defmodule Embers.Accounts do
       |> preload([user, meta], meta: meta)
       |> Repo.one()
 
-    user = %{user | meta: user.meta |> Embers.Profile.Meta.load_avatar_map()}
+    user = %{user | meta: user.meta |> Meta.load_avatar_map() |> Meta.load_cover()}
 
     user
   end

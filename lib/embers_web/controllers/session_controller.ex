@@ -6,7 +6,7 @@ defmodule EmbersWeb.SessionController do
   alias Phauxth.Confirm.Login
 
   plug(:guest_check when action in [:new, :create])
-  plug(:id_check when action in [:delete])
+  plug(:put_layout, "app_no_js.html")
 
   def new(conn, _) do
     render(conn, "new.html")
@@ -28,12 +28,10 @@ defmodule EmbersWeb.SessionController do
 
         Login.add_session(conn, session_id, user.id)
         |> add_remember_me(user.id, user_params)
-        |> render(EmbersWeb.UserView, "user.json", user: user)
+        |> login_success(page_path(conn, :index))
 
       {:error, message} ->
-        conn
-        |> put_status(:unauthorized)
-        |> render(EmbersWeb.ErrorView, "401.json", message: message)
+        error(conn, message, session_path(conn, :new))
     end
   end
 
@@ -43,7 +41,8 @@ defmodule EmbersWeb.SessionController do
 
     delete_session(conn, :phauxth_session_id)
     |> Phauxth.Remember.delete_rem_cookie()
-    |> success("You have been logged out", page_path(conn, :index))
+    |> put_status(:no_content)
+    |> json(%{message: "Se cerró la sesión exitosamente"})
   end
 
   # This function adds a remember_me cookie to the conn.

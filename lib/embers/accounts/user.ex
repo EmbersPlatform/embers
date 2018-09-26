@@ -31,6 +31,8 @@ defmodule Embers.Accounts.User do
     user
     |> cast(attrs, [:username, :email, :password])
     |> validate_required([:username, :email, :password])
+    |> validate_confirmation(:password)
+    |> validate_username
     |> unique_email
     |> validate_password(:password)
     |> put_pass_hash
@@ -42,6 +44,12 @@ defmodule Embers.Accounts.User do
     |> validate_length(:email, max: 254)
     |> validate_length(:username, min: 2)
     |> unique_constraint(:email)
+  end
+
+  defp validate_username(changeset) do
+    validate_format(changeset, :username, ~r/^([A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*)$/)
+    |> validate_length(:username, max: 20, min: 2)
+    |> unique_constraint(:username)
   end
 
   defp validate_password(changeset, field, options \\ []) do

@@ -8,6 +8,8 @@ use Mix.Config
 # General application configuration
 config :embers, ecto_repos: [Embers.Repo]
 
+config :embers, EmbersWeb.Gettext, default_locale: "es"
+
 # Configures the endpoint
 config :embers, EmbersWeb.Endpoint,
   url: [host: "localhost"],
@@ -18,15 +20,22 @@ config :embers, EmbersWeb.Endpoint,
 # Phauxth authentication configuration
 config :phauxth,
   token_salt: "geDDVmqL",
-  endpoint: EmbersWeb.Endpoint
+  endpoint: EmbersWeb.Endpoint,
+  user_messages: EmbersWeb.UserMessages
 
 # Mailer configuration
-config :embers, Embers.Mailer, adapter: Bamboo.LocalAdapter
+config :embers, Embers.Mailer,
+  adapter: Bamboo.SendgridAdapter,
+  api_key: "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"
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
+
+config :recaptcha,
+  public_key: System.get_env("RECAPTCHA_PUBLIC_KEY"),
+  secret: System.get_env("RECAPTCHA_PRIVATE_KEY")
 
 config :arc,
   storage: Arc.Storage.Local,

@@ -5,10 +5,11 @@ defmodule Embers.Profile.Meta do
   alias Embers.Profile.Meta
 
   schema "user_metas" do
-    field(:avatar_name, :string)
+    field(:avatar_version, :string)
     field(:avatar, :map, virtual: true)
     field(:bio, :string)
-    field(:cover_name, :string)
+    field(:cover_version, :string)
+    field(:cover, :string, virtual: true)
     belongs_to(:user, Embers.Accounts.User)
 
     timestamps()
@@ -17,35 +18,39 @@ defmodule Embers.Profile.Meta do
   @doc false
   def changeset(meta, attrs) do
     meta
-    |> cast(attrs, [:user_id, :bio, :avatar, :avatar_name, :cover_name])
+    |> cast(attrs, [:user_id, :bio, :avatar, :avatar_version, :cover_version])
     |> validate_required([:user_id])
   end
 
-  def load_avatar_map(%Meta{avatar_name: nil} = meta) do
-    avatar_map = %{
+  def avatar_map(%Meta{avatar_version: nil} = _meta) do
+    %{
       small: "/images/default_avatar.jpg",
       medium: "/images/default_avatar.jpg",
       big: "/images/default_avatar.jpg"
     }
-
-    %{meta | avatar: avatar_map}
   end
 
-  def load_avatar_map(%Meta{avatar_name: version} = meta) do
-    avatar_map = %{
-      small: gen_avatar_url(meta.user_id, "small", version),
-      medium: gen_avatar_url(meta.user_id, "medium", version),
-      big: gen_avatar_url(meta.user_id, "large", version)
+  def avatar_map(%Meta{avatar_version: version} = meta) do
+    %{
+      small: "/avatar/#{meta.user_id}_small.png?#{version}",
+      medium: "/avatar/#{meta.user_id}_medium.png?#{version}",
+      big: "/avatar/#{meta.user_id}_large.png?#{version}"
     }
-
-    %{meta | avatar: avatar_map}
   end
 
-  defp gen_avatar_url(avatar, size, version) do
-    gen_avatar_url(avatar, size) <> "?#{version}"
+  def cover(%Meta{cover_version: nil} = _meta) do
+    "/images/default_cover.jpg"
   end
 
-  defp gen_avatar_url(avatar, size) do
-    "/avatar/#{avatar}_#{size}.png"
+  def cover(%Meta{cover_version: version} = meta) do
+    "/cover/#{meta.user_id}.jpg?#{version}"
+  end
+
+  def load_avatar_map(%Meta{} = meta) do
+    %{meta | avatar: avatar_map(meta)}
+  end
+
+  def load_cover(%Meta{} = meta) do
+    %{meta | cover: cover(meta)}
   end
 end

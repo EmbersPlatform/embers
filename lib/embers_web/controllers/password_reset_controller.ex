@@ -4,6 +4,8 @@ defmodule EmbersWeb.PasswordResetController do
   import EmbersWeb.Authorize
   alias Embers.Accounts
 
+  plug(:put_layout, "app_no_js.html")
+
   def new(conn, _params) do
     render(conn, "new.html")
   end
@@ -43,9 +45,7 @@ defmodule EmbersWeb.PasswordResetController do
   end
 
   defp update_password({:error, %Ecto.Changeset{} = changeset}, conn, params) do
-    message = with p <- changeset.errors[:password], do: elem(p, 0)
-
-    put_flash(conn, :error, message || "Invalid input")
+    put_flash(conn, :error, changeset.errors || "Invalid input")
     |> render("edit.html", key: params["key"])
   end
 end

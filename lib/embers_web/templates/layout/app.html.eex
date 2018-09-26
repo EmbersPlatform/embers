@@ -90,7 +90,7 @@
 		appData.csrfToken = <%= raw Poison.encode!(Plug.CSRFProtection.get_csrf_token()) %>;
 		appData.user = null;
 		appData.realtime = null;
-		appData.recaptcha = null;
+		appData.recaptcha = "6Lde6G4UAAAAAN2QJXkcOnuwzJY4na6SH5vs5ZGl";
 
 		<%= if @current_user do %>
 		appData.user = {
@@ -100,7 +100,7 @@
       permissions: [],
 
       bio: "<%= @user.meta.bio %>",
-      cover: "<%= @user.meta.cover_name %>",
+      cover: "<%= @user.meta.cover %>",
       avatar: {
         small: "<%= @user.meta.avatar.small %>",
         medium: "<%= @user.meta.avatar.medium %>",

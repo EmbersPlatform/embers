@@ -13,10 +13,11 @@ defmodule EmbersWeb.Endpoint do
     from: :embers,
     gzip: true,
     only:
-      ~w(css fonts uploads images js favicon.ico robots.txt  manifest.json offline.html error.html service-worker.js)
+      ~w(css fonts uploads img images js favicon.ico robots.txt  manifest.json offline.html error.html service-worker.js)
   )
 
-  plug(Plug.Static, at: "/avatar", from: Path.expand('./priv/uploads/user/avatar'), gzip: false)
+  plug(Plug.Static, at: "/avatar", from: Path.expand('./priv/uploads/user/avatar'), gzip: true)
+  plug(Plug.Static, at: "/cover", from: Path.expand('./priv/uploads/user/cover'), gzip: true)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

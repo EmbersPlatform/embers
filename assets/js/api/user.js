@@ -134,7 +134,9 @@ export default {
      * @param settings
      */
     updateProfile(settings) {
-      return wrap(() => axios.put(`${config.prefix}/users/meta`, settings));
+      return wrap(() =>
+        axios.put(`${config.prefix}/users/profile/meta`, settings)
+      );
     },
 
     /**
@@ -142,9 +144,7 @@ export default {
      * @param settings
      */
     updateContent(settings) {
-      return wrap(() =>
-        axios.put(`${config.prefix}/users/settings/content`, settings)
-      );
+      return wrap(() => axios.put(`${config.prefix}/users/settings`, settings));
     },
 
     /**
@@ -152,9 +152,7 @@ export default {
      * @param settings
      */
     updatePrivacy(settings) {
-      return wrap(() =>
-        axios.put(`${config.prefix}/users/settings/privacy`, settings)
-      );
+      return wrap(() => axios.put(`${config.prefix}/users/settings`, settings));
     },
 
     /**

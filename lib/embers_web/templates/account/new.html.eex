@@ -1,0 +1,33 @@
+<div class="block" data-layout-type="form">
+
+  <%= form_for @conn, account_path(@conn, :create), fn f -> %>
+    <h3>Registrarse</h3>
+    <%= if error = get_flash(@conn, :error) do %>
+      <div class="error">
+          <%= f.errors %>
+      </div>
+    <% end %>
+    <%= text_input f, :name, class: "form-control", placeholder: "nombre_de_usuario1", required: true %>
+    <%= error_tag f, :name %>
+
+    <%= email_input f, :email, class: "form-control", placeholder: "micorreo@proveedor.dominio", required: true %>
+    <%= error_tag f, :email %>
+
+    <%= password_input f, :password, class: "form-control", placeholder: "mi clave secreta", required: true %>
+    <%= error_tag f, :password %>
+
+    <%= password_input f, :password_confirmation, class: "form-control", placeholder: "mi clave secreta de nuevo", required: true %>
+    <%= error_tag f, :password_confirmation %>
+
+    <div class="g-recaptcha"
+        data-sitekey="yourKey"
+        data-callback="onSubmit"
+        data-size="invisible">
+    </div>
+    <button type="submit" :disabled="verifying" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>
+      ¡Registrarme!
+    </button>
+  <% end %>
+</div>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>

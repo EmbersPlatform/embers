@@ -20,7 +20,7 @@ defmodule Embers.Mixfile do
   def application do
     [
       mod: {Embers.Application, []},
-      extra_applications: [:logger, :runtime_tools, :arc]
+      extra_applications: [:logger, :runtime_tools, :arc, :recaptcha]
     ]
   end
 
@@ -52,7 +52,8 @@ defmodule Embers.Mixfile do
       {:hackney, "~> 1.7"},
       {:httpoison, "~> 0.13"},
       {:poison, "~> 3.1"},
-      {:sweet_xml, "~> 0.6"}
+      {:sweet_xml, "~> 0.6"},
+      {:recaptcha, "~> 2.3"}
     ]
   end
 

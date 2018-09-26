@@ -1,23 +1,25 @@
-<h2>Reset Password</h2>
+<div class="block" data-layout-type="form">
+  <h2>Recuperar contraseña</h2>
 
-<%= form_for @conn, password_reset_path(@conn, :update), [as: :password_reset, method: :put], fn f -> %>
-  <%= if f.errors != [] do %>
-    <div class="alert alert-danger">
-      <p>Please check the errors below:</p>
-    </div>
-  <% end %>
+  <%= form_for @conn, password_reset_path(@conn, :update), [as: :password_reset, method: :put], fn f -> %>
+    <%= if error = get_flash(@conn, :error) do %>
+      <div class="error">
+          <%= for {_k, [message | _t]} <- error do %>
+            <%= message %>
+          <% end %>
+      </div>
+    <% end %>
 
-  <div class="form-group">
     <%= label f, :password, class: "control-label" %>
     <%= password_input f, :password, class: "form-control" %>
     <%= error_tag f, :password %>
-  </div>
 
-  <%= hidden_input f, :key, value: @key %>
+    <%= label f, :password_confirmation, class: "control-label" %>
+    <%= password_input f, :password_confirmation, class: "form-control" %>
+    <%= error_tag f, :password_confirmation %>
 
-  <div class="form-group">
-    <%= submit "Reset password", class: "btn btn-primary" %>
-  </div>
-<% end %>
+    <%= hidden_input f, :key, value: @key %>
 
-<span><%= link "Back", to: page_path(@conn, :index) %></span>
+    <button type="submit" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>Cambiar mi contraseña</button>
+  <% end %>
+</div>
