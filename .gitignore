@@ -29,3 +29,5 @@ npm-debug.log
 
 /.elixir_ls
 /.vscode
+
+/.env
