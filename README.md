@@ -1,6 +1,7 @@
 # Embers
 
 Embers está escrito en Elixir.
+
 La capa web del sistema está basado en Phoenix Framework.
 
 ## Instalación
@@ -14,6 +15,7 @@ La capa web del sistema está basado en Phoenix Framework.
 ### Frontend
 
 Los archivos estáticos(léase css, javascript, etc) se encuentran en el directorio `/static`
+
 Los archivos que deben ser compilados se encuentran en `/assets`
 
 Para compilar el frontend:
