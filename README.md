@@ -1,20 +1,31 @@
 # Embers
 
-To start your Phoenix server:
+Embers está escrito en Elixir.
+La capa web del sistema está basado en Phoenix Framework.
 
-- Install dependencies with `mix deps.get`
-- Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-- Install Node.js dependencies with `cd assets && npm install`
-- Start Phoenix endpoint with `mix phx.server`
+## Instalación
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+### Backend
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
+- Instalar las dependencias con `mix deps.get`
+- Crear y migrar la base de datos con `mix ecto.create && mix ecto.migrate`
+- Iniciar el servidor con `mix phx.server`
 
-## Learn more
+### Frontend
 
-- Official website: <http://www.phoenixframework.org/>
-- Guides: <http://phoenixframework.org/docs/overview>
-- Docs: <https://hexdocs.pm/phoenix>
-- Mailing list: <http://groups.google.com/group/phoenix-talk>
-- Source: <https://github.com/phoenixframework/phoenix>
+Los archivos estáticos(léase css, javascript, etc) se encuentran en el directorio `/static`
+Los archivos que deben ser compilados se encuentran en `/assets`
+
+Para compilar el frontend:
+
+- Instalar dependencias de Node.js con `cd assets && npm install`
+
+Ahora se puede acceder a Embers entrando a [`localhost:4000`](http://localhost:4000) desde el buscador.
+
+## Links adicionales
+
+### Phoenix Framework
+
+- Sitio oficial: <http://www.phoenixframework.org/>
+- Guías: <http://phoenixframework.org/docs/overview>
+- Documentación: <https://hexdocs.pm/phoenix>
