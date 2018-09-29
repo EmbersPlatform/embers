@@ -1,5 +1,7 @@
 # Embers
 
+> AVISO: La aplicación se encuentra en etapas tempranas de desarrollo y es INESTABLE
+
 Embers está escrito en Elixir.
 
 La capa web del sistema está basado en Phoenix Framework.
