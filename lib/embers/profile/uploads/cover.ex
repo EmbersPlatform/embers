@@ -1,6 +1,8 @@
 defmodule Embers.Profile.Uploads.Cover do
   use Arc.Definition
 
+  alias Embers.Helpers.IdHasher
+
   # Include ecto support (requires package arc_ecto installed):
   # use Arc.Ecto.Definition
 
@@ -30,7 +32,8 @@ defmodule Embers.Profile.Uploads.Cover do
 
   # Override the persisted filenames:
   def filename(_version, {_file, user}) do
-    "#{user.id}"
+    id_hash = IdHasher.encode(user.id)
+    "#{id_hash}"
   end
 
   # Override the storage directory:

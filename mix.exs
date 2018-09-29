@@ -53,7 +53,8 @@ defmodule Embers.Mixfile do
       {:httpoison, "~> 0.13"},
       {:poison, "~> 3.1"},
       {:sweet_xml, "~> 0.6"},
-      {:recaptcha, "~> 2.3"}
+      {:recaptcha, "~> 2.3"},
+      {:hashids, "~> 2.0"}
     ]
   end
 

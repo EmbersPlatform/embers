@@ -24,7 +24,7 @@ defmodule Embers.Feed do
   end
 
   @doc """
-  Gets a single post.
+  Gets a single post with preloaded user and meta.
 
   Raises `Ecto.NoResultsError` if the Post does not exist.
 
@@ -37,7 +37,17 @@ defmodule Embers.Feed do
       ** (Ecto.NoResultsError)
 
   """
-  def get_post!(id), do: Repo.get(Post, id) |> Repo.preload(:user)
+  def get_post!(id) do
+    Post
+    |> where([post], post.id == ^id)
+    |> join(:left, [post], user in assoc(post, :user))
+    |> join(:left, [post, user], meta in assoc(user, :meta))
+    |> preload(
+      [post, user, meta],
+      user: {user, meta: meta}
+    )
+    |> Repo.one()
+  end
 
   @doc """
   Creates a post.
@@ -51,7 +61,7 @@ defmodule Embers.Feed do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_post(attrs \\ %{}) do
+  def create_post(attrs) do
     post_changeset = Post.changeset(%Post{}, attrs)
 
     Multi.new()
@@ -59,10 +69,12 @@ defmodule Embers.Feed do
     |> Repo.transaction()
     |> case do
       {:ok, %{post: post} = _results} ->
-        # Asynchronously create activity entries
-        Task.Supervisor.start_child(Embers.Feed.FeedSupervisor, fn ->
-          create_activity_for_post(post)
-        end)
+        if(post.nesting_level === 0) do
+          # Asynchronously create activity entries
+          Task.Supervisor.start_child(Embers.Feed.FeedSupervisor, fn ->
+            create_activity_for_post(post)
+          end)
+        end
 
         {:ok, post}
 
@@ -134,6 +146,18 @@ defmodule Embers.Feed do
 
   def delete_activity(%Activity{} = activity) do
     Repo.delete(activity)
+  end
+
+  def get_post_replies(parent_id, opts \\ %{}) do
+    Post
+    |> where([post], post.parent_id == ^parent_id)
+    |> join(:left, [post], user in assoc(post, :user))
+    |> join(:left, [post, user], meta in assoc(user, :meta))
+    |> preload(
+      [post, user, meta],
+      user: {user, meta: meta}
+    )
+    |> Paginator.paginate(opts)
   end
 
   defp create_activity_for_post(post) do

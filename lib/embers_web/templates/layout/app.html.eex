@@ -94,7 +94,7 @@
 
 		<%= if @current_user do %>
 		appData.user = {
-			id: <%= @user.id %>,
+			id: "<%= Embers.Helpers.IdHasher.encode(@user.id) %>",
 			username: "<%= @user.username %>",
 			email:"<%= @user.email %>",
       permissions: [],

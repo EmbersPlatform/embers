@@ -9,128 +9,143 @@
 </template>
 
 <script>
-	import post from '../../api/post';
-	import comment from '../../api/comment';
-	import { mapGetters } from 'vuex'
+import post from "../../api/post";
+import comment from "../../api/comment";
+import { mapGetters } from "vuex";
 
-	import helpers from '../../helpers';
+import helpers from "../../helpers";
 
-	import Card from '../../components/Card/_Card.vue';
-	import CommentList from '../../components/Comment/CommentList.vue';
-	import NewCommentBox from '../../components/Comment/NewCommentBox.vue';
+import Card from "../../components/Card/_Card.vue";
+import CommentList from "../../components/Comment/CommentList.vue";
+import NewCommentBox from "../../components/Comment/NewCommentBox.vue";
 
-	export default {
-		components: {
-			Card,
-			CommentList,
-			NewCommentBox
-		},
+export default {
+  components: {
+    Card,
+    CommentList,
+    NewCommentBox
+  },
 
-		/**
-		 * Component data
-		 */
-		data() {
-			return {
-				post: null,
-				comments: [],
-				bottomComments: [],
-				loading: false,
-				loadingComments: false,
-				lastPage: true
-			}
-		},
+  /**
+   * Component data
+   */
+  data() {
+    return {
+      post: null,
+      comments: [],
+      bottomComments: [],
+      loading: false,
+      loadingComments: false,
+      lastPage: true
+    };
+  },
 
-		/**
-		 * Precomputed data
-		 */
-		computed: {
-			/**
-			 * Decimal post ID
-			 */
-			id() {
-				return helpers.base64int.decode(this.$route.params.id);
-			},
-			...mapGetters({
-				user: 'user',
-			}),
-		},
+  /**
+   * Precomputed data
+   */
+  computed: {
+    /**
+     * Decimal post ID
+     */
+    id() {
+      return this.$route.params.id;
+    },
+    ...mapGetters({
+      user: "user"
+    })
+  },
 
-		methods: {
-			/**
-			 * Retrieves the post
-			 */
-			getPost() {
-				this.loading = true;
-				post.get(this.id).then(res => {
-					this.post = res;
-					if(res.body.length){
-						this.$store.dispatch('updateTitle', `${res.body.substring(0, 20)} · @${res.user.name} en Embers`);
-					} else {
-						this.$store.dispatch('updateTitle', `Post de @${res.user.name} en Embers`);
-					}
+  methods: {
+    /**
+     * Retrieves the post
+     */
+    getPost() {
+      this.loading = true;
+      post
+        .get(this.id)
+        .then(res => {
+          this.post = res;
+          if (res.body.length) {
+            this.$store.dispatch(
+              "updateTitle",
+              `${res.body.substring(0, 20)} · @${res.user.username} en Embers`
+            );
+          } else {
+            this.$store.dispatch(
+              "updateTitle",
+              `Post de @${res.user.name} en Embers`
+            );
+          }
 
-					if (res.stats.comments > 0) {
-						this.loadComments();
-					}
-				})
-				.catch(() => {
-					this.$router.push('/404');
-				})
-				.finally(() => this.loading = false);
-			},
+          if (res.stats.comments > 0) {
+            this.loadComments();
+          }
+        })
+        .catch(() => {
+          this.$router.push("/404");
+        })
+        .finally(() => (this.loading = false));
+    },
 
-			/**
-			 * Retrieves the post's comments
-			 */
-			loadComments() {
-				this.loadingComments = true;
+    /**
+     * Retrieves the post's comments
+     */
+    loadComments() {
+      this.loadingComments = true;
 
-				comment.get(this.id, this.bottomComments.length ? this.bottomComments[0].id : null,
-					this.comments.length ? this.comments[this.comments.length - 1].id : null)
-				.then(res => {
-					this.comments = this.comments.concat(res.items);
-					this.lastPage = res.last_page;
-				})
-				.finally(() => this.loadingComments = false);
-			},
+      comment
+        .get(
+          this.id,
+          this.bottomComments.length ? this.bottomComments[0].id : null,
+          this.comments.length
+            ? this.comments[this.comments.length - 1].id
+            : null
+        )
+        .then(res => {
+          this.comments = this.comments.concat(res.items);
+          this.lastPage = res.last_page;
+        })
+        .finally(() => (this.loadingComments = false));
+    },
 
-			/**
-			 * Adds a comment to the post view
-			 *
-			 * @param      {object}  comment  The comment object
-			 */
-			addComment(comment) {
-				this.bottomComments.push(comment);
-			},
+    /**
+     * Adds a comment to the post view
+     *
+     * @param      {object}  comment  The comment object
+     */
+    addComment(comment) {
+      this.bottomComments.push(comment);
+    },
 
-			/**
-			 * Post is deleted
-			 */
-			postDeleted() {
-				this.$router.push('/');
-				this.$notify({
-			    	group: 'top',
-			    	text: 'Post eliminado exitosamente.',
-			    	type: "success",
-			    });
-			}
-		},
+    /**
+     * Post is deleted
+     */
+    postDeleted() {
+      this.$router.push("/");
+      this.$notify({
+        group: "top",
+        text: "Post eliminado exitosamente.",
+        type: "success"
+      });
+    }
+  },
 
-		/**
-		 * Initializes the view
-		 */
-		created() {
-			this.getPost();
-		},
+  /**
+   * Initializes the view
+   */
+  created() {
+    this.getPost();
+    this.loadComments();
+  },
 
-		watch: {
-			'$route': function () {
-				this.comments = [];
-				this.bottomComments = [];
-				this.lastPage = this.loadingComments = this.loading = false;
+  watch: {
+    $route: function() {
+      this.comments = [];
+      this.bottomComments = [];
+      this.lastPage = this.loadingComments = this.loading = false;
 
-				this.getPost();
-			}
-		}
-	}
+      this.getPost();
+    }
+  }
+};
 </script>

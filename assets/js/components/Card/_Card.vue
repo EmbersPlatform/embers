@@ -162,7 +162,7 @@
           </span>
         </li>
         <li v-if="!isPostView">
-          <router-link :to="post.url" data-tip="Ver comentarios" data-tip-position="bottom" data-tip-text>
+          <router-link :to="`/@${post.user.username}/${post.id}`" data-tip="Ver comentarios" data-tip-position="bottom" data-tip-text>
             {{(post.stats.comments > 0) ? post.stats.comments+'&nbsp;' : ''}}
             <svgicon name="s_comment" class="emoji"></svgicon>
           </router-link>

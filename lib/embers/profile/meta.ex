@@ -3,6 +3,7 @@ defmodule Embers.Profile.Meta do
   import Ecto.Changeset
 
   alias Embers.Profile.Meta
+  alias Embers.Helpers.IdHasher
 
   schema "user_metas" do
     field(:avatar_version, :string)
@@ -31,10 +32,12 @@ defmodule Embers.Profile.Meta do
   end
 
   def avatar_map(%Meta{avatar_version: version} = meta) do
+    id_hash = IdHasher.encode(meta.user_id)
+
     %{
-      small: "/avatar/#{meta.user_id}_small.png?#{version}",
-      medium: "/avatar/#{meta.user_id}_medium.png?#{version}",
-      big: "/avatar/#{meta.user_id}_large.png?#{version}"
+      small: "/avatar/#{id_hash}_small.png?#{version}",
+      medium: "/avatar/#{id_hash}_medium.png?#{version}",
+      big: "/avatar/#{id_hash}_large.png?#{version}"
     }
   end
 
@@ -43,7 +46,8 @@ defmodule Embers.Profile.Meta do
   end
 
   def cover(%Meta{cover_version: version} = meta) do
-    "/cover/#{meta.user_id}.jpg?#{version}"
+    id_hash = IdHasher.encode(meta.user_id)
+    "/cover/#{id_hash}.jpg?#{version}"
   end
 
   def load_avatar_map(%Meta{} = meta) do

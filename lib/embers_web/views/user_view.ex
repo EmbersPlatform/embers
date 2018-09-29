@@ -1,6 +1,7 @@
 defmodule EmbersWeb.UserView do
   use EmbersWeb, :view
   alias EmbersWeb.{UserView, MetaView}
+  alias Embers.Helpers.IdHasher
 
   def render("index.json", %{users: users}) do
     %{data: render_many(users, UserView, "user.json")}
@@ -12,11 +13,10 @@ defmodule EmbersWeb.UserView do
 
   def render("user.json", %{user: user}) do
     view = %{
-      id: user.id,
+      id: IdHasher.encode(user.id),
       username: user.username,
       email: user.email,
       badges: [],
-      permissions: [],
       stats: %{
         posts: 0,
         followers: 0,

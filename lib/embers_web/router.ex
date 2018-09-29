@@ -31,13 +31,24 @@ defmodule EmbersWeb.Router do
     scope "/api" do
       scope "/v1" do
         get("/users/:id", UserController, :show)
-        put("/users/profile/meta", MetaController, :update)
-        post("/users/profile/avatar", MetaController, :upload_avatar)
-        post("/users/profile/cover", MetaController, :upload_cover)
 
-        put("/users/settings", SettingController, :update)
+        put("/account/meta", MetaController, :update)
+        post("/account/avatar", MetaController, :upload_avatar)
+        post("/account/cover", MetaController, :upload_cover)
+        put("/account/settings", SettingController, :update)
 
-        resources("/posts", PostController, only: [:show, :create, :update, :delete])
+        get("/friends/:user_id/ids", FriendController, :list_ids)
+        get("/friends/:user_id/list", FriendController, :list)
+        post("/friends", FriendController, :create)
+        delete("/friends", FriendController, :destroy)
+
+        get("/followers/:user_id/ids", FollowerController, :list_ids)
+        get("/followers/:user_id/list", FollowerController, :list)
+        post("/followers", FollowerController, :create)
+        delete("/followers", FollowerController, :destroy)
+
+        resources("/posts", PostController, only: [:show, :create, :delete])
+        get("/posts/:id/replies", PostController, :show_replies)
 
         get("/feed", FeedController, :timeline)
       end

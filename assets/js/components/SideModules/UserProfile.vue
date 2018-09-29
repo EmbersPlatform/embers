@@ -5,7 +5,7 @@
 		<template v-if="$store.getters.user">
 			<h3>seguidores</h3>
 			<p>
-				<avatar v-for="follower in followers" :key="follower.id" :avatar="follower.avatar.small" :user="follower.name":data-tip="follower.name" data-tip-position="top" data-tip-text></avatar>
+				<avatar v-for="follower in followers" :key="follower.id" :avatar="follower.avatar.small" :user="follower.username" :data-tip="follower.username" data-tip-position="top" data-tip-text></avatar>
 			</p>
 		</template>
 	</div>
@@ -38,7 +38,7 @@ export default {
   methods: {
     fetchUser() {
       user.getFollowing({ id: this.user.id }).then(res => {
-        this.followers = res.items.slice(0, 12);
+        this.followers = res.friends.slice(0, 12);
       });
     }
   },

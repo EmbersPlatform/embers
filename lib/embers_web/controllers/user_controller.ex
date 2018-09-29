@@ -8,19 +8,9 @@ defmodule EmbersWeb.UserController do
   plug(:user_check when action in [:index, :show])
   plug(:id_check when action in [:edit, :update, :delete])
 
-  def index(conn, _) do
-    users = Accounts.list_users()
-    render(conn, "index.json", users: users)
-  end
-
   def show(%Plug.Conn{assigns: %{current_user: _user}} = conn, %{"id" => id}) do
     user = Accounts.get_with_meta(id)
     render(conn, "show.json", user: user)
-  end
-
-  def edit(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
-    changeset = Accounts.change_user(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
   end
 
   def update(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"user" => user_params}) do

@@ -95,7 +95,7 @@ export default {
     else id = params.id;
 
     return wrap(() =>
-      axios.get(`${config.prefix}/users/${id}/following`, { params })
+      axios.get(`${config.prefix}/friends/${id}/list`, { query })
     );
   },
 
@@ -112,7 +112,7 @@ export default {
 
     if (isNaN(params.id)) id = window.appData.user.id;
     return wrap(() =>
-      axios.get(`${config.prefix}/users/${id}/followed`, { params })
+      axios.get(`${config.prefix}/followers/${id}/list`, { params })
     );
   },
 

@@ -3,8 +3,11 @@ defmodule Embers.Feed.Subscriptions do
   A module to interface with subscriptions
   """
 
+  import Ecto.Query
+
   alias Embers.Feed.Subscriptions.UserSubscription
   alias Embers.Repo
+  alias Embers.Paginator
 
   @doc """
   Returns the list of users the user is subscribed to.
@@ -16,7 +19,8 @@ defmodule Embers.Feed.Subscriptions do
 
   """
   def list_user_subscriptions(user_id) do
-    Repo.get_by(UserSubscription, user_id: user_id)
+    UserSubscription
+    |> Repo.get_by(user_id: user_id)
   end
 
   @doc """
@@ -51,5 +55,21 @@ defmodule Embers.Feed.Subscriptions do
   """
   def delete_user_subscription(%UserSubscription{} = subscription) do
     Repo.delete(subscription)
+  end
+
+  def list_friends(user_id, opts \\ %{}) do
+    UserSubscription
+    |> where([sub], sub.user_id == ^user_id)
+    |> join(:left, [sub], user in assoc(sub, :source))
+    |> join(:left, [sub, user], meta in assoc(user, :meta))
+    |> preload([sub, user, meta], user: {user, meta: meta})
+    |> Paginator.paginate(opts)
+  end
+
+  def list_friends_ids(user_id, opts \\ %{}) do
+    UserSubscription
+    |> where([sub], sub.user_id == ^user_id)
+    |> select([sub], sub.source_id)
+    |> Paginator.paginate(opts)
   end
 end
