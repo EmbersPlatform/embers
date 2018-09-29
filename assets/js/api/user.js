@@ -134,9 +134,7 @@ export default {
      * @param settings
      */
     updateProfile(settings) {
-      return wrap(() =>
-        axios.put(`${config.prefix}/users/profile/meta`, settings)
-      );
+      return wrap(() => axios.put(`${config.prefix}/account/meta`, settings));
     },
 
     /**
@@ -144,7 +142,9 @@ export default {
      * @param settings
      */
     updateContent(settings) {
-      return wrap(() => axios.put(`${config.prefix}/users/settings`, settings));
+      return wrap(() =>
+        axios.put(`${config.prefix}/account/settings`, settings)
+      );
     },
 
     /**
@@ -152,7 +152,9 @@ export default {
      * @param settings
      */
     updatePrivacy(settings) {
-      return wrap(() => axios.put(`${config.prefix}/users/settings`, settings));
+      return wrap(() =>
+        axios.put(`${config.prefix}/account/settings`, settings)
+      );
     },
 
     /**
@@ -161,7 +163,7 @@ export default {
      */
     updateAvatar(settings) {
       return wrap(() =>
-        axios.post(`${config.prefix}/users/profile/avatar`, settings)
+        axios.post(`${config.prefix}/account/avatar`, settings)
       );
     },
 
@@ -171,9 +173,7 @@ export default {
      */
     deleteAvatar(identifier = null) {
       return wrap(() =>
-        axios.delete(
-          `${config.prefix}/users/profile/avatar/${identifier || ""}`
-        )
+        axios.delete(`${config.prefix}/account/avatar/${identifier || ""}`)
       );
     },
 
@@ -182,9 +182,7 @@ export default {
      * @param settings
      */
     updateCover(settings) {
-      return wrap(() =>
-        axios.post(`${config.prefix}/users/profile/cover`, settings)
-      );
+      return wrap(() => axios.post(`${config.prefix}/account/cover`, settings));
     },
 
     /**
@@ -193,7 +191,7 @@ export default {
      */
     deleteCover(identifier = null) {
       return wrap(() =>
-        axios.delete(`${config.prefix}/users/profile/cover/${identifier || ""}`)
+        axios.delete(`${config.prefix}/account/cover/${identifier || ""}`)
       );
     }
   },
