@@ -77,7 +77,7 @@ defmodule Embers.Mixfile do
   defp app_version do
     with {out, 0} <- System.cmd("git", ~w[describe], stderr_to_stdout: true) do
       out
-      |> String.strip()
+      |> String.trim()
       |> String.split("-")
       |> Enum.take(2)
       |> Enum.join(".")
