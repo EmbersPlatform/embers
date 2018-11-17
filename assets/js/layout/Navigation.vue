@@ -184,11 +184,6 @@ export default {
         this.show_userMenu = false;
       }
     });
-  },
-  sockets: {
-    new_chat_message() {
-      this.$store.dispatch("chat/newMessage", true);
-    }
   }
 };
 </script>

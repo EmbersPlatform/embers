@@ -118,13 +118,28 @@
             Ir al post
           </router-link>
         </div>
-        <template v-if="post.attachment">
-          <div v-if="post.attachment.type === 'image' && showImage" class="multimedia">
-            <router-link :to="post.url" class="media image">
-              <img v-if="showThumbnail" :src="thumbnailUrl">
-              <img v-else :src="post.attachment.url">
-            </router-link>
+        <template v-if="post.media">
+          <div class="multimedia">
+            <template v-if="post.media.length < 3">
+              <div class="row">
+                <div class="media image" v-for="(media, index) in post.media" :key="index">
+                  <img :src="`/media/image/${media.url}`">
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <div class="media image">
+                <img :src="`/media/image/${post.media[0].url}`">
+              </div>
+              <div class="row">
+                <div class="media image" v-for="(media, index) in post.media" v-if="index > 0" :key="index">
+                  <img :src="`/media/image/${media.url}`">
+                </div>
+              </div>
+            </template>
           </div>
+        </template>
+        <template v-if="post.attachment">
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>
           <LinkEmbed :link="post.attachment" :post="post" v-if="post.attachment.type === 'link'"></LinkEmbed>
           <AudioPlayer :url="post.attachment.url" :avatar="post.user.avatar.small" v-if="post.attachment.type === 'audio'"></AudioPlayer>
@@ -137,7 +152,7 @@
         </div>
       </section>
     </div>
-    <footer v-if="!isPostView || isPostView && (!isOwner || hasReactions || post.stats.comments > 0 || post.stats.shares > 0)" class="actions">
+    <footer v-if="!isPostView || isPostView && (!isOwner || hasReactions || post.stats.replies > 0 || post.stats.shares > 0)" class="actions">
       <ul class="actions-reactions">
         <li v-for="(meta, reaction) in post.stats.reactions" @click="react(reaction)" class="reaction" :key="reaction.id" :reacted="meta.reacted">
           <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji">{{ meta.total }}
@@ -163,14 +178,14 @@
         </li>
         <li v-if="!isPostView">
           <router-link :to="`/@${post.user.username}/${post.id}`" data-tip="Ver comentarios" data-tip-position="bottom" data-tip-text>
-            {{(post.stats.comments > 0) ? post.stats.comments+'&nbsp;' : ''}}
+            {{(post.stats.replies > 0) ? post.stats.replies+'&nbsp;' : ''}}
             <svgicon name="s_comment" class="emoji"></svgicon>
           </router-link>
         </li>
         <template v-else>
-          <li v-if="post.stats.comments > 0 && (!isOwner || isOwner)">
+          <li v-if="post.stats.replies > 0 && (!isOwner || isOwner)">
             <span data-tip="Cantidad de comentarios" data-tip-position="bottom" data-tip-text>
-              {{(post.stats.comments > 0) ? post.stats.comments+'&nbsp;' : ''}}
+              {{(post.stats.replies > 0) ? post.stats.replies+'&nbsp;' : ''}}
               <svgicon name="s_comment" class="emoji"></svgicon>
             </span>
           </li>

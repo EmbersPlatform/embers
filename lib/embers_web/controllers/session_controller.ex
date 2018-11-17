@@ -6,6 +6,7 @@ defmodule EmbersWeb.SessionController do
   alias Phauxth.Confirm.Login
 
   plug(:guest_check when action in [:new, :create])
+  plug(:id_check when action in [:delete])
   plug(:put_layout, "app_no_js.html")
 
   def new(conn, _) do
@@ -42,7 +43,7 @@ defmodule EmbersWeb.SessionController do
     delete_session(conn, :phauxth_session_id)
     |> Phauxth.Remember.delete_rem_cookie()
     |> put_status(:no_content)
-    |> json(%{message: "Se cerró la sesión exitosamente"})
+    |> json(nil)
   end
 
   # This function adds a remember_me cookie to the conn.

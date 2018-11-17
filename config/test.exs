@@ -11,21 +11,18 @@ config :logger, level: :warn
 
 # Configure your database
 config :embers, Embers.Repo,
-  adapter: Ecto.Adapters.Postgres,
   username: "dorgan",
   password: "dorgan",
   database: "embers_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 
-
 # Comeonin password hashing test config
-#config :argon2_elixir,
-  #t_cost: 2,
-  #m_cost: 8
+# config :argon2_elixir,
+# t_cost: 2,
+# m_cost: 8
 config :bcrypt_elixir, log_rounds: 4
-#config :pbkdf2_elixir, rounds: 1
+# config :pbkdf2_elixir, rounds: 1
 
 # Mailer test configuration
-config :embers, Embers.Mailer,
-  adapter: Bamboo.TestAdapter
+config :embers, Embers.Mailer, adapter: Bamboo.TestAdapter

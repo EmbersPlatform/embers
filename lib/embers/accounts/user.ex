@@ -1,6 +1,9 @@
 defmodule Embers.Accounts.User do
   use Ecto.Schema
+
   import Ecto.Changeset
+  import Ecto.Query
+
   alias Embers.Accounts.User
 
   schema "users" do
@@ -12,6 +15,9 @@ defmodule Embers.Accounts.User do
     field(:confirmed_at, :utc_datetime)
     field(:reset_sent_at, :utc_datetime)
     field(:sessions, {:map, :integer}, default: %{})
+
+    field(:following, :boolean, virtual: true)
+    field(:stats, :map, virtual: true, default: false)
 
     has_one(:meta, Embers.Profile.Meta)
     has_one(:settings, Embers.Profile.Settings.Setting)
@@ -37,6 +43,59 @@ defmodule Embers.Accounts.User do
     |> validate_password(:password)
     |> put_pass_hash
     |> put_canonical_username
+  end
+
+  def load_following_status(%User{} = user, follower_id) do
+    count =
+      Embers.Feed.Subscriptions.UserSubscription
+      |> where([s], s.user_id == ^follower_id)
+      |> where([s], s.source_id == ^user.id)
+      |> select([s], count(s.id))
+      |> Embers.Repo.one()
+
+    %{user | following: count > 0}
+  end
+
+  def populate(%User{} = user) do
+    user
+    |> load_stats_map
+  end
+
+  def load_stats_map(%User{} = user) do
+    stats = %{
+      followers: get_followers_count(user),
+      friends: get_followers_count(user),
+      posts: get_posts_count(user)
+    }
+
+    %{user | stats: stats}
+  end
+
+  def get_followers_count(%User{} = user) do
+    count =
+      Embers.Feed.Subscriptions.UserSubscription
+      |> where([s], s.source_id == ^user.id)
+      |> select([s], count(s.id))
+      |> Embers.Repo.one()
+
+    count
+  end
+
+  def get_friends_count(%User{} = user) do
+    count =
+      Embers.Feed.Subscriptions.UserSubscription
+      |> where([s], s.user_id == ^user.id)
+      |> select([s], count(s.id))
+      |> Embers.Repo.one()
+
+    count
+  end
+
+  def get_posts_count(%User{} = user) do
+    Embers.Feed.Post
+    |> where([p], p.user_id == ^user.id)
+    |> select([p], count(p.id))
+    |> Embers.Repo.one()
   end
 
   defp unique_email(changeset) do

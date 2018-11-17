@@ -4,10 +4,6 @@ defmodule EmbersWeb.UserSocket do
   ## Channels
   # channel "room:*", EmbersWeb.RoomChannel
 
-  ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket
-  # transport :longpoll, Phoenix.Transports.LongPoll
-
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
   # verification, you can put default assigns into
@@ -19,8 +15,15 @@ defmodule EmbersWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(%{"token" => token}, socket) do
+    case Phauxth.Token.verify(socket, token, 1_209_600) do
+      {:ok, user_id} ->
+        socket = assign(socket, :user, Embers.Accounts.get(user_id))
+        {:ok, socket}
+
+      {:error, _} ->
+        :error
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

@@ -1,7 +1,7 @@
 <template>
 	<div id="content" data-layout-type="single-column">
 		<ToolBox v-if="isSelfProfile"></ToolBox>
-		<Feed v-if="user" :name="`user/${user.name}`"></Feed>
+		<Feed v-if="user" :name="`user/${user.id}`"></Feed>
 	</div>
 </template>
 

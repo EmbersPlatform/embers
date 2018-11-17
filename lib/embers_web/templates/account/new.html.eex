@@ -2,7 +2,7 @@
 
   <%= form_for @conn, account_path(@conn, :create), fn f -> %>
     <h3>Registrarse</h3>
-    <%= if error = get_flash(@conn, :error) do %>
+    <%= if _error = get_flash(@conn, :error) do %>
       <div class="error">
           <%= f.errors %>
       </div>

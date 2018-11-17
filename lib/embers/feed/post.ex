@@ -11,6 +11,8 @@ defmodule Embers.Feed.Post do
   schema "posts" do
     field(:body, :string)
     field(:nesting_level, :integer, default: 0)
+    field(:replies_count, :integer, default: 0)
+    field(:shares_count, :integer, default: 0)
 
     belongs_to(:user, Embers.Accounts.User)
 
@@ -18,6 +20,8 @@ defmodule Embers.Feed.Post do
     # Comments no longer have their own entity as they had in fenix
     belongs_to(:parent, Embers.Feed.Post)
     has_many(:replies, Embers.Feed.Post)
+
+    many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
 
     timestamps()
   end

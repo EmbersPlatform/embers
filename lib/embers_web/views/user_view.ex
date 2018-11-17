@@ -20,9 +20,17 @@ defmodule EmbersWeb.UserView do
       stats: %{
         posts: 0,
         followers: 0,
-        following: 0
-      }
+        friends: 0
+      },
+      following: user.following
     }
+
+    view =
+      if(is_nil(user.stats)) do
+        view
+      else
+        %{view | stats: user.stats}
+      end
 
     view =
       if Ecto.assoc_loaded?(user.meta) do

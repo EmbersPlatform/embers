@@ -9,6 +9,12 @@ defmodule Embers.Feed.Subscriptions do
   alias Embers.Repo
   alias Embers.Paginator
 
+  def get(id) do
+    UserSubscription
+    |> where([s], s.id == ^id)
+    |> Repo.one()
+  end
+
   @doc """
   Returns the list of users the user is subscribed to.
 
@@ -53,8 +59,12 @@ defmodule Embers.Feed.Subscriptions do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_user_subscription(%UserSubscription{} = subscription) do
-    Repo.delete(subscription)
+  def delete_user_subscription(user_id, source_id) do
+    sub = Repo.get_by(UserSubscription, %{user_id: user_id, source_id: source_id})
+
+    if(not is_nil(sub)) do
+      Repo.delete(sub)
+    end
   end
 
   def list_friends(user_id, opts \\ %{}) do

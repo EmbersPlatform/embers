@@ -33,22 +33,8 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
 
-config :recaptcha,
-  public_key: System.get_env("RECAPTCHA_PUBLIC_KEY"),
-  secret: System.get_env("RECAPTCHA_PRIVATE_KEY")
-
-config :arc,
-  storage: Arc.Storage.Local,
-  storage_dir: "priv/uploads",
-  bucket: "embers"
-
-config :ex_aws, :s3, %{
-  access_key_id: "BSZN22PL76XYIWMMS3OX",
-  secret_access_key: "xUzB9DUrapVaf/9zuT53T1BRg3DyBrudoGN6iDNwz4o",
-  scheme: "https://",
-  host: %{"nyc3" => "embers.nyc3.digitaloceanspaces.com"},
-  region: "nyc3"
-}
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

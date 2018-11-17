@@ -1,5 +1,5 @@
 defmodule Embers.Repo do
-  use Ecto.Repo, otp_app: :embers
+  use Ecto.Repo, otp_app: :embers, adapter: Ecto.Adapters.Postgres
 
   @doc """
   Dynamically loads the repository url from the

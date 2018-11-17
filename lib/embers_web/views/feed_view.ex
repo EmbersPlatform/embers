@@ -10,6 +10,14 @@ defmodule EmbersWeb.FeedView do
     }
   end
 
+  def render("posts.json", %{entries: posts} = metadata) do
+    %{
+      items: render_many(posts, EmbersWeb.PostView, "post.json", as: :post),
+      next: metadata.next,
+      last_page: metadata.last_page
+    }
+  end
+
   def render("activity.json", %{activity: activity}) do
     render_one(activity.post, PostView, "post.json")
   end

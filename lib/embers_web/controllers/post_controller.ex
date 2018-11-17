@@ -13,6 +13,7 @@ defmodule EmbersWeb.PostController do
   end
 
   def create(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
+    params |> IO.inspect()
     post_params = Map.put(params, "user_id", user.id)
 
     post_params =
@@ -24,7 +25,7 @@ defmodule EmbersWeb.PostController do
 
     case Feed.create_post(post_params) do
       {:ok, post} ->
-        user = Embers.Accounts.get_with_meta(user.canonical)
+        user = Embers.Accounts.get_populated(user.canonical)
         post = %{post | user: user}
 
         conn
@@ -43,27 +44,17 @@ defmodule EmbersWeb.PostController do
     render(conn, "show.json", post: post)
   end
 
-  def update(conn, %{"id" => id, "post" => post_params}) do
+  def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
     id = IdHasher.decode(id)
     post = Feed.get_post!(id)
 
-    case Feed.update_post(post, post_params) do
-      {:ok, post} ->
-        conn
-        |> put_flash(:info, "Post updated successfully.")
-        |> redirect(to: post_path(conn, :show, post))
+    case is_post_owner?(user, post) do
+      true ->
+        {:ok, _post} = Feed.delete_post(post)
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(EmbersWeb.ErrorView, "422.json", changeset: changeset)
+      false ->
+        conn |> put_status(:forbidden) |> json(nil)
     end
-  end
-
-  def delete(conn, %{"id" => id}) do
-    id = IdHasher.decode(id)
-    post = Feed.get_post!(id)
-    {:ok, _post} = Feed.delete_post(post)
 
     render(conn, "show.json", post: post)
   end
@@ -73,5 +64,9 @@ defmodule EmbersWeb.PostController do
     results = Feed.get_post_replies(parent_id, params)
 
     render(conn, "show_replies.json", results)
+  end
+
+  defp is_post_owner?(user, post) do
+    user.id == post.user_id
   end
 end

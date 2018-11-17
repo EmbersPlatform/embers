@@ -57,4 +57,10 @@ defmodule Embers.Profile.Meta do
   def load_cover(%Meta{} = meta) do
     %{meta | cover: cover(meta)}
   end
+
+  def populate(%Meta{} = meta) do
+    meta
+    |> load_cover()
+    |> load_avatar_map()
+  end
 end

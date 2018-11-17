@@ -1,7 +1,7 @@
 defmodule EmbersWeb.PostView do
   use EmbersWeb, :view
 
-  alias EmbersWeb.{PostView, UserView}
+  alias EmbersWeb.{PostView, UserView, MediaView}
   alias Embers.Helpers.IdHasher
 
   def render("show.json", %{post: post}) do
@@ -12,7 +12,10 @@ defmodule EmbersWeb.PostView do
     view = %{
       id: IdHasher.encode(post.id),
       body: post.body,
-      stats: [],
+      stats: %{
+        replies: post.replies_count,
+        shares: post.shares_count
+      },
       nesting_level: post.nesting_level
     }
 
@@ -26,6 +29,13 @@ defmodule EmbersWeb.PostView do
     view =
       if Ecto.assoc_loaded?(post.user) do
         Map.put(view, "user", render_one(post.user, UserView, "user.json"))
+      else
+        view
+      end
+
+    view =
+      if(Ecto.assoc_loaded?(post.media)) do
+        Map.put(view, "media", render_many(post.media, MediaView, "media.json", as: :media))
       else
         view
       end

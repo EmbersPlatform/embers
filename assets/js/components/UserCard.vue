@@ -61,7 +61,7 @@
 				</li>
 
 				<li>
-					<span>{{ user.stats.following }}</span>
+					<span>{{ user.stats.friends }}</span>
 					<span class="title">Siguiendo</span>
 				</li>
 			</ul>

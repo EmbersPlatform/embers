@@ -7,7 +7,7 @@ defmodule EmbersWeb.Router do
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
-    plug(Phauxth.Authenticate)
+    plug(EmbersWeb.Authenticate)
     plug(Phauxth.Remember)
   end
 
@@ -37,20 +37,24 @@ defmodule EmbersWeb.Router do
         post("/account/cover", MetaController, :upload_cover)
         put("/account/settings", SettingController, :update)
 
-        get("/friends/:user_id/ids", FriendController, :list_ids)
-        get("/friends/:user_id/list", FriendController, :list)
+        get("/friends/:id/ids", FriendController, :list_ids)
+        get("/friends/:id/list", FriendController, :list)
         post("/friends", FriendController, :create)
-        delete("/friends", FriendController, :destroy)
+        post("/friends/name", FriendController, :create_by_name)
+        delete("/friends/:id", FriendController, :destroy)
+        delete("/friends/name/:name", FriendController, :destroy_by_name)
 
-        get("/followers/:user_id/ids", FollowerController, :list_ids)
-        get("/followers/:user_id/list", FollowerController, :list)
-        post("/followers", FollowerController, :create)
-        delete("/followers", FollowerController, :destroy)
+        get("/followers/:id/ids", FollowerController, :list_ids)
+        get("/followers/:id/list", FollowerController, :list)
 
         resources("/posts", PostController, only: [:show, :create, :delete])
         get("/posts/:id/replies", PostController, :show_replies)
 
         get("/feed", FeedController, :timeline)
+        get("/feed/public", FeedController, :get_public_feed)
+        get("/feed/user/:id", FeedController, :user_statuses)
+
+        post("/media", MediaController, :upload)
       end
     end
 

@@ -86,6 +86,10 @@
 	</div>
 	<%= render @view_module, @view_template, assigns %>
 	<script type="text/javascript">
+    <%= if @conn.assigns.user_token do %>
+      window.user_token = <%= raw Poison.encode!(@conn.assigns.user_token) %>
+    <% end %>
+
 		var appData = {};
 		appData.csrfToken = <%= raw Poison.encode!(Plug.CSRFProtection.get_csrf_token()) %>;
 		appData.user = null;

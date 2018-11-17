@@ -1,88 +1,84 @@
-console.log('%c Embers %c Red social basada en la comunidad ',
-	'padding: 2px; color: #fff; background-color: #eb3d2d; border-radius: 2px 0 0 2px;',
-	'padding: 2px; color: #fff; background-color: #333; border-radius: 0 2px 2px 0;');
+console.log(
+  "%c Embers %c Red social basada en la comunidad ",
+  "padding: 2px; color: #fff; background-color: #eb3d2d; border-radius: 2px 0 0 2px;",
+  "padding: 2px; color: #fff; background-color: #333; border-radius: 0 2px 2px 0;"
+);
 
 /**
  * Load moment.js locale
  * @todo Adjust to user locale
  */
 
-import autosize from 'autosize';
+import "./socket";
 
-import axios from 'axios';
-import moment from 'moment';
+import autosize from "autosize";
 
-import socketio from 'socket.io-client';
+import axios from "axios";
+import moment from "moment";
 
-import Vue from 'vue';
-import VueInfiniteScroll from 'vue-infinite-scroll';
-import VueSocketio from 'vue-socket.io';
+import Vue from "vue";
+import VueInfiniteScroll from "vue-infinite-scroll";
 
-import * as svgicon from 'vue-svgicon';
-import emojies from './config/emoji';
-import {VueMasonryPlugin} from 'vue-masonry';
+import * as svgicon from "vue-svgicon";
+import emojies from "./config/emoji";
+import { VueMasonryPlugin } from "vue-masonry";
 
-import VModal from 'vue-js-modal';
-Vue.use(VModal, {dynamic: true, dialog: true});
+import VModal from "vue-js-modal";
+Vue.use(VModal, { dynamic: true, dialog: true });
 
-import Notifications from 'vue-notification';
+import Notifications from "vue-notification";
 Vue.use(Notifications);
 
-import VueMq from 'vue-mq';
+import VueMq from "vue-mq";
 
 Vue.use(VueMq, {
   breakpoints: {
     sm: 644,
     md: 1250,
-    lg: Infinity,
+    lg: Infinity
   }
 });
 
-import { sync } from 'vuex-router-sync';
+import { sync } from "vuex-router-sync";
 
-import App from './App.vue';
-import helpers from './helpers';
+import App from "./App.vue";
+import helpers from "./helpers";
 
-import router from './router';
-import store from './vuex/store';
+import router from "./router";
+import store from "./vuex/store";
 
-require('moment/locale/es');
-
-if (window.appData.realtime !== null) {
-	Vue.use(VueSocketio, socketio(window.appData.realtime.url, {
-		transports: ['websocket'],
-		path: window.appData.realtime.path,
-		secure: window.appData.realtime.secure
-	}), store);
-}
+require("moment/locale/es");
 
 Vue.use(VueInfiniteScroll);
-require('../compiled-icons');
+require("../compiled-icons");
 Vue.use(svgicon);
 Vue.use(VueMasonryPlugin);
 
 Object.defineProperties(Vue.prototype, {
-	$moment: {
-		get: function () {
-			return moment;
-		}
-	}
+  $moment: {
+    get: function() {
+      return moment;
+    }
+  }
 });
 
-Vue.filter('truncate', function (text, stop, clamp) {
-	return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '');
+Vue.filter("truncate", function(text, stop, clamp) {
+  return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
 });
 
 /**
  * Store dispatchers
  */
-store.dispatch('setAppData', window.appData);
-store.dispatch('updateUser', window.appData.user);
+store.dispatch("setAppData", window.appData);
+store.dispatch("updateUser", window.appData.user);
 
 if (window.appData.user !== null) {
-	store.dispatch('initNotifications', window.appData.user.unreadNotifications);
-	store.dispatch('chat/updateUnreadMessagesCount', window.appData.user.unreadChatMessages);
-	store.dispatch('updateSettings', window.appData.user.settings);
+  store.dispatch("initNotifications", window.appData.user.unreadNotifications);
+  store.dispatch(
+    "chat/updateUnreadMessagesCount",
+    window.appData.user.unreadChatMessages
+  );
+  store.dispatch("updateSettings", window.appData.user.settings);
 }
 
 sync(store, router);
@@ -90,64 +86,24 @@ sync(store, router);
 /**
  * Add X-CSRF-Token header to every API call
  */
-axios.interceptors.request.use(function (config) {
-	config.headers.common['X-CSRF-Token'] = window.appData.csrfToken;
-	return config;
+axios.interceptors.request.use(function(config) {
+  config.headers.common["X-CSRF-Token"] = window.appData.csrfToken;
+  return config;
 });
 
 const app = new Vue({
-	router,
-	store,
+  router,
+  store,
 
-	components: { App },
-	sockets: {
-		/**
-		 * Triggered when a connection with the realtime server has been successfully established
-		 */
-		connect() {
-			this.$socket.emit('join', window.appData.realtime.channel);
-		},
+  components: { App },
 
-		/**
-		 * Triggered when a post has been added to the current feed
-		 * @param postObject
-		 */
-		addFeedPost(postObject) {
-			this.$store.dispatch('addFeedPost', postObject);
-		},
-
-		/**
-		 * Handles notifications
-		 * @param notificationObj
-		 */
-		notification(notificationObj) {
-			let notificationData = {};
-			if('avatar' in notificationObj.body)
-				notificationData.image = notificationObj.body.avatar;
-			if(notificationObj.link !== null) {
-				notificationData.close = () => {
-					this.$router.push(notificationObj.link);
-				};
-			}
-			this.$notify({
-				group: this.$mq == 'sm' ? 'top' : 'activity',
-				title: notificationObj.body.subject,
-				text: notificationObj.body.predicate,
-				data: notificationData
-			});
-
-			if (notificationObj.id)
-				this.$store.dispatch('newNotification');
-		}
-	},
-
-	data() {
-		return {
-			baseUrl: window.baseUrl,
-			moment: Vue.moment
-		};
-	}
-}).$mount('app');
+  data() {
+    return {
+      baseUrl: window.baseUrl,
+      moment: Vue.moment
+    };
+  }
+}).$mount("app");
 
 // HACK
 window.app = app;
@@ -155,39 +111,42 @@ window.app = app;
 /**
  * Handle promise rejections
  */
-window.addEventListener('unhandledrejection', function (event) {
-	if (typeof event === 'object' && typeof (event.reason || event.detail.reason).instanceOfApiError !== 'undefined') {
-		// unhandled API error
-		// don't log this event on the browser console
-		event.preventDefault();
+window.addEventListener("unhandledrejection", function(event) {
+  if (
+    typeof event === "object" &&
+    typeof (event.reason || event.detail.reason).instanceOfApiError !==
+      "undefined"
+  ) {
+    // unhandled API error
+    // don't log this event on the browser console
+    event.preventDefault();
 
-		// display a message to the user with the original error message
-		app.$notify({
-			group: 'top',
-			text: helpers.formatResponseError(event.reason || event.detail.reason),
-			type: 'error',
-		});
-	}
+    // display a message to the user with the original error message
+    app.$notify({
+      group: "top",
+      text: helpers.formatResponseError(event.reason || event.detail.reason),
+      type: "error"
+    });
+  }
 });
 
-$(document).ready(function () {
-	setTimeout(() => {
-		$('#loader').remove();
-	}, 1000);
+$(document).ready(function() {
+  setTimeout(() => {
+    $("#loader").remove();
+  }, 1000);
 
-	// /**
-	//  * Autoresize text inputs
-	//  */
-	$(document).on('focus', '[data-autoresize]', function () {
-		autosize($('[data-autoresize]'));
-	});
+  // /**
+  //  * Autoresize text inputs
+  //  */
+  $(document).on("focus", "[data-autoresize]", function() {
+    autosize($("[data-autoresize]"));
+  });
 
-	/**
-	 * Internal route anchors
-	 */
-	$(document).on('click', '[data-internal-route]', function (event) {
-		event.preventDefault();
-		app.$router.push($(this).data('internal-route'));
-	});
-
+  /**
+   * Internal route anchors
+   */
+  $(document).on("click", "[data-internal-route]", function(event) {
+    event.preventDefault();
+    app.$router.push($(this).data("internal-route"));
+  });
 });

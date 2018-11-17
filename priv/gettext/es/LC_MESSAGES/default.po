@@ -19,3 +19,6 @@ msgstr "Tu cuenta ya había sido confirmada"
 
 msgid "Invalid credentials"
 msgstr "Credenciales inválidas"
+
+msgid "Invalid image file"
+msgstr "Archivo de imagen inválido"

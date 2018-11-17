@@ -1,7 +1,7 @@
 defmodule EmbersWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :embers
 
-  socket("/socket", EmbersWeb.UserSocket)
+  socket("/socket", EmbersWeb.UserSocket, websocket: true)
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -13,11 +13,18 @@ defmodule EmbersWeb.Endpoint do
     from: :embers,
     gzip: true,
     only:
-      ~w(css fonts uploads img images js favicon.ico robots.txt  manifest.json offline.html error.html service-worker.js)
+      ~w(css fonts uploads img images js favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
   )
 
-  plug(Plug.Static, at: "/avatar", from: Path.expand('./priv/uploads/user/avatar'), gzip: true)
-  plug(Plug.Static, at: "/cover", from: Path.expand('./priv/uploads/user/cover'), gzip: true)
+  plug(Plug.Static, at: "/avatar", from: Path.expand('./uploads/user/avatar'), gzip: true)
+  plug(Plug.Static, at: "/cover", from: Path.expand('./uploads/user/cover'), gzip: true)
+
+  plug(
+    Plug.Static,
+    at: "/media",
+    from: Path.expand('./uploads/media'),
+    gzip: true
+  )
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
@@ -33,7 +40,7 @@ defmodule EmbersWeb.Endpoint do
     Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
-    json_decoder: Poison
+    json_decoder: Jason
   )
 
   plug(Plug.MethodOverride)

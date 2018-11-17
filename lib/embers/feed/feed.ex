@@ -7,6 +7,8 @@ defmodule Embers.Feed do
   alias Embers.Repo
   alias Embers.Paginator
   alias Ecto.Multi
+  alias Embers.Helpers.IdHasher
+  alias Embers.Media.MediaItem
 
   alias Embers.Feed.{Post, Activity}
 
@@ -38,13 +40,16 @@ defmodule Embers.Feed do
 
   """
   def get_post!(id) do
-    Post
-    |> where([post], post.id == ^id)
-    |> join(:left, [post], user in assoc(post, :user))
-    |> join(:left, [post, user], meta in assoc(user, :meta))
-    |> preload(
-      [post, user, meta],
-      user: {user, meta: meta}
+    from(
+      post in Post,
+      where: post.id == ^id,
+      left_join: user in assoc(post, :user),
+      left_join: meta in assoc(user, :meta),
+      left_join: media in assoc(post, :media),
+      preload: [
+        user: {user, meta: meta},
+        media: media
+      ]
     )
     |> Repo.one()
   end
@@ -74,9 +79,39 @@ defmodule Embers.Feed do
           Task.Supervisor.start_child(Embers.Feed.FeedSupervisor, fn ->
             create_activity_for_post(post)
           end)
+        else
+          # Update parent post replies count
+          from(
+            p in Post,
+            where: p.id == ^post.parent_id,
+            update: [inc: [replies_count: 1]]
+          )
+          |> Repo.update_all([])
         end
 
-        {:ok, post}
+        if(Map.has_key?(attrs, "attachments")) do
+          attachments = attrs["attachments"]
+
+          ids = Enum.map(attachments, fn x -> IdHasher.decode(x["id"]) end)
+
+          medias =
+            from(m in MediaItem, where: m.id in ^ids)
+            |> Repo.all()
+
+          post
+          |> Repo.preload(:media)
+          |> Ecto.Changeset.change()
+          |> Ecto.Changeset.put_assoc(:media, medias)
+          |> Repo.update()
+
+          from(
+            media in MediaItem,
+            where: media.id in ^ids
+          )
+          |> Repo.update_all(set: [temporary: false])
+        end
+
+        {:ok, post |> Repo.preload(:media)}
 
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         {:error, failed_value}
@@ -114,6 +149,16 @@ defmodule Embers.Feed do
 
   """
   def delete_post(%Post{} = post) do
+    if post.nesting_level > 0 do
+      # Update parent post replies count
+      from(
+        p in Post,
+        where: p.id == ^post.parent_id,
+        update: [inc: [replies_count: -1]]
+      )
+      |> Repo.update_all([])
+    end
+
     Repo.delete(post)
   end
 
@@ -131,15 +176,17 @@ defmodule Embers.Feed do
   end
 
   def get_timeline(user_id, opts) do
-    Activity
-    |> where([activity], activity.user_id == ^user_id)
-    |> order_by([activity], desc: activity.id)
-    |> join(:left, [activity], post in assoc(activity, :post))
-    |> join(:left, [activity, post], user in assoc(post, :user))
-    |> join(:left, [activity, post, user], meta in assoc(user, :meta))
-    |> preload(
-      [activity, post, user, meta],
-      post: {post, user: {user, meta: meta}}
+    from(
+      activity in Activity,
+      where: activity.user_id == ^user_id,
+      order_by: [desc: activity.id],
+      left_join: post in assoc(activity, :post),
+      left_join: user in assoc(post, :user),
+      left_join: meta in assoc(user, :meta),
+      left_join: media in assoc(post, :media),
+      preload: [
+        post: {post, user: {user, meta: meta}, media: media}
+      ]
     )
     |> Paginator.paginate(opts)
   end

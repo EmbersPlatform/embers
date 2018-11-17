@@ -38,7 +38,7 @@ defmodule Embers.Profile.Uploads.Cover do
 
   # Override the storage directory:
   def storage_dir(_version, {_file, _name}) do
-    "priv/uploads/user/cover"
+    "uploads/user/cover"
   end
 
   # Provide a default URL if there hasn't been a file uploaded

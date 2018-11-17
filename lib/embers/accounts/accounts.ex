@@ -21,9 +21,9 @@ defmodule Embers.Accounts do
     end
   end
 
-  def get_with_meta(identifier) do
+  def get_populated(identifier) do
     query =
-      case Float.parse(identifier) do
+      case Integer.parse(identifier) do
         {_id, ""} -> User |> where([user], user.id == ^identifier)
         _ -> User |> where([user], user.canonical == ^identifier)
       end
@@ -34,7 +34,8 @@ defmodule Embers.Accounts do
       |> preload([user, meta], meta: meta)
       |> Repo.one()
 
-    user = %{user | meta: user.meta |> Meta.load_avatar_map() |> Meta.load_cover()}
+    user = user |> User.populate()
+    user = %{user | meta: user.meta |> Meta.populate()}
 
     user
   end

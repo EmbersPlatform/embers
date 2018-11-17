@@ -15,20 +15,16 @@ export default {
    * Follow user
    * @param identifier
    */
-  follow(identifier) {
-    return wrap(() =>
-      axios.post(`${config.prefix}/users/${identifier}/follow`)
-    );
+  follow(id) {
+    return wrap(() => axios.post(`${config.prefix}/friends`, { id: id }));
   },
 
   /**
    * Unfollow user
    * @param identifier
    */
-  unfollow(identifier) {
-    return wrap(() =>
-      axios.delete(`${config.prefix}/users/${identifier}/follow`)
-    );
+  unfollow(id) {
+    return wrap(() => axios.delete(`${config.prefix}/friends/${id}`));
   },
 
   block(identifier) {

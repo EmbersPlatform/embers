@@ -196,14 +196,6 @@
 				}
 			}
 		},
-		sockets: {
-			new_chat_message(data) {
-				this.$store.dispatch('chat/newMessage', true);
- 			},
- 			new_feed_activity() {
-				this.$store.dispatch('newActivity');
-			}
-		},
 		beforeDestroy() {
 			window.removeEventListener('scroll');
 		}
