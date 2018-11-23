@@ -8,7 +8,7 @@ defmodule EmbersWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(EmbersWeb.Authenticate)
-    plug(Phauxth.Remember)
+    plug(Phauxth.Remember, create_session_func: &EmbersWeb.Auth.Utils.create_session/1)
   end
 
   scope "/", EmbersWeb do
@@ -26,6 +26,7 @@ defmodule EmbersWeb.Router do
     get("/password_resets/edit", PasswordResetController, :edit)
     put("/password_resets/edit", PasswordResetController, :update)
 
+    get("/register", AccountController, :new)
     post("/register", AccountController, :create)
 
     scope "/api" do

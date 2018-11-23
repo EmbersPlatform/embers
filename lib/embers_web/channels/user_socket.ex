@@ -1,6 +1,8 @@
 defmodule EmbersWeb.UserSocket do
   use Phoenix.Socket
 
+  alias EmbersWeb.Auth.Token
+
   ## Channels
   # channel "room:*", EmbersWeb.RoomChannel
 
@@ -16,9 +18,9 @@ defmodule EmbersWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   def connect(%{"token" => token}, socket) do
-    case Phauxth.Token.verify(socket, token, 1_209_600) do
-      {:ok, user_id} ->
-        socket = assign(socket, :user, Embers.Accounts.get(user_id))
+    case Token.verify(token, max_age: 1_209_600) do
+      {:ok, %{"user_id" => user_id}} ->
+        socket = assign(socket, :user, Embers.Accounts.get_user(user_id))
         {:ok, socket}
 
       {:error, _} ->
@@ -37,4 +39,7 @@ defmodule EmbersWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   def id(_socket), do: nil
+
+  ## Channels
+  channel("feed:*", EmbersWeb.FeedChannel)
 end

@@ -4,6 +4,9 @@ defmodule EmbersWeb.AccountController do
   import EmbersWeb.Authorize
   alias Embers.Accounts
   alias Phauxth.Log
+  alias EmbersWeb.Auth.Token
+  alias EmbersWeb.Email
+  alias EmbersWeb.Router.Helpers, as: Routes
 
   plug(:guest_check when action in [:new, :create])
   plug(:put_layout, "app_no_js.html")
@@ -16,36 +19,30 @@ defmodule EmbersWeb.AccountController do
   def create(
         conn,
         %{
-          "email" => email
+          "user" => %{
+            "email" => email
+          }
         } = params
       ) do
     case Recaptcha.verify(params["g-recaptcha-response"]) do
       {:ok, _} ->
-        key = Phauxth.Token.sign(conn, %{"email" => email})
-
-        case Accounts.create_user(params) do
+        case Accounts.create_user(params["user"]) do
           {:ok, user} ->
             Log.info(%Log{user: user.id, message: "user created"})
-            Accounts.Message.confirm_request(email, key)
+            key = Token.sign(%{"email" => email})
+            Email.confirm_request(email, key)
 
             conn
             |> json(%{success: true})
 
           {:error, %Ecto.Changeset{} = changeset} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{
-              error:
-                Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
-                  EmbersWeb.ErrorHelpers.translate_error({msg, opts})
-                end)
-            })
+            render(conn, "new.html", changeset: changeset)
         end
 
       {:error, errors} ->
         conn
-        |> put_status(:unprocessable_entity)
-        |> json(%{error: %{recaptcha_errors: errors}})
+        |> put_flash(:error, errors)
+        |> redirect(to: Routes.account_path(conn, :new))
     end
   end
 end

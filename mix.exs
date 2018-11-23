@@ -44,7 +44,7 @@ defmodule Embers.Mixfile do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:distillery, "~> 2.0"},
-      {:phauxth, "~> 1.2"},
+      {:phauxth, "~> 2.0"},
       {:pbkdf2_elixir, "~> 0.12.3"},
       {:bamboo, "~> 0.8"},
       {:not_qwerty123, "~> 2.3"},

@@ -1,19 +1,25 @@
 defmodule EmbersWeb.ConfirmController do
   use EmbersWeb, :controller
 
-  import EmbersWeb.Authorize
+  alias Phauxth.Confirm
   alias Embers.Accounts
+  alias EmbersWeb.Email
+  alias EmbersWeb.Router.Helpers, as: Routes
 
   def index(conn, params) do
-    case Phauxth.Confirm.verify(params, Accounts) do
+    case Confirm.verify(params) do
       {:ok, user} ->
         Accounts.confirm_user(user)
-        message = "Tu cuenta ha sido confirmada, ¡Ya puedes iniciar sesión!"
-        Accounts.Message.confirm_success(user.email)
-        success(conn, message, session_path(conn, :new))
+        Email.confirm_success(user.email)
+
+        conn
+        |> put_flash(:info, "Tu cuenta ha sido confirmada, ¡Ya puedes iniciar sesión!")
+        |> redirect(to: Routes.session_path(conn, :new))
 
       {:error, message} ->
-        error(conn, message, session_path(conn, :new))
+        conn
+        |> put_flash(:error, message)
+        |> redirect(to: Routes.session_path(conn, :new))
     end
   end
 end

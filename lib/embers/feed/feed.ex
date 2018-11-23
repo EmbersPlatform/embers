@@ -74,12 +74,7 @@ defmodule Embers.Feed do
     |> Repo.transaction()
     |> case do
       {:ok, %{post: post} = _results} ->
-        if(post.nesting_level === 0) do
-          # Asynchronously create activity entries
-          Task.Supervisor.start_child(Embers.Feed.FeedSupervisor, fn ->
-            create_activity_for_post(post)
-          end)
-        else
+        if(post.nesting_level > 0) do
           # Update parent post replies count
           from(
             p in Post,
@@ -207,28 +202,12 @@ defmodule Embers.Feed do
     |> Paginator.paginate(opts)
   end
 
-  defp create_activity_for_post(post) do
-    # Get the recipients the activity will be added to
-    users_query =
-      from(
-        us in "user_subscriptions",
-        where: us.source_id == ^post.user_id,
-        select: [:user_id]
-      )
-
-    users = Repo.all(users_query)
-    # [%{user_id: integer}, ...]
-
-    # Add post owner to recipients
-    recipients = users ++ [%{user_id: post.user_id}]
-
-    # Create a map with the required attrs to create the activity entry
-    activities_maps =
+  def push_acitivity(post, recipients \\ []) do
+    activities =
       Enum.map(recipients, fn elem ->
-        # Append the post id
-        Map.put(elem, :post_id, post.id)
+        %{user_id: elem, post_id: post.id}
       end)
 
-    Repo.insert_all(Activity, activities_maps)
+    Repo.insert_all(Activity, activities)
   end
 end

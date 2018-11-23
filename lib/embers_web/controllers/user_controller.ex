@@ -2,6 +2,7 @@ defmodule EmbersWeb.UserController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
+  import EmbersWeb.Helpers
   alias Embers.Accounts
 
   # the following plugs are defined in the controllers/authorize.ex file
@@ -20,7 +21,7 @@ defmodule EmbersWeb.UserController do
         success(conn, "User updated successfully", user_path(conn, :show, user))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "show.json", user: user, changeset: changeset)
+        render(conn, "show.json", changeset: changeset)
     end
   end
 

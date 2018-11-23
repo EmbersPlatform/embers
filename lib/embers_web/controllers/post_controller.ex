@@ -28,6 +28,11 @@ defmodule EmbersWeb.PostController do
         user = Embers.Accounts.get_populated(user.canonical)
         post = %{post | user: user}
 
+        # Asynchronously create activity entries and push to realtime
+        Task.Supervisor.start_child(Embers.Feed.FeedSupervisor, fn ->
+          create_activity_and_push(post)
+        end)
+
         conn
         |> render("show.json", post: post)
 
@@ -68,5 +73,22 @@ defmodule EmbersWeb.PostController do
 
   defp is_post_owner?(user, post) do
     user.id == post.user_id
+  end
+
+  defp create_activity_and_push(post) do
+    # Retrieve post creator followers
+    recipients = Feed.Subscriptions.list_followers(post.user_id)
+
+    # Create activity entries for the post
+    Feed.push_acitivity(post, [post.user_id | recipients])
+
+    Enum.each(recipients, fn recipient ->
+      # Broadcast the good news to the recipients via Channels
+      hashed_id = IdHasher.encode(recipient)
+      encoded_post = EmbersWeb.PostView.render("post.json", %{post: post})
+      payload = %{post: encoded_post}
+
+      EmbersWeb.Endpoint.broadcast!("feed:#{hashed_id}", "new_activity", payload)
+    end)
   end
 end

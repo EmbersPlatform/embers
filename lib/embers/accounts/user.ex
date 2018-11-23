@@ -5,6 +5,7 @@ defmodule Embers.Accounts.User do
   import Ecto.Query
 
   alias Embers.Accounts.User
+  alias Embers.Sessions.Session
 
   schema "users" do
     field(:username, :string)
@@ -14,7 +15,7 @@ defmodule Embers.Accounts.User do
     field(:password_hash, :string)
     field(:confirmed_at, :utc_datetime)
     field(:reset_sent_at, :utc_datetime)
-    field(:sessions, {:map, :integer}, default: %{})
+    has_many(:sessions, Session, on_delete: :delete_all)
 
     field(:following, :boolean, virtual: true)
     field(:stats, :map, virtual: true, default: false)
@@ -28,9 +29,10 @@ defmodule Embers.Accounts.User do
 
   def changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:email])
-    |> validate_required([:email])
+    |> cast(attrs, [:email, :username])
+    |> validate_required([:email, :username])
     |> unique_email
+    |> validate_username
   end
 
   def create_changeset(%User{} = user, attrs) do
@@ -43,6 +45,14 @@ defmodule Embers.Accounts.User do
     |> validate_password(:password)
     |> put_pass_hash
     |> put_canonical_username
+  end
+
+  def confirm_changeset(user) do
+    change(user, %{confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second)})
+  end
+
+  def password_reset_changeset(user, reset_sent_at) do
+    change(user, %{reset_sent_at: reset_sent_at})
   end
 
   def load_following_status(%User{} = user, follower_id) do
@@ -101,7 +111,6 @@ defmodule Embers.Accounts.User do
   defp unique_email(changeset) do
     validate_format(changeset, :email, ~r/@/)
     |> validate_length(:email, max: 254)
-    |> validate_length(:username, min: 2)
     |> unique_constraint(:email)
   end
 

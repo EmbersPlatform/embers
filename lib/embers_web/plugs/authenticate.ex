@@ -1,15 +1,14 @@
 defmodule EmbersWeb.Authenticate do
   use Phauxth.Authenticate.Base
 
-  def set_user(nil, conn) do
-    assign(conn, :current_user, nil)
-    |> assign(:user_token, nil)
-  end
+  alias EmbersWeb.Auth.Token
 
+  @impl true
+  def set_user(nil, conn), do: assign(conn, :current_user, nil)
+
+  @impl true
   def set_user(user, conn) do
-    token = Phauxth.Token.sign(conn, %{"user_id" => user.id})
-
-    assign(conn, :current_user, user)
-    |> assign(:user_token, token)
+    token = Token.sign(%{"user_id" => user.id})
+    user |> super(conn) |> assign(:user_token, token)
   end
 end

@@ -1,8 +1,10 @@
 defmodule EmbersWeb.PasswordResetController do
   use EmbersWeb, :controller
 
-  import EmbersWeb.Authorize
+  alias Phauxth.Confirm.PassReset
   alias Embers.Accounts
+  alias EmbersWeb.{Auth.Token, Email}
+  alias EmbersWeb.Router.Helpers, as: Routes
 
   plug(:put_layout, "app_no_js.html")
 
@@ -11,10 +13,14 @@ defmodule EmbersWeb.PasswordResetController do
   end
 
   def create(conn, %{"password_reset" => %{"email" => email}}) do
-    key = Accounts.create_password_reset(EmbersWeb.Endpoint, %{"email" => email})
-    Accounts.Message.reset_request(email, key)
-    message = "Check your inbox for instructions on how to reset your password"
-    success(conn, message, page_path(conn, :index))
+    if Accounts.create_password_reset(%{"email" => email}) do
+      key = Token.sign(%{"email" => email})
+      Email.reset_request(email, key)
+    end
+
+    conn
+    |> put_flash(:info, "Check your inbox for instructions on how to reset your password")
+    |> redirect(to: Routes.page_path(conn, :index))
   end
 
   def edit(conn, %{"key" => key}) do
@@ -22,30 +28,37 @@ defmodule EmbersWeb.PasswordResetController do
   end
 
   def edit(conn, _params) do
-    render(conn, EmbersWeb.ErrorView, "404.html", [])
+    render(conn, ForksTheEggSampleWeb.ErrorView, "404.html")
   end
 
   def update(conn, %{"password_reset" => params}) do
-    case Phauxth.Confirm.verify(params, Accounts, mode: :pass_reset) do
+    case PassReset.verify(params, []) do
       {:ok, user} ->
-        Accounts.update_password(user, params) |> update_password(conn, params)
+        user
+        |> Accounts.update_password(params)
+        |> update_password(conn, params)
 
       {:error, message} ->
-        put_flash(conn, :error, message)
+        conn
+        |> put_flash(:error, message)
         |> render("edit.html", key: params["key"])
     end
   end
 
   defp update_password({:ok, user}, conn, _params) do
-    Accounts.Message.reset_success(user.email)
-    message = "Your password has been reset"
+    Email.reset_success(user.email)
 
-    delete_session(conn, :phauxth_session_id)
-    |> success(message, session_path(conn, :new))
+    conn
+    |> delete_session(:phauxth_session_id)
+    |> put_flash(:info, "Your password has been reset")
+    |> redirect(to: Routes.session_path(conn, :new))
   end
 
   defp update_password({:error, %Ecto.Changeset{} = changeset}, conn, params) do
-    put_flash(conn, :error, changeset.errors || "Invalid input")
+    message = with p <- changeset.errors[:password], do: elem(p, 0)
+
+    conn
+    |> put_flash(:error, message || "Invalid input")
     |> render("edit.html", key: params["key"])
   end
 end

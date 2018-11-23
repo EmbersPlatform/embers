@@ -20,11 +20,11 @@ config :embers, EmbersWeb.Endpoint,
 # Phauxth authentication configuration
 config :phauxth,
   token_salt: "geDDVmqL",
-  endpoint: EmbersWeb.Endpoint,
-  user_messages: EmbersWeb.UserMessages
+  user_context: Embers.Accounts,
+  token_module: EmbersWeb.Auth.Token
 
 # Mailer configuration
-config :embers, Embers.Mailer,
+config :embers, EmbersWeb.Mailer,
   adapter: Bamboo.SendgridAdapter,
   api_key: "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"
 

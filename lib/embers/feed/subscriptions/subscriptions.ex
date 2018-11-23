@@ -82,4 +82,11 @@ defmodule Embers.Feed.Subscriptions do
     |> select([sub], sub.source_id)
     |> Paginator.paginate(opts)
   end
+
+  def list_followers(user_id) do
+    UserSubscription
+    |> where([sub], sub.source_id == ^user_id)
+    |> select([sub], sub.user_id)
+    |> Repo.all()
+  end
 end
