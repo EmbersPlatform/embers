@@ -2,7 +2,8 @@ defmodule EmbersWeb.PostController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.Feed
+  import Ecto.Query
+  alias Embers.{Feed, Feed.Post}
   alias Embers.Helpers.IdHasher
 
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
@@ -31,6 +32,7 @@ defmodule EmbersWeb.PostController do
         # Asynchronously create activity entries and push to realtime
         Task.Supervisor.start_child(Embers.Feed.FeedSupervisor, fn ->
           create_activity_and_push(post)
+          handle_mentions(post)
         end)
 
         conn
@@ -89,6 +91,30 @@ defmodule EmbersWeb.PostController do
       payload = %{post: encoded_post}
 
       EmbersWeb.Endpoint.broadcast!("feed:#{hashed_id}", "new_activity", payload)
+    end)
+  end
+
+  defp handle_mentions(%Post{body: body} = post) do
+    regex = ~r/(?:^|[^a-zA-Z0-9_＠!@#$%&*])(?:(?:@|＠)(?!\/))([a-zA-Z0-9_]{1,15})(?:\b(?!@|＠)|$)/
+    results = Regex.scan(regex, body) |> Enum.map(fn [_, txt] -> txt end)
+
+    recipients =
+      from(
+        user in Embers.Accounts.User,
+        where: user.canonical in ^results,
+        select: user.id
+      )
+      |> Embers.Repo.all()
+
+    Enum.each(recipients, fn recipient ->
+      hashed_id = IdHasher.encode(recipient)
+
+      if recipient != post.user_id do
+        EmbersWeb.Endpoint.broadcast!("user:#{hashed_id}", "mention", %{
+          from: post.user.canonical,
+          source: IdHasher.encode(post.id)
+        })
+      end
     end)
   end
 end

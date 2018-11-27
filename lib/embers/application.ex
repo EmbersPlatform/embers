@@ -14,7 +14,7 @@ defmodule Embers.Application do
       supervisor(EmbersWeb.Endpoint, []),
       # Start your own worker by calling: Embers.Worker.start_link(arg1, arg2, arg3)
       # worker(Embers.Worker, [arg1, arg2, arg3]),
-
+      EmbersWeb.Presence,
       supervisor(Task.Supervisor, [[name: Embers.Feed.FeedSupervisor, restart: :transient]])
     ]
 

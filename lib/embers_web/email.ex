@@ -29,8 +29,8 @@ defmodule EmbersWeb.Email do
   """
   def confirm_request(address, key) do
     prep_mail(address)
-    |> subject("Confirm your account")
-    |> text_body("Confirm your email here http://www.example.com/confirm?key=#{key}")
+    |> subject("Confirmar cuenta")
+    |> text_body("Confirma tu cuenta en este enlace http://localhost:4000/confirm?key=#{key}")
     |> Mailer.deliver_now()
   end
 
@@ -49,7 +49,11 @@ defmodule EmbersWeb.Email do
   def reset_request(address, key) do
     prep_mail(address)
     |> subject("Reset your password")
-    |> text_body("Reset your password at http://www.example.com/password_resets/edit?key=#{key}")
+    |> text_body(
+      "Para restablecer tu contraseña haz clic en este enlace: http://localhost:4000/password_resets/edit?key=#{
+        key
+      }"
+    )
     |> Mailer.deliver_now()
   end
 
@@ -76,6 +80,6 @@ defmodule EmbersWeb.Email do
   defp prep_mail(address) do
     new_email()
     |> to(address)
-    |> from("admin@example.com")
+    |> from("noreply@embers.pw")
   end
 end
