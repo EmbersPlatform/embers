@@ -3,7 +3,7 @@
 
 // To use Phoenix channels, the first step is to import Socket
 // and connect at the socket path in "lib/web/endpoint.ex":
-import { Socket, Presence } from "phoenix";
+import { Socket } from "phoenix";
 
 let socket = new Socket("/socket", { params: { token: window.user_token } });
 
@@ -52,21 +52,5 @@ let socket = new Socket("/socket", { params: { token: window.user_token } });
 // from connect if you don't care about authentication.
 
 socket.connect();
-
-// Now that you are connected, you can join channels with a topic:
-console.log("creating channel feed:7D");
-let user_id = window.appData.user.id;
-let feed_channel = socket.channel(`feed:${user_id}`, {});
-feed_channel.join();
-feed_channel.on("new_activity", payload => {
-  alert("hay nueva actividad");
-});
-
-let user_channel = socket.channel(`user:${user_id}`, {});
-user_channel.join();
-let presence = new Presence(user_channel);
-presence.onSync(() => {
-  console.log(presence.list());
-});
 
 export default socket;

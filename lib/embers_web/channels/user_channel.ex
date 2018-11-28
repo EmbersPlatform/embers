@@ -34,7 +34,7 @@ defmodule EmbersWeb.UserChannel do
   # Let's pretend that the current user is allowed to see the presence of users with an id between
   # 10 less than and 100 more than it's own id.
   defp friend_list(user_id) do
-    Enum.to_list((user_id - 10)..(user_id + 100))
+    Embers.Feed.Subscriptions.list_mutuals(user_id)
   end
 
   # Track the current process as a presence for the given user on it's designated presence topic
@@ -45,6 +45,7 @@ defmodule EmbersWeb.UserChannel do
       Presence.track(self(), presence_topic(user.id), user.username, %{
         id: encoded_id,
         username: user.username,
+        avatar: user.meta.avatar,
         online_at: inspect(System.system_time(:seconds))
       })
   end

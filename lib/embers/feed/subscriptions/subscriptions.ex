@@ -67,7 +67,7 @@ defmodule Embers.Feed.Subscriptions do
     end
   end
 
-  def list_friends(user_id, opts \\ %{}) do
+  def list_following_paginated(user_id, opts \\ %{}) do
     UserSubscription
     |> where([sub], sub.user_id == ^user_id)
     |> join(:left, [sub], user in assoc(sub, :source))
@@ -76,11 +76,33 @@ defmodule Embers.Feed.Subscriptions do
     |> Paginator.paginate(opts)
   end
 
-  def list_friends_ids(user_id, opts \\ %{}) do
+  def list_following_ids_paginated(user_id, opts \\ %{}) do
     UserSubscription
     |> where([sub], sub.user_id == ^user_id)
     |> select([sub], sub.source_id)
     |> Paginator.paginate(opts)
+  end
+
+  def list_mutuals(user_id) do
+    followers =
+      from(
+        subscription in UserSubscription,
+        where: subscription.user_id == ^user_id,
+        select: subscription.source_id
+      )
+      |> Repo.all()
+
+    followed =
+      from(
+        subscription in UserSubscription,
+        where: subscription.source_id == ^user_id,
+        select: subscription.user_id
+      )
+      |> Repo.all()
+
+    intersection = MapSet.intersection(MapSet.new(followers), MapSet.new(followed))
+
+    intersection
   end
 
   def list_followers(user_id) do

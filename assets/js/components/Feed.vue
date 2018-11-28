@@ -2,18 +2,18 @@
 	<div id="feed" :class="{'renderbox': loading || refreshing}" :data-renderbox-message="[loading ? 'Cargando posts...' : 'Actualizando feed...']" :data-renderbox-top="refreshing" ref="postList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="infiniteScrollStill">
 		<template v-if="isMasonry">
 			<div v-if="firstLoad" id="masonry" ref="masonry" v-masonry transition-duration=".3s" item-selector=".little" fit-width="true">
-				<template v-for="post in feed">
-					<Card v-if="post.isShared" v-masonry-tile class="little" :post="post.source" :showThumbnail="showThumbnail" :key="post.id" :sharer="post.user" :isShared="post.isShared" :size="size"></Card>
-					<Card v-else :post="post" v-masonry-tile class="little" :key="post.id" :showThumbnail="showThumbnail" :size="size"></Card>
+				<template v-for="(post, index) in feed">
+					<Card v-if="post.isShared" v-masonry-tile class="little" :post="post.source" :showThumbnail="showThumbnail" :key="index" :sharer="post.user" :isShared="post.isShared" :size="size"></Card>
+					<Card v-else :post="post" v-masonry-tile class="little" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
 				</template>
 			</div>
 		</template>
-		<template v-else v-for="post in feed">
-			<Card v-if="post.isShared" :post="post.source" :showThumbnail="showThumbnail" :key="post.id" :sharers="post.sharers" :isShared="post.isShared" :size="size"></Card>
-			<Card v-else :post="post" :key="post.id" :showThumbnail="showThumbnail" :size="size"></Card>
+		<template v-else v-for="(post, index) in feed">
+			<Card v-if="post.isShared" :post="post.source" :showThumbnail="showThumbnail" :key="index" :sharers="post.sharers" :isShared="post.isShared" :size="size"></Card>
+			<Card v-else :post="post" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
 		</template>
 		<template v-if="reachedBottom && !loading && !refreshing">
-			<h3 v-html="formattedNoResults" v-if="oldestId === null"></h3>
+			<h3 v-html="formattedNoResults" v-if="feed.length === 0"></h3>
 			<h3 v-html="formattedReachedBottom" v-else></h3>
 		</template>
 	</div>

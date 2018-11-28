@@ -11,7 +11,7 @@ defmodule EmbersWeb.FriendController do
   def list(conn, %{"id" => id} = params) do
     id = IdHasher.decode(id)
 
-    friends = Subscriptions.list_friends(id, params)
+    friends = Subscriptions.list_following_paginated(id, params)
 
     render(conn, "friends.json", friends)
   end
@@ -19,7 +19,7 @@ defmodule EmbersWeb.FriendController do
   def list_ids(conn, %{"id" => id} = params) do
     id = IdHasher.decode(id)
 
-    friends_ids = Subscriptions.list_friends_ids(id, params)
+    friends_ids = Subscriptions.list_following_ids_paginated(id, params)
 
     render(conn, "friends_ids.json", friends_ids)
   end

@@ -33,9 +33,9 @@ defmodule Embers.Accounts do
 
   def get_populated(identifier) do
     query =
-      case Integer.parse(identifier) do
-        {_id, ""} -> User |> where([user], user.id == ^identifier)
-        _ -> User |> where([user], user.canonical == ^identifier)
+      case is_integer(identifier) do
+        true -> User |> where([user], user.id == ^identifier)
+        false -> User |> where([user], user.canonical == ^identifier)
       end
 
     user =

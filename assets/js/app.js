@@ -4,11 +4,6 @@ console.log(
   "padding: 2px; color: #fff; background-color: #333; border-radius: 0 2px 2px 0;"
 );
 
-/**
- * Load moment.js locale
- * @todo Adjust to user locale
- */
-
 import "./socket";
 
 import autosize from "autosize";

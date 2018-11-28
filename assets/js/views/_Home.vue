@@ -10,7 +10,7 @@
 				<div id="filtering" :class="{'open': open}">
 					<div class="controls">
 						<button class="filter-button" @click.prevent="refreshFeed">
-							<i class="fas fa-sync-alt"></i></i>&nbsp;Actualizar
+							<i class="fas fa-sync-alt"></i>&nbsp;Actualizar
 						</button>
 					</div>
 				</div>
@@ -61,7 +61,11 @@ export default {
       this.$root.$emit("refresh_feed");
     }
   },
-
+  created() {
+    this.$root.$on("new_activity", () => {
+      alert("new_activity");
+    });
+  },
   /**
    * Triggered before this component instance is destroyed
    */
