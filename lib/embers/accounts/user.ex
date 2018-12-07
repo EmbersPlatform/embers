@@ -18,6 +18,7 @@ defmodule Embers.Accounts.User do
     has_many(:sessions, Session, on_delete: :delete_all)
 
     field(:following, :boolean, virtual: true)
+    field(:blocked, :boolean, virtual: true)
     field(:stats, :map, virtual: true, default: false)
 
     has_one(:meta, Embers.Profile.Meta)
@@ -64,6 +65,17 @@ defmodule Embers.Accounts.User do
       |> Embers.Repo.one()
 
     %{user | following: count > 0}
+  end
+
+  def load_blocked_status(%User{} = user, follower_id) do
+    count =
+      Embers.Feed.Subscriptions.UserBlock
+      |> where([b], b.user_id == ^follower_id)
+      |> where([b], b.source_id == ^user.id)
+      |> select([b], count(b.id))
+      |> Embers.Repo.one()
+
+    %{user | blocked: count > 0}
   end
 
   def populate(%User{} = user) do

@@ -34,7 +34,7 @@ defmodule EmbersWeb.UserChannel do
   # Let's pretend that the current user is allowed to see the presence of users with an id between
   # 10 less than and 100 more than it's own id.
   defp friend_list(user_id) do
-    Embers.Feed.Subscriptions.list_mutuals(user_id)
+    Embers.Feed.Subscriptions.list_mutuals_ids(user_id)
   end
 
   # Track the current process as a presence for the given user on it's designated presence topic

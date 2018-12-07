@@ -12,7 +12,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      isSidebar: true,
+      isSidebar: false,
       isDetachSidebar: true,
       isChromeMobile: false // due to a vh issue en mobile version of chrome browser (ios/android)
     };

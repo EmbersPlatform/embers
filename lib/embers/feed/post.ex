@@ -5,6 +5,7 @@ defmodule Embers.Feed.Post do
 
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
   alias __MODULE__
   alias Embers.Repo
 
@@ -13,6 +14,8 @@ defmodule Embers.Feed.Post do
     field(:nesting_level, :integer, default: 0)
     field(:replies_count, :integer, default: 0)
     field(:shares_count, :integer, default: 0)
+    field(:my_reactions, {:array, :string}, virtual: true)
+    field(:mentions, {:array, :string}, virtual: true)
 
     belongs_to(:user, Embers.Accounts.User)
 
@@ -20,8 +23,10 @@ defmodule Embers.Feed.Post do
     # Comments no longer have their own entity as they had in fenix
     belongs_to(:parent, Embers.Feed.Post)
     has_many(:replies, Embers.Feed.Post)
+    has_many(:reactions, Embers.Feed.Reactions.Reaction)
 
     many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
+    many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
 
     timestamps()
   end
@@ -43,6 +48,7 @@ defmodule Embers.Feed.Post do
 
       parent ->
         changeset
+        |> check_if_can_reply(parent)
         |> set_nesting_level(parent.nesting_level)
     end
   end
@@ -58,6 +64,25 @@ defmodule Embers.Feed.Post do
     else
       changeset
       |> Ecto.Changeset.add_error(:nesting_level, "max nesting level is 2")
+    end
+  end
+
+  defp check_if_can_reply(changeset, parent) do
+    user_id = get_change(changeset, :user_id)
+
+    is_blocked? =
+      from(
+        b in Embers.Feed.Subscriptions.UserBlock,
+        where: b.source_id == ^user_id,
+        where: b.user_id == ^parent.user_id
+      )
+      |> Repo.exists?()
+
+    if is_blocked? do
+      changeset
+      |> Ecto.Changeset.add_error(:blocked, "parent post owner has blocked the post creator")
+    else
+      changeset
     end
   end
 end

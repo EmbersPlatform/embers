@@ -27,14 +27,12 @@ export default {
     return wrap(() => axios.delete(`${config.prefix}/friends/${id}`));
   },
 
-  block(identifier) {
-    return wrap(() => axios.post(`${config.prefix}/users/${identifier}/block`));
+  block(id) {
+    return wrap(() => axios.post(`${config.prefix}/blocks/`, { id: id }));
   },
 
-  unblock(identifier) {
-    return wrap(() =>
-      axios.delete(`${config.prefix}/users/${identifier}/block`)
-    );
+  unblock(id) {
+    return wrap(() => axios.delete(`${config.prefix}/blocks/${id}`));
   },
 
   /**

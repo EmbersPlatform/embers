@@ -3,7 +3,7 @@ defmodule EmbersWeb.PostController do
 
   import EmbersWeb.Authorize
   import Ecto.Query
-  alias Embers.{Feed, Feed.Post}
+  alias Embers.{Feed, Feed.Post, Tags}
   alias Embers.Helpers.IdHasher
 
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
@@ -31,7 +31,14 @@ defmodule EmbersWeb.PostController do
 
         # Asynchronously create activity entries and push to realtime
         Task.Supervisor.start_child(Embers.Feed.FeedSupervisor, fn ->
-          create_activity_and_push(post)
+          handle_tags(post, params)
+
+          if(post.nesting_level == 0) do
+            create_activity_and_push(post)
+          end
+        end)
+
+        Task.Supervisor.start_child(Embers.Feed.FeedSupervisor, fn ->
           handle_mentions(post)
         end)
 
@@ -48,7 +55,8 @@ defmodule EmbersWeb.PostController do
   def show(conn, %{"id" => id}) do
     post_id = IdHasher.decode(id)
     post = Feed.get_post!(post_id)
-    render(conn, "show.json", post: post)
+
+    render(conn, "show.json", %{post: post})
   end
 
   def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
@@ -79,10 +87,36 @@ defmodule EmbersWeb.PostController do
 
   defp create_activity_and_push(post) do
     # Retrieve post creator followers
-    recipients = Feed.Subscriptions.list_followers(post.user_id)
+    followers = Feed.Subscriptions.list_followers_ids(post.user_id)
+    blocked = Feed.Subscriptions.Blocks.list_users_ids_that_blocked(post.user_id)
+    tags = Embers.Tags.list_post_tags_ids(post.id)
+
+    tags_subscriptors =
+      from(
+        sub in Feed.Subscriptions.TagSubscription,
+        where: sub.source_id in ^tags,
+        select: sub.user_id
+      )
+      |> Embers.Repo.all()
+
+    tags_blockers =
+      from(
+        block in Feed.Subscriptions.TagBlock,
+        where: block.tag_id in ^tags,
+        select: block.user_id
+      )
+      |> Embers.Repo.all()
+
+    exceptions = Enum.concat(blocked, tags_blockers)
+
+    recipients =
+      Enum.concat(followers, tags_subscriptors)
+      |> Enum.reject(fn el -> Enum.member?(exceptions, el) end)
+      |> Enum.concat([post.user_id])
+      |> Enum.uniq()
 
     # Create activity entries for the post
-    Feed.push_acitivity(post, [post.user_id | recipients])
+    Feed.push_acitivity(post, recipients)
 
     Enum.each(recipients, fn recipient ->
       # Broadcast the good news to the recipients via Channels
@@ -116,5 +150,34 @@ defmodule EmbersWeb.PostController do
         })
       end
     end)
+  end
+
+  defp handle_tags(post, params) do
+    hashtag_regex = ~r/(?<!\w)#\w+/
+
+    hashtags =
+      Regex.scan(hashtag_regex, post.body)
+      |> Enum.map(fn [txt] -> String.replace(txt, "#", "") end)
+
+    hashtags =
+      if Map.has_key?(params, "tags") and is_list(params["tags"]) do
+        Enum.concat(hashtags, params["tags"])
+      else
+        hashtags
+      end
+
+    tags_ids = Tags.bulk_create_tags(hashtags)
+
+    tag_post_list =
+      Enum.map(tags_ids, fn tag_id ->
+        %{
+          post_id: post.id,
+          tag_id: tag_id,
+          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
+          updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+        }
+      end)
+
+    Embers.Repo.insert_all(Embers.Tags.TagPost, tag_post_list)
   end
 end

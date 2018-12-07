@@ -22,7 +22,8 @@ defmodule EmbersWeb.UserView do
         followers: 0,
         friends: 0
       },
-      following: user.following
+      following: user.following,
+      blocked: user.blocked
     }
 
     view =

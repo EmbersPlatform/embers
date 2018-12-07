@@ -12,6 +12,7 @@ defmodule EmbersWeb.UserController do
   def show(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
     user = Accounts.get_populated(id)
     user = user |> Accounts.User.load_following_status(current_user.id)
+    user = user |> Accounts.User.load_blocked_status(current_user.id)
     render(conn, "show.json", user: user)
   end
 

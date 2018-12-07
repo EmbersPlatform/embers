@@ -46,9 +46,13 @@ defmodule Embers.Feed do
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
       left_join: media in assoc(post, :media),
+      left_join: reactions in assoc(post, :reactions),
+      left_join: tags in assoc(post, :tags),
       preload: [
         user: {user, meta: meta},
-        media: media
+        media: media,
+        reactions: reactions,
+        tags: tags
       ]
     )
     |> Repo.one()
@@ -179,8 +183,10 @@ defmodule Embers.Feed do
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
       left_join: media in assoc(post, :media),
+      left_join: reactions in assoc(post, :reactions),
+      left_join: tags in assoc(post, :tags),
       preload: [
-        post: {post, user: {user, meta: meta}, media: media}
+        post: {post, user: {user, meta: meta}, media: media, reactions: reactions, tags: tags}
       ]
     )
     |> Paginator.paginate(opts)

@@ -5,7 +5,7 @@ defmodule Embers.Feed.Subscriptions do
 
   import Ecto.Query
 
-  alias Embers.Feed.Subscriptions.UserSubscription
+  alias Embers.Feed.Subscriptions.{UserSubscription}
   alias Embers.Repo
   alias Embers.Paginator
 
@@ -42,9 +42,8 @@ defmodule Embers.Feed.Subscriptions do
 
   """
   def create_user_subscription(attrs \\ %{}) do
-    %UserSubscription{}
-    |> UserSubscription.changeset(attrs)
-    |> Repo.insert()
+    subscription = UserSubscription.changeset(%UserSubscription{}, attrs)
+    Repo.insert(subscription)
   end
 
   @doc """
@@ -83,7 +82,14 @@ defmodule Embers.Feed.Subscriptions do
     |> Paginator.paginate(opts)
   end
 
-  def list_mutuals(user_id) do
+  def list_followers_ids(user_id) do
+    UserSubscription
+    |> where([sub], sub.source_id == ^user_id)
+    |> select([sub], sub.user_id)
+    |> Repo.all()
+  end
+
+  def list_mutuals_ids(user_id) do
     followers =
       from(
         subscription in UserSubscription,
@@ -103,12 +109,5 @@ defmodule Embers.Feed.Subscriptions do
     intersection = MapSet.intersection(MapSet.new(followers), MapSet.new(followed))
 
     intersection
-  end
-
-  def list_followers(user_id) do
-    UserSubscription
-    |> where([sub], sub.source_id == ^user_id)
-    |> select([sub], sub.user_id)
-    |> Repo.all()
   end
 end

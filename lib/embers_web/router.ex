@@ -45,11 +45,24 @@ defmodule EmbersWeb.Router do
         delete("/friends/:id", FriendController, :destroy)
         delete("/friends/name/:name", FriendController, :destroy_by_name)
 
+        get("/blocks/ids", BlockController, :list_ids)
+        get("/blocks/list", BlockController, :list)
+        post("/blocks", BlockController, :create)
+        delete("/blocks/:id", BlockController, :destroy)
+
+        get("/subscriptions/tags/ids", TagController, :list_ids)
+        get("/subscriptions/tags/list", TagController, :list)
+        post("/subscriptions/tags", TagController, :subscribe)
+        delete("/subscriptions/tags/:id", TagController, :unsubscribe)
+
         get("/followers/:id/ids", FollowerController, :list_ids)
         get("/followers/:id/list", FollowerController, :list)
 
         resources("/posts", PostController, only: [:show, :create, :delete])
         get("/posts/:id/replies", PostController, :show_replies)
+
+        post("/posts/:post_id/reaction/:name", ReactionController, :create)
+        delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
 
         get("/feed", FeedController, :timeline)
         get("/feed/public", FeedController, :get_public_feed)

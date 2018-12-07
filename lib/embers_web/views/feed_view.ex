@@ -4,7 +4,13 @@ defmodule EmbersWeb.FeedView do
 
   def render("timeline.json", %{entries: activities} = metadata) do
     %{
-      items: render_many(activities, __MODULE__, "activity.json", as: :activity),
+      items:
+        Enum.map(activities, fn activity ->
+          render(__MODULE__, "activity.json", %{
+            activity: activity,
+            current_user: metadata.current_user
+          })
+        end),
       next: metadata.next,
       last_page: metadata.last_page
     }
@@ -12,13 +18,13 @@ defmodule EmbersWeb.FeedView do
 
   def render("posts.json", %{entries: posts} = metadata) do
     %{
-      items: render_many(posts, EmbersWeb.PostView, "post.json", as: :post),
+      items: render_many(posts, EmbersWeb.PostView, "show.json", as: :post),
       next: metadata.next,
       last_page: metadata.last_page
     }
   end
 
-  def render("activity.json", %{activity: activity}) do
-    render_one(activity.post, PostView, "post.json")
+  def render("activity.json", %{activity: activity, current_user: current_user}) do
+    render(PostView, "show.json", %{post: activity.post, current_user: current_user})
   end
 end
