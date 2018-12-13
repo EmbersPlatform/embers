@@ -118,7 +118,11 @@ defmodule EmbersWeb.PostController do
     # Create activity entries for the post
     Feed.push_acitivity(post, recipients)
 
-    Enum.each(recipients, fn recipient ->
+    recipients
+    |> IO.inspect()
+    |> Enum.reject(fn recipient -> recipient == post.user_id end)
+    |> IO.inspect()
+    |> Enum.each(fn recipient ->
       # Broadcast the good news to the recipients via Channels
       hashed_id = IdHasher.encode(recipient)
       encoded_post = EmbersWeb.PostView.render("post.json", %{post: post})
@@ -140,15 +144,15 @@ defmodule EmbersWeb.PostController do
       )
       |> Embers.Repo.all()
 
-    Enum.each(recipients, fn recipient ->
+    recipients
+    |> Enum.reject(fn recipient -> recipient.id == post.user_id end)
+    |> Enum.each(fn recipient ->
       hashed_id = IdHasher.encode(recipient)
 
-      if recipient != post.user_id do
-        EmbersWeb.Endpoint.broadcast!("user:#{hashed_id}", "mention", %{
-          from: post.user.canonical,
-          source: IdHasher.encode(post.id)
-        })
-      end
+      EmbersWeb.Endpoint.broadcast!("user:#{hashed_id}", "mention", %{
+        from: post.user.canonical,
+        source: IdHasher.encode(post.id)
+      })
     end)
   end
 

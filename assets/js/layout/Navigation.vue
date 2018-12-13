@@ -77,7 +77,7 @@
 
 <script>
 import auth from "../api/auth";
-import notifications from "../components/Notifications.vue";
+import notifications from "../components/Notifications";
 import { mapGetters } from "vuex";
 import _ from "lodash";
 

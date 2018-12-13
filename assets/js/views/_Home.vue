@@ -1,36 +1,36 @@
 <template>
-	<div id="board">
-		<div id="heading">
-			<Top></Top>
-		</div>
-		<div id="wrapper">
-			<SideModule></SideModule>
-			<div id="content" data-layout-type="single-column">
-				<ToolBox v-if="auth.loggedIn()"></ToolBox>
-				<div id="filtering" :class="{'open': open}">
-					<div class="controls">
-						<button class="filter-button" @click.prevent="refreshFeed">
-							<i class="fas fa-sync-alt"></i>&nbsp;Actualizar
-						</button>
-					</div>
-				</div>
-				<Feed></Feed>
-			</div>
-		</div>
-	</div>
+  <div id="board">
+    <div id="heading">
+      <Top></Top>
+    </div>
+    <div id="wrapper">
+      <SideModule v-if="$mq == 'lg'"></SideModule>
+      <div id="content" data-layout-type="single-column">
+        <ToolBox v-if="auth.loggedIn()"></ToolBox>
+        <div id="home-controls">
+          <div class="controls">
+            <button class="filter-button" @click.prevent="refreshFeed">
+              <i class="fas fa-sync-alt"></i>&nbsp;Actualizar
+            </button>
+          </div>
+        </div>
+        <Feed></Feed>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import _ from "lodash";
-
 import auth from "../auth";
-import formatter from "../helpers/formatter";
+import formatter from "@/lib/formatter";
 
-import ToolBox from "../components/ToolBox/_ToolBox.vue";
-import Feed from "../components/Feed.vue";
-import CheckBox from "../components/inputCheckbox.vue";
-import SideModule from "../components/SideModules/Default.vue";
-import Top from "../components/Top.vue";
+import ToolBox from "../components/ToolBox/_ToolBox";
+import Feed from "../components/Feed";
+import CheckBox from "../components/inputCheckbox";
+import SideModule from "../components/SideModules/Default";
+import Top from "../components/Top";
+
+import EventBus from "../lib/event_bus";
 
 export default {
   name: "Home",
@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       auth,
-      open: false
+      new_posts: []
     };
   },
 
@@ -60,11 +60,6 @@ export default {
     refreshFeed() {
       this.$root.$emit("refresh_feed");
     }
-  },
-  created() {
-    this.$root.$on("new_activity", () => {
-      alert("new_activity");
-    });
   },
   /**
    * Triggered before this component instance is destroyed

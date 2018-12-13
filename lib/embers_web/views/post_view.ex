@@ -17,6 +17,7 @@ defmodule EmbersWeb.PostView do
     view = %{
       id: IdHasher.encode(post.id),
       body: post.body,
+      created_at: post.inserted_at,
       stats: %{
         replies: post.replies_count,
         shares: post.shares_count

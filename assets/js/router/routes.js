@@ -1,45 +1,45 @@
 import auth from "../auth";
 
 //inicia import INSIDE APP
-import _Home from "../views/_Home.vue";
-import _Discover from "../views/_Discover.vue";
-import _Subscriptions from "../views/_Subscriptions.vue";
-import _Search from "../views/_Search.vue";
-import _Chat from "../views/_Chat.vue";
-import _Favorites from "../views/_Favorites.vue";
+import _Home from "../views/_Home";
+import _Discover from "../views/_Discover";
+import _Subscriptions from "../views/_Subscriptions";
+import _Search from "../views/_Search";
+import _Chat from "../views/_Chat";
+import _Favorites from "../views/_Favorites";
 
-import _Settings from "../views/_Settings.vue";
-import AppsSettings from "../views/Settings/Apps.vue";
-import AppearanceSettings from "../views/Settings/Appearance.vue";
-import ContentSettings from "../views/Settings/Content.vue";
-import PrivacySettings from "../views/Settings/Privacy.vue";
-import ProfileSettings from "../views/Settings/Profile.vue";
-import SecuritySettings from "../views/Settings/Security.vue";
+import _Settings from "../views/_Settings";
+import AppsSettings from "../views/Settings/Apps";
+import AppearanceSettings from "../views/Settings/Appearance";
+import ContentSettings from "../views/Settings/Content";
+import PrivacySettings from "../views/Settings/Privacy";
+import ProfileSettings from "../views/Settings/Profile";
+import SecuritySettings from "../views/Settings/Security";
 
-import _UserProfile from "../views/_UserProfile.vue";
-import Profile from "../views/UserProfile/Profile.vue";
-import Post from "../views/UserProfile/Post.vue";
+import _UserProfile from "../views/_UserProfile";
+import Profile from "../views/UserProfile/Profile";
+import Post from "../views/UserProfile/Post";
 
-import SB_Default from "../views/Sidebar/Default.vue";
-import SB_Home from "../views/Sidebar/Home.vue";
-import SB_Discover from "../views/Sidebar/Discover.vue";
-import SB_Profile from "../views/Sidebar/UserProfile.vue";
-import SB_Settings from "../views/Sidebar/Settings.vue";
-import SB_Chat from "../views/Sidebar/Chat.vue";
-import SB_Subscriptions from "../views/Sidebar/Subscriptions.vue";
+import SB_Default from "../views/Sidebar/Default";
+import SB_Home from "../views/Sidebar/Home";
+import SB_Discover from "../views/Sidebar/Discover";
+import SB_Profile from "../views/Sidebar/UserProfile";
+import SB_Settings from "../views/Sidebar/Settings";
+import SB_Chat from "../views/Sidebar/Chat";
+import SB_Subscriptions from "../views/Sidebar/Subscriptions";
 
-import SUBS_FollowingUsers from "../views/Subscriptions/FollowingUsers.vue";
-import SUBS_Tags from "../views/Subscriptions/Tags.vue";
-import SUBS_Blocks from "../views/Subscriptions/Blocks.vue";
+import SUBS_FollowingUsers from "../views/Subscriptions/FollowingUsers";
+import SUBS_Tags from "../views/Subscriptions/Tags";
+import SUBS_Blocks from "../views/Subscriptions/Blocks";
 //termina import INSIDE APP
 
 //inicia import OUTSIDE APP
-import Register from "../views/Register.vue";
-import PasswordReset from "../views/PasswordReset.vue";
-import Error404 from "../views/404.vue";
-import Rules from "../views/Rules.vue";
-import FAQ from "../views/FAQ.vue";
-import Acknowledgment from "../views/Acknowledgment.vue";
+import Register from "../views/Register";
+import PasswordReset from "../views/PasswordReset";
+import Error404 from "../views/404";
+import Rules from "../views/Rules";
+import FAQ from "../views/FAQ";
+import Acknowledgment from "../views/Acknowledgment";
 //termina import OUTSIDE APP
 
 /**

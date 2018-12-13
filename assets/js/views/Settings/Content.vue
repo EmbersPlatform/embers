@@ -25,7 +25,7 @@
 
 <script>
 	import user from '../../api/user';
-	import Switch from '../../components/inputSwitch.vue';
+	import Switch from '../../components/inputSwitch';
 
 	export default {
 		components: {

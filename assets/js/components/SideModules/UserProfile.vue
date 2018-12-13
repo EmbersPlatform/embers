@@ -1,21 +1,25 @@
 <template>
-	<div id="secondary">
-		<h3>acerca de mi</h3>
-		<p class="bio" v-html="formattedBio"></p>
-		<template v-if="$store.getters.user">
-			<h3>seguidores</h3>
-			<p>
-				<avatar v-for="follower in followers" :key="follower.id" :avatar="follower.avatar.small" :user="follower.username" :data-tip="follower.username" data-tip-position="top" data-tip-text></avatar>
-			</p>
-		</template>
-	</div>
+  <div id="secondary">
+    <h3>acerca de mi</h3>
+    <p class="bio" v-html="formattedBio"></p>
+    <h3>seguidores</h3>
+    <avatar
+      v-for="follower in followers"
+      :key="follower.id"
+      :avatar="follower.avatar.small"
+      :user="follower.username"
+      :data-tip="follower.username"
+      data-tip-position="top"
+      data-tip-text
+    />
+  </div>
 </template>
 
 <script>
 import user from "../../api/user";
 
-import formatter from "../../helpers/formatter";
-import avatar from "../avatar";
+import formatter from "@/lib/formatter";
+import avatar from "@/components/Avatar";
 
 export default {
   components: { avatar },
@@ -23,8 +27,7 @@ export default {
   data() {
     return {
       loading: false,
-      followers: null,
-      followed: null
+      followers: null
     };
   },
   computed: {
@@ -36,14 +39,20 @@ export default {
     }
   },
   methods: {
-    fetchUser() {
-      user.getFollowing({ id: this.user.id }).then(res => {
-        this.followers = res.friends.slice(0, 12);
-      });
+    fetch_followers() {
+      this.loading = true;
+      user
+        .getFollowing({ id: this.user.id })
+        .then(res => {
+          this.followers = res.friends;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   },
   created() {
-    this.fetchUser();
+    this.fetch_followers();
   }
 };
 </script>

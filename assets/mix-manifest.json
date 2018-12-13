@@ -1,7 +1,7 @@
 {
-  "../priv/static/js/app.js": "../priv/static/js/app.js",
-  "../priv/static/css/main.css": "../priv/static/css/main.css",
-  "../priv/static/css/landing.css": "../priv/static/css/landing.css",
-  "../priv/static/css/out.css": "../priv/static/css/out.css",
-  "../priv/static/js/landing/landing.js": "../priv/static/js/landing/landing.js"
+    "/../priv/static/js/app.js": "/../priv/static/js/app.js",
+    "/../priv/static/css/main.css": "/../priv/static/css/main.css",
+    "/../priv/static/css/landing.css": "/../priv/static/css/landing.css",
+    "/../priv/static/css/out.css": "/../priv/static/css/out.css",
+    "/../priv/static/js/landing/landing.js": "/../priv/static/js/landing/landing.js"
 }

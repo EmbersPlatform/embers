@@ -1,57 +1,125 @@
 <template>
-	<div class="toolbox" :class="{'tool-box-open': canShowEditor, 'renderbox': status.loading}" data-renderbox-message="Publicando...">
-		<template v-if="!status.loading">
-			<Editor type="toolbox" @update="updateBody" @paste="handlePaste" @focus="openEditor" :attachment="showAttachment" :class="{'compressed': !canShowEditor, 'big-text': bigTextBody}" data-editor-style="toolbox" rel="editor"></Editor>
-			<div class="tags-wrapper tool" :class="{'compact':!canPublish || status.isAddingAttachment || !canShowEditor}">
-				<input type="text" placeholder="Tags separados por espacios" v-model="post.tags" />
-			</div>
-			<div class="renderbox" data-renderbox-message="Procesando..." v-if="status.isAddingAttachment"></div>
-			<template v-if="showAttachment">
-				<button class="remove-attachment" @click.prevent="removeAttachment" data-tip="Quitar adjunto" data-tip-position="left" data-tip-text>
-					<i class="fas fa-times"></i>
-				</button>
-				<VideoEmbed v-if="post.attachment.type == 'video'" :video="post.attachment" class="tool"></VideoEmbed>
-				<LinkEmbed v-if="post.attachment.type == 'link'" :link="post.attachment" class="tool"></LinkEmbed>
-				<AudioPlayer v-if="post.attachment.type == 'audio'" :url="post.attachment.url" class="tool"></AudioPlayer>
-				<div v-if="post.attachment.type == 'image'" class="multimedia tool">
-					<span class="media image">
-						<img :src="post.attachment.url">
-					</span>
-				</div>
-			</template>
-			<template v-else>
-				<AudioRecorder v-if="canShowAudioRecorder" @uploaded="receivedAttachment"></AudioRecorder>
-			</template>
+  <div
+    class="toolbox"
+    :class="{'tool-box-open': canShowEditor, 'renderbox': status.loading}"
+    data-renderbox-message="Publicando..."
+  >
+    <template v-if="!status.loading">
+      <Editor
+        type="toolbox"
+        @update="updateBody"
+        @paste="handlePaste"
+        @focus="openEditor"
+        :attachment="showAttachment"
+        :class="{'compressed': !canShowEditor, 'big-text': bigTextBody}"
+        data-editor-style="toolbox"
+        rel="editor"
+      ></Editor>
+      <div
+        class="tags-wrapper tool"
+        :class="{'compact':!canPublish || status.isAddingAttachment || !canShowEditor}"
+      >
+        <input type="text" placeholder="Tags separados por espacios" v-model="post.tags">
+      </div>
+      <div
+        class="renderbox"
+        data-renderbox-message="Procesando..."
+        v-if="status.isAddingAttachment"
+      ></div>
+      <template v-if="showAttachment">
+        <button
+          class="remove-attachment"
+          @click.prevent="removeAttachment"
+          data-tip="Quitar adjunto"
+          data-tip-position="left"
+          data-tip-text
+        >
+          <i class="fas fa-times"></i>
+        </button>
+        <VideoEmbed v-if="post.attachment.type == 'video'" :video="post.attachment" class="tool"></VideoEmbed>
+        <LinkEmbed v-if="post.attachment.type == 'link'" :link="post.attachment" class="tool"></LinkEmbed>
+        <AudioPlayer v-if="post.attachment.type == 'audio'" :url="post.attachment.url" class="tool"></AudioPlayer>
+        <div v-if="post.attachment.type == 'image'" class="multimedia tool">
+          <span class="media image">
+            <img :src="post.attachment.url">
+          </span>
+        </div>
+      </template>
+      <template v-else>
+        <AudioRecorder v-if="canShowAudioRecorder" @uploaded="receivedAttachment"></AudioRecorder>
+      </template>
 
       <div class="attachments-zone tool">
         <div class="attachment" v-for="attachment in post.attachments" :key="attachment.id">
-          <img :src="`/media/image/${attachment.url}`" />
+          <img :src="`/media/image/${attachment.url}`">
           <span class="remove_attachment">X</span>
         </div>
       </div>
 
-			<div class="controls tool" v-if="canShowEditor">
-				<div class="m_block">
-					<input-switch class="_line" value="text" v-model="post.nsfw" :checked="post.nsfw">NSFW</input-switch>
-					<template v-if="!hasAttachment">
-						<button :disabled="status.isAddingAttachment || (canPublish && showAttachment)" @click.prevent="triggerUpload" class="button" data-button-size="medium" data-button-font="medium" data-tip="Subir imagen" data-tip-position="left" data-tip-text>
-							<i class="far fa-image"></i>
-						</button>
-						<button :disabled="status.isAddingAttachment || (canPublish && showAttachment)" @click.prevent="toggleAudioRecording" class="button" data-button-size="medium" data-button-font="medium" data-tip="Grabar audio" data-tip-position="left" data-tip-text>
-							<i class="fas fa-microphone"></i>
-						</button>
-						<form v-if="!status.isAddingAttachment" ref="imageUploadForm" method="post" enctype="multipart/form-data" class="hidden">
-							<input type="file" name="file" accept="image/*" ref="imageUploadInput" @change="uploadImage">
-						</form>
-					</template>
-				</div>
-				<div class="m_block">
-					<button @click.prevent="close" class="button" data-button-size="medium" data-button-font="medium">cancelar</button>
-					<button :disabled="!canPublish" @click.prevent="addPost" class="button" data-button-size="medium" data-button-font="medium" data-button-important>publicar</button>
-				</div>
-			</div>
-		</template>
-	</div>
+      <div class="controls tool" v-if="canShowEditor">
+        <div class="m_block">
+          <input-switch class="_line" value="text" v-model="post.nsfw" :checked="post.nsfw">NSFW</input-switch>
+          <template v-if="!hasAttachment">
+            <button
+              :disabled="status.isAddingAttachment || (canPublish && showAttachment)"
+              @click.prevent="triggerUpload"
+              class="button"
+              data-button-size="medium"
+              data-button-font="medium"
+              data-tip="Subir imagen"
+              data-tip-position="left"
+              data-tip-text
+            >
+              <i class="far fa-image"></i>
+            </button>
+            <button
+              :disabled="status.isAddingAttachment || (canPublish && showAttachment)"
+              @click.prevent="toggleAudioRecording"
+              class="button"
+              data-button-size="medium"
+              data-button-font="medium"
+              data-tip="Grabar audio"
+              data-tip-position="left"
+              data-tip-text
+            >
+              <i class="fas fa-microphone"></i>
+            </button>
+            <form
+              v-if="!status.isAddingAttachment"
+              ref="imageUploadForm"
+              method="post"
+              enctype="multipart/form-data"
+              class="hidden"
+            >
+              <input
+                type="file"
+                name="file"
+                accept="image/*"
+                ref="imageUploadInput"
+                @change="uploadImage"
+              >
+            </form>
+          </template>
+        </div>
+        <div class="m_block">
+          <button
+            @click.prevent="close"
+            class="button"
+            data-button-size="medium"
+            data-button-font="medium"
+          >cancelar</button>
+          <button
+            :disabled="!canPublish"
+            @click.prevent="addPost"
+            class="button"
+            data-button-size="medium"
+            data-button-font="medium"
+            data-button-important
+          >publicar</button>
+        </div>
+      </div>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -60,7 +128,6 @@ import axios from "axios";
  * Import utilities
  */
 import moment from "moment";
-import helpers from "../../helpers";
 
 /**
  * Import API interfaces
@@ -77,11 +144,11 @@ import AudioRecorder from "./AudioRecorder";
 /**
  * Import additional components
  */
-import Switch from "../inputSwitch.vue";
+import Switch from "../inputSwitch";
 
-import VideoEmbed from "../Card/VideoEmbed.vue";
-import LinkEmbed from "../Card/LinkEmbed.vue";
-import AudioPlayer from "../Card/AudioPlayer.vue";
+import VideoEmbed from "../Card/VideoEmbed";
+import LinkEmbed from "../Card/LinkEmbed";
+import AudioPlayer from "../Card/AudioPlayer";
 
 const initialData = function() {
   return {

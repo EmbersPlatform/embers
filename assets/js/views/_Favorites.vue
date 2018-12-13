@@ -15,8 +15,8 @@
 </template>
 <script>
 	import auth from '../auth';
-	import Feed from '../components/Feed.vue';
-	import Top from '../components/Top.vue';
+	import Feed from '../components/Feed';
+	import Top from '../components/Top';
 
 	export default {
 		name: 'Discover',

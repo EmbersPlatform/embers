@@ -1,26 +1,38 @@
 <template>
-	<div id="content" data-layout-type="chat" ref="conversationDiv" :class="{'renderbox' : isLoading}">
-		<template v-if="!isLoading">
-			<button v-if="!lastPage" @click="loadMore" class="button" data-button-size="medium" data-button-font="little" data-button-uppercase :disabled="isLoadingMore">
-				{{!isLoadingMore ? 'Cargar mensajes antiguos' : 'Cargando más mensajes...'}}
-			</button>
-			 <div class="message" v-for="messages in messageBlocks" :key="messages">
-				<avatar :avatar="getMessageUser(messages[0].user_id).avatar.small"></avatar>
-				<div class="message-content">
-					<strong class="username">{{getMessageUser(messages[0].user_id).name}}</strong> <small>{{$moment.utc(messages[0].created_at).local().calendar()}}</small>
-					<p v-html="formatMessage(message.content)" v-for="message in messages" :key="message"></p>
-				</div>
-			</div>
-		</template>
-	</div>
+  <div
+    id="content"
+    data-layout-type="chat"
+    ref="conversationDiv"
+    :class="{'renderbox' : isLoading}"
+  >
+    <template v-if="!isLoading">
+      <button
+        v-if="!lastPage"
+        @click="loadMore"
+        class="button"
+        data-button-size="medium"
+        data-button-font="little"
+        data-button-uppercase
+        :disabled="isLoadingMore"
+      >{{!isLoadingMore ? 'Cargar mensajes antiguos' : 'Cargando más mensajes...'}}</button>
+      <div class="message" v-for="messages in messageBlocks" :key="messages">
+        <avatar :avatar="getMessageUser(messages[0].user_id).avatar.small"></avatar>
+        <div class="message-content">
+          <strong class="username">{{getMessageUser(messages[0].user_id).name}}</strong>
+          <small>{{$moment.utc(messages[0].created_at).local().calendar()}}</small>
+          <p v-html="formatMessage(message.content)" v-for="message in messages" :key="message"></p>
+        </div>
+      </div>
+    </template>
+  </div>
 </template>
 <script>
 import chatAPI from "../../api/conversation";
 import userAPI from "../../api/user";
 
-import avatar from "../../components/avatar";
+import avatar from "@/components/Avatar";
 
-import formatter from "../../helpers/formatter";
+import formatter from "@/lib/formatter";
 
 import _ from "lodash";
 

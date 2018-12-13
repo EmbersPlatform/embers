@@ -23,7 +23,7 @@
 	</div>
 </template>
 <script>
-import Top from "../components/Top.vue";
+import Top from "../components/Top";
 import ChatConversation from "./Chat/ChatConversation";
 import NewChatModal from "./Chat/NewChatModal";
 import Editor from "../components/Editor";

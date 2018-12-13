@@ -56,9 +56,9 @@
 </template>
 
 <script>
-import Navigation from "./layout/Navigation.vue";
-import Main from "./layout/Main.vue";
-import Sticky from "./layout/Sticky.vue";
+import Navigation from "./layout/Navigation";
+import Main from "./layout/Main";
+import Sticky from "./layout/Sticky";
 import { mapGetters } from "vuex";
 import userResource from "./api/user";
 import _ from "lodash";
@@ -69,7 +69,9 @@ import RulesModal from "./components/Modals/RulesModal";
 import Notification from "./components/Notification";
 
 import { Presence } from "phoenix";
-import socket from "./socket";
+import socket from "./lib/socket";
+
+import EventBus from "./lib/event_bus";
 
 export default {
   components: {
@@ -89,9 +91,7 @@ export default {
       blurToolBox: false,
       blurSidebar: false,
       openSidebar: false,
-      fixed: false,
-
-      presences: []
+      fixed: false
     };
   },
   methods: {
@@ -100,8 +100,8 @@ export default {
     },
     refreshFeed() {
       this.toTop();
-      this.$root.$emit("refresh_feed");
-      this.newActivity = 0;
+      this.$store.dispatch("prepend_new_posts");
+      this.$store.dispatch("resetNewActivity");
     }
   },
   computed: {
@@ -111,7 +111,7 @@ export default {
       title: "title",
       newActivity: "newActivity"
     }),
-    ...mapGetters("chat", ["new_message"]),
+    ...mapGetters("chat", ["new_message", "online_friends"]),
     isApp: function() {
       switch (this.$route.name) {
         case "rules":
@@ -195,54 +195,18 @@ export default {
     });
 
     let user_id = window.appData.user.id;
+
     let feed_channel = socket.channel(`feed:${user_id}`, {});
     feed_channel.join();
     feed_channel.on("new_activity", payload => {
-      this.$root.$emit("new_activity");
+      let post = payload.post;
+      post.new = true;
+      EventBus.$emit("new_activity", post);
     });
 
-    let user_channel = socket.channel(`user:${user_id}`, {});
-    user_channel.join();
-
-    user_channel.on("presence_state", state => {
-      this.presences = Object.keys(Presence.syncState({}, state)).map(key => {
-        return state[key].metas[0];
-      });
-      this.$root.$emit("updated_presences", this.presences);
-    });
-    user_channel.on("presence_diff", diff => {
-      this.presences = Object.keys(Presence.syncDiff(this.presences, diff)).map(
-        key => {
-          return state[key].metas[0];
-        }
-      );
-      this.$root.$emit("updated_presences", this.presences);
-    });
-
-    // Handle messages that are sent to topics that don't have a client side representation
-    socket.onMessage(({ topic, event, payload }) => {
-      if (event == "presence_diff" && /^user_presence:\d+$/.test(topic)) {
-        // this.presences = Presence.syncDiff(this.presences, payload);
-        let presences = this.presences;
-
-        let joins = Presence.list(payload.joins, (_, user) => {
-          return user.metas[0];
-        });
-        let leaves = Presence.list(payload.leaves, (_, user) => {
-          return user.metas[0];
-        });
-
-        if (joins.length > 0) {
-          console.log("before union", joins, this.presences);
-          this.presences = _.uniqBy(_.union(this.presences, joins), "username");
-          console.log("unioned", this.presences);
-        }
-        if (leaves.length > 0) {
-          this.presences = _.differenceBy(this.presences, leaves, "username");
-        }
-
-        this.$root.$emit("updated_presences", this.presences);
-      }
+    EventBus.$on("new_activity", post => {
+      this.$store.dispatch("add_new_post", post);
+      this.$store.dispatch("newActivity");
     });
   },
   mounted() {

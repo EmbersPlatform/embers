@@ -13,7 +13,7 @@
 </template>
 
 <script>
-	import Comment from './Comment.vue';
+	import Comment from './Comment';
 
 	export default {
 		props: ['postId', 'comments', 'bottomComments', 'lastPage', 'loading'],

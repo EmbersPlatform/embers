@@ -1,7 +1,7 @@
 <template>
   <li class="nav_ mutuals">
     <ul :class="{'renderbox' : loading}">
-      <li v-for="user in orderedMutuals" class="n_item" :key="user.id">
+      <li v-for="user in ordered_friends" class="n_item" :key="user.id">
         <router-link :to="`/chat/${user.id}`" active-class="active" class="n_i_wrap">
           <avatar :avatar="user.avatar.small" status="active"></avatar>
           <span class="n_i_w_content u_name">{{ user.username }}</span>
@@ -16,8 +16,8 @@
       <li
         key="no-results"
         class="no-results"
-        v-if="userMutuals.length === 0 && !loading"
-        v-html="formattedNoMutuals"
+        v-if="online_friends.length === 0 && !loading"
+        v-html="formatted_no_mutuals"
       ></li>
     </ul>
   </li>
@@ -27,8 +27,8 @@
 import { mapGetters } from "vuex";
 import _ from "lodash";
 
-import formatter from "../helpers/formatter";
-import avatar from "./avatar";
+import formatter from "@/lib/formatter";
+import avatar from "@/components/Avatar";
 
 export default {
   name: "Mutuals",
@@ -39,16 +39,16 @@ export default {
    * Computed data
    */
   computed: {
-    ...mapGetters(["userMutuals"]),
+    ...mapGetters("chat", ["online_friends"]),
 
     /**
      * Text to display when the user's no mutuals
      */
-    formattedNoMutuals() {
+    formatted_no_friends() {
       return formatter.format("¡Hora de hacer amigos! :metal:");
     },
-    orderedMutuals() {
-      return _.orderBy(this.mutuals, ["online_at"], ["desc"]);
+    ordered_friends() {
+      return _.orderBy(this.online_friends, ["online_at"], ["desc"]);
     }
   },
 
@@ -58,18 +58,8 @@ export default {
    */
   data() {
     return {
-      loading: false,
-      mutuals: []
+      loading: false
     };
-  },
-
-  /**
-   * Triggered when this component is created
-   */
-  created() {
-    this.$root.$on("updated_presences", presences => {
-      this.mutuals = presences;
-    });
   }
 };
 </script>

@@ -48,7 +48,7 @@
 
 <script>
 import axios from "axios";
-import Mutuals from "../../components/Mutuals.vue";
+import Mutuals from "../../components/Mutuals";
 export default {
   components: { Mutuals },
   data() {

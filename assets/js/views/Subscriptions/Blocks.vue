@@ -1,68 +1,93 @@
 <template>
-<div id="wrapper" data-layout-type="column">
-  <div class="block" data-layout-type="column">
-    <h2>Bloqueos</h2>
-  </div>
-  <div class="block" data-layout-type="column" :class="{'renderbox': showRenderbox}" :data-renderbox-message="renderboxMessage">
-    <div class="user-row" v-for='user in users' :key='user.id'>
-      <router-link :to="`/@${user.name}`" class="u_name" :data-badge="`${user.badges[0]}`">{{ user.name }}</router-link>
-      <button v-if="user.blocked" @click.prevent="unblock(user)" class="button" data-button-size="medium" data-button-font="big" data-button-unmask data-button-dark>
+  <div id="wrapper" data-layout-type="column">
+    <div class="block" data-layout-type="column">
+      <h2>Bloqueos</h2>
+    </div>
+    <div
+      class="block"
+      data-layout-type="column"
+      :class="{'renderbox': showRenderbox}"
+      :data-renderbox-message="renderboxMessage"
+    >
+      <div class="user-row" v-for="user in users" :key="user.id">
+        <router-link
+          :to="`/@${user.name}`"
+          class="u_name"
+          :data-badge="`${user.badges[0]}`"
+        >{{ user.name }}</router-link>
+        <button
+          v-if="user.blocked"
+          @click.prevent="unblock(user)"
+          class="button"
+          data-button-size="medium"
+          data-button-font="big"
+          data-button-unmask
+          data-button-dark
+        >
           <i class="zmdi zmdi-check"></i>
-        &nbsp;Desbloquear
-      </button>
-      <button v-else @click.prevent="block(user)" class="button" data-button-size="medium" data-button-font="big" data-button-unmask data-button-important>
-        <i class="zmdi zmdi-minus-circle"></i>&nbsp;Bloquear
-      </button>
+          &nbsp;Desbloquear
+        </button>
+        <button
+          v-else
+          @click.prevent="block(user)"
+          class="button"
+          data-button-size="medium"
+          data-button-font="big"
+          data-button-unmask
+          data-button-important
+        >
+          <i class="zmdi zmdi-minus-circle"></i>&nbsp;Bloquear
+        </button>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
-import _ from 'lodash';
-import userAPI from '../../api/user';
+import _ from "lodash";
+import userAPI from "../../api/user";
 
 export default {
-  name: 'Blocks',
+  name: "Blocks",
   data() {
     return {
       users: null,
-      loading: true,
-    }
+      loading: true
+    };
   },
   computed: {
     showRenderbox() {
       return this.loading || this.users.length === 0;
     },
     renderboxMessage() {
-      if(this.loading) return 'Cargando...';
-      if(this.users.length === 0) return 'No has bloqueado a nadie. ¡Hurra!'
+      if (this.loading) return "Cargando...";
+      if (this.users.length === 0) return "No has bloqueado a nadie. ¡Hurra!";
     }
   },
   methods: {
     block(user) {
-      userAPI.block(user.id)
-        .then(res => {
-          let index = _.findIndex(this.users, {id: user.id});
-          _.set(this.users[index], 'blocked', true);
-        });
+      userAPI.block(user.id).then(res => {
+        let index = _.findIndex(this.users, { id: user.id });
+        _.set(this.users[index], "blocked", true);
+      });
     },
     unblock(user) {
-      userAPI.unblock(user.id)
-        .then(res => {
-          let index = _.findIndex(this.users, {id: user.id});
-          _.set(this.users[index], 'blocked', false);
-        });
+      userAPI.unblock(user.id).then(res => {
+        let index = _.findIndex(this.users, { id: user.id });
+        _.set(this.users[index], "blocked", false);
+      });
     },
     fetchUsers() {
       this.loading = true;
-      userAPI.getBlocked()
+      userAPI
+        .getBlocked()
         .then(res => {
-          if(this._isDestroyed || this._isBeingDestroyed){
-            return
+          if (this._inactive) {
+            return;
           }
           this.users = res;
-        }).finally(() => {
+        })
+        .finally(() => {
           this.loading = false;
         });
     }
@@ -71,5 +96,5 @@ export default {
   created() {
     this.fetchUsers();
   }
-}
+};
 </script>

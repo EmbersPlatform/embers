@@ -1,15 +1,25 @@
 <template>
   <div id="main" :data-layout-type="isChat" :data-vh-issue="isChromeMobile && isChat">
-    <aside v-if="user" id="sidebar" ref="trg_sidebar" @click="sidebarClick">
-      <router-view name="sidebar" v-if="isSidebar"></router-view>
+    <aside v-if="user && isSidebar" id="sidebar" ref="trg_sidebar" @click="sidebarClick">
+      <router-view name="sidebar"></router-view>
     </aside>
     <router-view></router-view>
+    <div id="presence">
+      <avatar
+        v-for="user in online_friends"
+        :key="user.id"
+        :user="user.username"
+        :avatar="user.avatar.small"
+      />
+    </div>
   </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
+import Avatar from "@/components/Avatar";
 
 export default {
+  components: { Avatar },
   data() {
     return {
       isSidebar: false,
@@ -66,6 +76,7 @@ export default {
     ...mapGetters({
       user: "user"
     }),
+    ...mapGetters("chat", ["online_friends"]),
     noSidebar() {
       switch (this.$route.matched[0].name) {
         case "search":

@@ -2,7 +2,7 @@
   <article
     v-if="show"
     class="card"
-    :class="{'nsfw': post.nsfw, 'locked' : locked}"
+    :class="{'nsfw': post.nsfw, 'locked' : locked, 'new': post.new}"
     :data-card-size="size"
     focusable
     tabindex="-1"
@@ -292,13 +292,12 @@ import post from "../../api/post";
 import user from "../../api/user";
 import attachment from "../../api/attachment";
 
-import VideoEmbed from "./VideoEmbed.vue";
-import LinkEmbed from "./LinkEmbed.vue";
-import AudioPlayer from "./AudioPlayer.vue";
+import VideoEmbed from "./VideoEmbed";
+import LinkEmbed from "./LinkEmbed";
+import AudioPlayer from "./AudioPlayer";
 
-import helpers from "../../helpers";
-import formatter from "../../helpers/formatter";
-import avatar from "../avatar";
+import formatter from "@/lib/formatter";
+import avatar from "@/components/Avatar";
 
 import ReactionsModal from "../ReactionsModal/ReactionsModal";
 
@@ -369,13 +368,6 @@ export default {
         return false;
       }
       return this.post.user.id === this.$store.getters.user.id;
-    },
-
-    /**
-     * Returns the numeric ID for this post
-     */
-    id() {
-      return helpers.base64int.encode(this.post.id);
     },
 
     /**

@@ -1,24 +1,36 @@
 <template>
-	<div class="new-comment">
-		<div class="comment">
-			<header class="header">
-				<avatar :avatar="$store.getters.user.avatar.small"></avatar>
-				<Editor :show="canShowEditor" type="comment" @update="updateBody" data-editor-style="normal"></Editor>
-			</header>
-			<div class="controls">
-				<button :disabled="!canPublish" @click.prevent="postComment" class="button" data-button-size="medium" data-button-font="medium" data-button-important>comentar</button>
-			</div>
-		</div>
-	</div>
+  <div class="new-comment">
+    <div class="comment">
+      <header class="header">
+        <avatar :avatar="$store.getters.user.avatar.small"></avatar>
+        <Editor
+          :show="canShowEditor"
+          type="comment"
+          @update="updateBody"
+          data-editor-style="normal"
+        ></Editor>
+      </header>
+      <div class="controls">
+        <button
+          :disabled="!canPublish"
+          @click.prevent="postComment"
+          class="button"
+          data-button-size="medium"
+          data-button-font="medium"
+          data-button-important
+        >comentar</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import post from "../../api/post";
 import comment from "../../api/comment";
-import formatter from "../../helpers/formatter";
-import textSelectionEdit from "../../helpers/textSelectionEdit";
-import EmojiPicker from "./../EmojiPicker.vue";
-import avatar from "../avatar.vue";
+import formatter from "@/lib/formatter";
+import textSelectionEdit from "@/lib/textSelectionEdit";
+import EmojiPicker from "./../EmojiPicker";
+import avatar from "@/components/Avatar";
 import Editor from "../Editor";
 
 export default {

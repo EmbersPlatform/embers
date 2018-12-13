@@ -1,11 +1,18 @@
 <template>
-	<div id="content" data-layout-type="single-column">
-		<div id="post" v-if="post" :class="{container: !user}">
-			<Card :post="post" @deleted="postDeleted"></Card>
-			<CommentList :comments="comments" :loading="loadingComments" :bottomComments="bottomComments" :lastPage="lastPage" :postId="id" @loadMore="loadComments"></CommentList>
-			<NewCommentBox v-if="user" :postId="id" @created="addComment"></NewCommentBox>
-		</div>
-	</div>
+  <div id="content" data-layout-type="single-column">
+    <div id="post" v-if="post" :class="{container: !user}">
+      <Card :post="post" @deleted="postDeleted"></Card>
+      <CommentList
+        :comments="comments"
+        :loading="loadingComments"
+        :bottomComments="bottomComments"
+        :lastPage="lastPage"
+        :postId="id"
+        @loadMore="loadComments"
+      ></CommentList>
+      <NewCommentBox v-if="user" :postId="id" @created="addComment"></NewCommentBox>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -13,11 +20,9 @@ import post from "../../api/post";
 import comment from "../../api/comment";
 import { mapGetters } from "vuex";
 
-import helpers from "../../helpers";
-
-import Card from "../../components/Card/_Card.vue";
-import CommentList from "../../components/Comment/CommentList.vue";
-import NewCommentBox from "../../components/Comment/NewCommentBox.vue";
+import Card from "../../components/Card/_Card";
+import CommentList from "../../components/Comment/CommentList";
+import NewCommentBox from "../../components/Comment/NewCommentBox";
 
 export default {
   components: {

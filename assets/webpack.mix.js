@@ -1,4 +1,6 @@
-const { mix } = require('laravel-mix');
+const { mix } = require("laravel-mix");
+const webpack = require("webpack");
+const path = require("path");
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -9,11 +11,24 @@ const { mix } = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
-mix.js('js/app.js', '..\\priv/static/js')
-	.extract([ 'vue', 'vue-resource', 'vuex', 'vue-router', 'axios', 'jquery' ]);
+mix.webpackConfig({
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "js")
+    }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      "window.jQuery": "jquery"
+    })
+  ]
+});
+mix.js("js/app.js", "..\\priv/static/js");
 
-mix.js('js/landing.js', '..\\priv/static/js/landing');
+mix.js("js/landing.js", "..\\priv/static/js/landing");
 
-mix.sass('sass/main.scss', '../priv/static/css');
-mix.sass('sass/landing.scss', '../priv/static/css');
-mix.sass('sass/out.scss', '../priv/static/css');
+mix.sass("sass/main.scss", "../priv/static/css");
+mix.sass("sass/landing.scss", "../priv/static/css");
+mix.sass("sass/out.scss", "../priv/static/css");

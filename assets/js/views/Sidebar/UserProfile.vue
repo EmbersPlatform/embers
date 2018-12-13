@@ -34,7 +34,7 @@
 
 <script>
 	import user from '../../api/user';
-	import Mutuals from '../../components/Mutuals.vue';
+	import Mutuals from '../../components/Mutuals';
 	export default {
 		components: {
 			Mutuals

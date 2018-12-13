@@ -1,30 +1,72 @@
 <template>
-	<div id="feed" :class="{'renderbox': loading || refreshing}" :data-renderbox-message="[loading ? 'Cargando posts...' : 'Actualizando feed...']" :data-renderbox-top="refreshing" ref="postList" v-infinite-scroll="loadMore" :infinite-scroll-disabled="infiniteScrollStill">
-		<template v-if="isMasonry">
-			<div v-if="firstLoad" id="masonry" ref="masonry" v-masonry transition-duration=".3s" item-selector=".little" fit-width="true">
-				<template v-for="(post, index) in feed">
-					<Card v-if="post.isShared" v-masonry-tile class="little" :post="post.source" :showThumbnail="showThumbnail" :key="index" :sharer="post.user" :isShared="post.isShared" :size="size"></Card>
-					<Card v-else :post="post" v-masonry-tile class="little" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
-				</template>
-			</div>
-		</template>
-		<template v-else v-for="(post, index) in feed">
-			<Card v-if="post.isShared" :post="post.source" :showThumbnail="showThumbnail" :key="index" :sharers="post.sharers" :isShared="post.isShared" :size="size"></Card>
-			<Card v-else :post="post" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
-		</template>
-		<template v-if="reachedBottom && !loading && !refreshing">
-			<h3 v-html="formattedNoResults" v-if="feed.length === 0"></h3>
-			<h3 v-html="formattedReachedBottom" v-else></h3>
-		</template>
-	</div>
+  <div
+    id="feed"
+    :class="{'renderbox': loading || refreshing}"
+    :data-renderbox-message="[loading ? 'Cargando posts...' : 'Actualizando feed...']"
+    :data-renderbox-top="refreshing"
+    ref="postList"
+    v-infinite-scroll="loadMore"
+    :infinite-scroll-disabled="infiniteScrollStill"
+  >
+    <template v-if="isMasonry">
+      <div
+        v-if="firstLoad"
+        id="masonry"
+        ref="masonry"
+        v-masonry
+        transition-duration=".3s"
+        item-selector=".little"
+        fit-width="true"
+      >
+        <template v-for="(post, index) in feed">
+          <Card
+            v-if="post.isShared"
+            v-masonry-tile
+            class="little"
+            :post="post.source"
+            :showThumbnail="showThumbnail"
+            :key="index"
+            :sharer="post.user"
+            :isShared="post.isShared"
+            :size="size"
+          ></Card>
+          <Card
+            v-else
+            :post="post"
+            v-masonry-tile
+            class="little"
+            :key="index"
+            :showThumbnail="showThumbnail"
+            :size="size"
+          ></Card>
+        </template>
+      </div>
+    </template>
+    <template v-else v-for="(post, index) in feed">
+      <Card
+        v-if="post.isShared"
+        :post="post.source"
+        :showThumbnail="showThumbnail"
+        :key="index"
+        :sharers="post.sharers"
+        :isShared="post.isShared"
+        :size="size"
+      ></Card>
+      <Card v-else :post="post" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
+    </template>
+    <template v-if="reachedBottom && !loading && !refreshing">
+      <h3 v-html="formattedNoResults" v-if="feed.length === 0"></h3>
+      <h3 v-html="formattedReachedBottom" v-else></h3>
+    </template>
+  </div>
 </template>
 
 <script>
 import feed from "../api/feed";
 
-import formatter from "../helpers/formatter";
+import formatter from "@/lib/formatter";
 
-import Card from "./Card/_Card.vue";
+import Card from "./Card/_Card";
 
 import { mapGetters } from "vuex";
 
@@ -113,7 +155,7 @@ export default {
         .get(this.name, { filters: this.filters })
         .then(res => {
           var _res = this.concat_post(res.items);
-          if (this._isDestroyed || this._isBeingDestroyed) {
+          if (this._inactive) {
             return;
           }
           this.$store.dispatch("setFeedPosts", _res);
@@ -145,11 +187,8 @@ export default {
         })
         .then(res => {
           var _res = this.concat_post(res.items);
-          if (this._isDestroyed || this._isBeingDestroyed) {
-            if (res.items.length) {
-              this.$store.dispatch("setFeedPosts", _res);
-              this.next_activity = res.next;
-            }
+          if (this._inactive) {
+            return;
           }
           if (res.items.length) {
             this.$store.dispatch("appendFeedPosts", _res);
@@ -180,7 +219,7 @@ export default {
       .get(this.name, { filters: this.filters })
       .then(res => {
         var _res = this.concat_post(res.items);
-        if (this._isDestroyed || this._isBeingDestroyed) {
+        if (this._inactive) {
           return;
         }
         if (res.items.length) {
