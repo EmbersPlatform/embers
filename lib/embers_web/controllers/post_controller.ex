@@ -86,7 +86,6 @@ defmodule EmbersWeb.PostController do
   end
 
   defp create_activity_and_push(post) do
-    # Retrieve post creator followers
     followers = Feed.Subscriptions.list_followers_ids(post.user_id)
     blocked = Feed.Subscriptions.Blocks.list_users_ids_that_blocked(post.user_id)
     tags = Embers.Tags.list_post_tags_ids(post.id)
@@ -119,9 +118,7 @@ defmodule EmbersWeb.PostController do
     Feed.push_acitivity(post, recipients)
 
     recipients
-    |> IO.inspect()
     |> Enum.reject(fn recipient -> recipient == post.user_id end)
-    |> IO.inspect()
     |> Enum.each(fn recipient ->
       # Broadcast the good news to the recipients via Channels
       hashed_id = IdHasher.encode(recipient)
