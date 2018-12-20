@@ -64,7 +64,8 @@ defmodule EmbersWeb.UserChannel do
           fastlane: {socket.transport_pid, socket.serializer, []}
         )
 
-      Presence.list(topic)
+      presences = Presence.list(topic)
+      presences
     end)
     |> Enum.reduce(%{}, fn map, acc -> Map.merge(acc, map) end)
   end
