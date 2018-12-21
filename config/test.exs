@@ -21,8 +21,8 @@ config :embers, Embers.Repo,
 # config :argon2_elixir,
 # t_cost: 2,
 # m_cost: 8
-config :bcrypt_elixir, log_rounds: 4
-# config :pbkdf2_elixir, rounds: 1
+# config :bcrypt_elixir, log_rounds: 4
+config :pbkdf2_elixir, rounds: 1
 
 # Mailer test configuration
 config :embers, Embers.Mailer, adapter: Bamboo.TestAdapter
