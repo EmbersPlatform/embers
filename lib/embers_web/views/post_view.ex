@@ -80,22 +80,13 @@ defmodule EmbersWeb.PostView do
 
   defp format_reactions(reactions, my_reactions) do
     reactions
-    |> Enum.reduce(%{}, fn %{name: name}, acc ->
-      case acc do
-        %{^name => map} ->
-          Map.put(acc, name, %{
-            name: name,
-            total: (map.total || 0) + 1,
-            reacted: Enum.member?(my_reactions, name)
-          })
-
-        _ ->
-          Map.put(acc, name, %{
-            name: name,
-            total: (acc[name] || 0) + 1,
-            reacted: Enum.member?(my_reactions, name)
-          })
-      end
+    |> Enum.group_by(&Map.get(&1, :name))
+    |> Enum.map(fn {k, v} ->
+      %{
+        total: Enum.count(v),
+        name: k,
+        reacted: Enum.member?(my_reactions, k)
+      }
     end)
   end
 end
