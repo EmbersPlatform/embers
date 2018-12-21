@@ -25,7 +25,7 @@ defmodule EmbersWeb.PostView do
       nesting_level: post.nesting_level
     }
     |> handle_tags(post)
-    |> set_in_reply_to(post)
+    |> put_in_reply_to(post)
     |> put_user(post)
     |> handle_media(post)
     |> handle_reactions(post, assigns)
@@ -45,7 +45,7 @@ defmodule EmbersWeb.PostView do
     end || view
   end
 
-  defp set_in_reply_to(view, post) do
+  defp put_in_reply_to(view, post) do
     if not is_nil(post.parent_id) do
       Map.put(view, "in_reply_to", IdHasher.encode(post.parent_id))
     end || view
