@@ -14,7 +14,6 @@ defmodule EmbersWeb.PostController do
   end
 
   def create(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-    params |> IO.inspect()
     post_params = Map.put(params, "user_id", user.id)
 
     post_params =

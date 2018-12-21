@@ -22,7 +22,7 @@ defmodule Embers.Feed.Subscriptions.UserSubscription do
     |> validate_unique_entry(attrs)
   end
 
-  def validate_fields(changeset, attrs) do
+  defp validate_fields(changeset, attrs) do
     if(attrs.user_id == attrs.source_id) do
       Ecto.Changeset.add_error(
         changeset,
@@ -34,7 +34,7 @@ defmodule Embers.Feed.Subscriptions.UserSubscription do
     end
   end
 
-  def validate_unique_entry(changeset, attrs) do
+  defp validate_unique_entry(changeset, attrs) do
     entries = Repo.get_by(UserSubscription, %{user_id: attrs.user_id, source_id: attrs.source_id})
 
     if(not is_nil(entries)) do

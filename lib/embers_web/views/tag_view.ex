@@ -1,7 +1,6 @@
 defmodule EmbersWeb.TagView do
   use EmbersWeb, :view
 
-  alias EmbersWeb.UserView
   alias Embers.Helpers.IdHasher
 
   def render("tags.json", %{entries: tags} = metadata) do

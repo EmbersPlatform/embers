@@ -41,7 +41,7 @@ defmodule Embers.Feed.Subscriptions do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user_subscription(attrs \\ %{}) do
+  def create_user_subscription(attrs) do
     subscription = UserSubscription.changeset(%UserSubscription{}, attrs)
     Repo.insert(subscription)
   end

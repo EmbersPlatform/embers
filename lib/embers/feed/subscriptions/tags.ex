@@ -5,13 +5,11 @@ defmodule Embers.Feed.Subscriptions.Tags do
 
   import Ecto.Query
 
-  @doc false
   def create_subscription(attrs \\ %{}) do
     subscription = TagSubscription.create_changeset(%TagSubscription{}, attrs)
     Repo.insert(subscription)
   end
 
-  @doc false
   def delete_subscription(user_id, source_id) do
     sub = Repo.get_by(TagSubscription, %{user_id: user_id, source_id: source_id})
 
@@ -20,7 +18,6 @@ defmodule Embers.Feed.Subscriptions.Tags do
     end
   end
 
-  @doc false
   def list_subscribed_tags_ids(user_id) do
     from(
       sub in TagSubscription,
@@ -30,7 +27,6 @@ defmodule Embers.Feed.Subscriptions.Tags do
     |> Repo.all()
   end
 
-  @doc false
   def list_users_following_tag_ids(tag_id) do
     from(
       sub in TagSubscription,
@@ -40,7 +36,6 @@ defmodule Embers.Feed.Subscriptions.Tags do
     |> Repo.all()
   end
 
-  @doc false
   def list_subscribed_tags_ids_paginated(user_id, params) do
     from(
       sub in TagSubscription,
@@ -50,7 +45,6 @@ defmodule Embers.Feed.Subscriptions.Tags do
     |> Paginator.paginate(params)
   end
 
-  @doc false
   def list_users_following_tag_ids_paginated(tag_id, params) do
     from(
       sub in TagSubscription,
@@ -60,7 +54,6 @@ defmodule Embers.Feed.Subscriptions.Tags do
     |> Paginator.paginate(params)
   end
 
-  @doc false
   def list_subscribed_tags_paginated(user_id, params) do
     from(
       sub in TagSubscription,
@@ -73,7 +66,6 @@ defmodule Embers.Feed.Subscriptions.Tags do
     |> Paginator.paginate(params)
   end
 
-  @doc false
   def list_users_following_tag_paginated(tag_id, params) do
     from(
       sub in TagSubscription,
@@ -82,13 +74,11 @@ defmodule Embers.Feed.Subscriptions.Tags do
     |> Paginator.paginate(params)
   end
 
-  @doc false
   def create_block(attrs \\ %{}) do
     block = TagBlock.create_changeset(%TagBlock{}, attrs)
     Repo.insert(block)
   end
 
-  @doc false
   def delete_block(user_id, tag_id) do
     block = Repo.get_by(TagBlock, %{user_id: user_id, tag_id: tag_id})
 

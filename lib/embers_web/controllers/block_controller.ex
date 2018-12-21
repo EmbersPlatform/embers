@@ -61,13 +61,13 @@ defmodule EmbersWeb.BlockController do
   end
 
   defp do_create_block(conn, block_params) do
-    case Blocks.create_user_block(block_params) do
+    case Blocks.create_user_block(block_params["user_id"], block_params["source_id"]) do
       {:ok, _} ->
         conn
         |> put_status(:no_content)
         |> json(nil)
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> render(EmbersWeb.ErrorView, "422.json", changeset: changeset)

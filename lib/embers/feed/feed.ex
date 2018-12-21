@@ -93,9 +93,9 @@ defmodule Embers.Feed do
 
           ids = Enum.map(attachments, fn x -> IdHasher.decode(x["id"]) end)
 
-          medias =
+          {_count, medias} =
             from(m in MediaItem, where: m.id in ^ids)
-            |> Repo.all()
+            |> Repo.update_all([set: [temporary: false]], returning: true)
 
           post
           |> Repo.preload(:media)
@@ -103,11 +103,7 @@ defmodule Embers.Feed do
           |> Ecto.Changeset.put_assoc(:media, medias)
           |> Repo.update()
 
-          from(
-            media in MediaItem,
-            where: media.id in ^ids
-          )
-          |> Repo.update_all(set: [temporary: false])
+          medias
         end
 
         {:ok, post |> Repo.preload(:media)}

@@ -6,6 +6,8 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
   alias __MODULE__
   alias Embers.Repo
 
+  @type t :: %__MODULE__{}
+
   schema "user_blocks" do
     belongs_to(:user, Embers.Accounts.User)
     belongs_to(:source, Embers.Accounts.User)
@@ -22,7 +24,7 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
     |> validate_unique_entry(attrs)
   end
 
-  def validate_fields(changeset, attrs) do
+  defp validate_fields(changeset, attrs) do
     if(attrs.user_id == attrs.source_id) do
       Ecto.Changeset.add_error(
         changeset,
@@ -34,7 +36,7 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
     end
   end
 
-  def validate_unique_entry(changeset, attrs) do
+  defp validate_unique_entry(changeset, attrs) do
     entries = Repo.get_by(UserBlock, %{user_id: attrs.user_id, source_id: attrs.source_id})
 
     if(not is_nil(entries)) do

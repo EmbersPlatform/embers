@@ -26,7 +26,7 @@ defmodule EmbersWeb.SessionController do
     case Login.verify(user_params, crypto: Comeonin.Pbkdf2) do
       {:ok, user} ->
         conn
-        |> add_session(user, user_params)
+        |> Login.add_session(user, user_params)
         |> put_flash(:info, "User successfully logged in.")
         |> redirect(to: Routes.page_path(conn, :index))
 
@@ -53,22 +53,4 @@ defmodule EmbersWeb.SessionController do
         |> json(%{error: "unauthorized"})
     end
   end
-
-  defp add_session(conn, user, params) do
-    {:ok, %{id: session_id}} = Sessions.create_session(%{user_id: user.id})
-
-    conn
-    |> delete_session(:request_path)
-    |> put_session(:phauxth_session_id, session_id)
-    |> configure_session(renew: true)
-    |> add_remember_me(user.id, params)
-  end
-
-  # This function adds a remember_me cookie to the conn.
-  # See the documentation for Phauxth.Remember for more details.
-  defp add_remember_me(conn, user_id, %{"remember_me" => "true"}) do
-    Remember.add_rem_cookie(conn, user_id)
-  end
-
-  defp add_remember_me(conn, _, _), do: conn
 end

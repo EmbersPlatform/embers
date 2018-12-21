@@ -1,15 +1,42 @@
 defmodule Embers.Feed.Subscriptions.Blocks do
+  @moduledoc """
+  Context for user blocks
+  """
+
   import Ecto.Query
 
   alias Embers.Feed.Subscriptions.{UserBlock}
   alias Embers.Repo
   alias Embers.Paginator
 
-  def create_user_block(attrs \\ %{}) do
-    block = UserBlock.changeset(%UserBlock{}, attrs)
+  @doc """
+  Creates a user block
+
+  ## Examples
+      iex> create_user_block(1,2)
+      {:ok, %UserBlock{}}
+
+      iex> create_user_block(3, 4)
+      {:error, %Ecto.Changeset()}
+  """
+  @spec create_user_block(integer(), integer()) ::
+          {:ok, Embers.Feed.Subscriptions.UserBlock.t()} | {:error, Ecto.Changeset.t()}
+  def create_user_block(user_id, source_id) do
+    block = UserBlock.changeset(%UserBlock{}, %{user_id: user_id, source_id: source_id})
     Repo.insert(block)
   end
 
+  @doc """
+  Deletes a user block, returns the deleted block or `nil` if not found
+
+  ## Examples
+      iex> delete_user_block(1, 2)
+      %UserBlock{}
+
+      iex> delete_user_block(3, 4)
+      nil
+  """
+  @spec delete_user_block(integer(), integer()) :: nil
   def delete_user_block(user_id, source_id) do
     sub = Repo.get_by(UserBlock, %{user_id: user_id, source_id: source_id})
 
@@ -18,6 +45,9 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     end
   end
 
+  @spec list_users_blocked_ids_by(integer()) :: [
+          Embers.Feed.Subscriptions.UserBlock.t()
+        ]
   def list_users_blocked_ids_by(user_id) do
     from(
       block in UserBlock,
@@ -27,6 +57,7 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> Repo.all()
   end
 
+  @spec list_users_ids_that_blocked(integer()) :: [any()]
   def list_users_ids_that_blocked(user_id) do
     from(
       block in UserBlock,
@@ -36,6 +67,7 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> Repo.all()
   end
 
+  @spec list_blocks_ids(integer()) :: [any()]
   def list_blocks_ids(user_id) do
     UserBlock
     |> where([block], block.source_id == ^user_id)
@@ -43,6 +75,11 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> Repo.all()
   end
 
+  @spec list_blocks_paginated(integer(), map()) :: %{
+          entries: [any()],
+          last_page: boolean(),
+          next: any()
+        }
   def list_blocks_paginated(user_id, opts \\ %{}) do
     UserBlock
     |> where([block], block.user_id == ^user_id)
@@ -52,6 +89,11 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> Paginator.paginate(opts)
   end
 
+  @spec list_blocks_ids_paginated(integer(), map()) :: %{
+          entries: [integer()],
+          last_page: boolean(),
+          next: any()
+        }
   def list_blocks_ids_paginated(user_id, opts \\ %{}) do
     UserBlock
     |> where([block], block.user_id == ^user_id)
