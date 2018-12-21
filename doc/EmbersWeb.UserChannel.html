@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.19.1">
-    <title>EmbersWeb.UserChannel – embers v0.1.10</title>
+    <title>EmbersWeb.UserChannel – embers v0.1.18</title>
     <link rel="stylesheet" href="dist/app-240d7fc7e5.css" />
     <script src="dist/sidebar_items-67f71384bc.js"></script>
     
@@ -28,7 +28,7 @@
       <h1 class="sidebar-projectName">
 embers      </h1>
       <h2 class="sidebar-projectVersion">
-        v0.1.10
+        v0.1.18
       </h2>
     </div>
   </a>
@@ -57,7 +57,7 @@ embers      </h1>
 
 
       <h1>
-        <small class="visible-xs">embers v0.1.10</small>
+        <small class="visible-xs">embers v0.1.18</small>
 EmbersWeb.UserChannel              </h1>
 
 
@@ -134,13 +134,13 @@ refuse authorization, return <code class="inline">{:error, reason}</code>.</p>
   Example
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="kd">def</span><span class="w"> </span><span class="nf">join</span><span class="p" data-group-id="0736339632-1">(</span><span class="s">&quot;room:lobby&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="0736339632-1">)</span><span class="w"> </span><span class="k" data-group-id="0736339632-2">do</span><span class="w">
-  </span><span class="k">if</span><span class="w"> </span><span class="n">authorized?</span><span class="p" data-group-id="0736339632-3">(</span><span class="n">payload</span><span class="p" data-group-id="0736339632-3">)</span><span class="w"> </span><span class="k" data-group-id="0736339632-4">do</span><span class="w">
-    </span><span class="p" data-group-id="0736339632-5">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="0736339632-5">}</span><span class="w">
-  </span><span class="k" data-group-id="0736339632-4">else</span><span class="w">
-    </span><span class="p" data-group-id="0736339632-6">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0736339632-7">%{</span><span class="ss">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;unauthorized&quot;</span><span class="p" data-group-id="0736339632-7">}</span><span class="p" data-group-id="0736339632-6">}</span><span class="w">
-  </span><span class="k" data-group-id="0736339632-4">end</span><span class="w">
-</span><span class="k" data-group-id="0736339632-2">end</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="kd">def</span><span class="w"> </span><span class="nf">join</span><span class="p" data-group-id="6233646714-1">(</span><span class="s">&quot;room:lobby&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="6233646714-1">)</span><span class="w"> </span><span class="k" data-group-id="6233646714-2">do</span><span class="w">
+  </span><span class="k">if</span><span class="w"> </span><span class="n">authorized?</span><span class="p" data-group-id="6233646714-3">(</span><span class="n">payload</span><span class="p" data-group-id="6233646714-3">)</span><span class="w"> </span><span class="k" data-group-id="6233646714-4">do</span><span class="w">
+    </span><span class="p" data-group-id="6233646714-5">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">socket</span><span class="p" data-group-id="6233646714-5">}</span><span class="w">
+  </span><span class="k" data-group-id="6233646714-4">else</span><span class="w">
+    </span><span class="p" data-group-id="6233646714-6">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="6233646714-7">%{</span><span class="ss">reason</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;unauthorized&quot;</span><span class="p" data-group-id="6233646714-7">}</span><span class="p" data-group-id="6233646714-6">}</span><span class="w">
+  </span><span class="k" data-group-id="6233646714-4">end</span><span class="w">
+</span><span class="k" data-group-id="6233646714-2">end</span></code></pre>
 <p>Callback implementation for <a href="https://hexdocs.pm/phoenix/1.4.0/Phoenix.Channel.html#c:join/3"><code class="inline">Phoenix.Channel.join/3</code></a>.</p>
   </section>
 </div>

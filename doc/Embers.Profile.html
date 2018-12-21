@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.19.1">
-    <title>Embers.Profile – embers v0.1.10</title>
+    <title>Embers.Profile – embers v0.1.18</title>
     <link rel="stylesheet" href="dist/app-240d7fc7e5.css" />
     <script src="dist/sidebar_items-67f71384bc.js"></script>
     
@@ -28,7 +28,7 @@
       <h1 class="sidebar-projectName">
 embers      </h1>
       <h2 class="sidebar-projectVersion">
-        v0.1.10
+        v0.1.18
       </h2>
     </div>
   </a>
@@ -57,7 +57,7 @@ embers      </h1>
 
 
       <h1>
-        <small class="visible-xs">embers v0.1.10</small>
+        <small class="visible-xs">embers v0.1.18</small>
 Embers.Profile              </h1>
 
 
@@ -149,8 +149,8 @@ Embers.Profile              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">change_meta</span><span class="p" data-group-id="3951496656-1">(</span><span class="n">meta</span><span class="p" data-group-id="3951496656-1">)</span><span class="w">
-</span><span class="p" data-group-id="3951496656-2">%</span><span class="nc" data-group-id="3951496656-2">Ecto.Changeset</span><span class="p" data-group-id="3951496656-2">{</span><span class="ss">source</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3951496656-3">%</span><span class="nc" data-group-id="3951496656-3">Meta</span><span class="p" data-group-id="3951496656-3">{</span><span class="p" data-group-id="3951496656-3">}</span><span class="p" data-group-id="3951496656-2">}</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">change_meta</span><span class="p" data-group-id="7224445776-1">(</span><span class="n">meta</span><span class="p" data-group-id="7224445776-1">)</span><span class="w">
+</span><span class="p" data-group-id="7224445776-2">%</span><span class="nc" data-group-id="7224445776-2">Ecto.Changeset</span><span class="p" data-group-id="7224445776-2">{</span><span class="ss">source</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="7224445776-3">%</span><span class="nc" data-group-id="7224445776-3">Meta</span><span class="p" data-group-id="7224445776-3">{</span><span class="p" data-group-id="7224445776-3">}</span><span class="p" data-group-id="7224445776-2">}</span></code></pre>
   </section>
 </div>
 <div class="detail" id="create_meta/1">
@@ -170,11 +170,11 @@ Embers.Profile              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">create_meta</span><span class="p" data-group-id="9490389261-1">(</span><span class="p" data-group-id="9490389261-2">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">value</span><span class="p" data-group-id="9490389261-2">}</span><span class="p" data-group-id="9490389261-1">)</span><span class="w">
-</span><span class="p" data-group-id="9490389261-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9490389261-4">%</span><span class="nc" data-group-id="9490389261-4">Meta</span><span class="p" data-group-id="9490389261-4">{</span><span class="p" data-group-id="9490389261-4">}</span><span class="p" data-group-id="9490389261-3">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">create_meta</span><span class="p" data-group-id="8832788643-1">(</span><span class="p" data-group-id="8832788643-2">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">value</span><span class="p" data-group-id="8832788643-2">}</span><span class="p" data-group-id="8832788643-1">)</span><span class="w">
+</span><span class="p" data-group-id="8832788643-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8832788643-4">%</span><span class="nc" data-group-id="8832788643-4">Meta</span><span class="p" data-group-id="8832788643-4">{</span><span class="p" data-group-id="8832788643-4">}</span><span class="p" data-group-id="8832788643-3">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">create_meta</span><span class="p" data-group-id="9490389261-5">(</span><span class="p" data-group-id="9490389261-6">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">bad_value</span><span class="p" data-group-id="9490389261-6">}</span><span class="p" data-group-id="9490389261-5">)</span><span class="w">
-</span><span class="p" data-group-id="9490389261-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9490389261-8">%</span><span class="nc" data-group-id="9490389261-8">Ecto.Changeset</span><span class="p" data-group-id="9490389261-8">{</span><span class="p" data-group-id="9490389261-8">}</span><span class="p" data-group-id="9490389261-7">}</span></code></pre>
+</span><span class="gp unselectable">iex&gt; </span><span class="n">create_meta</span><span class="p" data-group-id="8832788643-5">(</span><span class="p" data-group-id="8832788643-6">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">bad_value</span><span class="p" data-group-id="8832788643-6">}</span><span class="p" data-group-id="8832788643-5">)</span><span class="w">
+</span><span class="p" data-group-id="8832788643-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8832788643-8">%</span><span class="nc" data-group-id="8832788643-8">Ecto.Changeset</span><span class="p" data-group-id="8832788643-8">{</span><span class="p" data-group-id="8832788643-8">}</span><span class="p" data-group-id="8832788643-7">}</span></code></pre>
   </section>
 </div>
 <div class="detail" id="delete_meta/1">
@@ -192,11 +192,11 @@ Embers.Profile              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">delete_meta</span><span class="p" data-group-id="7003660183-1">(</span><span class="n">meta</span><span class="p" data-group-id="7003660183-1">)</span><span class="w">
-</span><span class="p" data-group-id="7003660183-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7003660183-3">%</span><span class="nc" data-group-id="7003660183-3">Meta</span><span class="p" data-group-id="7003660183-3">{</span><span class="p" data-group-id="7003660183-3">}</span><span class="p" data-group-id="7003660183-2">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">delete_meta</span><span class="p" data-group-id="5580938719-1">(</span><span class="n">meta</span><span class="p" data-group-id="5580938719-1">)</span><span class="w">
+</span><span class="p" data-group-id="5580938719-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5580938719-3">%</span><span class="nc" data-group-id="5580938719-3">Meta</span><span class="p" data-group-id="5580938719-3">{</span><span class="p" data-group-id="5580938719-3">}</span><span class="p" data-group-id="5580938719-2">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">delete_meta</span><span class="p" data-group-id="7003660183-4">(</span><span class="n">meta</span><span class="p" data-group-id="7003660183-4">)</span><span class="w">
-</span><span class="p" data-group-id="7003660183-5">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7003660183-6">%</span><span class="nc" data-group-id="7003660183-6">Ecto.Changeset</span><span class="p" data-group-id="7003660183-6">{</span><span class="p" data-group-id="7003660183-6">}</span><span class="p" data-group-id="7003660183-5">}</span></code></pre>
+</span><span class="gp unselectable">iex&gt; </span><span class="n">delete_meta</span><span class="p" data-group-id="5580938719-4">(</span><span class="n">meta</span><span class="p" data-group-id="5580938719-4">)</span><span class="w">
+</span><span class="p" data-group-id="5580938719-5">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5580938719-6">%</span><span class="nc" data-group-id="5580938719-6">Ecto.Changeset</span><span class="p" data-group-id="5580938719-6">{</span><span class="p" data-group-id="5580938719-6">}</span><span class="p" data-group-id="5580938719-5">}</span></code></pre>
   </section>
 </div>
 <div class="detail" id="get_meta!/1">
@@ -215,10 +215,10 @@ Embers.Profile              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">get_meta!</span><span class="p" data-group-id="5918491800-1">(</span><span class="mi">123</span><span class="p" data-group-id="5918491800-1">)</span><span class="w">
-</span><span class="p" data-group-id="5918491800-2">%</span><span class="nc" data-group-id="5918491800-2">Meta</span><span class="p" data-group-id="5918491800-2">{</span><span class="p" data-group-id="5918491800-2">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">get_meta!</span><span class="p" data-group-id="5626945237-1">(</span><span class="mi">123</span><span class="p" data-group-id="5626945237-1">)</span><span class="w">
+</span><span class="p" data-group-id="5626945237-2">%</span><span class="nc" data-group-id="5626945237-2">Meta</span><span class="p" data-group-id="5626945237-2">{</span><span class="p" data-group-id="5626945237-2">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">get_meta!</span><span class="p" data-group-id="5918491800-3">(</span><span class="mi">456</span><span class="p" data-group-id="5918491800-3">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="n">get_meta!</span><span class="p" data-group-id="5626945237-3">(</span><span class="mi">456</span><span class="p" data-group-id="5626945237-3">)</span><span class="w">
 </span><span class="gt">** (Ecto.NoResultsError)</span></code></pre>
   </section>
 </div>
@@ -237,8 +237,8 @@ Embers.Profile              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">list_user_metas</span><span class="p" data-group-id="1054969323-1">(</span><span class="p" data-group-id="1054969323-1">)</span><span class="w">
-</span><span class="p" data-group-id="1054969323-2">[</span><span class="p" data-group-id="1054969323-3">%</span><span class="nc" data-group-id="1054969323-3">Meta</span><span class="p" data-group-id="1054969323-3">{</span><span class="p" data-group-id="1054969323-3">}</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p" data-group-id="1054969323-2">]</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">list_user_metas</span><span class="p" data-group-id="6270484734-1">(</span><span class="p" data-group-id="6270484734-1">)</span><span class="w">
+</span><span class="p" data-group-id="6270484734-2">[</span><span class="p" data-group-id="6270484734-3">%</span><span class="nc" data-group-id="6270484734-3">Meta</span><span class="p" data-group-id="6270484734-3">{</span><span class="p" data-group-id="6270484734-3">}</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p" data-group-id="6270484734-2">]</span></code></pre>
   </section>
 </div>
 <div class="detail" id="update_meta/2">
@@ -256,11 +256,11 @@ Embers.Profile              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">update_meta</span><span class="p" data-group-id="2695994400-1">(</span><span class="n">meta</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2695994400-2">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">new_value</span><span class="p" data-group-id="2695994400-2">}</span><span class="p" data-group-id="2695994400-1">)</span><span class="w">
-</span><span class="p" data-group-id="2695994400-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2695994400-4">%</span><span class="nc" data-group-id="2695994400-4">Meta</span><span class="p" data-group-id="2695994400-4">{</span><span class="p" data-group-id="2695994400-4">}</span><span class="p" data-group-id="2695994400-3">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">update_meta</span><span class="p" data-group-id="0970416799-1">(</span><span class="n">meta</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0970416799-2">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">new_value</span><span class="p" data-group-id="0970416799-2">}</span><span class="p" data-group-id="0970416799-1">)</span><span class="w">
+</span><span class="p" data-group-id="0970416799-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0970416799-4">%</span><span class="nc" data-group-id="0970416799-4">Meta</span><span class="p" data-group-id="0970416799-4">{</span><span class="p" data-group-id="0970416799-4">}</span><span class="p" data-group-id="0970416799-3">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">update_meta</span><span class="p" data-group-id="2695994400-5">(</span><span class="n">meta</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2695994400-6">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">bad_value</span><span class="p" data-group-id="2695994400-6">}</span><span class="p" data-group-id="2695994400-5">)</span><span class="w">
-</span><span class="p" data-group-id="2695994400-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="2695994400-8">%</span><span class="nc" data-group-id="2695994400-8">Ecto.Changeset</span><span class="p" data-group-id="2695994400-8">{</span><span class="p" data-group-id="2695994400-8">}</span><span class="p" data-group-id="2695994400-7">}</span></code></pre>
+</span><span class="gp unselectable">iex&gt; </span><span class="n">update_meta</span><span class="p" data-group-id="0970416799-5">(</span><span class="n">meta</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0970416799-6">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">bad_value</span><span class="p" data-group-id="0970416799-6">}</span><span class="p" data-group-id="0970416799-5">)</span><span class="w">
+</span><span class="p" data-group-id="0970416799-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0970416799-8">%</span><span class="nc" data-group-id="0970416799-8">Ecto.Changeset</span><span class="p" data-group-id="0970416799-8">{</span><span class="p" data-group-id="0970416799-8">}</span><span class="p" data-group-id="0970416799-7">}</span></code></pre>
   </section>
 </div>
         </section>

@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.19.1">
-    <title>EmbersWeb.UserSocket – embers v0.1.10</title>
+    <title>EmbersWeb.UserSocket – embers v0.1.18</title>
     <link rel="stylesheet" href="dist/app-240d7fc7e5.css" />
     <script src="dist/sidebar_items-67f71384bc.js"></script>
     
@@ -28,7 +28,7 @@
       <h1 class="sidebar-projectName">
 embers      </h1>
       <h2 class="sidebar-projectVersion">
-        v0.1.10
+        v0.1.18
       </h2>
     </div>
   </a>
@@ -57,7 +57,7 @@ embers      </h1>
 
 
       <h1>
-        <small class="visible-xs">embers v0.1.10</small>
+        <small class="visible-xs">embers v0.1.18</small>
 EmbersWeb.UserSocket              </h1>
 
 
@@ -122,7 +122,7 @@ EmbersWeb.UserSocket              </h1>
 be used to verify and authenticate a user. After
 verification, you can put default assigns into
 the socket that will be set for all channels, ie</p>
-<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="3614712297-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="3614712297-2">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:user_id</span><span class="p">,</span><span class="w"> </span><span class="n">verified_user_id</span><span class="p" data-group-id="3614712297-2">)</span><span class="p" data-group-id="3614712297-1">}</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="p" data-group-id="8981555776-1">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="n">assign</span><span class="p" data-group-id="8981555776-2">(</span><span class="n">socket</span><span class="p">,</span><span class="w"> </span><span class="ss">:user_id</span><span class="p">,</span><span class="w"> </span><span class="n">verified_user_id</span><span class="p" data-group-id="8981555776-2">)</span><span class="p" data-group-id="8981555776-1">}</span></code></pre>
 <p>To deny connection, return <code class="inline">:error</code>.</p>
 <p>See <a href="https://hexdocs.pm/phoenix/1.4.0/Phoenix.Token.html"><code class="inline">Phoenix.Token</code></a> documentation for examples in
 performing token verification on connect.</p>
@@ -140,10 +140,10 @@ performing token verification on connect.</p>
   <section class="docstring">
 <p>Identifies the socket connection.</p>
 <p>Socket IDs are topics that allow you to identify all sockets for a given user:</p>
-<pre><code class="nohighlight makeup elixir"><span class="kd">def</span><span class="w"> </span><span class="nf">id</span><span class="p" data-group-id="2023848446-1">(</span><span class="n">socket</span><span class="p" data-group-id="2023848446-1">)</span><span class="p">,</span><span class="w"> </span><span class="ss">do</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;users_socket:</span><span class="si" data-group-id="2023848446-2">#{</span><span class="n">socket</span><span class="o">.</span><span class="n">assigns</span><span class="o">.</span><span class="n">user_id</span><span class="si" data-group-id="2023848446-2">}</span><span class="s">&quot;</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="kd">def</span><span class="w"> </span><span class="nf">id</span><span class="p" data-group-id="0119539684-1">(</span><span class="n">socket</span><span class="p" data-group-id="0119539684-1">)</span><span class="p">,</span><span class="w"> </span><span class="ss">do</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;users_socket:</span><span class="si" data-group-id="0119539684-2">#{</span><span class="n">socket</span><span class="o">.</span><span class="n">assigns</span><span class="o">.</span><span class="n">user_id</span><span class="si" data-group-id="0119539684-2">}</span><span class="s">&quot;</span></code></pre>
 <p>Would allow you to broadcast a “disconnect” event and terminate
 all active sockets and channels for a given user:</p>
-<pre><code class="nohighlight makeup elixir"><span class="nc">MyApp.Endpoint</span><span class="o">.</span><span class="n">broadcast</span><span class="p" data-group-id="9306004460-1">(</span><span class="s">&quot;users_socket:&quot;</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;disconnect&quot;</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="9306004460-2">%{</span><span class="p" data-group-id="9306004460-2">}</span><span class="p" data-group-id="9306004460-1">)</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="nc">MyApp.Endpoint</span><span class="o">.</span><span class="n">broadcast</span><span class="p" data-group-id="7564862321-1">(</span><span class="s">&quot;users_socket:&quot;</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;disconnect&quot;</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7564862321-2">%{</span><span class="p" data-group-id="7564862321-2">}</span><span class="p" data-group-id="7564862321-1">)</span></code></pre>
 <p>Returning <code class="inline">nil</code> makes this socket anonymous.</p>
 <p>Callback implementation for <a href="https://hexdocs.pm/phoenix/1.4.0/Phoenix.Socket.html#c:id/1"><code class="inline">Phoenix.Socket.id/1</code></a>.</p>
   </section>

@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.19.1">
-    <title>Embers.Notifications – embers v0.1.10</title>
+    <title>Embers.Notifications – embers v0.1.18</title>
     <link rel="stylesheet" href="dist/app-240d7fc7e5.css" />
     <script src="dist/sidebar_items-67f71384bc.js"></script>
     
@@ -28,7 +28,7 @@
       <h1 class="sidebar-projectName">
 embers      </h1>
       <h2 class="sidebar-projectVersion">
-        v0.1.10
+        v0.1.18
       </h2>
     </div>
   </a>
@@ -57,7 +57,7 @@ embers      </h1>
 
 
       <h1>
-        <small class="visible-xs">embers v0.1.10</small>
+        <small class="visible-xs">embers v0.1.18</small>
 Embers.Notifications              </h1>
 
 
@@ -157,11 +157,11 @@ Embers.Notifications              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">create_notification</span><span class="p" data-group-id="7494938154-1">(</span><span class="p" data-group-id="7494938154-2">%{</span><span class="s">&quot;field&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="n">value</span><span class="p" data-group-id="7494938154-2">}</span><span class="p" data-group-id="7494938154-1">)</span><span class="w">
-</span><span class="p" data-group-id="7494938154-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7494938154-4">%</span><span class="nc" data-group-id="7494938154-4">Notification</span><span class="p" data-group-id="7494938154-4">{</span><span class="p" data-group-id="7494938154-4">}</span><span class="p" data-group-id="7494938154-3">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">create_notification</span><span class="p" data-group-id="1068264579-1">(</span><span class="p" data-group-id="1068264579-2">%{</span><span class="s">&quot;field&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="n">value</span><span class="p" data-group-id="1068264579-2">}</span><span class="p" data-group-id="1068264579-1">)</span><span class="w">
+</span><span class="p" data-group-id="1068264579-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="1068264579-4">%</span><span class="nc" data-group-id="1068264579-4">Notification</span><span class="p" data-group-id="1068264579-4">{</span><span class="p" data-group-id="1068264579-4">}</span><span class="p" data-group-id="1068264579-3">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">create_notification</span><span class="p" data-group-id="7494938154-5">(</span><span class="p" data-group-id="7494938154-6">%{</span><span class="s">&quot;field&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bad_value</span><span class="p" data-group-id="7494938154-6">}</span><span class="p" data-group-id="7494938154-5">)</span><span class="w">
-</span><span class="p" data-group-id="7494938154-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7494938154-8">%</span><span class="nc" data-group-id="7494938154-8">Ecto.Changeset</span><span class="p" data-group-id="7494938154-8">{</span><span class="p" data-group-id="7494938154-8">}</span><span class="p" data-group-id="7494938154-7">}</span></code></pre>
+</span><span class="gp unselectable">iex&gt; </span><span class="n">create_notification</span><span class="p" data-group-id="1068264579-5">(</span><span class="p" data-group-id="1068264579-6">%{</span><span class="s">&quot;field&quot;</span><span class="w"> </span><span class="o">=</span><span class="o">&gt;</span><span class="w"> </span><span class="n">bad_value</span><span class="p" data-group-id="1068264579-6">}</span><span class="p" data-group-id="1068264579-5">)</span><span class="w">
+</span><span class="p" data-group-id="1068264579-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="1068264579-8">%</span><span class="nc" data-group-id="1068264579-8">Ecto.Changeset</span><span class="p" data-group-id="1068264579-8">{</span><span class="p" data-group-id="1068264579-8">}</span><span class="p" data-group-id="1068264579-7">}</span></code></pre>
   </section>
 </div>
 <div class="detail" id="delete_notification/1">
@@ -183,10 +183,10 @@ Embers.Notifications              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">delete_notification</span><span class="p" data-group-id="6610249695-1">(</span><span class="mi">123</span><span class="p" data-group-id="6610249695-1">)</span><span class="w">
-</span><span class="p" data-group-id="6610249695-2">%</span><span class="nc" data-group-id="6610249695-2">Notification</span><span class="p" data-group-id="6610249695-2">{</span><span class="p" data-group-id="6610249695-2">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">delete_notification</span><span class="p" data-group-id="8124869209-1">(</span><span class="mi">123</span><span class="p" data-group-id="8124869209-1">)</span><span class="w">
+</span><span class="p" data-group-id="8124869209-2">%</span><span class="nc" data-group-id="8124869209-2">Notification</span><span class="p" data-group-id="8124869209-2">{</span><span class="p" data-group-id="8124869209-2">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">delete_notification</span><span class="p" data-group-id="6610249695-3">(</span><span class="mi">456</span><span class="p" data-group-id="6610249695-3">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="n">delete_notification</span><span class="p" data-group-id="8124869209-3">(</span><span class="mi">456</span><span class="p" data-group-id="8124869209-3">)</span><span class="w">
 </span><span class="no">nil</span></code></pre>
   </section>
 </div>
@@ -209,10 +209,10 @@ Embers.Notifications              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">get!</span><span class="p" data-group-id="4565106968-1">(</span><span class="mi">123</span><span class="p" data-group-id="4565106968-1">)</span><span class="w">
-</span><span class="p" data-group-id="4565106968-2">%</span><span class="nc" data-group-id="4565106968-2">Notification</span><span class="p" data-group-id="4565106968-2">{</span><span class="p" data-group-id="4565106968-2">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">get!</span><span class="p" data-group-id="2150503410-1">(</span><span class="mi">123</span><span class="p" data-group-id="2150503410-1">)</span><span class="w">
+</span><span class="p" data-group-id="2150503410-2">%</span><span class="nc" data-group-id="2150503410-2">Notification</span><span class="p" data-group-id="2150503410-2">{</span><span class="p" data-group-id="2150503410-2">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">get!</span><span class="p" data-group-id="4565106968-3">(</span><span class="mi">456</span><span class="p" data-group-id="4565106968-3">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="n">get!</span><span class="p" data-group-id="2150503410-3">(</span><span class="mi">456</span><span class="p" data-group-id="2150503410-3">)</span><span class="w">
 </span><span class="gt">** (Ecto.NoResultsError)</span></code></pre>
   </section>
 </div>
@@ -235,10 +235,10 @@ Embers.Notifications              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">get</span><span class="p" data-group-id="0662327442-1">(</span><span class="mi">123</span><span class="p" data-group-id="0662327442-1">)</span><span class="w">
-</span><span class="p" data-group-id="0662327442-2">%</span><span class="nc" data-group-id="0662327442-2">Notification</span><span class="p" data-group-id="0662327442-2">{</span><span class="p" data-group-id="0662327442-2">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">get</span><span class="p" data-group-id="5865909032-1">(</span><span class="mi">123</span><span class="p" data-group-id="5865909032-1">)</span><span class="w">
+</span><span class="p" data-group-id="5865909032-2">%</span><span class="nc" data-group-id="5865909032-2">Notification</span><span class="p" data-group-id="5865909032-2">{</span><span class="p" data-group-id="5865909032-2">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">get</span><span class="p" data-group-id="0662327442-3">(</span><span class="mi">456</span><span class="p" data-group-id="0662327442-3">)</span><span class="w">
+</span><span class="gp unselectable">iex&gt; </span><span class="n">get</span><span class="p" data-group-id="5865909032-3">(</span><span class="mi">456</span><span class="p" data-group-id="5865909032-3">)</span><span class="w">
 </span><span class="no">nil</span></code></pre>
   </section>
 </div>

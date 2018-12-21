@@ -5,7 +5,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.19.1">
-    <title>Embers.Feed.Subscriptions – embers v0.1.10</title>
+    <title>Embers.Feed.Subscriptions – embers v0.1.18</title>
     <link rel="stylesheet" href="dist/app-240d7fc7e5.css" />
     <script src="dist/sidebar_items-67f71384bc.js"></script>
     
@@ -28,7 +28,7 @@
       <h1 class="sidebar-projectName">
 embers      </h1>
       <h2 class="sidebar-projectVersion">
-        v0.1.10
+        v0.1.18
       </h2>
     </div>
   </a>
@@ -57,7 +57,7 @@ embers      </h1>
 
 
       <h1>
-        <small class="visible-xs">embers v0.1.10</small>
+        <small class="visible-xs">embers v0.1.18</small>
 Embers.Feed.Subscriptions              </h1>
 
 
@@ -153,11 +153,11 @@ Embers.Feed.Subscriptions              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">create_user_subscription</span><span class="p" data-group-id="8251494727-1">(</span><span class="p" data-group-id="8251494727-2">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">value</span><span class="p" data-group-id="8251494727-2">}</span><span class="p" data-group-id="8251494727-1">)</span><span class="w">
-</span><span class="p" data-group-id="8251494727-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8251494727-4">%</span><span class="nc" data-group-id="8251494727-4">UserSubscription</span><span class="p" data-group-id="8251494727-4">{</span><span class="p" data-group-id="8251494727-4">}</span><span class="p" data-group-id="8251494727-3">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">create_user_subscription</span><span class="p" data-group-id="7133239400-1">(</span><span class="p" data-group-id="7133239400-2">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">value</span><span class="p" data-group-id="7133239400-2">}</span><span class="p" data-group-id="7133239400-1">)</span><span class="w">
+</span><span class="p" data-group-id="7133239400-3">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7133239400-4">%</span><span class="nc" data-group-id="7133239400-4">UserSubscription</span><span class="p" data-group-id="7133239400-4">{</span><span class="p" data-group-id="7133239400-4">}</span><span class="p" data-group-id="7133239400-3">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">create_user_subscription</span><span class="p" data-group-id="8251494727-5">(</span><span class="p" data-group-id="8251494727-6">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">bad_value</span><span class="p" data-group-id="8251494727-6">}</span><span class="p" data-group-id="8251494727-5">)</span><span class="w">
-</span><span class="p" data-group-id="8251494727-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="8251494727-8">%</span><span class="nc" data-group-id="8251494727-8">Ecto.Changeset</span><span class="p" data-group-id="8251494727-8">{</span><span class="p" data-group-id="8251494727-8">}</span><span class="p" data-group-id="8251494727-7">}</span></code></pre>
+</span><span class="gp unselectable">iex&gt; </span><span class="n">create_user_subscription</span><span class="p" data-group-id="7133239400-5">(</span><span class="p" data-group-id="7133239400-6">%{</span><span class="ss">field</span><span class="p">:</span><span class="w"> </span><span class="n">bad_value</span><span class="p" data-group-id="7133239400-6">}</span><span class="p" data-group-id="7133239400-5">)</span><span class="w">
+</span><span class="p" data-group-id="7133239400-7">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="7133239400-8">%</span><span class="nc" data-group-id="7133239400-8">Ecto.Changeset</span><span class="p" data-group-id="7133239400-8">{</span><span class="p" data-group-id="7133239400-8">}</span><span class="p" data-group-id="7133239400-7">}</span></code></pre>
   </section>
 </div>
 <div class="detail" id="delete_user_subscription/2">
@@ -175,11 +175,11 @@ Embers.Feed.Subscriptions              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">delete_user_subscription</span><span class="p" data-group-id="5664375254-1">(</span><span class="n">subscription</span><span class="p" data-group-id="5664375254-1">)</span><span class="w">
-</span><span class="p" data-group-id="5664375254-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5664375254-3">%</span><span class="nc" data-group-id="5664375254-3">UserSubscription</span><span class="p" data-group-id="5664375254-3">{</span><span class="p" data-group-id="5664375254-3">}</span><span class="p" data-group-id="5664375254-2">}</span><span class="w">
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">delete_user_subscription</span><span class="p" data-group-id="0735261308-1">(</span><span class="n">subscription</span><span class="p" data-group-id="0735261308-1">)</span><span class="w">
+</span><span class="p" data-group-id="0735261308-2">{</span><span class="ss">:ok</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0735261308-3">%</span><span class="nc" data-group-id="0735261308-3">UserSubscription</span><span class="p" data-group-id="0735261308-3">{</span><span class="p" data-group-id="0735261308-3">}</span><span class="p" data-group-id="0735261308-2">}</span><span class="w">
 
-</span><span class="gp unselectable">iex&gt; </span><span class="n">delete_user_subscription</span><span class="p" data-group-id="5664375254-4">(</span><span class="n">subscription</span><span class="p" data-group-id="5664375254-4">)</span><span class="w">
-</span><span class="p" data-group-id="5664375254-5">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="5664375254-6">%</span><span class="nc" data-group-id="5664375254-6">Ecto.Changeset</span><span class="p" data-group-id="5664375254-6">{</span><span class="p" data-group-id="5664375254-6">}</span><span class="p" data-group-id="5664375254-5">}</span></code></pre>
+</span><span class="gp unselectable">iex&gt; </span><span class="n">delete_user_subscription</span><span class="p" data-group-id="0735261308-4">(</span><span class="n">subscription</span><span class="p" data-group-id="0735261308-4">)</span><span class="w">
+</span><span class="p" data-group-id="0735261308-5">{</span><span class="ss">:error</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="0735261308-6">%</span><span class="nc" data-group-id="0735261308-6">Ecto.Changeset</span><span class="p" data-group-id="0735261308-6">{</span><span class="p" data-group-id="0735261308-6">}</span><span class="p" data-group-id="0735261308-5">}</span></code></pre>
   </section>
 </div>
 <div class="detail" id="get/1">
@@ -256,8 +256,8 @@ Embers.Feed.Subscriptions              </h1>
   Examples
 </h2>
 
-<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">list_user_subscriptions</span><span class="p" data-group-id="6165424745-1">(</span><span class="n">user_id</span><span class="p" data-group-id="6165424745-1">)</span><span class="w">
-</span><span class="p" data-group-id="6165424745-2">[</span><span class="p" data-group-id="6165424745-3">%</span><span class="nc" data-group-id="6165424745-3">UserSubscription</span><span class="p" data-group-id="6165424745-3">{</span><span class="p" data-group-id="6165424745-3">}</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p" data-group-id="6165424745-2">]</span></code></pre>
+<pre><code class="nohighlight makeup elixir"><span class="gp unselectable">iex&gt; </span><span class="n">list_user_subscriptions</span><span class="p" data-group-id="2961988781-1">(</span><span class="n">user_id</span><span class="p" data-group-id="2961988781-1">)</span><span class="w">
+</span><span class="p" data-group-id="2961988781-2">[</span><span class="p" data-group-id="2961988781-3">%</span><span class="nc" data-group-id="2961988781-3">UserSubscription</span><span class="p" data-group-id="2961988781-3">{</span><span class="p" data-group-id="2961988781-3">}</span><span class="p">,</span><span class="w"> </span><span class="n">...</span><span class="p" data-group-id="2961988781-2">]</span></code></pre>
   </section>
 </div>
         </section>
