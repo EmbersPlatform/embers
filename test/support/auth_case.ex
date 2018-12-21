@@ -4,20 +4,20 @@ defmodule EmbersWeb.AuthCase do
   import Ecto.Changeset
   alias Embers.{Accounts, Repo}
 
-  def add_user(email) do
-    user = %{email: email, password: "reallyHard2gue$$"}
+  def add_user(username, email) do
+    user = %{username: username, email: email, password: "reallyHard2gue$$"}
     {:ok, user} = Accounts.create_user(user)
     user
   end
 
-  def add_user_confirmed(email) do
-    add_user(email)
+  def add_user_confirmed(username, email) do
+    add_user(username, email)
     |> change(%{confirmed_at: DateTime.utc_now()})
     |> Repo.update!()
   end
 
-  def add_reset_user(email) do
-    add_user(email)
+  def add_reset_user(username, email) do
+    add_user(username, email)
     |> change(%{confirmed_at: DateTime.utc_now()})
     |> change(%{reset_sent_at: DateTime.utc_now()})
     |> Repo.update!()
@@ -29,7 +29,7 @@ defmodule EmbersWeb.AuthCase do
     Phauxth.Login.add_session(conn, session_id, user.id)
   end
 
-  def gen_key(email) do
-    Phauxth.Token.sign(EmbersWeb.Endpoint, %{"email" => email})
+  def gen_key(user_id) do
+    EmbersWeb.Auth.Token.sign(%{"user_id" => user_id})
   end
 end
