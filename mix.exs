@@ -10,7 +10,8 @@ defmodule Embers.Mixfile do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      docs: docs()
     ]
   end
 
@@ -56,7 +57,9 @@ defmodule Embers.Mixfile do
       {:httpoison, "~> 0.13"},
       {:sweet_xml, "~> 0.6"},
       {:recaptcha, "~> 2.3"},
-      {:hashids, "~> 2.0"}
+      {:hashids, "~> 2.0"},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
+      {:ex_machina, "~> 2.2"}
     ]
   end
 
@@ -85,5 +88,12 @@ defmodule Embers.Mixfile do
     else
       _ -> "0.1.0"
     end
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md"]
+    ]
   end
 end

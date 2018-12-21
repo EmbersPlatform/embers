@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.19.1">
+    <title>EmbersWeb.Router.Helpers – embers v0.1.10</title>
+    <link rel="stylesheet" href="dist/app-240d7fc7e5.css" />
+    <script src="dist/sidebar_items-67f71384bc.js"></script>
+    
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode')) document.body.className += ' night-mode'; } catch (e) { }</script>
+    <div class="main">
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Sidebar</span>
+</button>
+<button class="sidebar-button night-mode-toggle">
+  <span class="icon-theme" aria-hidden="true"></span>
+  <span class="sr-only">Toggle Theme</span>
+</button>
+<section class="sidebar">
+
+  <a href="readme.html" class="sidebar-projectLink">
+    <div class="sidebar-projectDetails">
+      <h1 class="sidebar-projectName">
+embers      </h1>
+      <h2 class="sidebar-projectVersion">
+        v0.1.10
+      </h2>
+    </div>
+  </a>
+
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <input name="q" type="text" id="search-list" class="search-input" placeholder="Search" aria-label="Search" autocomplete="off" />
+  </form>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+
+
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+      <h1>
+        <small class="visible-xs">embers v0.1.10</small>
+EmbersWeb.Router.Helpers              </h1>
+
+
+        <section id="moduledoc">
+<p>Module with named helpers generated from EmbersWeb.Router.</p>
+        </section>
+
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+          
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#account_path/2">account_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#account_path/3">account_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#account_url/2">account_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#account_url/3">account_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#block_path/2">block_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#block_path/3">block_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#block_path/4">block_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#block_url/2">block_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#block_url/3">block_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#block_url/4">block_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#confirm_path/2">confirm_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#confirm_path/3">confirm_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#confirm_url/2">confirm_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#confirm_url/3">confirm_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#feed_path/2">feed_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#feed_path/3">feed_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#feed_path/4">feed_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#feed_url/2">feed_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#feed_url/3">feed_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#feed_url/4">feed_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#follower_path/3">follower_path(conn_or_endpoint, action, id)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#follower_path/4">follower_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#follower_url/3">follower_url(conn_or_endpoint, action, id)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#follower_url/4">follower_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#friend_path/2">friend_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#friend_path/3">friend_path(conn_or_endpoint, action, id)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#friend_path/4">friend_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#friend_url/2">friend_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#friend_url/3">friend_url(conn_or_endpoint, action, id)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#friend_url/4">friend_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#media_path/2">media_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#media_path/3">media_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#media_url/2">media_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#media_url/3">media_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#meta_path/2">meta_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#meta_path/3">meta_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#meta_url/2">meta_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#meta_url/3">meta_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#page_path/2">page_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#page_path/3">page_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#page_path/4">page_path(conn_or_endpoint, action, path, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#page_url/2">page_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#page_url/3">page_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#page_url/4">page_url(conn_or_endpoint, action, path, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#password_reset_path/2">password_reset_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#password_reset_path/3">password_reset_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#password_reset_url/2">password_reset_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#password_reset_url/3">password_reset_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#path/2">path(data, path)</a>
+  </div>
+    <div class="summary-synopsis"><p>Generates the path information including any necessary prefix</p>
+</div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#post_path/2">post_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#post_path/3">post_path(conn_or_endpoint, action, id)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#post_path/4">post_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#post_url/2">post_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#post_url/3">post_url(conn_or_endpoint, action, id)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#post_url/4">post_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#reaction_path/4">reaction_path(conn_or_endpoint, action, post_id, name)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#reaction_path/5">reaction_path(conn_or_endpoint, action, post_id, name, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#reaction_url/4">reaction_url(conn_or_endpoint, action, post_id, name)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#reaction_url/5">reaction_url(conn_or_endpoint, action, post_id, name, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#session_path/2">session_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#session_path/3">session_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#session_url/2">session_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#session_url/3">session_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#setting_path/2">setting_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#setting_path/3">setting_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#setting_url/2">setting_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#setting_url/3">setting_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#static_path/2">static_path(conn, path)</a>
+  </div>
+    <div class="summary-synopsis"><p>Generates path to a static asset given its file path</p>
+</div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#static_url/2">static_url(conn, path)</a>
+  </div>
+    <div class="summary-synopsis"><p>Generates url to a static asset given its file path</p>
+</div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#tag_path/2">tag_path(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#tag_path/3">tag_path(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#tag_path/4">tag_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#tag_url/2">tag_url(conn_or_endpoint, action)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#tag_url/3">tag_url(conn_or_endpoint, action, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#tag_url/4">tag_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#url/1">url(data)</a>
+  </div>
+    <div class="summary-synopsis"><p>Generates the connection/endpoint base URL without any path information</p>
+</div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_path/3">user_path(conn_or_endpoint, action, id)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_path/4">user_path(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_url/3">user_url(conn_or_endpoint, action, id)</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#user_url/4">user_url(conn_or_endpoint, action, id, params)</a>
+  </div>
+</div>
+  </div>
+          
+        </section>
+
+
+
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Functions
+          </h1>
+<div class="detail" id="account_path/2">
+    <div class="detail-header">
+    <a href="#account_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">account_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="account_path/3">
+    <div class="detail-header">
+    <a href="#account_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">account_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="account_url/2">
+    <div class="detail-header">
+    <a href="#account_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">account_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="account_url/3">
+    <div class="detail-header">
+    <a href="#account_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">account_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="block_path/2">
+    <div class="detail-header">
+    <a href="#block_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">block_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="block_path/3">
+    <div class="detail-header">
+    <a href="#block_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">block_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="block_path/4">
+    <div class="detail-header">
+    <a href="#block_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">block_path(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="block_url/2">
+    <div class="detail-header">
+    <a href="#block_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">block_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="block_url/3">
+    <div class="detail-header">
+    <a href="#block_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">block_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="block_url/4">
+    <div class="detail-header">
+    <a href="#block_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">block_url(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="confirm_path/2">
+    <div class="detail-header">
+    <a href="#confirm_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">confirm_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="confirm_path/3">
+    <div class="detail-header">
+    <a href="#confirm_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">confirm_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="confirm_url/2">
+    <div class="detail-header">
+    <a href="#confirm_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">confirm_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="confirm_url/3">
+    <div class="detail-header">
+    <a href="#confirm_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">confirm_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="feed_path/2">
+    <div class="detail-header">
+    <a href="#feed_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">feed_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="feed_path/3">
+    <div class="detail-header">
+    <a href="#feed_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">feed_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="feed_path/4">
+    <div class="detail-header">
+    <a href="#feed_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">feed_path(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="feed_url/2">
+    <div class="detail-header">
+    <a href="#feed_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">feed_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="feed_url/3">
+    <div class="detail-header">
+    <a href="#feed_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">feed_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="feed_url/4">
+    <div class="detail-header">
+    <a href="#feed_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">feed_url(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="follower_path/3">
+    <div class="detail-header">
+    <a href="#follower_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">follower_path(conn_or_endpoint, action, id)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="follower_path/4">
+    <div class="detail-header">
+    <a href="#follower_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">follower_path(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="follower_url/3">
+    <div class="detail-header">
+    <a href="#follower_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">follower_url(conn_or_endpoint, action, id)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="follower_url/4">
+    <div class="detail-header">
+    <a href="#follower_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">follower_url(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="friend_path/2">
+    <div class="detail-header">
+    <a href="#friend_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">friend_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="friend_path/3">
+    <div class="detail-header">
+    <a href="#friend_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">friend_path(conn_or_endpoint, action, id)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="friend_path/4">
+    <div class="detail-header">
+    <a href="#friend_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">friend_path(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="friend_url/2">
+    <div class="detail-header">
+    <a href="#friend_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">friend_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="friend_url/3">
+    <div class="detail-header">
+    <a href="#friend_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">friend_url(conn_or_endpoint, action, id)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="friend_url/4">
+    <div class="detail-header">
+    <a href="#friend_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">friend_url(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="media_path/2">
+    <div class="detail-header">
+    <a href="#media_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">media_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="media_path/3">
+    <div class="detail-header">
+    <a href="#media_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">media_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="media_url/2">
+    <div class="detail-header">
+    <a href="#media_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">media_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="media_url/3">
+    <div class="detail-header">
+    <a href="#media_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">media_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="meta_path/2">
+    <div class="detail-header">
+    <a href="#meta_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">meta_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="meta_path/3">
+    <div class="detail-header">
+    <a href="#meta_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">meta_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="meta_url/2">
+    <div class="detail-header">
+    <a href="#meta_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">meta_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="meta_url/3">
+    <div class="detail-header">
+    <a href="#meta_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">meta_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="page_path/2">
+    <div class="detail-header">
+    <a href="#page_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">page_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="page_path/3">
+    <div class="detail-header">
+    <a href="#page_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">page_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="page_path/4">
+    <div class="detail-header">
+    <a href="#page_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">page_path(conn_or_endpoint, action, path, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="page_url/2">
+    <div class="detail-header">
+    <a href="#page_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">page_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="page_url/3">
+    <div class="detail-header">
+    <a href="#page_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">page_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="page_url/4">
+    <div class="detail-header">
+    <a href="#page_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">page_url(conn_or_endpoint, action, path, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="password_reset_path/2">
+    <div class="detail-header">
+    <a href="#password_reset_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">password_reset_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="password_reset_path/3">
+    <div class="detail-header">
+    <a href="#password_reset_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">password_reset_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="password_reset_url/2">
+    <div class="detail-header">
+    <a href="#password_reset_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">password_reset_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="password_reset_url/3">
+    <div class="detail-header">
+    <a href="#password_reset_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">password_reset_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="path/2">
+    <div class="detail-header">
+    <a href="#path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">path(data, path)</span>
+          </div>
+  <section class="docstring">
+<p>Generates the path information including any necessary prefix.</p>
+  </section>
+</div>
+<div class="detail" id="post_path/2">
+    <div class="detail-header">
+    <a href="#post_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">post_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="post_path/3">
+    <div class="detail-header">
+    <a href="#post_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">post_path(conn_or_endpoint, action, id)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="post_path/4">
+    <div class="detail-header">
+    <a href="#post_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">post_path(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="post_url/2">
+    <div class="detail-header">
+    <a href="#post_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">post_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="post_url/3">
+    <div class="detail-header">
+    <a href="#post_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">post_url(conn_or_endpoint, action, id)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="post_url/4">
+    <div class="detail-header">
+    <a href="#post_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">post_url(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="reaction_path/4">
+    <div class="detail-header">
+    <a href="#reaction_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">reaction_path(conn_or_endpoint, action, post_id, name)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="reaction_path/5">
+    <div class="detail-header">
+    <a href="#reaction_path/5" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">reaction_path(conn_or_endpoint, action, post_id, name, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="reaction_url/4">
+    <div class="detail-header">
+    <a href="#reaction_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">reaction_url(conn_or_endpoint, action, post_id, name)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="reaction_url/5">
+    <div class="detail-header">
+    <a href="#reaction_url/5" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">reaction_url(conn_or_endpoint, action, post_id, name, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="session_path/2">
+    <div class="detail-header">
+    <a href="#session_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">session_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="session_path/3">
+    <div class="detail-header">
+    <a href="#session_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">session_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="session_url/2">
+    <div class="detail-header">
+    <a href="#session_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">session_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="session_url/3">
+    <div class="detail-header">
+    <a href="#session_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">session_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="setting_path/2">
+    <div class="detail-header">
+    <a href="#setting_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">setting_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="setting_path/3">
+    <div class="detail-header">
+    <a href="#setting_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">setting_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="setting_url/2">
+    <div class="detail-header">
+    <a href="#setting_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">setting_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="setting_url/3">
+    <div class="detail-header">
+    <a href="#setting_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">setting_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="static_path/2">
+    <div class="detail-header">
+    <a href="#static_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">static_path(conn, path)</span>
+          </div>
+  <section class="docstring">
+<p>Generates path to a static asset given its file path.</p>
+  </section>
+</div>
+<div class="detail" id="static_url/2">
+    <div class="detail-header">
+    <a href="#static_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">static_url(conn, path)</span>
+          </div>
+  <section class="docstring">
+<p>Generates url to a static asset given its file path.</p>
+  </section>
+</div>
+<div class="detail" id="tag_path/2">
+    <div class="detail-header">
+    <a href="#tag_path/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">tag_path(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="tag_path/3">
+    <div class="detail-header">
+    <a href="#tag_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">tag_path(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="tag_path/4">
+    <div class="detail-header">
+    <a href="#tag_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">tag_path(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="tag_url/2">
+    <div class="detail-header">
+    <a href="#tag_url/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">tag_url(conn_or_endpoint, action)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="tag_url/3">
+    <div class="detail-header">
+    <a href="#tag_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">tag_url(conn_or_endpoint, action, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="tag_url/4">
+    <div class="detail-header">
+    <a href="#tag_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">tag_url(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="url/1">
+    <div class="detail-header">
+    <a href="#url/1" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">url(data)</span>
+          </div>
+  <section class="docstring">
+<p>Generates the connection/endpoint base URL without any path information.</p>
+  </section>
+</div>
+<div class="detail" id="user_path/3">
+    <div class="detail-header">
+    <a href="#user_path/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_path(conn_or_endpoint, action, id)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="user_path/4">
+    <div class="detail-header">
+    <a href="#user_path/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_path(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="user_url/3">
+    <div class="detail-header">
+    <a href="#user_url/3" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_url(conn_or_endpoint, action, id)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+<div class="detail" id="user_url/4">
+    <div class="detail-header">
+    <a href="#user_url/4" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <span class="signature">user_url(conn_or_endpoint, action, id, params)</span>
+          </div>
+  <section class="docstring">
+  </section>
+</div>
+        </section>
+
+          <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.19.1),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+            </span>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  <script src="dist/app-a0c90688fa.js"></script>
+  
+  </body>
+</html>
+
