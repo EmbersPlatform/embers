@@ -8,9 +8,14 @@ La capa web del sistema está basado en Phoenix Framework.
 
 ## Instalación
 
+### Requisitos previos
+
+- Base de datos PostgreSQL funcionando
+
 ### Backend
 
 - Instalar las dependencias con `mix deps.get`
+- Crear un archivo `config/dev.ENV.secret` y completar la configuración de acuerdo al entorno actual(ENV puede ser `dev`, `prod`, `test`), como las credenciales de la base de datos.
 - Crear y migrar la base de datos con `mix ecto.create && mix ecto.migrate`
 - Iniciar el servidor con `mix phx.server`
 
