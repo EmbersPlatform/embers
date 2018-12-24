@@ -5,7 +5,7 @@ defmodule Embers.Notifications.Notification do
 
   import Ecto.Changeset
 
-  @valid_types ~w(follow comment mention)
+  @valid_types ~w(follow comment mention system)
 
   @type t :: %__MODULE__{}
 
@@ -15,29 +15,20 @@ defmodule Embers.Notifications.Notification do
     field(:text, :string)
     field(:read, :boolean)
 
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:from, Embers.Accounts.User)
+    belongs_to(:recipient, Embers.Accounts.User)
 
     timestamps()
   end
 
   def create_changeset(changeset, attrs) do
     changeset
-    |> cast(attrs, [:type, :user_id, :source_id, :text])
-    |> validate_required([:type])
-    |> validate_type(attrs)
-  end
-
-  defp validate_type(changeset, attrs) do
-    case Enum.member?(@valid_types, attrs["type"]) do
-      true ->
-        changeset
-
-      false ->
-        changeset
-        |> add_error(
-          :invalid_type,
-          "The given type is invalid, use one of: #{Enum.join(@valid_types, " ")}"
-        )
-    end
+    |> cast(attrs, [:type, :recipient_id, :from_id, :source_id, :text, :read])
+    |> validate_required([:type, :recipient_id])
+    |> validate_inclusion(
+      :type,
+      @valid_types,
+      message: "is not a valid type, use one of: #{Enum.join(@valid_types, " ")}"
+    )
   end
 end
