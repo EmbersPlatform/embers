@@ -41,10 +41,12 @@ defmodule Embers.Feed.Post do
     |> validate_number(:nesting_level, less_than_or_equal_to: 2)
   end
 
-  defp trim_body(changeset, attrs) do
+  defp trim_body(changeset, %{"body" => body} = _attrs) when not is_nil(body) do
     changeset
-    |> change(body: String.trim(attrs["body"]))
+    |> change(body: String.trim(body))
   end
+
+  defp trim_body(changeset, _), do: changeset
 
   defp validate_parent_and_set_nesting_level(changeset, %{"parent_id" => parent_id}) do
     case Repo.get(Post, parent_id) do
