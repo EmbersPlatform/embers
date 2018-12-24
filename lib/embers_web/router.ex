@@ -69,6 +69,8 @@ defmodule EmbersWeb.Router do
         get("/feed/user/:id", FeedController, :user_statuses)
 
         post("/media", MediaController, :upload)
+
+        get("/notifications", NotificationController, :index)
       end
     end
 
