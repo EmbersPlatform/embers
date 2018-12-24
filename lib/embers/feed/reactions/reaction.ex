@@ -20,22 +20,12 @@ defmodule Embers.Feed.Reactions.Reaction do
     changeset
     |> cast(attrs, [:name, :user_id, :post_id])
     |> unique_constraint(:unique_reaction, name: :unique_reaction)
-    |> validate_reaction(attrs)
     |> validate_post(attrs)
-  end
-
-  def validate_reaction(changeset, attrs) do
-    case Enum.member?(@valid_reactions, attrs["name"]) do
-      true ->
-        changeset
-
-      false ->
-        changeset
-        |> add_error(
-          :invalid_reaction,
-          "The given reaction is invalid, use one of: #{Enum.join(@valid_reactions, " ")}"
-        )
-    end
+    |> validate_inclusion(
+      :name,
+      @valid_reactions,
+      message: "is not a valid reaction, use one of: #{Enum.join(@valid_reactions, " ")}"
+    )
   end
 
   defp validate_post(changeset, %{"post_id" => post_id} = attrs) do
