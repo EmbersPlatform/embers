@@ -7294,6 +7294,13 @@ vue-router@^2.8.1:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-2.8.1.tgz#9833c9ee57ac83beb0269056fefee71713f20695"
   integrity sha512-MC4jacHBhTPKtmcfzvaj2N7g6jgJ/Z/eIjZdt+yUaUOM1iKC0OUIlO/xCtz6OZFFTNUJs/1YNro2GN/lE+nOXA==
 
+vue-shortkey@^3.1.6:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/vue-shortkey/-/vue-shortkey-3.1.6.tgz#a8632d4ddab9a07f77deae372cad3a66da85e493"
+  integrity sha512-Nh5cwN86rfNCKINVi16OzN/iVPLvhk1yvVZD8h8E34WlzDRtdm+dngUjfsedz30+Eebbr6c444TmLLIrKqzW9g==
+  dependencies:
+    vue "^2.1.0"
+
 vue-socket.io@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/vue-socket.io/-/vue-socket.io-2.1.1.tgz#57c9042686097026efb5fc048c58fc96ee264638"
@@ -7343,6 +7350,11 @@ vue@^2.0.0, vue@^2.5.16:
   version "2.5.19"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.19.tgz#c4c9ba01a97a23ea24018d4702e994c15785e025"
   integrity sha512-zs7w/dy/yMTCcUunUl05UHhYEI2bt67R7G2jD42HnJ28JxCtC1FY8zZ9GU4PF2SJP8Ff/B9HyojWk/NztqKfFA==
+
+vue@^2.1.0:
+  version "2.6.7"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.7.tgz#254f188e7621d2d19ee28d0c0442c6d21b53ae2d"
+  integrity sha512-g7ADfQ82QU+j6F/bVDioVQf2ccIMYLuR4E8ev+RsDBlmwRkhGO3HhgF4PF9vpwjdPpxyb1zzLur2nQ2oIMAMEg==
 
 vuex-router-sync@^3.0.0:
   version "3.0.0"

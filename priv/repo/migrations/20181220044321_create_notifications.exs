@@ -10,7 +10,7 @@ defmodule Embers.Repo.Migrations.CreateNotifications do
       add(:text, :string, null: true)
       add(:read, :boolean, default: false)
 
-      timestamps()
+      timestamps(default: fragment("NOW()"))
     end
   end
 end

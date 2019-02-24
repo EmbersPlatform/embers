@@ -65,9 +65,12 @@
               <p>compartio:</p>
             </template>
           </h4>
-          <small>{{ $moment.utc(post.created_at).local().from() }}</small>
+          <router-link
+            class="card-date"
+            :to="`/@${post.user.username}/${post.id}`"
+          >{{ $moment.utc(post.created_at).local().from() }}</router-link>
         </div>
-        <div v-if="loggedUser" class="header-options" focusable tabindex="-1">
+        <div v-if="tools && loggedUser" class="header-options" focusable tabindex="-1">
           <span>
             <svgicon name="n_left-sign"></svgicon>
           </span>
@@ -157,29 +160,11 @@
         </div>
         <template v-if="post.media">
           <div class="multimedia">
-            <template v-if="post.media.length < 3">
-              <div class="row">
-                <div class="media image" v-for="(media, index) in post.media" :key="index">
-                  <img :src="`/media/image/${media.url}`">
-                </div>
-              </div>
-            </template>
-            <template v-else>
-              <div class="media image">
-                <img :src="`/media/image/${post.media[0].url}`">
-              </div>
-              <div class="row">
-                <div
-                  class="media image"
-                  v-for="(media, index) in post.media"
-                  v-if="index > 0"
-                  :key="index"
-                >
-                  <img :src="`/media/image/${media.url}`">
-                </div>
-              </div>
-            </template>
+            <media-zone :medias="post.media" :previews="true" @clicked="media_clicked"/>
           </div>
+        </template>
+        <template v-if="post.related_to">
+          <card :post="post.related_to" :tools="false" :footer="false" class="related"/>
         </template>
         <template v-if="post.attachment">
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>
@@ -202,7 +187,7 @@
       </section>
     </div>
     <footer
-      v-if="!isPostView || isPostView && (!isOwner || hasReactions || post.stats.replies > 0 || post.stats.shares > 0)"
+      v-if="footer && (!isPostView || isPostView && (!isOwner || hasReactions || post.stats.replies > 0 || post.stats.shares > 0))"
       class="actions"
     >
       <ul class="actions-reactions">
@@ -284,6 +269,12 @@
         </li>
       </ul>
     </footer>
+    <media-slides
+      v-if="show_media_slides"
+      :medias="post.media"
+      :index="clicked_media_index"
+      @closed="show_media_slides = false"
+    ></media-slides>
   </article>
 </template>
 
@@ -295,15 +286,20 @@ import attachment from "../../api/attachment";
 import VideoEmbed from "./VideoEmbed";
 import LinkEmbed from "./LinkEmbed";
 import AudioPlayer from "./AudioPlayer";
+import MediaZone from "@/components/Media/MediaZone";
+import MediaSlides from "@/components/Media/MediaSlides";
 
 import formatter from "@/lib/formatter";
 import avatar from "@/components/Avatar";
 
 import ReactionsModal from "../ReactionsModal/ReactionsModal";
 
+import EventBus from "@/lib/event_bus";
+
 import { mapGetters } from "vuex";
 
 export default {
+  name: "card",
   props: {
     post: {
       type: Object,
@@ -327,12 +323,22 @@ export default {
       type: String,
       default: "medium",
       required: false
+    },
+    footer: {
+      type: Boolean,
+      default: true
+    },
+    tools: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
     VideoEmbed,
     LinkEmbed,
     AudioPlayer,
+    MediaZone,
+    MediaSlides,
     avatar
   },
   computed: {
@@ -459,31 +465,7 @@ export default {
       if (!this.loggedUser || this.isOwner || this.post.alreadyShared) {
         return;
       }
-      this.$modal.show("dialog", {
-        text: "¿Compartir este post con tus seguidores?",
-        buttons: [
-          {
-            title: "Nah",
-            class: "button"
-          },
-          {
-            title: "Oh, sí",
-            default: true,
-            class: "button success",
-            handler: () => {
-              post.share(this.post.id).then(() => {
-                this.$notify({
-                  group: "top",
-                  text: "El post fue compartido :)",
-                  type: "success"
-                });
-              });
-              this.$modal.hide("dialog");
-            }
-          }
-        ],
-        adaptive: true
-      });
+      EventBus.$emit("show_new_post_modal", { related: this.post });
     },
     /**
      * Delete this post
@@ -715,6 +697,10 @@ export default {
           this.unlock();
         }
       });
+    },
+    media_clicked(id) {
+      this.clicked_media_index = this.post.media.findIndex(m => m.id == id);
+      this.show_media_slides = true;
     }
   },
 
@@ -732,7 +718,9 @@ export default {
       showImage: true,
       attachmentError: false,
       isPicker: false,
-      user
+      user,
+      show_media_slides: false,
+      clicked_media_index: 0
     };
   },
 

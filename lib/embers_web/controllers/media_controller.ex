@@ -10,7 +10,7 @@ defmodule EmbersWeb.MediaController do
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
 
   def upload(%Plug.Conn{assigns: %{current_user: user}} = conn, %{
-        "image" => file
+        "file" => file
       }) do
     case Media.upload(file, user.id) do
       {:ok, media} ->
@@ -20,12 +20,22 @@ defmodule EmbersWeb.MediaController do
       {:error, :invalid_file} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(EmbersWeb.ErrorView, "422.json", error: "Invalid image file")
+        |> put_view(EmbersWeb.ErrorView)
+        |> render("422.json", error: "Invalid image file")
 
-      {:error, error} ->
+      {:error, [{:http_error, _, %{body: error}}]} ->
         conn
-        |> put_status(:unprocessable_entity)
-        |> render(EmbersWeb.ErrorView, "422.json", error: error)
+        |> put_status(500)
+        |> put_view(EmbersWeb.ErrorView)
+        |> render("422.json", error: error)
+
+      {:error, _error} ->
+        IO.inspect(_error)
+
+        conn
+        |> put_status(500)
+        |> put_view(EmbersWeb.ErrorView)
+        |> render("422.json", error: "Internal error")
     end
   end
 end

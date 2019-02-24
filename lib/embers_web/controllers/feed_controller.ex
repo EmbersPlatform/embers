@@ -24,7 +24,7 @@ defmodule EmbersWeb.FeedController do
     posts =
       from(
         post in Post,
-        where: post.user_id == ^id,
+        where: post.user_id == ^id and is_nil(post.deleted_at),
         where: post.nesting_level == 0,
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),

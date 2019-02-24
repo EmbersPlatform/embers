@@ -52,6 +52,7 @@
       </template>
     </notifications>
     <rules-modal/>
+    <new-post-modal v-if="show_new_post_modal" :related="new_post_modal_related"/>
   </div>
 </template>
 
@@ -65,6 +66,7 @@ import _ from "lodash";
 import Hammer from "hammerjs";
 
 import RulesModal from "./components/Modals/RulesModal";
+import NewPostModal from "./components/Modals/NewPostModal";
 
 import Notification from "./components/Notification";
 
@@ -79,7 +81,8 @@ export default {
     Main,
     Sticky,
     Notification,
-    RulesModal
+    RulesModal,
+    NewPostModal
   },
   data() {
     return {
@@ -91,7 +94,9 @@ export default {
       blurToolBox: false,
       blurSidebar: false,
       openSidebar: false,
-      fixed: false
+      fixed: false,
+      show_new_post_modal: false,
+      new_post_modal_related: null
     };
   },
   methods: {
@@ -207,6 +212,15 @@ export default {
     EventBus.$on("new_activity", post => {
       this.$store.dispatch("add_new_post", post);
       this.$store.dispatch("newActivity");
+    });
+
+    EventBus.$on("show_new_post_modal", props => {
+      this.show_new_post_modal = true;
+      this.new_post_modal_related = props.related || null;
+    });
+    EventBus.$on("close_new_post_modal", props => {
+      this.show_new_post_modal = false;
+      this.new_post_modal_related = null;
     });
   },
   mounted() {

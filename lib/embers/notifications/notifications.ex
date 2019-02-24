@@ -73,6 +73,29 @@ defmodule Embers.Notifications do
   end
 
   @doc """
+  Inserts a notification with `attrs` for the given `recipients` *in a single
+  query*
+
+  TODO validate `attrs`
+  """
+  @spec batch_create_notification(list(), Keyword.t()) :: {any(), nil | [any()]}
+  def batch_create_notification(recipients, attrs) do
+    notifications =
+      Enum.map(recipients, fn elem ->
+        %{
+          recipient_id: elem,
+          type: attrs[:type],
+          from_id: attrs[:from_id],
+          source_id: attrs[:source_id],
+          text: attrs[:text],
+          read: attrs[:read] || false
+        }
+      end)
+
+    Repo.insert_all(Notification, notifications)
+  end
+
+  @doc """
   Deletes a notification by it's id and returns `Notification` or `nil`
 
   ## Examples

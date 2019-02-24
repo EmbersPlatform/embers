@@ -7,7 +7,9 @@ defmodule EmbersWeb.MediaView do
     %{
       id: IdHasher.encode(media.id),
       url: media.url,
-      temp: media.temporary
+      type: media.type,
+      temp: media.temporary,
+      metadata: media.metadata
     }
   end
 end

@@ -354,6 +354,7 @@ const routes = [
       {
         path: ":id",
         component: Post,
+        name: "post",
         meta: {
           title: "Embers",
           noSuffix: true

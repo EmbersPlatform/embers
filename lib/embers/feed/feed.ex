@@ -12,6 +12,8 @@ defmodule Embers.Feed do
 
   alias Embers.Feed.{Post, Activity}
 
+  @max_media_count 4
+
   @doc """
   Returns the list of posts.
 
@@ -42,17 +44,34 @@ defmodule Embers.Feed do
   def get_post!(id) do
     from(
       post in Post,
-      where: post.id == ^id,
+      as: :post,
+      where: post.id == ^id and is_nil(post.deleted_at),
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
       left_join: media in assoc(post, :media),
       left_join: reactions in assoc(post, :reactions),
       left_join: tags in assoc(post, :tags),
+      left_join: related in assoc(post, :related_to),
+      left_join: related_user in assoc(related, :user),
+      left_join: related_user_meta in assoc(related_user, :meta),
+      left_join: related_tags in assoc(related, :tags),
+      left_join: related_media in assoc(related, :media),
+      left_join: related_reactions in assoc(related, :reactions),
       preload: [
         user: {user, meta: meta},
         media: media,
         reactions: reactions,
-        tags: tags
+        tags: tags,
+        related_to: {
+          related,
+          user: {
+            related_user,
+            meta: related_user_meta
+          },
+          media: related_media,
+          tags: related_tags,
+          reactions: related_reactions
+        }
       ]
     )
     |> Repo.one()
@@ -75,41 +94,85 @@ defmodule Embers.Feed do
 
     Multi.new()
     |> Multi.insert(:post, post_changeset)
+    |> Multi.run(:medias, &handle_medias(&1.post, attrs))
+    |> Multi.run(:post_replies, &update_parent_post_replies(&1.post, attrs))
+    |> Multi.run(:related_to, &handle_related_to(&1.post, attrs))
     |> Repo.transaction()
     |> case do
       {:ok, %{post: post} = _results} ->
-        if(post.nesting_level > 0) do
-          # Update parent post replies count
-          from(
-            p in Post,
-            where: p.id == ^post.parent_id,
-            update: [inc: [replies_count: 1]]
-          )
-          |> Repo.update_all([])
-        end
-
-        if(Map.has_key?(attrs, "attachments")) do
-          attachments = attrs["attachments"]
-
-          ids = Enum.map(attachments, fn x -> IdHasher.decode(x["id"]) end)
-
-          {_count, medias} =
-            from(m in MediaItem, where: m.id in ^ids)
-            |> Repo.update_all([set: [temporary: false]], returning: true)
-
-          post
-          |> Repo.preload(:media)
-          |> Ecto.Changeset.change()
-          |> Ecto.Changeset.put_assoc(:media, medias)
-          |> Repo.update()
-
-          medias
-        end
-
-        {:ok, post |> Repo.preload(:media)}
+        {:ok, post |> Repo.preload(:media) |> Repo.preload(:related_to)}
 
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         {:error, failed_value}
+
+      error ->
+        error
+    end
+  end
+
+  defp update_parent_post_replies(post, _attrs) do
+    if(post.nesting_level > 0) do
+      {count, _} =
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [replies_count: 1]]
+        )
+        |> Repo.update_all([])
+
+      if(count == 1) do
+        {:ok, nil}
+      else
+        {:error, "there was an error trying to update parent post replies count"}
+      end
+    else
+      {:ok, nil}
+    end
+  end
+
+  defp handle_related_to(post, _attrs) do
+    if(is_nil(post.related_to_id)) do
+      {:ok, nil}
+    else
+      {count, _} =
+        from(
+          p in Post,
+          where: p.id == ^post.related_to_id and is_nil(p.deleted_at),
+          update: [inc: [shares_count: 1]]
+        )
+        |> Repo.update_all([])
+
+      if(count == 1) do
+        {:ok, nil}
+      else
+        {:error, "there was an error trying to update parent post shares count"}
+      end
+    end
+  end
+
+  defp handle_medias(post, attrs) do
+    medias = attrs["medias"]
+
+    if(not is_nil(medias)) do
+      if(length(medias) <= @max_media_count) do
+        medias = attrs["medias"]
+
+        ids = Enum.map(medias, fn x -> IdHasher.decode(x["id"]) end)
+
+        {_count, medias} =
+          from(m in MediaItem, where: m.id in ^ids)
+          |> Repo.update_all([set: [temporary: false]], returning: true)
+
+        post
+        |> Repo.preload(:media)
+        |> Ecto.Changeset.change()
+        |> Ecto.Changeset.put_assoc(:media, medias)
+        |> Repo.update()
+      else
+        {:error, "media count exceeded"}
+      end
+    else
+      {:ok, nil}
     end
   end
 
@@ -131,25 +194,39 @@ defmodule Embers.Feed do
     |> Repo.update()
   end
 
+  def delete_post(%Post{} = post) do
+    post
+    |> Repo.soft_delete()
+  end
+
   @doc """
-  Deletes a Post.
+  Hard deletes a Post.
 
   ## Examples
 
-      iex> delete_post(post)
+      iex> hard_delete_post(post)
       {:ok, %Post{}}
 
-      iex> delete_post(post)
+      iex> hard_delete_post(post)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_post(%Post{} = post) do
+  def hard_delete_post(%Post{} = post) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       from(
         p in Post,
         where: p.id == ^post.parent_id,
         update: [inc: [replies_count: -1]]
+      )
+      |> Repo.update_all([])
+    end
+
+    if(not is_nil(post.related_to_id)) do
+      from(
+        p in Post,
+        where: p.id == ^post.parent_id,
+        update: [inc: [shares_count: -1]]
       )
       |> Repo.update_all([])
     end
@@ -176,13 +253,37 @@ defmodule Embers.Feed do
       where: activity.user_id == ^user_id,
       order_by: [desc: activity.id],
       left_join: post in assoc(activity, :post),
+      as: :post,
+      where: is_nil(post.deleted_at),
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
       left_join: media in assoc(post, :media),
       left_join: reactions in assoc(post, :reactions),
       left_join: tags in assoc(post, :tags),
+      left_join: related in assoc(post, :related_to),
+      left_join: related_user in assoc(related, :user),
+      left_join: related_user_meta in assoc(related_user, :meta),
+      left_join: related_tags in assoc(related, :tags),
+      left_join: related_media in assoc(related, :media),
+      left_join: related_reactions in assoc(related, :reactions),
       preload: [
-        post: {post, user: {user, meta: meta}, media: media, reactions: reactions, tags: tags}
+        post: {
+          post,
+          user: {user, meta: meta},
+          media: media,
+          reactions: reactions,
+          tags: tags,
+          related_to: {
+            related,
+            user: {
+              related_user,
+              meta: related_user_meta
+            },
+            media: related_media,
+            tags: related_tags,
+            reactions: related_reactions
+          }
+        }
       ]
     )
     |> Paginator.paginate(opts)
@@ -194,7 +295,7 @@ defmodule Embers.Feed do
 
   def get_post_replies(parent_id, opts \\ %{}) do
     Post
-    |> where([post], post.parent_id == ^parent_id)
+    |> where([post], post.parent_id == ^parent_id and is_nil(post.deleted_at))
     |> join(:left, [post], user in assoc(post, :user))
     |> join(:left, [post, user], meta in assoc(user, :meta))
     |> preload(

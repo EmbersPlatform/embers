@@ -48,6 +48,14 @@ defmodule Embers.Accounts.User do
     |> put_canonical_username
   end
 
+  def create_changeset_raw(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:username, :email, :password_hash, :id])
+    |> validate_required([:username, :email, :password_hash, :id])
+    |> unique_email
+    |> put_canonical_username
+  end
+
   def confirm_changeset(user) do
     change(user, %{confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second)})
   end
@@ -128,7 +136,7 @@ defmodule Embers.Accounts.User do
 
   defp validate_username(changeset) do
     validate_format(changeset, :username, ~r/^([A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*)$/)
-    |> validate_length(:username, max: 20, min: 2)
+    |> validate_length(:username, max: 30, min: 2)
     |> unique_constraint(:username)
   end
 

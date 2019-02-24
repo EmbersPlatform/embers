@@ -23,6 +23,13 @@ defmodule EmbersWeb.PostController do
         post_params
       end
 
+    post_params =
+      if(Map.has_key?(params, "related_to_id")) do
+        %{post_params | "related_to_id" => IdHasher.decode(params["related_to_id"])}
+      else
+        post_params
+      end
+
     case Feed.create_post(post_params) do
       {:ok, post} ->
         user = Embers.Accounts.get_populated(user.canonical)
@@ -47,7 +54,14 @@ defmodule EmbersWeb.PostController do
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(EmbersWeb.ErrorView, "422.json", changeset: changeset)
+        |> put_view(EmbersWeb.ErrorView)
+        |> render("422.json", changeset: changeset)
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(EmbersWeb.ErrorView)
+        |> render("422.json", %{error: reason})
     end
   end
 
@@ -128,7 +142,7 @@ defmodule EmbersWeb.PostController do
     end)
   end
 
-  defp handle_mentions(%Post{body: body} = post) do
+  defp handle_mentions(%Post{body: body} = post) when not is_nil(body) do
     regex = ~r/(?:^|[^a-zA-Z0-9_＠!@#$%&*])(?:(?:@|＠)(?!\/))([a-zA-Z0-9_]{1,15})(?:\b(?!@|＠)|$)/
     results = Regex.scan(regex, body) |> Enum.map(fn [_, txt] -> txt end)
 
@@ -139,25 +153,25 @@ defmodule EmbersWeb.PostController do
         select: user.id
       )
       |> Embers.Repo.all()
+      # don't notify the user that mentioned himself
+      |> Enum.reject(fn recipient -> recipient == post.user_id end)
 
-    recipients
-    |> Enum.reject(fn recipient -> recipient.id == post.user_id end)
-    |> Enum.each(fn recipient ->
-      hashed_id = IdHasher.encode(recipient)
-
-      EmbersWeb.Endpoint.broadcast!("user:#{hashed_id}", "mention", %{
-        from: post.user.canonical,
-        source: IdHasher.encode(post.id)
-      })
-    end)
+    send_mention_ws_message(recipients, post)
+    send_mention_notifications(recipients, post)
   end
+
+  defp handle_mentions(_), do: :ok
 
   defp handle_tags(post, params) do
     hashtag_regex = ~r/(?<!\w)#\w+/
 
     hashtags =
-      Regex.scan(hashtag_regex, post.body)
-      |> Enum.map(fn [txt] -> String.replace(txt, "#", "") end)
+      if is_nil(post.body) do
+        []
+      else
+        Regex.scan(hashtag_regex, post.body)
+        |> Enum.map(fn [txt] -> String.replace(txt, "#", "") end)
+      end
 
     hashtags =
       if Map.has_key?(params, "tags") and is_list(params["tags"]) do
@@ -179,5 +193,24 @@ defmodule EmbersWeb.PostController do
       end)
 
     Embers.Repo.insert_all(Embers.Tags.TagPost, tag_post_list)
+  end
+
+  defp send_mention_ws_message(recipients, post) do
+    Enum.each(recipients, fn recipient ->
+      hashed_id = IdHasher.encode(recipient)
+
+      EmbersWeb.Endpoint.broadcast!("user:#{hashed_id}", "mention", %{
+        from: post.user.canonical,
+        source: IdHasher.encode(post.id)
+      })
+    end)
+  end
+
+  defp send_mention_notifications(recipients, post) do
+    Embers.Notifications.batch_create_notification(recipients,
+      type: "mention",
+      from_id: post.user_id,
+      source_id: post.id
+    )
   end
 end

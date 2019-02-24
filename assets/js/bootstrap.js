@@ -23,6 +23,11 @@ Vue.use(VModal, { dynamic: true, dialog: true });
 import Notifications from "vue-notification";
 Vue.use(Notifications);
 
+Vue.use(require("vue-shortkey"));
+
+import v_visible from "./directives/v_visible";
+Vue.use(v_visible);
+
 import VueMq from "vue-mq";
 
 Vue.use(VueMq, {

@@ -76,8 +76,15 @@ defmodule Embers.Accounts do
     Repo.get_by(User, canonical: canonical)
   end
 
-  def create_user(attrs) do
-    user_changeset = User.create_changeset(%User{}, attrs)
+  def create_user(attrs, opts \\ []) do
+    raw = Keyword.get(opts, :raw, false)
+
+    user_changeset =
+      if raw do
+        User.create_changeset_raw(%User{}, attrs)
+      else
+        User.create_changeset(%User{}, attrs)
+      end
 
     multi =
       Multi.new()

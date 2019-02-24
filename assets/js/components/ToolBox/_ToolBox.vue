@@ -4,121 +4,80 @@
     :class="{'tool-box-open': canShowEditor, 'renderbox': status.loading}"
     data-renderbox-message="Publicando..."
   >
-    <template v-if="!status.loading">
-      <Editor
-        type="toolbox"
-        @update="updateBody"
-        @paste="handlePaste"
-        @focus="openEditor"
-        :attachment="showAttachment"
-        :class="{'compressed': !canShowEditor, 'big-text': bigTextBody}"
-        data-editor-style="toolbox"
-        rel="editor"
-      ></Editor>
-      <div
-        class="tags-wrapper tool"
-        :class="{'compact':!canPublish || status.isAddingAttachment || !canShowEditor}"
-      >
-        <input type="text" placeholder="Tags separados por espacios" v-model="post.tags">
-      </div>
-      <div
-        class="renderbox"
-        data-renderbox-message="Procesando..."
-        v-if="status.isAddingAttachment"
-      ></div>
-      <template v-if="showAttachment">
-        <button
-          class="remove-attachment"
-          @click.prevent="removeAttachment"
-          data-tip="Quitar adjunto"
-          data-tip-position="left"
-          data-tip-text
-        >
-          <i class="fas fa-times"></i>
-        </button>
-        <VideoEmbed v-if="post.attachment.type == 'video'" :video="post.attachment" class="tool"></VideoEmbed>
-        <LinkEmbed v-if="post.attachment.type == 'link'" :link="post.attachment" class="tool"></LinkEmbed>
-        <AudioPlayer v-if="post.attachment.type == 'audio'" :url="post.attachment.url" class="tool"></AudioPlayer>
-        <div v-if="post.attachment.type == 'image'" class="multimedia tool">
-          <span class="media image">
-            <img :src="post.attachment.url">
-          </span>
+    <div class="toolbox__overlay" v-if="has_overlay && show_overlay" @click="close"></div>
+    <div class="toolbox__container">
+      <template v-if="!status.loading">
+        <Editor
+          type="toolbox"
+          @update="updateBody"
+          @paste="handlePaste"
+          @focus="openEditor"
+          :class="{'compressed': !canShowEditor, 'big-text': bigTextBody}"
+          data-editor-style="toolbox"
+          rel="editor"
+        ></Editor>
+        <div class="tags-wrapper tool" :class="{'compact':!canPublish || !canShowEditor}">
+          <input type="text" placeholder="Tags separados por espacios" v-model="post.tags">
         </div>
-      </template>
-      <template v-else>
-        <AudioRecorder v-if="canShowAudioRecorder" @uploaded="receivedAttachment"></AudioRecorder>
-      </template>
 
-      <div class="attachments-zone tool">
-        <div class="attachment" v-for="attachment in post.attachments" :key="attachment.id">
-          <img :src="`/media/image/${attachment.url}`">
-          <span class="remove_attachment">X</span>
-        </div>
-      </div>
+        <attachments-zone
+          :attachments="post.medias"
+          @attachment-removed="remove_media"
+          @clicked="media_clicked"
+          v-show="canShowEditor"
+        ></attachments-zone>
 
-      <div class="controls tool" v-if="canShowEditor">
-        <div class="m_block">
-          <input-switch class="_line" value="text" v-model="post.nsfw" :checked="post.nsfw">NSFW</input-switch>
-          <template v-if="!hasAttachment">
+        <div class="controls tool" v-if="canShowEditor">
+          <div class="m_block">
+            <input-switch class="_line" value="text" v-model="post.nsfw" :checked="post.nsfw">NSFW</input-switch>
             <button
-              :disabled="status.isAddingAttachment || (canPublish && showAttachment)"
               @click.prevent="triggerUpload"
               class="button"
               data-button-size="medium"
               data-button-font="medium"
-              data-tip="Subir imagen"
-              data-tip-position="left"
+              data-tip="Subir fotos o videos"
+              data-tip-position="top"
               data-tip-text
+              v-if="canAddMedias"
             >
               <i class="far fa-image"></i>
             </button>
-            <button
-              :disabled="status.isAddingAttachment || (canPublish && showAttachment)"
-              @click.prevent="toggleAudioRecording"
-              class="button"
-              data-button-size="medium"
-              data-button-font="medium"
-              data-tip="Grabar audio"
-              data-tip-position="left"
-              data-tip-text
-            >
-              <i class="fas fa-microphone"></i>
-            </button>
-            <form
-              v-if="!status.isAddingAttachment"
-              ref="imageUploadForm"
-              method="post"
-              enctype="multipart/form-data"
-              class="hidden"
-            >
+            <form ref="imageUploadForm" method="post" enctype="multipart/form-data" class="hidden">
               <input
                 type="file"
                 name="file"
-                accept="image/*"
+                accept="image/*, video/*"
+                multiple
                 ref="imageUploadInput"
-                @change="uploadImage"
+                @change="uploadFiles"
               >
             </form>
-          </template>
+          </div>
+          <div class="m_block">
+            <button
+              @click.prevent="close"
+              class="button"
+              data-button-size="medium"
+              data-button-font="medium"
+            >cancelar</button>
+            <button
+              :disabled="!canPublish"
+              @click.prevent="addPost"
+              class="button"
+              data-button-size="medium"
+              data-button-font="medium"
+              data-button-important
+            >publicar</button>
+          </div>
         </div>
-        <div class="m_block">
-          <button
-            @click.prevent="close"
-            class="button"
-            data-button-size="medium"
-            data-button-font="medium"
-          >cancelar</button>
-          <button
-            :disabled="!canPublish"
-            @click.prevent="addPost"
-            class="button"
-            data-button-size="medium"
-            data-button-font="medium"
-            data-button-important
-          >publicar</button>
-        </div>
-      </div>
-    </template>
+      </template>
+      <media-slides
+        v-if="show_media_slides"
+        :medias="post.medias"
+        :index="clicked_media_index"
+        @closed="show_media_slides = false"
+      ></media-slides>
+    </div>
   </div>
 </template>
 
@@ -133,13 +92,15 @@ import moment from "moment";
  * Import API interfaces
  */
 import post from "../../api/post";
-import attachment from "../../api/attachment";
 
 /**
  * Import PostCreator child components
  */
 import Editor from "../Editor";
 import AudioRecorder from "./AudioRecorder";
+import AttachmentsZone from "./AttachmentsZone";
+
+import MediaSlides from "@/components/Media/MediaSlides";
 
 /**
  * Import additional components
@@ -155,18 +116,19 @@ const initialData = function() {
     post: {
       body: null,
       nsfw: false,
-      attachment_image: null,
-      attachment: null,
-      attachments: [],
-      tags: ""
+      medias: [],
+      tags: "",
+      related_to_id: null
     },
     status: {
       open: false,
       loading: false,
       errors: null,
-      isAddingAttachment: false,
       recordingAudio: false
-    }
+    },
+    show_overlay: false,
+    show_media_slides: false,
+    clicked_media_index: 0
   };
 };
 
@@ -178,7 +140,19 @@ export default {
     VideoEmbed,
     LinkEmbed,
     AudioPlayer,
+    AttachmentsZone,
+    MediaSlides,
     "input-switch": Switch
+  },
+  props: {
+    related_to: {
+      type: String,
+      default: null
+    },
+    has_overlay: {
+      type: Boolean,
+      default: true
+    }
   },
   data: initialData,
   computed: {
@@ -186,36 +160,26 @@ export default {
       return this.status.open;
     },
     canShowAudioRecorder() {
-      return (
-        this.canShowEditor &&
-        this.status.recordingAudio &&
-        !this.status.isAddingAttachment
-      );
+      return this.canShowEditor && this.status.recordingAudio;
     },
     canPublish() {
-      if (!this.status.isAddingAttachment) {
-        if (!this.post.body && !this.hasAttachment) {
-          return false;
-        }
-        return true;
+      if (!this.post.body && !this.post.medias.length) {
+        return false;
       }
-      return false;
+      return true;
     },
-    hasAttachment() {
-      return this.post.attachment !== null;
+    hasMedias() {
+      return this.post.medias.length > 0;
     },
-    showAttachment() {
-      if (this.hasAttachment && this.canShowEditor) {
-        return true;
-      }
-      return false;
+    canAddMedias() {
+      return !this.related_to && this.post.medias.length < 4;
     },
     bigTextBody() {
       return (
         this.post.body &&
         this.post.body.length <= 85 &&
         !/\r|\n/.exec(this.post.body) &&
-        !this.post.attachment
+        !this.post.medias.length > 0
       );
     }
   },
@@ -223,11 +187,13 @@ export default {
     openEditor() {
       if (this.status.open) return;
       this.status.open = true;
-      this.$root.$emit("blurToolBox", true);
+      this.show_overlay = true;
+      //this.$root.$emit("blurToolBox", true);
     },
     close() {
       this.status.open = false;
-      this.$root.$emit("blurToolBox", false);
+      this.show_overlay = false;
+      //this.$root.$emit("blurToolBox", false);
     },
     reset() {
       Object.assign(this.$data, initialData());
@@ -245,11 +211,8 @@ export default {
         tags: this.post.tags.split(" ")
       };
 
-      if (this.post.attachment !== null) {
-        requestData.attachment = this.post.attachment;
-      }
-      if (this.post.attachments !== null) {
-        requestData.attachments = this.post.attachments;
+      if (this.post.medias !== null) {
+        requestData.medias = this.post.medias;
       }
       post
         .create(requestData)
@@ -277,55 +240,69 @@ export default {
           this.close();
         });
     },
-    removeAttachment() {
-      this.post.attachment = null;
-      this.status.recordingAudio = false;
-    },
-    receivedAttachment(attachment) {
-      this.post.attachment = attachment;
-    },
-    toggleAudioRecording() {
-      this.status.recordingAudio = !this.status.recordingAudio;
-    },
     handlePaste(e) {
-      if (this.hasAttachment || this.status.isAddingAttachment) return;
+      let files = e.clipboardData.files;
+      Array.from(files).forEach(this.uploadFile);
+      return;
 
       let text = e.clipboardData.getData("text");
       let urlRegex = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.​\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[​6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1​,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00​a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u​00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?/g;
       if (urlRegex.test(text)) {
         // An url was pasted, parse it
         e.preventDefault();
-        this.status.isAddingAttachment = true;
-        attachment
-          .parse(text)
-          .then(attachment => {
-            this.post.attachment = attachment;
-          })
-          .finally(_ => {
-            this.status.isAddingAttachment = false;
-          });
+        console.log("Handle pasted link");
       }
     },
-    uploadImage(event) {
-      if (this.hasAttachment || this.status.isAddingAttachment) return;
-      this.status.isAddingAttachment = true;
+    uploadFiles(_event) {
+      let files = this.$refs.imageUploadInput.files;
+      Array.from(files).forEach(this.uploadFile);
+      this.$refs.imageUploadInput.value = "";
+    },
+    async uploadFile(file) {
+      try {
+        this.validate_uploaded_file(file);
+        if (this.post.medias.length == 4)
+          throw "Debes eliminar una foto antes de añadir otra.";
 
-      let file = this.$refs.imageUploadInput.files[0];
-      let formData = new FormData();
-      formData.append("image", file);
-      axios.post("/api/v1/media", formData).then(res => {
-        this.post.attachments.push(res.data);
-      });
-
-      this.status.isAddingAttachment = false;
+        let formData = new FormData();
+        formData.append("file", file);
+        let media = (await axios.post("/api/v1/media", formData)).data;
+        if (this.post.medias.length == 4)
+          throw "Debes eliminar una foto antes de añadir otra.";
+        this.post.medias.push(media);
+      } catch (error) {
+        this.$notify({
+          group: "top",
+          text: error,
+          type: "error"
+        });
+      }
     },
     triggerUpload() {
       this.$refs.imageUploadInput.click();
+    },
+    remove_media(id) {
+      this.post.medias = this.post.medias.filter(o => o.id != id);
+    },
+    validate_uploaded_file(file) {
+      const valid_types = ["image", "video"];
+      const valid_formats = ["jpg", "jpeg", "png", "gif", "mp4", "webm"];
+      const [type, format] = file.type.split("/");
+
+      if (!valid_types.includes(type) || !valid_formats.includes(format))
+        throw "El formato del archivo no esta permitido. Puedes subir archivos de tipo jpg, png, gif, mp4 o webm";
+
+      return true;
+    },
+    media_clicked(index) {
+      this.clicked_media_index = index;
+      this.show_media_slides = true;
     }
   },
   created() {
+    if (this.related_to) this.post.related_to_id = this.related_to;
     window.addEventListener("beforeunload", e => {
-      if (this.post.body !== null || this.hasAttachment) {
+      if (this.post.body !== null || this.hasMedias) {
         var confirmationMessage =
           "El post que estabas editando se perderá para siempre. ¡Eso es mucho tiempo!";
         e.returnValue = confirmationMessage;
@@ -354,19 +331,5 @@ export default {
 
 .attachment:hover {
   opacity: 1;
-}
-
-.attachment .remove_attachment {
-  cursor: pointer;
-  position: absolute;
-  top: 0;
-  right: 0;
-  text-shadow: 0px 0px 1px black;
-  color: white;
-  font-weight: bold;
-  visibility: hidden;
-}
-.attachment:hover .remove_attachment {
-  visibility: visible;
 }
 </style>

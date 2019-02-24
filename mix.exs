@@ -59,7 +59,11 @@ defmodule Embers.Mixfile do
       {:recaptcha, "~> 2.3"},
       {:hashids, "~> 2.0"},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
-      {:ex_machina, "~> 2.2"}
+      {:ex_machina, "~> 2.2"},
+      {:timex, "~> 3.0"},
+      {:mogrify, "~> 0.7.0"},
+      {:ffmpex, "~> 0.5.2"},
+      {:silent_video, "~> 0.3.0"}
     ]
   end
 
@@ -93,7 +97,7 @@ defmodule Embers.Mixfile do
   defp docs do
     [
       main: "readme",
-      extras: ["README.md"]
+      extras: ["README.md", "docs/deletes.md"]
     ]
   end
 end

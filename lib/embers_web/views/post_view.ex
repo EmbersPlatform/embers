@@ -14,21 +14,28 @@ defmodule EmbersWeb.PostView do
   end
 
   def render("post.json", %{post: post} = assigns) do
-    %{
-      id: IdHasher.encode(post.id),
-      body: post.body,
-      created_at: post.inserted_at,
-      stats: %{
-        replies: post.replies_count,
-        shares: post.shares_count
-      },
-      nesting_level: post.nesting_level
-    }
-    |> handle_tags(post)
-    |> put_in_reply_to(post)
-    |> put_user(post)
-    |> handle_media(post)
-    |> handle_reactions(post, assigns)
+    view =
+      %{
+        id: IdHasher.encode(post.id),
+        body: post.body,
+        created_at: post.inserted_at,
+        deleted: !is_nil(post.deleted_at),
+        stats: %{
+          replies: post.replies_count,
+          shares: post.shares_count
+        },
+        nesting_level: post.nesting_level
+      }
+      |> handle_tags(post)
+      |> put_in_reply_to(post)
+      |> put_user(post)
+      |> handle_media(post)
+      |> handle_reactions(post, assigns)
+
+    if(Map.get(assigns, :with_related, true)) do
+      view
+      |> handle_related(post)
+    end || view
   end
 
   def render("show_replies.json", %{entries: replies} = metadata) do
@@ -57,9 +64,30 @@ defmodule EmbersWeb.PostView do
     end || view
   end
 
+  defp handle_media(view, %{old_attachment: %{"url" => url, "meta" => meta}} = _post)
+       when not is_nil(url) do
+    Map.put(view, "media", [
+      %{
+        "url" => url,
+        "meta" => meta,
+        "legacy" => true
+      }
+    ])
+  end
+
   defp handle_media(view, post) do
     if(Ecto.assoc_loaded?(post.media)) do
       Map.put(view, "media", render_many(post.media, MediaView, "media.json", as: :media))
+    end || view
+  end
+
+  defp handle_related(view, post) do
+    if(Ecto.assoc_loaded?(post.related_to) && not is_nil(post.related_to)) do
+      Map.put(
+        view,
+        "related_to",
+        render(__MODULE__, "post.json", %{post: post.related_to, with_related: false})
+      )
     end || view
   end
 
