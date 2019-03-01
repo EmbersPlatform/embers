@@ -139,7 +139,7 @@ defmodule Embers.Media do
     {:error, :file_not_supported}
   end
 
-  defp make_preview(file, dest_path, opts \\ []) do
+  defp make_preview(file, dest_path, opts) do
     preview_path = file.path <> ".preview.jpg"
     Thumbnex.create_thumbnail(file.path, preview_path, opts)
 

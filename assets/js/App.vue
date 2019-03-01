@@ -57,18 +57,19 @@
 </template>
 
 <script>
-import Navigation from "./layout/Navigation";
+const Navigation = () => import("./layout/Navigation");
 import Main from "./layout/Main";
-import Sticky from "./layout/Sticky";
+const Sticky = () => import("./layout/Sticky");
 import { mapGetters } from "vuex";
 import userResource from "./api/user";
 import _ from "lodash";
 import Hammer from "hammerjs";
+import axios from "axios";
 
-import RulesModal from "./components/Modals/RulesModal";
-import NewPostModal from "./components/Modals/NewPostModal";
+const RulesModal = () => import("./components/Modals/RulesModal");
+const NewPostModal = () => import("./components/Modals/NewPostModal");
 
-import Notification from "./components/Notification";
+import Notification from "./components/ToastNotification";
 
 import { Presence } from "phoenix";
 import socket from "./lib/socket";
@@ -110,9 +111,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters("notifications", { unseen_notifications: "unseen" }),
     ...mapGetters({
       user: "user",
-      notifications_count: "notifications_count",
       title: "title",
       newActivity: "newActivity"
     }),
@@ -141,6 +142,7 @@ export default {
       return posts;
     },
     isNewActivity() {
+      return false;
       switch (this.$route.matched[0].name) {
         case "home":
           return this.newActivity > 0;
@@ -185,6 +187,12 @@ export default {
       this.fixed = !this.fixed;
     });
 
+    axios.get(`/api/v1/subscriptions/tags/list`).then(({ data }) => {
+      data.tags.forEach(tag => {
+        this.$store.dispatch("tag/add_tag", tag);
+      });
+    });
+
     window.addEventListener("storage", e => {
       const key = e.key;
       if (key === "newMessages") {
@@ -207,6 +215,12 @@ export default {
       let post = payload.post;
       post.new = true;
       EventBus.$emit("new_activity", post);
+    });
+
+    let user_channel = socket.channel(`user:${user_id}`, {});
+    user_channel.on("notification", payload => {
+      console.log(payload);
+      this.$store.dispatch("notifications/add", payload);
     });
 
     EventBus.$on("new_activity", post => {
@@ -240,7 +254,7 @@ export default {
     });
   },
   watch: {
-    notifications_count: function() {
+    unseen_notifications: function() {
       this.$store.dispatch("updateTitle");
     },
     title(val) {

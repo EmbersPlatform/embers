@@ -1,45 +1,46 @@
 import auth from "../auth";
 
 //inicia import INSIDE APP
-import _Home from "../views/_Home";
-import _Discover from "../views/_Discover";
-import _Subscriptions from "../views/_Subscriptions";
-import _Search from "../views/_Search";
-import _Chat from "../views/_Chat";
-import _Favorites from "../views/_Favorites";
+const _Home = () => import("../views/_Home");
+const _Discover = () => import("../views/_Discover");
+const _Subscriptions = () => import("../views/_Subscriptions");
+const _Search = () => import("../views/_Search");
+const _Chat = () => import("../views/_Chat");
+const _Favorites = () => import("../views/_Favorites");
 
-import _Settings from "../views/_Settings";
-import AppsSettings from "../views/Settings/Apps";
-import AppearanceSettings from "../views/Settings/Appearance";
-import ContentSettings from "../views/Settings/Content";
-import PrivacySettings from "../views/Settings/Privacy";
-import ProfileSettings from "../views/Settings/Profile";
-import SecuritySettings from "../views/Settings/Security";
+const _Settings = () => import("../views/_Settings");
+const AppsSettings = () => import("../views/Settings/Apps");
+const AppearanceSettings = () => import("../views/Settings/Appearance");
+const ContentSettings = () => import("../views/Settings/Content");
+const PrivacySettings = () => import("../views/Settings/Privacy");
+const ProfileSettings = () => import("../views/Settings/Profile");
+const SecuritySettings = () => import("../views/Settings/Security");
 
-import _UserProfile from "../views/_UserProfile";
-import Profile from "../views/UserProfile/Profile";
-import Post from "../views/UserProfile/Post";
+const _UserProfile = () => import("../views/_UserProfile");
+const Profile = () => import("../views/UserProfile/Profile");
+const Post = () => import("../views/UserProfile/Post");
 
-import SB_Default from "../views/Sidebar/Default";
-import SB_Home from "../views/Sidebar/Home";
-import SB_Discover from "../views/Sidebar/Discover";
-import SB_Profile from "../views/Sidebar/UserProfile";
-import SB_Settings from "../views/Sidebar/Settings";
-import SB_Chat from "../views/Sidebar/Chat";
-import SB_Subscriptions from "../views/Sidebar/Subscriptions";
+const SB_Default = () => import("../views/Sidebar/Default");
+const SB_Home = () => import("../views/Sidebar/Home");
+const SB_Discover = () => import("../views/Sidebar/Discover");
+const SB_Profile = () => import("../views/Sidebar/UserProfile");
+const SB_Settings = () => import("../views/Sidebar/Settings");
+const SB_Chat = () => import("../views/Sidebar/Chat");
+const SB_Subscriptions = () => import("../views/Sidebar/Subscriptions");
 
-import SUBS_FollowingUsers from "../views/Subscriptions/FollowingUsers";
-import SUBS_Tags from "../views/Subscriptions/Tags";
-import SUBS_Blocks from "../views/Subscriptions/Blocks";
+const SUBS_FollowingUsers = () =>
+  import("../views/Subscriptions/FollowingUsers");
+const SUBS_Tags = () => import("../views/Subscriptions/Tags");
+const SUBS_Blocks = () => import("../views/Subscriptions/Blocks");
 //termina import INSIDE APP
 
 //inicia import OUTSIDE APP
-import Register from "../views/Register";
-import PasswordReset from "../views/PasswordReset";
-import Error404 from "../views/404";
-import Rules from "../views/Rules";
-import FAQ from "../views/FAQ";
-import Acknowledgment from "../views/Acknowledgment";
+const Register = () => import("../views/Register");
+const PasswordReset = () => import("../views/PasswordReset");
+const Error404 = () => import("../views/404");
+const Rules = () => import("../views/Rules");
+const FAQ = () => import("../views/FAQ");
+const Acknowledgment = () => import("../views/Acknowledgment");
 //termina import OUTSIDE APP
 
 /**

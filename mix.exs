@@ -45,10 +45,10 @@ defmodule Embers.Mixfile do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:distillery, "~> 2.0"},
-      {:phauxth, "~> 2.0"},
-      {:pbkdf2_elixir, "~> 0.12.3"},
+      {:phauxth, "~> 2.1"},
       {:bamboo, "~> 0.8"},
       {:not_qwerty123, "~> 2.3"},
+      {:pbkdf2_elixir, "~> 1.0"},
       {:uuid, "~> 1.1"},
       {:arc, "~> 0.10.0"},
       {:ex_aws, "~> 2.0"},
@@ -63,7 +63,8 @@ defmodule Embers.Mixfile do
       {:timex, "~> 3.0"},
       {:mogrify, "~> 0.7.0"},
       {:ffmpex, "~> 0.5.2"},
-      {:silent_video, "~> 0.3.0"}
+      {:silent_video, "~> 0.3.0"},
+      {:event_bus, "~> 1.6.0"}
     ]
   end
 

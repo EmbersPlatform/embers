@@ -14,8 +14,8 @@ defmodule EmbersWeb.SessionController do
     render(conn, "new.html")
   end
 
-  # If you are using Argon2 or Pbkdf2, add crypto: Comeonin.Argon2
-  # or crypto: Comeonin.Pbkdf2 to Login.verify (after Accounts)
+  # If you are using Argon2 or Pbkdf2, add crypto: Argon2
+  # or crypto: Pbkdf2 to Login.verify (after Accounts)
   def create(conn, %{"id" => identifier, "password" => password}) do
     user_params =
       case Regex.match?(~r/@/, identifier) do
@@ -23,7 +23,7 @@ defmodule EmbersWeb.SessionController do
         false -> %{"canonical" => identifier, "password" => password}
       end
 
-    case Login.verify(user_params, crypto: Comeonin.Pbkdf2) do
+    case Login.verify(user_params, crypto: Pbkdf2) do
       {:ok, user} ->
         conn
         |> Login.add_session(user, user_params)

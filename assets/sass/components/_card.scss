@@ -138,9 +138,6 @@
         }
         .card-wrapper-content-tags {
           margin: 0 15px;
-          .tag {
-            @include font-size();
-          }
         }
       }
     }

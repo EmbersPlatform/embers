@@ -17,25 +17,17 @@ defmodule EmbersWeb.MediaController do
         conn
         |> render("media.json", %{media: media})
 
-      {:error, :invalid_file} ->
+      {:error, :file_not_supported} ->
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(EmbersWeb.ErrorView)
         |> render("422.json", error: "Invalid image file")
 
-      {:error, [{:http_error, _, %{body: error}}]} ->
-        conn
-        |> put_status(500)
-        |> put_view(EmbersWeb.ErrorView)
-        |> render("422.json", error: error)
-
       {:error, _error} ->
-        IO.inspect(_error)
-
         conn
         |> put_status(500)
         |> put_view(EmbersWeb.ErrorView)
-        |> render("422.json", error: "Internal error")
+        |> render("500.json", error: "Internal error")
     end
   end
 end

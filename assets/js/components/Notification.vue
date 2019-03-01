@@ -1,47 +1,59 @@
 <template>
-  <div
-    slot="body"
-    slot-scope="props"
-    class="notification"
-    :class="type"
-    @click="props.close(); close();"
-    rel="root"
-  >
-    <avatar v-if="hasImage" :avatar="props.item.data.image"/>
-    <div class="notification-content">
-      <a class="notification-title">{{props.item.title}}</a>
-      <span class="notification-text" v-html="props.item.text"></span>
-    </div>
-    <button class="notification-close" @click.stop="props.close">x</button>
-  </div>
+  <li :class="{ unread: !read }">
+    <router-link :to="url" @click.native="mark_as_read">
+      <avatar v-if="notification.from" :avatar="notification.image"/>
+      <span v-else v-text="notification.type"></span>
+      <div class="tip">
+        <p v-html="formatted_text"></p>
+        <span>{{$moment.utc(notification.inserted_at).local().from()}}</span>
+      </div>
+    </router-link>
+  </li>
 </template>
 
 <script>
-import avatar from "@/components/Avatar";
+import formatter from "@/lib/formatter";
 
-import Hammer from "hammerjs";
+import Avatar from "@/components/Avatar";
+
+import axios from "axios";
 
 export default {
-  name: "ToastNotification",
-  props: ["props"],
-  components: { avatar },
-  data() {
-    return {
-      type: this.props.item.type
-    };
+  props: {
+    notification: {
+      type: Object,
+      required: true
+    }
   },
+  components: { Avatar },
   computed: {
-    hasImage() {
-      return this.props.item.data && "image" in this.props.item.data;
+    seen() {
+      return this.notification.status == 1;
+    },
+    read() {
+      return this.notification.status == 2;
+    },
+    formatted_text() {
+      return formatter.format(this.notification.text);
+    },
+    url() {
+      const notif = this.notification;
+      switch (notif.type) {
+        case "comment":
+          return `/@${notif.from}/${notif.source_id}`;
+        case "mention":
+          return `/@${notif.from}/${notif.source_id}`;
+        case "follow":
+          return `/@${notif.from}`;
+        case true:
+          return null;
+      }
     }
   },
   methods: {
-    close() {
-      if (
-        this.props.item.data &&
-        typeof this.props.item.data.close === "function"
-      )
-        return this.props.item.data.close();
+    async mark_as_read() {
+      await axios.put(`/api/v1/notifications/${this.notification.id}`);
+      this.$store.dispatch("notifications/read", this.notification.id);
     }
   }
 };

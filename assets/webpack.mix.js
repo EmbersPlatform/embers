@@ -23,12 +23,16 @@ mix.webpackConfig({
       jQuery: "jquery",
       "window.jQuery": "jquery"
     })
-  ]
+  ],
+  output: {
+    chunkFilename: "js/chunks/[name].js"
+  }
 });
-mix.js("js/app.js", "..\\priv/static/js");
+mix.setPublicPath("../priv/static/");
+mix.js("js/app.js", "js");
 
-mix.js("js/landing.js", "..\\priv/static/js/landing");
+mix.js("js/landing.js", "js/landing");
 
-mix.sass("sass/main.scss", "../priv/static/css");
-mix.sass("sass/landing.scss", "../priv/static/css");
-mix.sass("sass/out.scss", "../priv/static/css");
+mix.sass("sass/main.scss", "css");
+mix.sass("sass/landing.scss", "css");
+mix.sass("sass/out.scss", "css");

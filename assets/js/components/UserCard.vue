@@ -7,7 +7,7 @@
     <div class="profile-info">
       <h2>
         <template v-if="type == 'compact'">
-          <avatar :avatar="user.avatar.medium" :status="user.online" :user="user.name"></avatar>
+          <avatar :avatar="user.avatar.medium" :status="user.online" :user="user.username"></avatar>
           <span>@
             <router-link
               :to="`/@${user.username}`"

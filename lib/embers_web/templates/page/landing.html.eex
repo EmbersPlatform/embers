@@ -78,7 +78,7 @@
 			</ul>
 		</nav>
 		<div data-layout-type="wide" class="block">
-			<img src="/img/logo.svg" id="logo">
+			<img src="/images/logo.svg" id="logo">
 			<div id="messages-list" class="hidden">
 				<span>Cuna del shitposting</span>
 				<span>Hogar de la libre expresión</span>

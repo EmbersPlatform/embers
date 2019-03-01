@@ -59,17 +59,27 @@ defmodule Embers.Feed.Subscriptions.Tags do
       sub in TagSubscription,
       where: sub.user_id == ^user_id,
       left_join: tag in assoc(sub, :source),
-      preload: [
-        source: tag
-      ]
+      select: tag
     )
     |> Paginator.paginate(params)
+  end
+
+  def list_subscribed_tags(user_id) do
+    from(
+      sub in TagSubscription,
+      where: sub.user_id == ^user_id,
+      left_join: tag in assoc(sub, :source),
+      select: tag
+    )
+    |> Repo.all()
   end
 
   def list_users_following_tag_paginated(tag_id, params) do
     from(
       sub in TagSubscription,
-      where: sub.source_id == ^tag_id
+      where: sub.source_id == ^tag_id,
+      left_join: user in assoc(sub, :user),
+      select: user
     )
     |> Paginator.paginate(params)
   end

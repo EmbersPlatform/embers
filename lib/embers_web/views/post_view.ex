@@ -48,7 +48,7 @@ defmodule EmbersWeb.PostView do
 
   defp handle_tags(view, post) do
     if(Ecto.assoc_loaded?(post.tags)) do
-      Map.put(view, "tags", Enum.map(post.tags, fn tag -> tag.name end))
+      Map.put(view, "tags", render_many(post.tags, EmbersWeb.TagView, "tag.json", as: :tag))
     end || view
   end
 

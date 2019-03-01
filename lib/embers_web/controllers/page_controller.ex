@@ -20,6 +20,22 @@ defmodule EmbersWeb.PageController do
       |> Repo.get(current_user.id)
       |> Repo.preload([:meta, :settings])
 
+    tags = Embers.Feed.Subscriptions.Tags.list_subscribed_tags(user.id)
+
+    tags =
+      EmbersWeb.TagView.render(
+        "tags.json",
+        %{tags: tags}
+      )
+
+    notifications = Embers.Notifications.list_notifications_paginated(user.id)
+
+    notifications =
+      EmbersWeb.NotificationView.render(
+        "notifications.json",
+        notifications
+      )
+
     user = %{
       user
       | meta:
@@ -28,6 +44,6 @@ defmodule EmbersWeb.PageController do
           |> Meta.load_cover()
     }
 
-    render(conn, "index.html", user: user)
+    render(conn, "index.html", user: user, tags: tags, notifications: notifications.items)
   end
 end

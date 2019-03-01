@@ -10,14 +10,27 @@
 msgid ""
 msgstr ""
 
+#: lib/embers_web/user_messages.ex:5
 msgid "Your account needs to be confirmed"
-msgstr "Tu cuenta debe ser confirmada"
+msgstr ""
 
+#: lib/embers_web/user_messages.ex:6
 msgid "Your account has already been confirmed"
-msgstr "Tu cuenta ya había sido confirmada"
+msgstr ""
 
+#: lib/embers_web/user_messages.ex:7
 msgid "Invalid credentials"
-msgstr "Credenciales inválidas"
+msgstr ""
 
 msgid "Invalid image file"
-msgstr "Archivo de imagen inválido"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/views/notification_view.ex:45
+msgid "mentioned you in a"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/views/notification_view.ex:42
+msgid "commented in your"
+msgstr ""

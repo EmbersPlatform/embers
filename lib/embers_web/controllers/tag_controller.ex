@@ -14,7 +14,7 @@ defmodule EmbersWeb.TagController do
   def list(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
     tags = Subscriptions.list_subscribed_tags_paginated(user.id, params)
 
-    render(conn, "tags.json", tags)
+    render(conn, "tags_paginated.json", tags)
   end
 
   @doc false
@@ -79,10 +79,11 @@ defmodule EmbersWeb.TagController do
 
   defp do_create_subscription(conn, sub_params) do
     case Subscriptions.create_subscription(sub_params) do
-      {:ok, _} ->
+      {:ok, sub} ->
+        sub = sub |> Embers.Repo.preload([:source])
+
         conn
-        |> put_status(:no_content)
-        |> json(nil)
+        |> render("tag.json", %{tag: sub.source})
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

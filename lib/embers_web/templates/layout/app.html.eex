@@ -86,7 +86,7 @@
 	</div>
 	<%= render @view_module, @view_template, assigns %>
 	<script type="text/javascript">
-    <%= if @conn.assigns.user_token do %>
+    <%= if not is_nil(@conn.assigns.current_user) do %>
       window.user_token = <%= raw Poison.encode!(@conn.assigns.user_token) %>
     <% end %>
 
@@ -118,6 +118,9 @@
         privacy_show_reactions: <%= @user.settings.privacy_show_reactions %>
       }
 		};
+
+    appData.tags = <%= raw Jason.encode!(@tags) %>
+    appData.notifications = <%= raw Jason.encode!(@notifications) %>
 		<% end %>
 
 		window.appData = appData;

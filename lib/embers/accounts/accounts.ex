@@ -89,19 +89,19 @@ defmodule Embers.Accounts do
     multi =
       Multi.new()
       |> Multi.insert(:user, user_changeset)
-      |> Multi.run(:meta, fn %{user: user} ->
+      |> Multi.run(:meta, fn repo, %{user: user} ->
         meta_changeset =
           %Meta{user_id: user.id}
           |> Meta.changeset(%{})
 
-        Repo.insert(meta_changeset)
+        repo.insert(meta_changeset)
       end)
-      |> Multi.run(:settings, fn %{user: user} ->
+      |> Multi.run(:settings, fn repo, %{user: user} ->
         settings_changeset =
           %Setting{user_id: user.id}
           |> Setting.changeset(%{})
 
-        Repo.insert(settings_changeset)
+        repo.insert(settings_changeset)
       end)
 
     case Repo.transaction(multi) do

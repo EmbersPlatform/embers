@@ -8,10 +8,8 @@ defmodule EmbersWeb.BlockController do
   action_fallback(EmbersWeb.FallbackController)
   plug(:user_check when action in [:update, :delete])
 
-  def list(conn, %{"id" => id} = params) do
-    id = IdHasher.decode(id)
-
-    blocks = Blocks.list_blocks_paginated(id, params)
+  def list(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
+    blocks = Blocks.list_blocks_paginated(user.id, params)
 
     render(conn, "blocks.json", blocks)
   end

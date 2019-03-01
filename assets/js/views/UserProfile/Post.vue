@@ -70,7 +70,7 @@ export default {
         .get(this.id)
         .then(res => {
           this.post = res;
-          if (res.body.length) {
+          if (res.body) {
             this.$store.dispatch(
               "updateTitle",
               `${res.body.substring(0, 20)} · @${res.user.username} en Embers`
@@ -78,7 +78,7 @@ export default {
           } else {
             this.$store.dispatch(
               "updateTitle",
-              `Post de @${res.user.name} en Embers`
+              `Post de @${res.user.username} en Embers`
             );
           }
 
@@ -86,7 +86,8 @@ export default {
             this.loadComments();
           }
         })
-        .catch(() => {
+        .catch(e => {
+          console.log(e);
           this.$router.push("/404");
         })
         .finally(() => (this.loading = false));
