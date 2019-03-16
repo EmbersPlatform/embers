@@ -9,6 +9,7 @@ defmodule Embers.Feed do
   alias Ecto.Multi
   alias Embers.Helpers.IdHasher
   alias Embers.Media.MediaItem
+  alias Embers.Tags
 
   alias Embers.Feed.{Post, Activity}
 
@@ -44,7 +45,6 @@ defmodule Embers.Feed do
   def get_post!(id) do
     from(
       post in Post,
-      as: :post,
       where: post.id == ^id and is_nil(post.deleted_at),
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
@@ -56,7 +56,6 @@ defmodule Embers.Feed do
       left_join: related_user_meta in assoc(related_user, :meta),
       left_join: related_tags in assoc(related, :tags),
       left_join: related_media in assoc(related, :media),
-      left_join: related_reactions in assoc(related, :reactions),
       preload: [
         user: {user, meta: meta},
         media: media,
@@ -69,8 +68,7 @@ defmodule Embers.Feed do
             meta: related_user_meta
           },
           media: related_media,
-          tags: related_tags,
-          reactions: related_reactions
+          tags: related_tags
         }
       ]
     )
@@ -94,13 +92,19 @@ defmodule Embers.Feed do
 
     Multi.new()
     |> Multi.insert(:post, post_changeset)
-    |> Multi.run(:medias, &handle_medias(&1.post, attrs))
-    |> Multi.run(:post_replies, &update_parent_post_replies(&1.post, attrs))
-    |> Multi.run(:related_to, &handle_related_to(&1.post, attrs))
+    |> Multi.run(:medias, fn _repo, %{post: post} -> handle_medias(post, attrs) end)
+    |> Multi.run(:tags, fn _repo, %{post: post} -> handle_tags(post, attrs) end)
+    |> Multi.run(:post_replies, fn _repo, %{post: post} ->
+      update_parent_post_replies(post, attrs)
+    end)
+    |> Multi.run(:related_to, fn _repo, %{post: post} -> handle_related_to(post, attrs) end)
     |> Repo.transaction()
     |> case do
       {:ok, %{post: post} = _results} ->
-        {:ok, post |> Repo.preload(:media) |> Repo.preload(:related_to)}
+        post = post |> Repo.preload([:media, :tags, :related_to])
+        Embers.Event.emit(:post_created, post)
+
+        {:ok, post}
 
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         {:error, failed_value}
@@ -112,19 +116,21 @@ defmodule Embers.Feed do
 
   defp update_parent_post_replies(post, _attrs) do
     if(post.nesting_level > 0) do
-      {count, _} =
+      {_, [parent]} =
         from(
           p in Post,
           where: p.id == ^post.parent_id,
           update: [inc: [replies_count: 1]]
         )
-        |> Repo.update_all([])
+        |> Repo.update_all([], returning: true)
 
-      if(count == 1) do
-        {:ok, nil}
-      else
-        {:error, "there was an error trying to update parent post replies count"}
-      end
+      Embers.Event.emit(:post_comment, %{
+        from: post.user_id,
+        recipient: parent.user_id,
+        source: parent.id
+      })
+
+      {:ok, nil}
     else
       {:ok, nil}
     end
@@ -134,7 +140,7 @@ defmodule Embers.Feed do
     if(is_nil(post.related_to_id)) do
       {:ok, nil}
     else
-      {count, _} =
+      {_, [parent]} =
         from(
           p in Post,
           where: p.id == ^post.related_to_id and is_nil(p.deleted_at),
@@ -142,11 +148,13 @@ defmodule Embers.Feed do
         )
         |> Repo.update_all([])
 
-      if(count == 1) do
-        {:ok, nil}
-      else
-        {:error, "there was an error trying to update parent post shares count"}
-      end
+      Embers.Event.emit(:post_shared, %{
+        from: post.user_id,
+        recipient: parent.user_id,
+        source: post.id
+      })
+
+      {:ok, nil}
     end
   end
 
@@ -195,8 +203,12 @@ defmodule Embers.Feed do
   end
 
   def delete_post(%Post{} = post) do
-    post
-    |> Repo.soft_delete()
+    with {:ok, post} <- Repo.soft_delete(post) do
+      Embers.Event.emit(:post_deleted, post)
+      {:ok, post}
+    else
+      error -> error
+    end
   end
 
   @doc """
@@ -231,7 +243,12 @@ defmodule Embers.Feed do
       |> Repo.update_all([])
     end
 
-    Repo.delete(post)
+    with {:ok, deleted_post} <- Repo.delete(post) do
+      Embers.Event.emit(:post_deleted, deleted_post)
+      {:ok, deleted_post}
+    else
+      error -> error
+    end
   end
 
   @doc """
@@ -251,10 +268,9 @@ defmodule Embers.Feed do
     from(
       activity in Activity,
       where: activity.user_id == ^user_id,
-      order_by: [desc: activity.id],
       left_join: post in assoc(activity, :post),
-      as: :post,
       where: is_nil(post.deleted_at),
+      order_by: [desc: activity.id],
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
       left_join: media in assoc(post, :media),
@@ -290,7 +306,11 @@ defmodule Embers.Feed do
   end
 
   def delete_activity(%Activity{} = activity) do
-    Repo.delete(activity)
+    with {:ok, activity} <- Repo.delete(activity) do
+      Embers.Event.emit(:activity_deleted, activity)
+    else
+      error -> error
+    end
   end
 
   def get_post_replies(parent_id, opts \\ %{}) do
@@ -298,6 +318,7 @@ defmodule Embers.Feed do
     |> where([post], post.parent_id == ^parent_id and is_nil(post.deleted_at))
     |> join(:left, [post], user in assoc(post, :user))
     |> join(:left, [post, user], meta in assoc(user, :meta))
+    |> order_by([post], asc: post.inserted_at)
     |> preload(
       [post, user, meta],
       user: {user, meta: meta}
@@ -312,5 +333,39 @@ defmodule Embers.Feed do
       end)
 
     Repo.insert_all(Activity, activities)
+  end
+
+  defp handle_tags(post, attrs) do
+    hashtag_regex = ~r/(?<!\w)#\w+/
+
+    hashtags =
+      if is_nil(post.body) do
+        []
+      else
+        Regex.scan(hashtag_regex, post.body)
+        |> Enum.map(fn [txt] -> String.replace(txt, "#", "") end)
+      end
+
+    hashtags =
+      if Map.has_key?(attrs, "tags") and is_list(attrs["tags"]) do
+        Enum.concat(hashtags, attrs["tags"])
+      else
+        hashtags
+      end
+
+    tags_ids = Tags.bulk_create_tags(hashtags)
+
+    tag_post_list =
+      Enum.map(tags_ids, fn tag_id ->
+        %{
+          post_id: post.id,
+          tag_id: tag_id,
+          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
+          updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+        }
+      end)
+
+    Embers.Repo.insert_all(Embers.Tags.TagPost, tag_post_list)
+    {:ok, nil}
   end
 end

@@ -88,7 +88,7 @@ defmodule Embers.Notifications do
           from_id: attrs[:from_id],
           source_id: attrs[:source_id],
           text: attrs[:text],
-          read: attrs[:read] || false
+          status: attrs[:status] || 0
         }
       end)
 
@@ -123,30 +123,68 @@ defmodule Embers.Notifications do
       iex> list_notifications_paginated(1)
       [entries: [%Notification{}, ...], ...]
   """
-  def list_notifications_paginated(user_id, pagination_opts \\ %{}) when is_integer(user_id) do
-    from(
-      notif in Notification,
-      where: notif.recipient_id == ^user_id,
-      left_join: user in assoc(notif, :from),
-      preload: [from: user]
-    )
-    |> Paginator.paginate(pagination_opts)
+  def list_notifications_paginated(user_id, opts \\ []) when is_integer(user_id) do
+    results =
+      from(
+        notif in Notification,
+        where: notif.recipient_id == ^user_id,
+        left_join: user in assoc(notif, :from),
+        left_join: user_meta in assoc(user, :meta),
+        order_by: [desc: notif.inserted_at],
+        preload: [
+          from: {user, meta: user_meta}
+        ]
+      )
+      |> Paginator.paginate(opts)
+
+    set_status = Keyword.get(opts, :set_status, nil)
+
+    results =
+      if(!is_nil(set_status)) do
+        ids = Enum.map(results.entries, fn o -> o.id end)
+        set_status(ids, 1)
+
+        entries =
+          Enum.map(results.entries, fn o ->
+            if(o.status < 1) do
+              %{o | status: set_status}
+            end || o
+          end)
+
+        %{
+          results
+          | entries: entries
+        }
+      end || results
+
+    results
   end
 
   @doc """
-  Sets the `read` status of a notification with id `id` to `boolean`
+  Sets the `status` a notification with id `id` to `status`. Defaults to `read` status.
 
   ## Examples
-      set_read(1, true)
-      set_read(2, false)
+      set_read(id, 0) // unseen
+      set_read(id, 1) // seen
+      set_read(id, 2) // read
   """
-  @spec set_read(integer(), boolean()) :: Embers.Notifications.Notification.t()
-  def set_read(id, read \\ true) do
+  def set_status(id, status \\ 2)
+
+  def set_status(id, status) when is_integer(id) do
     from(
       notif in Notification,
       where: notif.id == ^id,
-      update: [set: [read: ^read]]
+      update: [set: [status: ^status]]
     )
-    |> Repo.update_all(returning: [true])
+    |> Repo.update_all([])
+  end
+
+  def set_status(ids, status) when is_list(ids) do
+    from(
+      notif in Notification,
+      where: notif.id in ^ids and notif.status < ^status,
+      update: [set: [status: ^status]]
+    )
+    |> Repo.update_all([])
   end
 end

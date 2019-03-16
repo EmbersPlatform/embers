@@ -46,7 +46,7 @@ defmodule Embers.Helpers.OldDbConverter do
       "password_hash" => PasswordConverter.convert(password)
     }
 
-    {:ok, _user} = Accounts.create_user(new_user, raw: true, confirm: true)
+    Accounts.create_user(new_user, raw: true, confirm: true)
   end
 
   defp handle_user_meta(%{"user_id" => user_id} = meta) do

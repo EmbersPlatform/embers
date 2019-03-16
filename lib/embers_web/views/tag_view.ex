@@ -3,9 +3,13 @@ defmodule EmbersWeb.TagView do
 
   alias Embers.Helpers.IdHasher
 
-  def render("tags.json", %{entries: tags} = metadata) do
+  def render("tags.json", %{tags: tags}) do
+    render_many(tags, __MODULE__, "tag.json")
+  end
+
+  def render("tags_paginated.json", %{entries: tags} = metadata) do
     %{
-      tags: render_many(tags, __MODULE__, "tag.json"),
+      items: render_many(tags, __MODULE__, "tag.json"),
       next: metadata.next,
       last_page: metadata.last_page
     }
@@ -23,7 +27,7 @@ defmodule EmbersWeb.TagView do
     IdHasher.encode(id)
   end
 
-  def render("tag.json", %{tag: %{source: tag}}) do
+  def render("tag.json", %{tag: tag}) do
     %{
       id: IdHasher.encode(tag.id),
       name: tag.name

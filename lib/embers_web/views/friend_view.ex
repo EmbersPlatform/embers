@@ -6,7 +6,7 @@ defmodule EmbersWeb.FriendView do
 
   def render("friends.json", %{entries: friends} = metadata) do
     %{
-      friends: render_many(friends, __MODULE__, "friend.json"),
+      items: render_many(friends, __MODULE__, "friend.json"),
       next: metadata.next,
       last_page: metadata.last_page
     }

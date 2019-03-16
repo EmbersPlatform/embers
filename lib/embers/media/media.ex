@@ -73,7 +73,7 @@ defmodule Embers.Media do
              {:ok, _media} <- Repo.delete(media) do
           :ok
         else
-          error -> error |> IO.inspect()
+          error -> error
         end
     end
   end
@@ -81,13 +81,11 @@ defmodule Embers.Media do
   defp remove_url(%{type: "link"}), do: :ok
 
   defp remove_url(media) do
-    IO.inspect("remove_url")
     {bucket, path} = media.url |> Uploads.parse_url()
     Uploads.delete(bucket, path)
   end
 
   defp remove_preview(media) do
-    IO.inspect("remove_preview")
     {bucket, path} = media.metadata["preview_url"] |> Uploads.parse_url()
     Uploads.delete(bucket, path)
   end
@@ -139,7 +137,7 @@ defmodule Embers.Media do
     {:error, :file_not_supported}
   end
 
-  defp make_preview(file, dest_path, opts \\ []) do
+  defp make_preview(file, dest_path, opts) do
     preview_path = file.path <> ".preview.jpg"
     Thumbnex.create_thumbnail(file.path, preview_path, opts)
 

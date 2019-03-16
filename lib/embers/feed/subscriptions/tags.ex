@@ -36,42 +36,52 @@ defmodule Embers.Feed.Subscriptions.Tags do
     |> Repo.all()
   end
 
-  def list_subscribed_tags_ids_paginated(user_id, params) do
+  def list_subscribed_tags_ids_paginated(user_id, opts) do
     from(
       sub in TagSubscription,
       where: sub.user_id == ^user_id,
       select: sub.source_id
     )
-    |> Paginator.paginate(params)
+    |> Paginator.paginate(opts)
   end
 
-  def list_users_following_tag_ids_paginated(tag_id, params) do
+  def list_users_following_tag_ids_paginated(tag_id, opts) do
     from(
       sub in TagSubscription,
       where: sub.source_id == ^tag_id,
       select: sub.user_id
     )
-    |> Paginator.paginate(params)
+    |> Paginator.paginate(opts)
   end
 
-  def list_subscribed_tags_paginated(user_id, params) do
+  def list_subscribed_tags_paginated(user_id, opts) do
     from(
       sub in TagSubscription,
       where: sub.user_id == ^user_id,
       left_join: tag in assoc(sub, :source),
-      preload: [
-        source: tag
-      ]
+      select: tag
     )
-    |> Paginator.paginate(params)
+    |> Paginator.paginate(opts)
   end
 
-  def list_users_following_tag_paginated(tag_id, params) do
+  def list_subscribed_tags(user_id) do
     from(
       sub in TagSubscription,
-      where: sub.source_id == ^tag_id
+      where: sub.user_id == ^user_id,
+      left_join: tag in assoc(sub, :source),
+      select: tag
     )
-    |> Paginator.paginate(params)
+    |> Repo.all()
+  end
+
+  def list_users_following_tag_paginated(tag_id, opts) do
+    from(
+      sub in TagSubscription,
+      where: sub.source_id == ^tag_id,
+      left_join: user in assoc(sub, :user),
+      select: user
+    )
+    |> Paginator.paginate(opts)
   end
 
   def create_block(attrs \\ %{}) do

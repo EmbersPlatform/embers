@@ -36,6 +36,22 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :event_bus,
+  topics: [
+    :post_created,
+    :post_comment,
+    :post_disabled,
+    :post_deleted,
+    :post_shared,
+    :comment_reply,
+    :notification_created,
+    :created_notificaion_failed,
+    :user_created,
+    :user_followed,
+    :user_mentioned,
+    :activity_created
+  ]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

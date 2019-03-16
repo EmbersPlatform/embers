@@ -29,6 +29,7 @@ npm-debug.log
 
 /.elixir_ls
 /.vscode
+/.sobelow
 
 /.env
 

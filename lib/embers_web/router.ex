@@ -8,6 +8,7 @@ defmodule EmbersWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(EmbersWeb.Authenticate)
+    plug(EmbersWeb.Plugs.GetPermissions)
     plug(Phauxth.Remember, create_session_func: &EmbersWeb.Auth.Utils.create_session/1)
   end
 
@@ -29,8 +30,12 @@ defmodule EmbersWeb.Router do
     get("/register", AccountController, :new)
     post("/register", AccountController, :create)
 
+    get("/auth_data", PageController, :auth)
+
     scope "/api" do
       scope "/v1" do
+        post("/auth", SessionController, :create_api)
+
         get("/users/:id", UserController, :show)
 
         put("/account/meta", MetaController, :update)
@@ -52,11 +57,11 @@ defmodule EmbersWeb.Router do
 
         get("/subscriptions/tags/ids", TagController, :list_ids)
         get("/subscriptions/tags/list", TagController, :list)
-        post("/subscriptions/tags", TagController, :subscribe)
-        delete("/subscriptions/tags/:id", TagController, :unsubscribe)
+        post("/subscriptions/tags", TagController, :create)
+        delete("/subscriptions/tags/:id", TagController, :destroy)
 
-        get("/followers/:id/ids", FollowerController, :list_ids)
-        get("/followers/:id/list", FollowerController, :list)
+        get("/followers/:id/ids", FriendController, :list_ids)
+        get("/followers/:id/list", FriendController, :list)
 
         resources("/posts", PostController, only: [:show, :create, :delete])
         get("/posts/:id/replies", PostController, :show_replies)
@@ -68,9 +73,14 @@ defmodule EmbersWeb.Router do
         get("/feed/public", FeedController, :get_public_feed)
         get("/feed/user/:id", FeedController, :user_statuses)
 
+        get("/feed/favorites", FavoriteController, :list)
+        post("/feed/favorites/:post_id", FavoriteController, :create)
+        delete("/feed/favorites/:post_id", FavoriteController, :destroy)
+
         post("/media", MediaController, :upload)
 
         get("/notifications", NotificationController, :index)
+        put("/notifications/:id", NotificationController, :read)
       end
     end
 

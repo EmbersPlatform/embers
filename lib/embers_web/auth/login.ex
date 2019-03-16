@@ -6,7 +6,6 @@ defmodule EmbersWeb.Auth.Login do
 
   use Phauxth.Login.Base
 
-  alias Comeonin.Pbkdf2
   alias Embers.Accounts
   alias Phauxth.Remember
   alias Embers.Sessions

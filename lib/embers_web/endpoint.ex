@@ -57,6 +57,7 @@ defmodule EmbersWeb.Endpoint do
     signing_salt: "8LHeFKPR"
   )
 
+  plug(Corsica, origins: "http://localhost:3000")
   plug(EmbersWeb.Router)
 
   @doc """

@@ -4,10 +4,12 @@ defmodule EmbersWeb.MediaController do
   import EmbersWeb.Authorize
 
   alias Embers.Media
+  alias EmbersWeb.Plugs.CheckPermissions
 
   action_fallback(EmbersWeb.FallbackController)
 
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
+  plug(CheckPermissions, [permissions: "create_media"] when action in [:upload])
 
   def upload(%Plug.Conn{assigns: %{current_user: user}} = conn, %{
         "file" => file
@@ -17,25 +19,17 @@ defmodule EmbersWeb.MediaController do
         conn
         |> render("media.json", %{media: media})
 
-      {:error, :invalid_file} ->
+      {:error, :file_not_supported} ->
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(EmbersWeb.ErrorView)
         |> render("422.json", error: "Invalid image file")
 
-      {:error, [{:http_error, _, %{body: error}}]} ->
-        conn
-        |> put_status(500)
-        |> put_view(EmbersWeb.ErrorView)
-        |> render("422.json", error: error)
-
       {:error, _error} ->
-        IO.inspect(_error)
-
         conn
         |> put_status(500)
         |> put_view(EmbersWeb.ErrorView)
-        |> render("422.json", error: "Internal error")
+        |> render("500.json", error: "Internal error")
     end
   end
 end

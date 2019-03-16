@@ -1,7 +1,7 @@
 defmodule Embers.Factory do
   use ExMachina.Ecto, repo: Embers.Repo
 
-  @password Comeonin.Pbkdf2.add_hash("password")
+  @password Pbkdf2.add_hash("password")
 
   def user_factory do
     %Embers.Accounts.User{

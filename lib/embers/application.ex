@@ -15,8 +15,12 @@ defmodule Embers.Application do
       # Start your own worker by calling: Embers.Worker.start_link(arg1, arg2, arg3)
       # worker(Embers.Worker, [arg1, arg2, arg3]),
       EmbersWeb.Presence,
-      supervisor(Task.Supervisor, [[name: Embers.Feed.FeedSupervisor, restart: :transient]])
+      supervisor(Task.Supervisor, [[name: TaskSupervisor, restart: :transient]])
     ]
+
+    Embers.Notifications.Manager.register()
+    EmbersWeb.NotificationSubscriber.register()
+    EmbersWeb.PostSubscriber.register()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

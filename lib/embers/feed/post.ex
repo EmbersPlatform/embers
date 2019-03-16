@@ -9,6 +9,8 @@ defmodule Embers.Feed.Post do
   alias __MODULE__
   alias Embers.Repo
 
+  @max_body_len 1600
+
   schema "posts" do
     field(:body, :string)
     field(:nesting_level, :integer, default: 0)
@@ -39,8 +41,9 @@ defmodule Embers.Feed.Post do
   def changeset(post, attrs) do
     post
     |> cast(attrs, [:body, :user_id, :parent_id, :related_to_id])
-    |> trim_body(attrs)
     |> validate_required([:user_id])
+    |> trim_body(attrs)
+    |> validate_body(attrs)
     |> validate_related_to(attrs)
     |> validate_parent_and_set_nesting_level(attrs)
     |> validate_number(:nesting_level, less_than_or_equal_to: 2)
@@ -55,6 +58,11 @@ defmodule Embers.Feed.Post do
     |> validate_parent_and_set_nesting_level(attrs)
     |> validate_number(:nesting_level, less_than_or_equal_to: 2)
     |> cast_embed(:old_attachment)
+  end
+
+  defp validate_body(changeset, _attrs) do
+    changeset
+    |> validate_length(:body, max: @max_body_len)
   end
 
   defp trim_body(changeset, %{"body" => body} = _attrs) when not is_nil(body) do

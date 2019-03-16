@@ -12,6 +12,8 @@ defmodule Embers.Helpers.IdHasher do
     Hashids.encode(@coder, data)
   end
 
+  def decode(data) when is_nil(data), do: nil
+
   def decode(data) do
     # Hashids returns decoded id as a list
     [decoded] = Hashids.decode!(@coder, data)

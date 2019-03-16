@@ -11,14 +11,27 @@ msgstr ""
 "Language: es\n"
 "Plural-Forms: nplurals=2\n"
 
+#: lib/embers_web/user_messages.ex:5
 msgid "Your account needs to be confirmed"
 msgstr "Tu cuenta debe ser confirmada"
 
+#: lib/embers_web/user_messages.ex:6
 msgid "Your account has already been confirmed"
 msgstr "Tu cuenta ya había sido confirmada"
 
+#: lib/embers_web/user_messages.ex:7
 msgid "Invalid credentials"
 msgstr "Credenciales inválidas"
 
 msgid "Invalid image file"
 msgstr "Archivo de imagen inválido"
+
+#, elixir-format
+#: lib/embers_web/views/notification_view.ex:45
+msgid "mentioned you in a"
+msgstr "te mencionó en un"
+
+#, elixir-format
+#: lib/embers_web/views/notification_view.ex:42
+msgid "commented in your"
+msgstr "comentó en tu"

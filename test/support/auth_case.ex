@@ -6,8 +6,12 @@ defmodule EmbersWeb.AuthCase do
 
   def add_user(username, email) do
     user = %{username: username, email: email, password: "reallyHard2gue$$"}
-    {:ok, user} = Accounts.create_user(user)
-    user
+
+    with {:ok, user} <- Accounts.create_user(user) do
+      user
+    else
+      error -> error
+    end
   end
 
   def add_user_confirmed(username, email) do
@@ -24,9 +28,7 @@ defmodule EmbersWeb.AuthCase do
   end
 
   def add_phauxth_session(conn, user) do
-    session_id = Phauxth.Login.gen_session_id("F")
-    Accounts.add_session(user, session_id, System.system_time(:second))
-    Phauxth.Login.add_session(conn, session_id, user.id)
+    EmbersWeb.Auth.Login.add_session(conn, user, user.id)
   end
 
   def gen_key(user_id) do

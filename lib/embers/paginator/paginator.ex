@@ -1,7 +1,9 @@
 defmodule Embers.Paginator do
   import Ecto.Query, warn: false
 
+  alias Embers.Paginator.Options
   alias Embers.Repo
+  alias Embers.Helpers.IdHasher
 
   @default_options %{before: nil, after: nil, limit: 50, max_limit: 500}
 
@@ -26,8 +28,24 @@ defmodule Embers.Paginator do
       |> Paginator.paginate(opts)
 
   """
-  def paginate(queryable, opts \\ %{}) do
-    opts = normalize_options(opts)
+  def paginate(queryable, opts \\ []) do
+    opts =
+      struct(Options, %{
+        after: Keyword.get(opts, :after, @default_options.after),
+        before: Keyword.get(opts, :before, @default_options.before),
+        limit: Keyword.get(opts, :limit, @default_options.limit)
+      })
+
+    opts =
+      if is_binary(opts.limit) do
+        %{opts | limit: String.to_integer(opts.limit)}
+      end || opts
+
+    opts =
+      if is_nil(opts.limit) do
+        %{opts | limit: @default_options.limit}
+      end || opts
+
     limit_plus_one = opts.limit + 1
 
     query =
@@ -36,17 +54,17 @@ defmodule Embers.Paginator do
 
     query =
       if(!is_nil(opts.before)) do
-        query |> where([q], q.id <= ^opts.before)
-      else
-        query
-      end
+        from(q in query,
+          where: q.id <= ^opts.before
+        )
+      end || query
 
     query =
       if(!is_nil(opts.after)) do
-        query |> where([q], q.id >= ^opts.after)
-      else
-        query
-      end
+        from(q in query,
+          where: q.id >= ^opts.after
+        )
+      end || query
 
     all_entries = Repo.all(query)
     entries_count = Enum.count(all_entries)
@@ -62,16 +80,11 @@ defmodule Embers.Paginator do
 
     next =
       if last_page or is_nil(last_entry) do
-        -1
+        nil
       else
-        last_entry.id
+        IdHasher.encode(last_entry.id)
       end
 
     %{entries: entries, next: next, last_page: last_page}
-  end
-
-  defp normalize_options(opts) do
-    opts = for {key, val} <- opts, into: %{}, do: {String.to_atom(key), val}
-    @default_options |> Map.merge(opts)
   end
 end

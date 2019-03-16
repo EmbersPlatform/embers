@@ -8,7 +8,7 @@ defmodule Embers.Repo.Migrations.CreateNotifications do
       add(:recipient_id, references(:users, on_delete: :delete_all), null: false)
       add(:source_id, :integer, null: true)
       add(:text, :string, null: true)
-      add(:read, :boolean, default: false)
+      add(:status, :integer, default: 0)
 
       timestamps(default: fragment("NOW()"))
     end
