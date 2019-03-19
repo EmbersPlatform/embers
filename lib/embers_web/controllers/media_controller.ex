@@ -9,7 +9,7 @@ defmodule EmbersWeb.MediaController do
   action_fallback(EmbersWeb.FallbackController)
 
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
-  plug(CheckPermissions, [permissions: "create_media"] when action in [:upload])
+  plug(CheckPermissions, [permission: "create_media"] when action in [:create])
 
   def upload(%Plug.Conn{assigns: %{current_user: user}} = conn, %{
         "file" => file
