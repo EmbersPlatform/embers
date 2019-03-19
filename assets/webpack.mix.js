@@ -11,6 +11,8 @@ const path = require("path");
  | file for the application as well as bundling up all the JS files.
  |
  */
+
+mix.setPublicPath('../priv/static');
 mix.webpackConfig({
   resolve: {
     alias: {
@@ -25,10 +27,10 @@ mix.webpackConfig({
     })
   ]
 });
-mix.js("js/app.js", "..\\priv/static/js");
+mix.js("js/app.js", "js");
 
-mix.js("js/landing.js", "..\\priv/static/js/landing");
+mix.js("js/landing.js", "js/landing");
 
-mix.sass("sass/main.scss", "../priv/static/css");
-mix.sass("sass/landing.scss", "../priv/static/css");
-mix.sass("sass/out.scss", "../priv/static/css");
+mix.sass("sass/main.scss", "css");
+mix.sass("sass/landing.scss", "css");
+mix.sass("sass/out.scss", "css");
