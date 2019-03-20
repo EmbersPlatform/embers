@@ -17,7 +17,7 @@
         key="no-results"
         class="no-results"
         v-if="online_friends.length === 0 && !loading"
-        v-html="formatted_no_friends"
+        v-html="formatted_no_mutuals"
       ></li>
     </ul>
   </li>
