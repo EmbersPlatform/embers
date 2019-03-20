@@ -9,13 +9,14 @@ defmodule EmbersWeb.FeedController do
   alias Embers.Helpers.IdHasher
 
   def timeline(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, params) do
-    results = Feed.get_timeline(user_id, params)
+    results =
+      Feed.get_timeline(user_id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
 
     render(conn, "timeline.json", results)
-  end
-
-  def get_public_feed() do
-    :not_implemented
   end
 
   def user_statuses(conn, %{"id" => id} = params) do
@@ -35,7 +36,11 @@ defmodule EmbersWeb.FeedController do
           media: media
         ]
       )
-      |> Paginator.paginate(params)
+      |> Paginator.paginate(
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
 
     render(conn, "posts.json", posts)
   end
@@ -44,7 +49,7 @@ defmodule EmbersWeb.FeedController do
     posts =
       from(
         post in Post,
-        where: post.nesting_level == 0,
+        where: post.nesting_level == 0 and is_nil(post.deleted_at),
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
@@ -54,7 +59,11 @@ defmodule EmbersWeb.FeedController do
           media: media
         ]
       )
-      |> Paginator.paginate(params)
+      |> Paginator.paginate(
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
 
     render(conn, "posts.json", posts)
   end

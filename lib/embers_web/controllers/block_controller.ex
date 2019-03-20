@@ -9,7 +9,12 @@ defmodule EmbersWeb.BlockController do
   plug(:user_check when action in [:update, :delete])
 
   def list(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-    blocks = Blocks.list_blocks_paginated(user.id, params)
+    blocks =
+      Blocks.list_blocks_paginated(user.id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
 
     render(conn, "blocks.json", blocks)
   end

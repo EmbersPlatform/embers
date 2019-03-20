@@ -112,7 +112,7 @@ export default {
 
   getBlocked() {
     let id = window.appData.user.id;
-    return wrap(() => axios.get(`${config.prefix}/blocks/list`));
+    return wrap(() => axios.get(`${config.prefix}/users/${id}/block`));
   },
 
   getPasses() {

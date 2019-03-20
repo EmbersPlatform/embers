@@ -1,31 +1,31 @@
 <template>
-  <div id="board">
-    <div id="heading">
-      <Top></Top>
-    </div>
-    <div id="wrapper" @click.prevent="markAsRead">
-      <template v-if="showConversation">
-        <ChatConversation></ChatConversation>
-        <Editor :show="canSendMessage" type="chat" @send="submitMessage" data-editor-style="chat"></Editor>
-      </template>
-      <div v-else id="content" data-layout-type="middle">
-        <div id="feed" :class="{renderbox : loading}">
-          <h3>
-            <p>Hmm. Esto está muy vacío</p>
-          </h3>
-          <!-- <button class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>
+	<div id="board">
+		<div id="heading">
+			<Top></Top>
+		</div>
+		<div id="wrapper" @click.prevent="markAsRead">
+			<template v-if="showConversation">
+				<ChatConversation></ChatConversation>
+				<Editor :show="canSendMessage" type="chat" @send="submitMessage" data-editor-style="chat"></Editor>
+			</template>
+			<div v-else id="content" data-layout-type="middle">
+				<div id="feed" :class="{renderbox : loading}">
+					<h3>
+						<p>Hmm. Esto está muy vacío</p>
+					</h3>
+					<!-- <button class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>
 						Iniciar una nueva conversacion
-          </button>-->
-        </div>
-      </div>
-      <NewChatModal v-if="show_new_chat_modal"></NewChatModal>
-    </div>
-  </div>
+					</button> -->
+				</div>
+			</div>
+			<NewChatModal v-if="show_new_chat_modal"></NewChatModal>
+		</div>
+	</div>
 </template>
 <script>
 import Top from "../components/Top";
 import ChatConversation from "./Chat/ChatConversation";
-const NewChatModal = () => import("./Chat/NewChatModal");
+import NewChatModal from "./Chat/NewChatModal";
 import Editor from "../components/Editor";
 
 import chatAPI from "../api/conversation";

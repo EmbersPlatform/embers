@@ -268,9 +268,9 @@ defmodule Embers.Feed do
     from(
       activity in Activity,
       where: activity.user_id == ^user_id,
-      order_by: [desc: activity.id],
       left_join: post in assoc(activity, :post),
       where: is_nil(post.deleted_at),
+      order_by: [desc: activity.id],
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
       left_join: media in assoc(post, :media),

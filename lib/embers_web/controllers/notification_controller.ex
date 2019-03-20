@@ -9,7 +9,13 @@ defmodule EmbersWeb.NotificationController do
   plug(:user_check)
 
   def index(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-    results = Notifications.list_notifications_paginated(user.id, params)
+    results =
+      Notifications.list_notifications_paginated(user.id,
+        before: IdHasher.decode(params["before"]),
+        after: IdHasher.decode(params["after"]),
+        limit: params["limit"]
+      )
+
     render(conn, "notifications.json", results)
   end
 

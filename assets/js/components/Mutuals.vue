@@ -17,7 +17,7 @@
         key="no-results"
         class="no-results"
         v-if="online_friends.length === 0 && !loading"
-        v-html="formatted_no_friends"
+        v-html="formatted_no_mutuals"
       ></li>
     </ul>
   </li>
@@ -45,7 +45,7 @@ export default {
      * Text to display when the user's no mutuals
      */
     formatted_no_friends() {
-      return formatter.format("No hay amigos conectados en este momento.");
+      return formatter.format("¡Hora de hacer amigos! :metal:");
     },
     ordered_friends() {
       return _.orderBy(this.online_friends, ["online_at"], ["desc"]);

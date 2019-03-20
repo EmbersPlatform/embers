@@ -46,4 +46,8 @@ defmodule EmbersWeb.PageController do
 
     render(conn, "index.html", user: user, tags: tags, notifications: notifications.items)
   end
+
+  def auth(conn, _params) do
+    render(conn, "auth.json", conn: conn)
+  end
 end

@@ -7,6 +7,6 @@ defmodule Embers.Repo.Migrations.CreateRoleUsers do
       add(:role_id, references(:roles, on_delete: :delete_all), null: false)
     end
 
-    create(unique_index(:unique_role_user, [:user_id, :role_id], name: :unique_role_user))
+    create(unique_index(:role_user, [:user_id, :role_id], name: :unique_role_user))
   end
 end

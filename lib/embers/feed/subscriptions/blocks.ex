@@ -75,12 +75,12 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> Repo.all()
   end
 
-  @spec list_blocks_paginated(integer(), map()) :: %{
+  @spec list_blocks_paginated(integer(), list()) :: %{
           entries: [any()],
           last_page: boolean(),
           next: any()
         }
-  def list_blocks_paginated(user_id, opts \\ %{}) do
+  def list_blocks_paginated(user_id, opts \\ []) do
     UserBlock
     |> where([block], block.user_id == ^user_id)
     |> join(:left, [block], user in assoc(block, :source))
@@ -89,12 +89,12 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> Paginator.paginate(opts)
   end
 
-  @spec list_blocks_ids_paginated(integer(), map()) :: %{
+  @spec list_blocks_ids_paginated(integer(), list()) :: %{
           entries: [integer()],
           last_page: boolean(),
           next: any()
         }
-  def list_blocks_ids_paginated(user_id, opts \\ %{}) do
+  def list_blocks_ids_paginated(user_id, opts \\ []) do
     UserBlock
     |> where([block], block.user_id == ^user_id)
     |> select([block], block.source_id)

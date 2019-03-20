@@ -88,7 +88,6 @@ export default {
       }
     },
     isChat() {
-      return false;
       switch (this.$route.matched[0].name) {
         case "chat":
           return "chat";

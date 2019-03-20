@@ -13,6 +13,10 @@ defmodule EmbersWeb.PostView do
     render(PostView, "post.json", %{post: post})
   end
 
+  def render("post.json", %{post: post}) when is_nil(post) do
+    nil
+  end
+
   def render("post.json", %{post: post} = assigns) do
     view =
       %{

@@ -8,7 +8,7 @@ defmodule EmbersWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(EmbersWeb.Authenticate)
-    plug(EmbersWeb.Plugs.Permissions)
+    plug(EmbersWeb.Plugs.GetPermissions)
     plug(Phauxth.Remember, create_session_func: &EmbersWeb.Auth.Utils.create_session/1)
   end
 
@@ -30,8 +30,12 @@ defmodule EmbersWeb.Router do
     get("/register", AccountController, :new)
     post("/register", AccountController, :create)
 
+    get("/auth_data", PageController, :auth)
+
     scope "/api" do
       scope "/v1" do
+        post("/auth", SessionController, :create_api)
+
         get("/users/:id", UserController, :show)
 
         put("/account/meta", MetaController, :update)

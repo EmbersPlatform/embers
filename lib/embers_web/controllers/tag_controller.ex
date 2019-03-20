@@ -12,14 +12,24 @@ defmodule EmbersWeb.TagController do
 
   @doc false
   def list(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-    tags = Subscriptions.list_subscribed_tags_paginated(user.id, params)
+    tags =
+      Subscriptions.list_subscribed_tags_paginated(user.id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
 
     render(conn, "tags_paginated.json", tags)
   end
 
   @doc false
   def list_ids(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-    tags_ids = Subscriptions.list_subscribed_tags_ids_paginated(user.id, params)
+    tags_ids =
+      Subscriptions.list_subscribed_tags_ids_paginated(user.id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
 
     render(conn, "tags_ids.json", tags_ids)
   end

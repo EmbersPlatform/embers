@@ -14,6 +14,5 @@ defmodule Embers.Authorization.Role do
     role
     |> cast(attrs, [:name, :permissions])
     |> validate_required([:name, :permissions])
-    |> unique_constraint(:unique_role_user, name: :unique_role_user)
   end
 end

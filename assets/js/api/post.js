@@ -62,7 +62,7 @@ export default {
    * @param id
    */
   favorite(id, type) {
-    return wrap(() => axios.post(`${config.prefix}/feed/favorites/${id}`));
+    return wrap(() => axios.post(`${config.prefix}/posts/${id}/favorite`));
   },
 
   /**
@@ -70,7 +70,7 @@ export default {
    * @param id
    */
   unfavorite(id, type) {
-    return wrap(() => axios.delete(`${config.prefix}/feed/favorites/${id}`));
+    return wrap(() => axios.delete(`${config.prefix}/posts/${id}/favorite`));
   },
 
   nsfw(id, value) {

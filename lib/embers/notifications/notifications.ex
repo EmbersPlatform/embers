@@ -123,7 +123,7 @@ defmodule Embers.Notifications do
       iex> list_notifications_paginated(1)
       [entries: [%Notification{}, ...], ...]
   """
-  def list_notifications_paginated(user_id, opts \\ %{}) when is_integer(user_id) do
+  def list_notifications_paginated(user_id, opts \\ []) when is_integer(user_id) do
     results =
       from(
         notif in Notification,
@@ -137,15 +137,17 @@ defmodule Embers.Notifications do
       )
       |> Paginator.paginate(opts)
 
+    set_status = Keyword.get(opts, :set_status, nil)
+
     results =
-      if(Map.has_key?(opts, "set_status")) do
+      if(!is_nil(set_status)) do
         ids = Enum.map(results.entries, fn o -> o.id end)
         set_status(ids, 1)
 
         entries =
           Enum.map(results.entries, fn o ->
             if(o.status < 1) do
-              %{o | status: Map.get(opts, "set_status")}
+              %{o | status: set_status}
             end || o
           end)
 

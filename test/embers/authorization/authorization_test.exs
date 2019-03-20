@@ -5,27 +5,28 @@ defmodule Embers.AuthorizationTest do
   alias Embers.Authorization.Roles
   import Embers.Fixtures
 
-  test "returns `:ok` on user with `everyone` permission" do
+  test "returns true on user with `any` permission" do
     user = fixture(:admin)
-    assert :ok == Authorization.permit("random_permission", user)
+    assert Authorization.can?("random_permission", user)
   end
 
-  test "returns :ok on valid permission and :denegated on invalid one" do
+  test "returns true on valid permission and :denegated on invalid one" do
     user = fixture(:user)
     role = fixture(:role, ["create_post", "create_media"])
     Roles.attach_role(role.id, user.id)
 
-    assert :ok == Authorization.permit("create_post", user)
-    assert :denegated == Authorization.permit("invalid_perm", user)
+    assert Authorization.can?("create_post", user)
+    refute Authorization.can?("invalid_perm", user)
   end
 
   test "returns permissions list" do
-    permissions = ["permission_1", "permission_2", "permission_3"]
-    role = fixture(:role, permissions)
+    role = fixture(:role, ~w(permission1 permission2 permission3))
     user = fixture(:user)
     Roles.attach_role(role.id, user.id)
 
-    assert permissions == Authorization.extract_permissions(user)
+    Enum.each(role.permissions, fn permission ->
+      assert Enum.member?(Authorization.extract_permissions(user), permission)
+    end)
   end
 
   test "checks ownership" do
@@ -44,6 +45,6 @@ defmodule Embers.AuthorizationTest do
     assert :ok == Authorization.check_permission(permissions, "permission1")
     assert :ok == Authorization.check_permission(permissions, "permission2")
     assert :denegated == Authorization.check_permission(permissions, "invalid_permission")
-    assert :ok == Authorization.check_permission(["everyone"], "invalid_permission")
+    assert :ok == Authorization.check_permission(["any"], "invalid_permission")
   end
 end

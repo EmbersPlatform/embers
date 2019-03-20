@@ -1,11 +1,11 @@
 <template>
   <div class="user-row">
-    <avatar :avatar="user.avatar.medium" :status="user.online" :user="user.username"></avatar>
+    <avatar :avatar="user.avatar.medium" :status="user.online" :user="user.name"></avatar>
     <router-link
-      :to="`/@${user.username}`"
+      :to="`/@${user.name}`"
       class="u_name"
       :data-badge="`${user.badges[0]}`"
-    >{{ user.username }}</router-link>
+    >{{ user.name }}</router-link>
     <span class="u_mutual" v-if="user.mutual">Son amigos</span>
     <button
       v-if="user.following"

@@ -9,7 +9,12 @@ defmodule EmbersWeb.FavoriteController do
   plug(:user_check when action in [:update, :delete])
 
   def list(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-    favs = Favorites.list_paginated(user.id, params)
+    favs =
+      Favorites.list_paginated(user.id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
 
     render(conn, "favorites.json", favs)
   end

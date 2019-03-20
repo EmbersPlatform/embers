@@ -1,11 +1,22 @@
 <template>
   <ul :class="{renderbox : loading}">
     <template v-if="!loading">
-      <notification
+      <li
         v-for="notification in notifications"
         :key="notification.id"
-        :notification="notification"
-      />
+        :class="{ unread: !notification.read }"
+      >
+        <router-link :to="notification.link">
+          <avatar :avatar="notification.body.avatar" :alt="notification.body.subject"></avatar>
+          <div class="tip">
+            <p>
+              <strong>{{notification.body.subject}}</strong>
+              {{notification.body.predicate}}
+            </p>
+            <span>{{$moment.utc(notification.created_at).local().from()}}</span>
+          </div>
+        </router-link>
+      </li>
       <li class="notifications-empty" v-if="notifications.length === 0">
         <div class="tip">
           <p>Y en el inicio... había silencio.</p>
@@ -17,32 +28,33 @@
 
 <script>
 import notification from "../api/notification";
-import Notification from "./Notification";
 
 import { mapGetters } from "vuex";
 import avatar from "@/components/Avatar";
-import formatter from "@/lib/formatter";
-import axios from "axios";
 
 export default {
   components: {
-    avatar,
-    Notification
+    avatar
   },
   computed: {
-    ...mapGetters("notifications", ["notifications"])
+    ...mapGetters({ notifications: "notifications" })
   },
   methods: {
-    async load_notifications() {
+    loadNotifications() {
       this.loading = true;
-      let notifications = (await axios.get(
-        `/api/v1/notifications?set_status=1`
-      )).data;
-      this.$store.dispatch("notifications/update", notifications.items);
-      this.loading = false;
-    },
-    format_text(text) {
-      return formatter.format(text);
+      notification
+        .get(
+          this.notifications.length
+            ? this.notifications[this.notifications.length - 1].id
+            : null,
+          true
+        )
+        .then(res => {
+          // console.log('updating count')
+          this.$store.commit("UPDATE_NOTIFICATIONS_COUNT", 0);
+          this.$store.commit("UPDATE_NOTIFICATIONS", res.items);
+        })
+        .finally(() => (this.loading = false));
     }
   },
 
@@ -60,8 +72,8 @@ export default {
    * Triggered when an instance of this component is created
    */
   created() {
-    this.load_notifications();
-    // this.$root.$on("update-notifications-tab", () => this.loadNotifications());
+    this.loadNotifications();
+    this.$root.$on("update-notifications-tab", () => this.loadNotifications());
   }
 };
 </script>

@@ -2,14 +2,19 @@ defmodule Embers.Authorization do
   alias Embers.Authorization.Roles
   alias Embers.Accounts.User
 
-  @spec permit(String.t(), Embers.Accounts.User.t()) :: :ok | :denegated
-  def permit(permission, user) do
-    extract_permissions(user)
-    |> check_permission(permission)
+  @spec can?(String.t(), Embers.Accounts.User.t()) :: boolean()
+  def can?(permission, user) do
+    permissions = extract_permissions(user)
+
+    case check_permission(permissions, permission) do
+      :ok -> true
+      :denegated -> false
+    end
   end
 
+  @spec check_permission(Enum.t(), String.t()) :: atom()
   def check_permission(permissions, permission) do
-    if(Enum.member?(permissions, "everyone")) do
+    if(Enum.member?(permissions, "any")) do
       :ok
     else
       if(Enum.member?(permissions, permission)) do

@@ -8,6 +8,7 @@ defmodule Embers.Accounts do
 
   alias Embers.{
     Accounts.User,
+    Authorization.Roles,
     Profile.Settings.Setting,
     Sessions,
     Sessions.Session,
@@ -89,6 +90,10 @@ defmodule Embers.Accounts do
     multi =
       Multi.new()
       |> Multi.insert(:user, user_changeset)
+      |> Multi.run(:role, fn _repo, %{user: user} ->
+        role = Roles.get!("member")
+        Roles.attach_role(role.id, user.id)
+      end)
       |> Multi.run(:meta, fn repo, %{user: user} ->
         meta_changeset =
           %Meta{user_id: user.id}

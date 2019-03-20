@@ -17,7 +17,7 @@ defmodule Embers.Fixtures do
 
   def fixture(:admin) do
     user = fixture(:user)
-    role = fixture(:role, ["everyone"])
+    role = fixture(:role, ["any"])
     Roles.attach_role(role.id, user.id)
     user
   end

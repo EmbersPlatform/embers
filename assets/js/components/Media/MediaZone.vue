@@ -97,11 +97,9 @@ export default {
   flex-grow: 1;
   height: 160px;
   margin: 2px;
-  border-radius: 2px;
 
   &.big {
-    height: auto;
-    padding-bottom: 70%;
+    height: 340px;
   }
 }
 </style>

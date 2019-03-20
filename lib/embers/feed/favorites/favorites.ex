@@ -19,14 +19,14 @@ defmodule Embers.Feed.Favorites do
     end
   end
 
-  def list_paginated(user_id, params \\ %{}) do
+  def list_paginated(user_id, opts \\ []) do
     from(fav in Favorite,
       as: :favorite,
       where: fav.user_id == ^user_id,
       order_by: [desc: fav.inserted_at]
     )
     |> with_post()
-    |> Paginator.paginate(params)
+    |> Paginator.paginate(opts)
   end
 
   defp with_post(query) do

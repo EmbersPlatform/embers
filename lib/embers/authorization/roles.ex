@@ -4,6 +4,20 @@ defmodule Embers.Authorization.Roles do
 
   import Ecto.Query, only: [from: 2]
 
+  def get(name) do
+    from(role in Role,
+      where: role.name == ^name
+    )
+    |> Repo.one()
+  end
+
+  def get!(name) do
+    from(role in Role,
+      where: role.name == ^name
+    )
+    |> Repo.one!()
+  end
+
   def create(name, permissions \\ []) do
     Role.changeset(%Role{}, %{name: name, permissions: permissions})
     |> Repo.insert()
