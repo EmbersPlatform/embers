@@ -57,7 +57,7 @@ defmodule Embers.Uploads do
     case res do
       {:ok, _} ->
         {:ok,
-         %__MODULE__{path: path, url: "https://#{System.get_env("S3_HOST")}/uploads/#{path}"}}
+         %__MODULE__{path: path, url: "https://#{Application.get_env(:ex_aws, :s3).host["nyc3"]}/uploads/#{path}"}}
 
       {:error, reason} ->
         {:error, reason}
