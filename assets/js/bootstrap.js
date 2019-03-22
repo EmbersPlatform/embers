@@ -67,6 +67,7 @@ Vue.filter("truncate", function(text, stop, clamp) {
  */
 store.dispatch("setAppData", window.appData);
 store.dispatch("updateUser", window.appData.user);
+store.dispatch("tag/update", window.appData.tags);
 
 if (window.appData.user !== null) {
   store.dispatch("initNotifications", window.appData.user.unreadNotifications);

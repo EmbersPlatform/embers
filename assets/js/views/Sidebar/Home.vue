@@ -37,6 +37,7 @@
     <li class="nav_">
       <ul>
         <li class="n_item tag" v-for="tag in tags" :key="tag.id">#{{tag.name}}</li>
+        <li v-if="!tags.length" class="no-results">Aún no sigues ningún tag.</li>
       </ul>
     </li>
     <li class="nav_">
@@ -48,13 +49,17 @@
 
 <script>
 import axios from "axios";
-import Mutuals from "../../components/Mutuals";
+import Mutuals from "@/components/Mutuals";
+import {mapGetters} from "vuex"
+
 export default {
   components: { Mutuals },
   data() {
     return {
-      tags: []
     };
+  },
+  computed: {
+    ...mapGetters('tag', ["tags"])
   },
   created() {
     axios.get(`/api/v1/subscriptions/tags/list`).then(res => {

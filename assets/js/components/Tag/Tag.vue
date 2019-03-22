@@ -14,7 +14,7 @@
       </div>
       <div class="tag-description">Aca va la descripcion del tag(si la tiene)</div>
     </div>
-    <router-link slot="reference" :to="`/search/in:${tag}`" class="tag" :class="{active: subbed}">
+    <router-link slot="reference" :to="`/search/in:${tag.name}`" class="tag" :class="{active: subbed}">
       <span>#{{tag.name}}</span>
     </router-link>
   </popper>

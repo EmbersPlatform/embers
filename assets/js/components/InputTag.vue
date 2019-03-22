@@ -1,6 +1,6 @@
 <template>
 	<div @click="focusNewTag()" v-bind:class="{'read-only': readOnly}" class="tags-wrapper">
-		<span v-for="(tag, index) in tags" class="tag" @click.prevent.stop="remove(index)">
+		<span v-for="(tag, index) in tags" :key="index" class="tag" @click.prevent.stop="remove(index)">
 			#{{ tag }}<button v-if="!readOnly" class="close" aria-hidden="true">&times;</button>
 		</span>
 		<input v-if="!readOnly" :placeholder="placeholder" type="text" v-model="newTag" v-on:keydown.delete.stop="removeLastTag()" v-on:keydown.enter.prevent.stop="addNew(newTag)" class="new-tag"/>

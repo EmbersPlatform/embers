@@ -177,12 +177,10 @@
           <p v-if="attachmentError">Hubo un error al cargar el archivo adjunto :c</p>
         </template>
         <div class="card-wrapper-content-tags" v-if="post.tags && post.tags.length">
-          <router-link
-            :to="`/search/in:${tag}`"
-            class="tag"
-            v-for="tag in post.tags"
-            :key="tag"
-          >#{{ tag }}</router-link>
+          <Tag
+            v-for="(tag, index) in post.tags"
+            :key="index"
+            :tag="tag" />
         </div>
       </section>
     </div>
@@ -288,6 +286,7 @@ import LinkEmbed from "./LinkEmbed";
 import AudioPlayer from "./AudioPlayer";
 import MediaZone from "@/components/Media/MediaZone";
 import MediaSlides from "@/components/Media/MediaSlides";
+import Tag from '@/components/Tag/Tag';
 
 import formatter from "@/lib/formatter";
 import avatar from "@/components/Avatar";
@@ -339,7 +338,8 @@ export default {
     AudioPlayer,
     MediaZone,
     MediaSlides,
-    avatar
+    avatar,
+    Tag
   },
   computed: {
     isPostView() {

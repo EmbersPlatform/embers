@@ -7,8 +7,8 @@ import feed from './modules/feed';
 import userMutuals from './modules/user.mutuals';
 import notifications from './modules/notifications';
 import settings from './modules/settings';
-
 import chat from './modules/chat';
+import tag from './modules/tag';
 
 import * as getters from './getters';
 
@@ -22,7 +22,7 @@ export default new Vuex.Store({
 		newActivity: 0
 	},
 
-	modules: { auth, feed, userMutuals, notifications, settings, chat },
+	modules: { auth, feed, userMutuals, notifications, settings, chat, tag },
 	mutations: {
 		SET_APP_DATA(state, data) {
 			state.appData = data;
