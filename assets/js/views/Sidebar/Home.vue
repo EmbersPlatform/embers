@@ -37,7 +37,7 @@
     <li class="nav_">
       <ul>
         <li class="n_item tag" v-for="tag in tags" :key="tag.id">#{{tag.name}}</li>
-        <li v-if="!tags.length" class="no-results">Aún no sigues ningún tag.</li>
+        <li v-if="!tags.length" class="no-results"><p>Aún no sigues ningún tag.</p></li>
       </ul>
     </li>
     <li class="nav_">
