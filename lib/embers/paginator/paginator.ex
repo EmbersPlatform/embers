@@ -2,6 +2,7 @@ defmodule Embers.Paginator do
   import Ecto.Query, warn: false
 
   alias Embers.Paginator.Options
+  alias Embers.Paginator.Page
   alias Embers.Repo
   alias Embers.Helpers.IdHasher
 
@@ -28,23 +29,9 @@ defmodule Embers.Paginator do
       |> Paginator.paginate(opts)
 
   """
+  @spec paginate(Ecto.Query.t(), list()) :: Embers.Paginator.Page.t()
   def paginate(queryable, opts \\ []) do
-    opts =
-      struct(Options, %{
-        after: Keyword.get(opts, :after, @default_options.after),
-        before: Keyword.get(opts, :before, @default_options.before),
-        limit: Keyword.get(opts, :limit, @default_options.limit)
-      })
-
-    opts =
-      if is_binary(opts.limit) do
-        %{opts | limit: String.to_integer(opts.limit)}
-      end || opts
-
-    opts =
-      if is_nil(opts.limit) do
-        %{opts | limit: @default_options.limit}
-      end || opts
+    opts = normalize_opts(opts)
 
     limit_plus_one = opts.limit + 1
 
@@ -85,6 +72,27 @@ defmodule Embers.Paginator do
         IdHasher.encode(last_entry.id)
       end
 
-    %{entries: entries, next: next, last_page: last_page}
+    %Page{entries: entries, next: next, last_page: last_page}
+  end
+
+  defp normalize_opts(opts) do
+    opts =
+      struct(Options, %{
+        after: Keyword.get(opts, :after, @default_options.after),
+        before: Keyword.get(opts, :before, @default_options.before),
+        limit: Keyword.get(opts, :limit, @default_options.limit)
+      })
+
+    opts =
+      if is_binary(opts.limit) do
+        %{opts | limit: String.to_integer(opts.limit)}
+      end || opts
+
+    opts =
+      if is_nil(opts.limit) do
+        %{opts | limit: @default_options.limit}
+      end || opts
+
+    opts
   end
 end

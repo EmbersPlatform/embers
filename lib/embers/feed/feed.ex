@@ -264,7 +264,7 @@ defmodule Embers.Feed do
     Post.changeset(post, %{})
   end
 
-  def get_timeline(user_id, opts) do
+  def get_timeline(user_id, opts \\ []) do
     from(
       activity in Activity,
       where: activity.user_id == ^user_id,
@@ -314,14 +314,13 @@ defmodule Embers.Feed do
   end
 
   def get_post_replies(parent_id, opts \\ %{}) do
-    Post
-    |> where([post], post.parent_id == ^parent_id and is_nil(post.deleted_at))
-    |> join(:left, [post], user in assoc(post, :user))
-    |> join(:left, [post, user], meta in assoc(user, :meta))
-    |> order_by([post], asc: post.inserted_at)
-    |> preload(
-      [post, user, meta],
-      user: {user, meta: meta}
+    from(
+      post in Post,
+      where: post.parent_id == ^parent_id and is_nil(post.deleted_at),
+      left_join: user in assoc(post, :user),
+      left_join: meta in assoc(user, :meta),
+      order_by: [asc: post.inserted_at],
+      preload: [user: {user, meta: meta}]
     )
     |> Paginator.paginate(opts)
   end

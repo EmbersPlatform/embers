@@ -28,10 +28,9 @@ defmodule Embers.Feed.Post do
     has_many(:replies, Embers.Feed.Post)
     has_many(:reactions, Embers.Feed.Reactions.Reaction)
 
+    many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
     many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
     field(:old_attachment, {:map, :any})
-
-    many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
 
     field(:deleted_at, :naive_datetime)
     timestamps()
