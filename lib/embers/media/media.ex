@@ -9,7 +9,6 @@ defmodule Embers.Media do
   require Logger
 
   @supported_formats ~w(jpg jpeg png gif webm mp4)
-  @bucket "local"
 
   def get(id) do
     MediaItem |> where([m], m.id == ^id) |> Repo.one()
@@ -25,7 +24,7 @@ defmodule Embers.Media do
          {:ok, res} <-
            Uploads.upload(
              processed_file.path,
-             @bucket,
+             get_bucket(),
              dest_path <> ".#{ext}"
            ),
          {:ok, preview} <-
@@ -141,10 +140,14 @@ defmodule Embers.Media do
     preview_path = file.path <> ".preview.jpg"
     Thumbnex.create_thumbnail(file.path, preview_path, opts)
 
-    Uploads.upload(preview_path, @bucket, dest_path <> "_preview.jpg")
+    Uploads.upload(preview_path, get_bucket(), dest_path <> "_preview.jpg")
   end
 
   defp get_file_ext(file) do
     Path.extname(file.path) |> String.slice(1..-1)
+  end
+
+  defp get_bucket() do
+    Keyword.get(Application.get_env(:embers, Embers.Media), :bucket, "local")
   end
 end
