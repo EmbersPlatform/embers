@@ -64,32 +64,30 @@ export default {
     /**
      * Retrieves the post
      */
-    getPost() {
+    async getPost() {
       this.loading = true;
-      post
-        .get(this.id)
-        .then(res => {
-          this.post = res;
-          if (res.body.length) {
-            this.$store.dispatch(
-              "updateTitle",
-              `${res.body.substring(0, 20)} · @${res.user.username} en Embers`
-            );
-          } else {
-            this.$store.dispatch(
-              "updateTitle",
-              `Post de @${res.user.name} en Embers`
-            );
-          }
+      try {
+        let res = await post.get(this.id);
+        this.post = res;
+        if (res.body) {
+          this.$store.dispatch(
+            "updateTitle",
+            `${res.body.substring(0, 20)} · @${res.user.username} en Embers`
+          );
+        } else {
+          this.$store.dispatch(
+            "updateTitle",
+            `Post de @${res.user.username} en Embers`
+          );
+        }
 
-          if (res.stats.comments > 0) {
-            this.loadComments();
-          }
-        })
-        .catch(() => {
-          this.$router.push("/404");
-        })
-        .finally(() => (this.loading = false));
+        if (res.stats.comments > 0) {
+          this.loadComments();
+        }
+      } catch(e) {
+        this.$router.push("/404");
+      }
+      this.loading = false;
     },
 
     /**
