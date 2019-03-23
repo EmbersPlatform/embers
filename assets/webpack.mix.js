@@ -34,7 +34,3 @@ mix.js("js/landing.js", "js/landing");
 mix.sass("sass/main.scss", "css");
 mix.sass("sass/landing.scss", "css");
 mix.sass("sass/out.scss", "css");
-
-mix.copyDirectory("img", "img")
-mix.copyDirectory("images", "img")
-mix.copyDirectory("fonts", "img")
