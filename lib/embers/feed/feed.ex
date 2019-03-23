@@ -140,13 +140,15 @@ defmodule Embers.Feed do
     if(is_nil(post.related_to_id)) do
       {:ok, nil}
     else
+      post.related_to_id |> IO.inspect
       {_, [parent]} =
         from(
           p in Post,
-          where: p.id == ^post.related_to_id and is_nil(p.deleted_at),
+          where: p.id == ^post.related_to_id,
+          where: is_nil(p.deleted_at),
           update: [inc: [shares_count: 1]]
         )
-        |> Repo.update_all([])
+        |> Repo.update_all([], returning: true)
 
       Embers.Event.emit(:post_shared, %{
         from: post.user_id,
