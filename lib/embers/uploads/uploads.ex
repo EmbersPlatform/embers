@@ -35,8 +35,10 @@ defmodule Embers.Uploads do
   def upload(source, bucket, path, opts \\ [])
 
   def upload(source, "local", path, _opts) do
-    dest_path = Path.expand("./uploads/#{path}")
-    File.cp(source, dest_path)
+    IO.puts("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    dest_path = Path.expand("./uploads/#{path}") |> IO.inspect()
+    IO.inspect(source)
+    File.cp(source, dest_path) |> IO.inspect()
 
     {:ok,
      %__MODULE__{

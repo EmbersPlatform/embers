@@ -1,65 +1,84 @@
 defmodule Embers.Profile.Uploads.Avatar do
-  use Arc.Definition
-
   alias Embers.Helpers.IdHasher
+  alias Embers.Uploads
 
-  # Include ecto support (requires package arc_ecto installed):
-  # use Arc.Ecto.Definition
+  @bucket "local"
+  @path "/user/avatar"
 
-  @versions [:small, :medium, :large]
+  def upload(avatar, %Embers.Accounts.User{} = user) do
+    upload(avatar, user.id)
+  end
+  def upload(avatar, user_id) when is_integer(user_id) do
+    if(valid?(avatar)) do
+      small = make_small(avatar)
+      medium = make_medium(avatar)
+      large = make_large(avatar)
 
-  @acl :public_read
+      id = IdHasher.encode(user_id)
 
-  # To add a thumbnail version:
-  # @versions [:original, :thumb]
-
-  # Override the bucket on a per definition basis:
-  # def bucket do
-  #   :custom_bucket_name
-  # end
-
-  # Whitelist file extensions:
-  def validate({file, _}) do
-    ~w(.jpg .jpeg .gif .png) |> Enum.member?(Path.extname(file.file_name))
+      with {:ok, _} <- Uploads.upload(small.path, @bucket, "#{@path}/#{id}_small.png"),
+          {:ok, _} <- Uploads.upload(medium.path, @bucket, "#{@path}/#{id}_medium.png"),
+          {:ok, _} <- Uploads.upload(large.path, @bucket, "#{@path}/#{id}_large.png") do
+        :ok
+      else
+        error -> error
+      end
+    else
+      {:error, :invalid_format}
+    end
   end
 
-  # Define a thumbnail transformation:
-  def transform(:small, _) do
-    {:convert, "-strip -resize 64x64 -extent 64x64 -format png", :png}
+  def delete(%Embers.Accounts.User{} = user) do
+    delete(user.id)
+  end
+  def delete(user_id) when is_integer(user_id) do
+    id = IdHasher.encode(user_id)
+    with :ok <- Uploads.delete(@bucket, "#{@path}/#{id}_small.png"),
+         :ok <- Uploads.delete(@bucket, "#{@path}/#{id}_medium.png"),
+         :ok <- Uploads.delete(@bucket, "#{@path}/#{id}_large.png") do
+      :ok
+    else
+      error -> error
+    end
   end
 
-  def transform(:medium, _) do
-    {:convert, "-strip -resize 128x128 -extent 128x128 -format png", :png}
+  defp valid?(file) do
+    ~w(.jpg .jpeg .gif .png) |> Enum.member?(Path.extname(file.filename))
   end
 
-  def transform(:large, _) do
-    {:convert,
-     "-strip -resize 256x256 -background #1a1b1d -gravity center -extent 256x256 -format png",
-     :png}
+  defp make_small(image) do
+    image.path
+      |> Mogrify.open() |> IO.inspect()
+      |> Mogrify.custom("strip")
+      |> Mogrify.resize("64x64")
+      |> Mogrify.custom("background", "#1a1b1d")
+      |> Mogrify.gravity("center")
+      |> Mogrify.extent("64x64")
+      |> Mogrify.format("png")
+      |> Mogrify.save() |> IO.inspect()
   end
 
-  # Override the persisted filenames:
-  def filename(version, {_file, user}) do
-    id_hash = IdHasher.encode(user.id)
-    "#{id_hash}_#{version}"
+  defp make_medium(image) do
+      image.path
+      |> Mogrify.open()
+      |> Mogrify.custom("strip")
+      |> Mogrify.resize("128x128")
+      |> Mogrify.custom("background", "#1a1b1d")
+      |> Mogrify.gravity("center")
+      |> Mogrify.extent("128x128")
+      |> Mogrify.format("png")
+      |> Mogrify.save()
   end
 
-  # Override the storage directory:
-  def storage_dir(_version, {_file, _name}) do
-    "uploads/user/avatar"
+  defp make_large(image) do
+      image.path
+      |> Mogrify.open()
+      |> Mogrify.custom("strip")
+      |> Mogrify.resize("256x256")
+      |> Mogrify.custom("background", "#1a1b1d")
+      |> Mogrify.gravity("center")
+      |> Mogrify.extent("256x256")
+      |> Mogrify.format("png")
+      |> Mogrify.save()
   end
-
-  # Provide a default URL if there hasn't been a file uploaded
-  # def default_url(version, scope) do
-  #   "/images/avatars/default_#{version}.png"
-  # end
-
-  # Specify custom headers for s3 objects
-  # Available options are [:cache_control, :content_disposition,
-  #    :content_encoding, :content_length, :content_type,
-  #    :expect, :expires, :storage_class, :website_redirect_location]
-  #
-  # def s3_object_headers(version, {file, scope}) do
-  #   [content_type: MIME.from_path(file.file_name)]
-  # end
 end
