@@ -48,14 +48,14 @@ defmodule Embers.Profile.Uploads.Avatar do
 
   defp make_small(image) do
     image.path
-      |> Mogrify.open() |> IO.inspect()
+      |> Mogrify.open()
       |> Mogrify.custom("strip")
       |> Mogrify.resize("64x64")
       |> Mogrify.custom("background", "#1a1b1d")
       |> Mogrify.gravity("center")
       |> Mogrify.extent("64x64")
       |> Mogrify.format("png")
-      |> Mogrify.save() |> IO.inspect()
+      |> Mogrify.save()
   end
 
   defp make_medium(image) do
