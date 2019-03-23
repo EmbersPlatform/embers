@@ -21,7 +21,7 @@ defmodule Embers.Mixfile do
   def application do
     [
       mod: {Embers.Application, []},
-      extra_applications: [:logger, :runtime_tools, :arc, :recaptcha]
+      extra_applications: [:logger, :runtime_tools, :recaptcha]
     ]
   end
 
@@ -50,7 +50,6 @@ defmodule Embers.Mixfile do
       {:not_qwerty123, "~> 2.3"},
       {:pbkdf2_elixir, "~> 1.0"},
       {:uuid, "~> 1.1"},
-      {:arc, "~> 0.10.0"},
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.7"},
