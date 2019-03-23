@@ -46,7 +46,7 @@ defmodule EmbersWeb.UserChannel do
         id: encoded_id,
         username: user.username,
         avatar: user.meta.avatar,
-        online_at: inspect(System.system_time(:seconds))
+        online_at: inspect(System.system_time(:second))
       })
   end
 
