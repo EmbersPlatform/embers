@@ -19,8 +19,6 @@
 <script>
 import avatar from "@/components/Avatar";
 
-import Hammer from "hammerjs";
-
 export default {
   name: "ToastNotification",
   props: ["props"],
