@@ -13,7 +13,8 @@ defmodule EmbersWeb.NotificationController do
       Notifications.list_notifications_paginated(user.id,
         before: IdHasher.decode(params["before"]),
         after: IdHasher.decode(params["after"]),
-        limit: params["limit"]
+        limit: params["limit"],
+        mark_as_read: params["mark_as_read"]
       )
 
     render(conn, "notifications.json", results)

@@ -68,10 +68,9 @@ import Hammer from "hammerjs";
 import RulesModal from "./components/Modals/RulesModal";
 import NewPostModal from "./components/Modals/NewPostModal";
 
-import Notification from "./components/Notification";
+import Notification from "./components/Toasts/Notification";
 
 import { Presence } from "phoenix";
-import socket from "./lib/socket";
 
 import EventBus from "./lib/event_bus";
 
@@ -112,10 +111,9 @@ export default {
   computed: {
     ...mapGetters({
       user: "user",
-      notifications_count: "notifications_count",
-      title: "title",
       newActivity: "newActivity"
     }),
+    ...mapGetters("title", ["title"]),
     ...mapGetters("chat", ["new_message", "online_friends"]),
     isApp: function() {
       switch (this.$route.name) {
@@ -199,16 +197,6 @@ export default {
       }
     });
 
-    let user_id = window.appData.user.id;
-
-    let feed_channel = socket.channel(`feed:${user_id}`, {});
-    feed_channel.join();
-    feed_channel.on("new_activity", payload => {
-      let post = payload.post;
-      post.new = true;
-      EventBus.$emit("new_activity", post);
-    });
-
     EventBus.$on("new_activity", post => {
       this.$store.dispatch("add_new_post", post);
       this.$store.dispatch("newActivity");
@@ -221,6 +209,18 @@ export default {
     EventBus.$on("close_new_post_modal", props => {
       this.show_new_post_modal = false;
       this.new_post_modal_related = null;
+    });
+    EventBus.$on("new_notification", notification => {
+      this.$store.dispatch("notifications/add", notification);
+      this.$notify({
+        group: this.$mq == "sm" ? "top" : "activity",
+        text: notification.text,
+        data: {
+          image: notification.image,
+          type: notification.type,
+          notification: notification
+        }
+      });
     });
   },
   mounted() {
@@ -240,9 +240,6 @@ export default {
     });
   },
   watch: {
-    notifications_count: function() {
-      this.$store.dispatch("updateTitle");
-    },
     title(val) {
       document.title = val;
     },

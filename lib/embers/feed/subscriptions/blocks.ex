@@ -100,4 +100,12 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> select([block], block.source_id)
     |> Paginator.paginate(opts)
   end
+
+  def blocked?(from, recipient) do
+    from(
+      block in UserBlock,
+      where: block.user_id == ^recipient and block.source_id == ^from
+    )
+    |> Repo.exists?()
+  end
 end

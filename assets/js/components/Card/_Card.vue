@@ -177,10 +177,7 @@
           <p v-if="attachmentError">Hubo un error al cargar el archivo adjunto :c</p>
         </template>
         <div class="card-wrapper-content-tags" v-if="post.tags && post.tags.length">
-          <Tag
-            v-for="(tag, index) in post.tags"
-            :key="index"
-            :tag="tag" />
+          <Tag v-for="(tag, index) in post.tags" :key="index" :tag="tag"/>
         </div>
       </section>
     </div>
@@ -286,7 +283,7 @@ import LinkEmbed from "./LinkEmbed";
 import AudioPlayer from "./AudioPlayer";
 import MediaZone from "@/components/Media/MediaZone";
 import MediaSlides from "@/components/Media/MediaSlides";
-import Tag from '@/components/Tag/Tag';
+import Tag from "@/components/Tag/Tag";
 
 import formatter from "@/lib/formatter";
 import avatar from "@/components/Avatar";

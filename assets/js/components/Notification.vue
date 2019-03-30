@@ -1,46 +1,80 @@
 <template>
-  <div
-    slot="body"
-    slot-scope="props"
-    class="notification"
-    :class="type"
-    @click="props.close(); close();"
-    rel="root"
-  >
-    <avatar v-if="hasImage" :avatar="props.item.data.image"/>
-    <div class="notification-content">
-      <a class="notification-title">{{props.item.title}}</a>
-      <span class="notification-text" v-html="props.item.text"></span>
-    </div>
-    <button class="notification-close" @click.stop="props.close">x</button>
-  </div>
+  <li :class="status">
+    <router-link :to="link" @click.native="read">
+      <Avatar :avatar="image"/>
+      <div class="tip">
+        <p v-html="formatted_text"/>
+        <span v-text="time"/>
+      </div>
+    </router-link>
+  </li>
 </template>
 
 <script>
-import avatar from "@/components/Avatar";
+import formatter from "@/lib/formatter.js";
+
+import Avatar from "@/components/Avatar";
+import axios from "axios";
+
+const make_link = function(notification) {
+  switch (notification.type) {
+    case "comment":
+      return `/post/${notification.source_id}`;
+      break;
+    case "mention":
+      return `/post/${notification.source_id}`;
+      break;
+    case "follow":
+      return `/@${notification.from}`;
+      break;
+  }
+};
 
 export default {
-  name: "ToastNotification",
-  props: ["props"],
-  components: { avatar },
-  data() {
-    return {
-      type: this.props.item.type
-    };
+  name: "Notification",
+  components: { Avatar },
+  props: {
+    notification: {
+      type: Object,
+      required: true
+    }
   },
   computed: {
-    hasImage() {
-      return this.props.item.data && "image" in this.props.item.data;
+    formatted_text() {
+      return formatter.format(this.notification.text);
+    },
+    time() {
+      return this.$moment
+        .utc(this.notification.inserted_at)
+        .local()
+        .from();
+    },
+    link() {
+      return make_link(this.notification);
+    },
+    image() {
+      return this.notification.image;
+    },
+    status() {
+      switch (this.notification.status) {
+        case 0:
+          return "unseen";
+          break;
+        case 1:
+          return "unread";
+          break;
+        case 2:
+          return "read";
+          break;
+      }
     }
   },
   methods: {
-    close() {
-      if (
-        this.props.item.data &&
-        typeof this.props.item.data.close === "function"
-      )
-        return this.props.item.data.close();
+    async read() {
+      await axios.put(`/api/v1/notifications/${this.notification.id}`);
+      this.$store.dispatch("notifications/read", this.notification.id);
     }
   }
 };
 </script>
+

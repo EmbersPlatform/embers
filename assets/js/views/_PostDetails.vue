@@ -1,34 +1,54 @@
 <template>
-  <div id="content" data-layout-type="single-column">
-    <div id="post" v-if="post" :class="{container: !user}">
-      <Card :post="post" @deleted="postDeleted"></Card>
-      <CommentList
-        :comments="comments"
-        :loading="loadingComments"
-        :bottomComments="bottomComments"
-        :lastPage="lastPage"
-        :postId="id"
-        @loadMore="loadComments"
-      ></CommentList>
-      <NewCommentBox v-if="user" :postId="id" @created="addComment"></NewCommentBox>
-    </div>
+  <div id="board">
+    <template v-if="!loading">
+      <div id="heading" class="user">
+        <template>
+          <hr v-if="post.user.cover" :style="'background-image: url('+post.user.cover+');'">
+          <hr v-else style="background-image: url(/cover/default.jpg);">
+        </template>
+        <Top></Top>
+        <UserCard :user="post.user" type="wide"></UserCard>
+      </div>
+      <div id="wrapper">
+        <div id="content" data-layout-type="single-column">
+          <div id="post" v-if="post" :class="{container: !user}">
+            <Card :post="post" @deleted="postDeleted"></Card>
+            <CommentList
+              :comments="comments"
+              :loading="loadingComments"
+              :bottomComments="bottomComments"
+              :lastPage="lastPage"
+              :postId="id"
+              @loadMore="loadComments"
+            ></CommentList>
+            <NewCommentBox v-if="user" :postId="id" @created="addComment"></NewCommentBox>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
-import post from "../../api/post";
-import comment from "../../api/comment";
+import Top from "@/components/Top";
+import UserCard from "@/components/UserCard";
+
+import formatter from "@/lib/formatter";
+import post from "@/api/post";
+import comment from "@/api/comment";
 import { mapGetters } from "vuex";
 
-import Card from "../../components/Card/_Card";
-import CommentList from "../../components/Comment/CommentList";
-import NewCommentBox from "../../components/Comment/NewCommentBox";
+import Card from "@/components/Card/_Card";
+import CommentList from "@/components/Comment/CommentList";
+import NewCommentBox from "@/components/Comment/NewCommentBox";
 
 export default {
   components: {
     Card,
     CommentList,
-    NewCommentBox
+    NewCommentBox,
+    Top,
+    UserCard
   },
 
   /**
@@ -69,6 +89,15 @@ export default {
       try {
         let res = await post.get(this.id);
         this.post = res;
+        if (
+          this.$route.name == "post_no_user" ||
+          this.$route.params.username !== this.post.user.username
+        ) {
+          this.$router.push({
+            name: "post",
+            params: { username: this.post.user.username, id: this.post.id }
+          });
+        }
         if (res.body) {
           this.$store.dispatch(
             "title/update",

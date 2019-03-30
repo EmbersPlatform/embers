@@ -10,13 +10,19 @@ export default {
   },
   READ(state, id) {
     state.notifications = state.notifications.map(o => {
-      if (o.id == id) o.read = true;
+      if (o.id == id) o.status = 2;
       return o;
     });
   },
   UNREAD(state, id) {
     state.notifications = state.notifications.map(o => {
-      if (o.id == id) o.read = false;
+      if (o.id == id) o.status = 2;
+      return o;
+    });
+  },
+  MARK_AS_SEEN(state) {
+    state.notifications = state.notifications.map(o => {
+      if (o.status == 0) o.status = 1;
       return o;
     });
   }

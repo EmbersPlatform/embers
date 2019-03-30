@@ -1,11 +1,11 @@
-import socket from "@/lib/socket";
+import Socket from './index';
 import store from "@/store";
-import { Presence } from "phoenix";
+import {
+  Presence
+} from "phoenix";
 import _ from "lodash";
 
-let user_id = window.appData.user.id;
-let user_channel = socket.channel(`user:${user_id}`, {});
-user_channel.join();
+const user_channel = Socket.channels.user;
 
 let presences = [];
 
@@ -23,7 +23,11 @@ user_channel.on("presence_diff", diff => {
 });
 
 // Handle messages that are sent to topics that don't have a client side representation
-socket.onMessage(({ topic, event, payload }) => {
+Socket.socket.onMessage(({
+  topic,
+  event,
+  payload
+}) => {
   if (event == "presence_diff" && /^user_presence:\d+$/.test(topic)) {
     // this.presences = Presence.syncDiff(this.presences, payload);
 

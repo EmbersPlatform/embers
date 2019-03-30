@@ -137,17 +137,17 @@ defmodule Embers.Notifications do
       )
       |> Paginator.paginate(opts)
 
-    set_status = Keyword.get(opts, :set_status, nil)
+    mark_as_read = Keyword.get(opts, :mark_as_read, false)
 
     results =
-      if(!is_nil(set_status)) do
+      if(mark_as_read) do
         ids = Enum.map(results.entries, fn o -> o.id end)
         set_status(ids, 1)
 
         entries =
           Enum.map(results.entries, fn o ->
             if(o.status < 1) do
-              %{o | status: set_status}
+              %{o | status: 1}
             end || o
           end)
 

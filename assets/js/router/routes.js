@@ -17,8 +17,8 @@ import ProfileSettings from "../views/Settings/Profile";
 import SecuritySettings from "../views/Settings/Security";
 
 import _UserProfile from "../views/_UserProfile";
-import Profile from "../views/UserProfile/Profile";
-import Post from "../views/UserProfile/Post";
+import _PostDetails from "../views/_PostDetails";
+import Profile from "../views/UserProfile/Profile.vue";
 
 import SB_Default from "../views/Sidebar/Default";
 import SB_Home from "../views/Sidebar/Home";
@@ -127,11 +127,9 @@ const routes = [
     meta: {
       title: "Registrarme"
     },
-    children: [
-      {
-        path: ":pass"
-      }
-    ]
+    children: [{
+      path: ":pass"
+    }]
   },
 
   /**
@@ -223,8 +221,7 @@ const routes = [
     meta: {
       title: "Subscripciones"
     },
-    children: [
-      {
+    children: [{
         path: "users",
         component: SUBS_FollowingUsers,
         meta: {
@@ -262,16 +259,14 @@ const routes = [
     meta: {
       title: "Conversaciones"
     },
-    children: [
-      {
-        path: ":id",
-        component: _Chat,
-        meta: {
-          title: "Embers",
-          noSuffix: true
-        }
+    children: [{
+      path: ":id",
+      component: _Chat,
+      meta: {
+        title: "Embers",
+        noSuffix: true
       }
-    ]
+    }]
   },
 
   /**
@@ -285,8 +280,7 @@ const routes = [
       sidebar: SB_Settings
     },
     beforeEnter: requireAuth,
-    children: [
-      {
+    children: [{
         path: "",
         component: ProfileSettings,
         meta: {
@@ -332,7 +326,7 @@ const routes = [
    * User profile & post view
    */
   {
-    // name: 'user',
+    name: 'user',
     path: "/@:name",
     components: {
       default: _UserProfile,
@@ -342,25 +336,38 @@ const routes = [
       title: "Embers",
       noSuffix: true
     },
-    children: [
-      {
-        path: "",
-        component: Profile,
-        meta: {
-          title: "Embers",
-          noSuffix: true
-        }
-      },
-      {
-        path: ":id",
-        component: Post,
-        name: "post",
-        meta: {
-          title: "Embers",
-          noSuffix: true
-        }
+    children: [{
+      path: "",
+      component: Profile,
+      meta: {
+        title: "Embers",
+        noSuffix: true
       }
-    ]
+    }]
+  },
+  {
+    name: 'post',
+    path: "/@:username/:id",
+    components: {
+      default: _PostDetails,
+      sidebar: SB_Profile
+    },
+    meta: {
+      title: "Embers",
+      noSuffix: true
+    }
+  },
+  {
+    name: 'post_no_user',
+    path: "/post/:id",
+    components: {
+      default: _PostDetails,
+      sidebar: SB_Profile
+    },
+    meta: {
+      title: "Embers",
+      noSuffix: true
+    }
   },
 
   /**
@@ -376,15 +383,13 @@ const routes = [
       title: "Embers",
       noSuffix: true
     },
-    children: [
-      {
-        path: ":searchParams",
-        meta: {
-          title: "Embers",
-          noSuffix: true
-        }
+    children: [{
+      path: ":searchParams",
+      meta: {
+        title: "Embers",
+        noSuffix: true
       }
-    ]
+    }]
   },
   //termina INSIDE APP
 

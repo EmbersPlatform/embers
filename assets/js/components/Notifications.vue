@@ -1,40 +1,26 @@
 <template>
   <ul :class="{renderbox : loading}">
     <template v-if="!loading">
-      <li
+      <Notification
         v-for="notification in notifications"
         :key="notification.id"
-        :class="{ unread: !notification.read }"
-      >
-        <router-link :to="notification.link">
-          <avatar :avatar="notification.body.avatar" :alt="notification.body.subject"></avatar>
-          <div class="tip">
-            <p>
-              <strong>{{notification.body.subject}}</strong>
-              {{notification.body.predicate}}
-            </p>
-            <span>{{$moment.utc(notification.created_at).local().from()}}</span>
-          </div>
-        </router-link>
-      </li>
-      <li class="notifications-empty" v-if="notifications.length === 0">
-        <div class="tip">
-          <p>Y en el inicio... había silencio.</p>
-        </div>
-      </li>
+        :notification="notification"
+      />
     </template>
   </ul>
 </template>
 
 <script>
 import notification from "../api/notification";
+import Notification from "@/components/Notification";
 
 import { mapGetters } from "vuex";
 import avatar from "@/components/Avatar";
 
 export default {
   components: {
-    avatar
+    avatar,
+    Notification
   },
   computed: {
     ...mapGetters({ notifications: "notifications" })
@@ -50,9 +36,7 @@ export default {
           true
         )
         .then(res => {
-          // console.log('updating count')
-          this.$store.commit("UPDATE_NOTIFICATIONS_COUNT", 0);
-          this.$store.commit("UPDATE_NOTIFICATIONS", res.items);
+          this.$store.dispatch("notifications/update", res.items);
         })
         .finally(() => (this.loading = false));
     }
@@ -72,8 +56,8 @@ export default {
    * Triggered when an instance of this component is created
    */
   created() {
-    this.loadNotifications();
-    this.$root.$on("update-notifications-tab", () => this.loadNotifications());
+    notification.get(null, true); // Mark as seen
+    this.$store.dispatch("notifications/mark_as_seen");
   }
 };
 </script>

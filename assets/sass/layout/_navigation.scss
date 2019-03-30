@@ -184,7 +184,7 @@
 						}
 					}
 				}
-				&[class*='unread']{
+				&.unread{
 					background: blanco(1);
 					&:hover{
 						background: $narrojo;
@@ -204,7 +204,29 @@
 							}
 						}
 					}
-				}
+        }
+        &.unseen {
+          background: $narrojo;
+          .tip{
+            color: negro(5);
+            p{
+              strong{
+                color: negro(9);
+              }
+            }
+          }
+          &:hover{
+            background: $narrojo;
+            .tip{
+              color: negro(5);
+              p{
+                strong{
+                  color: negro(9);
+                }
+              }
+            }
+          }
+        }
 				a{
 					overflow: hidden;
 					height: auto;

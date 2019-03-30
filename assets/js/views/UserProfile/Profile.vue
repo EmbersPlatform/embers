@@ -39,7 +39,7 @@ export default {
     fetchUser() {
       this.$store.dispatch("cleanFeedPosts");
       this.$store.dispatch(
-        "updateTitle",
+        "title/update",
         "@" + this.$route.params.name + " en Embers"
       );
     }

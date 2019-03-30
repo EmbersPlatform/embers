@@ -6,6 +6,7 @@ defmodule Embers.Notifications.Manager do
   import Ecto.Query
 
   alias Embers.Notifications
+  alias Embers.Feed.Subscriptions.Blocks
 
   def handle_event(:post_created, event) do
     handle_mentions(event.data)
@@ -42,6 +43,24 @@ defmodule Embers.Notifications.Manager do
 
       {:error, reason} ->
         Embers.Event.emit(:create_notification_failed, reason)
+    end
+  end
+
+  def handle_event(:user_followed, event) do
+    if not Blocks.blocked?(event.data.from, event.data.recipient) do
+      case Notifications.create_notification(%{
+            type: "follow",
+            from_id: event.data.from,
+            recipient_id: event.data.recipient,
+            source_id: event.data.source
+          }) do
+        {:ok, notification} ->
+          notification = notification |> Embers.Repo.preload(from: :meta)
+          Embers.Event.emit(:notification_created, notification)
+
+        {:error, reason} ->
+          Embers.Event.emit(:create_notification_failed, reason)
+      end
     end
   end
 

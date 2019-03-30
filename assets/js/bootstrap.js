@@ -6,6 +6,7 @@ console.log(
 
 import "@/lib/socket";
 import "@/lib/socket/presence";
+import _socket from "./lib/socket";
 
 import autosize from "autosize";
 import axios from "axios";
@@ -15,10 +16,15 @@ import Vue from "vue";
 import VueInfiniteScroll from "vue-infinite-scroll";
 
 import * as svgicon from "vue-svgicon";
-import { VueMasonryPlugin } from "vue-masonry";
+import {
+  VueMasonryPlugin
+} from "vue-masonry";
 
 import VModal from "vue-js-modal";
-Vue.use(VModal, { dynamic: true, dialog: true });
+Vue.use(VModal, {
+  dynamic: true,
+  dialog: true
+});
 
 import Notifications from "vue-notification";
 Vue.use(Notifications);
@@ -38,7 +44,9 @@ Vue.use(VueMq, {
   }
 });
 
-import { sync } from "vuex-router-sync";
+import {
+  sync
+} from "vuex-router-sync";
 
 import router from "./router";
 import store from "./store";
@@ -52,13 +60,13 @@ Vue.use(VueMasonryPlugin);
 
 Object.defineProperties(Vue.prototype, {
   $moment: {
-    get: function() {
+    get: function () {
       return moment;
     }
   }
 });
 
-Vue.filter("truncate", function(text, stop, clamp) {
+Vue.filter("truncate", function (text, stop, clamp) {
   return text.slice(0, stop) + (stop < text.length ? clamp || "..." : "");
 });
 
@@ -68,6 +76,7 @@ Vue.filter("truncate", function(text, stop, clamp) {
 store.dispatch("setAppData", window.appData);
 store.dispatch("updateUser", window.appData.user);
 store.dispatch("tag/update", window.appData.tags);
+store.dispatch("notifications/update", window.appData.notifications);
 
 if (window.appData.user !== null) {
   store.dispatch("initNotifications", window.appData.user.unreadNotifications);
@@ -83,7 +92,7 @@ sync(store, router);
 /**
  * Add X-CSRF-Token header to every API call
  */
-axios.interceptors.request.use(function(config) {
+axios.interceptors.request.use(function (config) {
   config.headers.common["X-CSRF-Token"] = window.appData.csrfToken;
   return config;
 });
@@ -91,11 +100,11 @@ axios.interceptors.request.use(function(config) {
 /**
  * Handle promise rejections
  */
-window.addEventListener("unhandledrejection", function(event) {
+window.addEventListener("unhandledrejection", function (event) {
   if (
     typeof event === "object" &&
     typeof (event.reason || event.detail.reason).instanceOfApiError !==
-      "undefined"
+    "undefined"
   ) {
     // unhandled API error
     // don't log this event on the browser console
@@ -110,7 +119,7 @@ window.addEventListener("unhandledrejection", function(event) {
   }
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
   setTimeout(() => {
     $("#loader").remove();
   }, 1000);
@@ -118,14 +127,14 @@ $(document).ready(function() {
   // /**
   //  * Autoresize text inputs
   //  */
-  $(document).on("focus", "[data-autoresize]", function() {
+  $(document).on("focus", "[data-autoresize]", function () {
     autosize($("[data-autoresize]"));
   });
 
   /**
    * Internal route anchors
    */
-  $(document).on("click", "[data-internal-route]", function(event) {
+  $(document).on("click", "[data-internal-route]", function (event) {
     event.preventDefault();
     app.$router.push($(this).data("internal-route"));
   });
