@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export default {
   update({
     commit
@@ -14,10 +16,11 @@ export default {
   }, id) {
     commit("REMOVE", id);
   },
-  read({
+  async read({
     commit
   }, id) {
     commit("READ", id);
+    await axios.put(`/api/v1/notifications/${id}`);
   },
   unread({
     commit

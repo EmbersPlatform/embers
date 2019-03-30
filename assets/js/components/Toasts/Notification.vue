@@ -1,19 +1,19 @@
 <template>
-  <a
+  <router-link
     slot="body"
     slot-scope="props"
     class="notification"
     :class="type"
-    @click="handle_click"
+    @click.native="handle_click"
     rel="root"
-    :href="link"
+    :to="link"
   >
     <avatar v-if="hasImage" :avatar="props.item.data.image"/>
     <div class="notification-content">
       <span class="notification-text" v-html="formatted_text"></span>
     </div>
     <button class="notification-close" @click.stop="props.close">x</button>
-  </a>
+  </router-link>
 </template>
 
 <script>
@@ -71,7 +71,7 @@ export default {
     handle_click() {
       this.props.close();
       this.close();
-      if (this.props.item.data.realtime) {
+      if (this.props.item.data.notification) {
         this.$store.dispatch(
           "notifications/read",
           this.props.item.data.notification.id

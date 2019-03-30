@@ -70,8 +70,7 @@ export default {
     }
   },
   methods: {
-    async read() {
-      await axios.put(`/api/v1/notifications/${this.notification.id}`);
+    read() {
       this.$store.dispatch("notifications/read", this.notification.id);
     }
   }
