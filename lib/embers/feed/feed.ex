@@ -132,17 +132,13 @@ defmodule Embers.Feed do
         recipient: parent.user_id,
         source: parent.id
       })
-
-      {:ok, nil}
-    else
-      {:ok, nil}
     end
+
+    {:ok, nil}
   end
 
   defp handle_related_to(post, _attrs) do
-    if(is_nil(post.related_to_id)) do
-      {:ok, nil}
-    else
+    if(not is_nil(post.related_to_id)) do
       post.related_to_id |> IO.inspect()
 
       {_, [parent]} =
@@ -159,9 +155,9 @@ defmodule Embers.Feed do
         recipient: parent.user_id,
         source: post.id
       })
-
-      {:ok, nil}
     end
+
+    {:ok, nil}
   end
 
   defp handle_medias(post, attrs) do

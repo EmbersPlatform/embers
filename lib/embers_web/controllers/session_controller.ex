@@ -70,13 +70,13 @@ defmodule EmbersWeb.SessionController do
             |> put_status(:no_content)
             |> json(%{message: :success})
 
-          {:error, message} ->
+          {:error, _message} ->
             conn
             |> put_status(:unauthorized)
             |> json(%{error: :invalid_credentials})
         end
 
-      user ->
+      _user ->
         conn
         |> put_status(:unauthorized)
         |> json(%{error: :already_logged_in})

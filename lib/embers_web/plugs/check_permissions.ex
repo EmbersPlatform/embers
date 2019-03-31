@@ -3,7 +3,6 @@ defmodule EmbersWeb.Plugs.CheckPermissions do
   alias Embers.Authorization
 
   import Phoenix.Controller
-  alias EmbersWeb.Router.Helpers, as: Routes
 
   def init(default), do: default
 
