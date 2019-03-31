@@ -90,6 +90,17 @@ export default {
 </script>
 
 <style lang="scss">
+@keyframes slidefade {
+  0% {
+    opacity: 0;
+    transform: translateY(10%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 #new-post-modal {
   position: fixed;
   top: 0;
@@ -113,6 +124,7 @@ export default {
     border-radius: 3px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
     margin: 20px 0;
+    animation: slidefade 0.5s ease;
 
     .editor {
       margin: 20px;
@@ -136,5 +148,3 @@ export default {
   }
 }
 </style>
-
-

@@ -52,7 +52,7 @@
       </template>
     </notifications>
     <rules-modal/>
-    <new-post-modal v-if="show_new_post_modal" :related="new_post_modal_related"/>
+    <new-post-modal v-show="show_new_post_modal" :related="new_post_modal_related"/>
   </div>
 </template>
 
