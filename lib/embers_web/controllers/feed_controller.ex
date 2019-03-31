@@ -31,9 +31,23 @@ defmodule EmbersWeb.FeedController do
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
         left_join: media in assoc(post, :media),
+        left_join: related in assoc(post, :related_to),
+        left_join: related_user in assoc(related, :user),
+        left_join: related_user_meta in assoc(related_user, :meta),
+        left_join: related_tags in assoc(related, :tags),
+        left_join: related_media in assoc(related, :media),
         preload: [
           user: {user, meta: meta},
-          media: media
+          media: media,
+          related_to: {
+            related,
+            user: {
+              related_user,
+              meta: related_user_meta
+            },
+            media: related_media,
+            tags: related_tags
+          }
         ]
       )
       |> Paginator.paginate(
@@ -50,6 +64,7 @@ defmodule EmbersWeb.FeedController do
       from(
         post in Post,
         where: post.nesting_level == 0 and is_nil(post.deleted_at),
+        where: is_nil(post.related_to_id),
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
