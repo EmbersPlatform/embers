@@ -43,7 +43,14 @@ defmodule Embers.Feed.Subscriptions do
   """
   def create_user_subscription(attrs) do
     subscription = UserSubscription.changeset(%UserSubscription{}, attrs)
-    Repo.insert(subscription)
+    result = Repo.insert(subscription)
+
+    Embers.Event.emit(:user_followed, %{
+      from: attrs.user_id,
+      recipient: attrs.source_id
+    })
+
+    result
   end
 
   @doc """

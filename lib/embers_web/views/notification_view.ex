@@ -44,6 +44,9 @@ defmodule EmbersWeb.NotificationView do
 
       "mention" ->
         "**#{notification.from.username}** #{gettext("mentioned you in a")} **post**"
+
+      "follow" ->
+        "**#{notification.from.username}** #{gettext("is following you")}"
     end
   end
 

@@ -1,5 +1,5 @@
 defmodule Embers.Notifications.Manager do
-  use Embers.EventSubscriber, topics: ~w(post_created post_comment user_mentioned)
+  use Embers.EventSubscriber, topics: ~w(post_created post_comment user_mentioned user_followed)
 
   require Logger
 
@@ -49,11 +49,11 @@ defmodule Embers.Notifications.Manager do
   def handle_event(:user_followed, event) do
     if not Blocks.blocked?(event.data.from, event.data.recipient) do
       case Notifications.create_notification(%{
-            type: "follow",
-            from_id: event.data.from,
-            recipient_id: event.data.recipient,
-            source_id: event.data.source
-          }) do
+             type: "follow",
+             from_id: event.data.from,
+             recipient_id: event.data.recipient,
+             source_id: event.data.from
+           }) do
         {:ok, notification} ->
           notification = notification |> Embers.Repo.preload(from: :meta)
           Embers.Event.emit(:notification_created, notification)

@@ -26,11 +26,16 @@ msgid "Invalid image file"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/views/notification_view.ex:45
+#: lib/embers_web/views/notification_view.ex:46
 msgid "mentioned you in a"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/views/notification_view.ex:42
+#: lib/embers_web/views/notification_view.ex:43
 msgid "commented in your"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/views/notification_view.ex:49
+msgid "is following you"
 msgstr ""
