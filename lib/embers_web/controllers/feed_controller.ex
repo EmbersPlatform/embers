@@ -31,6 +31,7 @@ defmodule EmbersWeb.FeedController do
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
         left_join: media in assoc(post, :media),
+        left_join: reactions in assoc(post, :reactions),
         left_join: related in assoc(post, :related_to),
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
@@ -39,6 +40,7 @@ defmodule EmbersWeb.FeedController do
         preload: [
           user: {user, meta: meta},
           media: media,
+          reactions: reactions,
           related_to: {
             related,
             user: {
