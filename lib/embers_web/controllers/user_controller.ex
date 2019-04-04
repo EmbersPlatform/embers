@@ -10,6 +10,7 @@ defmodule EmbersWeb.UserController do
   plug(:id_check when action in [:edit, :update, :delete])
 
   def show(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
+    id = String.downcase(id)
     user = Accounts.get_populated(id)
     user = user |> Accounts.User.load_following_status(current_user.id)
     user = user |> Accounts.User.load_blocked_status(current_user.id)
