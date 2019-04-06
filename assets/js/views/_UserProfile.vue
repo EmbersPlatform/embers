@@ -63,8 +63,8 @@ export default {
         .get(this.$route.params.name)
         .then(res => {
           if (
-            res.data.username.toUpperCase() !=
-            this.$route.params.name.toUpperCase()
+            res.data.canonical !=
+            this.$route.params.name.toLowerCase()
           ) {
             return;
           }
