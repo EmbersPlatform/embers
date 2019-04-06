@@ -17,6 +17,8 @@ defmodule EmbersWeb.SessionController do
   # If you are using Argon2 or Pbkdf2, add crypto: Argon2
   # or crypto: Pbkdf2 to Login.verify (after Accounts)
   def create(conn, %{"id" => identifier, "password" => password}) do
+    # The identifier is setted to downcase to be compared with the canonical user value
+    identifier = String.downcase(identifier)
     user_params =
       case Regex.match?(~r/@/, identifier) do
         true -> %{"email" => identifier, "password" => password}

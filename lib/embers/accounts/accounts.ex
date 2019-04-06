@@ -36,7 +36,7 @@ defmodule Embers.Accounts do
     query =
       case is_integer(identifier) do
         true -> User |> where([user], user.id == ^identifier)
-        false -> User |> where([user], user.canonical == ^identifier)
+        false -> User |> where([user], user.canonical == ^String.downcase(identifier))
       end
 
     user =
