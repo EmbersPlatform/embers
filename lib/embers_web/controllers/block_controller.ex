@@ -22,7 +22,12 @@ defmodule EmbersWeb.BlockController do
   def list_ids(conn, %{"id" => id} = params) do
     id = IdHasher.decode(id)
 
-    blocks_ids = Blocks.list_blocks_ids_paginated(id, params)
+    blocks_ids =
+      Blocks.list_blocks_ids_paginated(id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
 
     render(conn, "blocks_ids.json", blocks_ids)
   end

@@ -315,7 +315,7 @@ defmodule Embers.Feed do
     end
   end
 
-  def get_post_replies(parent_id, opts \\ %{}) do
+  def get_post_replies(parent_id, opts \\ []) do
     from(
       post in Post,
       where: post.parent_id == ^parent_id and is_nil(post.deleted_at),
@@ -361,12 +361,16 @@ defmodule Embers.Feed do
         %{
           post_id: post.id,
           tag_id: tag_id,
-          inserted_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second),
-          updated_at: NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+          inserted_at: current_date_naive(),
+          updated_at: current_date_naive()
         }
       end)
 
     Embers.Repo.insert_all(Embers.Tags.TagPost, tag_post_list)
     {:ok, nil}
+  end
+
+  defp current_date_naive() do
+    NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
   end
 end
