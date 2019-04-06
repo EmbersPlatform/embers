@@ -29,7 +29,7 @@ defmodule Embers.Paginator do
   """
   @spec paginate(Ecto.Query.t(), list()) :: Embers.Paginator.Page.t()
   def paginate(queryable, opts \\ []) do
-    opts = Options.from_map(opts)
+    opts = Options.build(opts)
 
     limit_plus_one = opts.limit + 1
 

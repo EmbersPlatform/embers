@@ -10,7 +10,8 @@ defmodule Embers.Paginator.Options do
             limit: 50,
             max_limit: 100
 
-  def from_map(opts) do
+  @spec build(keyword()) :: Embers.Paginator.Options.t()
+  def build(opts \\ []) do
     opts =
       struct(__MODULE__, %{
         after: Keyword.get(opts, :after),
