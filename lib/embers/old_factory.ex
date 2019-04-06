@@ -1,4 +1,4 @@
-defmodule Embers.Factory do
+defmodule Embers.OldFactory do
   use ExMachina.Ecto, repo: Embers.Repo
 
   @password Pbkdf2.add_hash("password")
