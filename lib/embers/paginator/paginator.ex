@@ -19,7 +19,7 @@ defmodule Embers.Paginator do
     will be capped by `:max_limit`. Defaults to 50
   * `max_limit` - Sets a maximum cap for `:limit`. This option can be useful when `:limit`
     is set dynamically (e.g from a URL param set by a user) but you still want to
-    enfore a maximum. Defaults to `500`.
+    enforce a maximum. Defaults to `500`.
 
   ## Usage
 
