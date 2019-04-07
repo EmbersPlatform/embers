@@ -73,7 +73,8 @@ defmodule Embers.Feed.Subscriptions do
     end
   end
 
-  def list_following_paginated(user_id, opts \\ %{}) do
+  @spec list_following_paginated(integer(), keyword()) :: Embers.Paginator.Page.t()
+  def list_following_paginated(user_id, opts \\ []) do
     UserSubscription
     |> where([sub], sub.user_id == ^user_id)
     |> join(:left, [sub], user in assoc(sub, :source))
@@ -82,7 +83,8 @@ defmodule Embers.Feed.Subscriptions do
     |> Paginator.paginate(opts)
   end
 
-  def list_following_ids_paginated(user_id, opts \\ %{}) do
+  @spec list_following_ids_paginated(integer(), keyword()) :: Embers.Paginator.Page.t()
+  def list_following_ids_paginated(user_id, opts \\ []) do
     UserSubscription
     |> where([sub], sub.user_id == ^user_id)
     |> select([sub], sub.source_id)
