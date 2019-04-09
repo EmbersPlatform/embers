@@ -12,6 +12,7 @@ npm-debug.log
 
 # Static artifacts
 /assets/node_modules
+/assets/admin/node_modules
 /assets/mix-manifest.json
 
 # Since we are building assets from assets/,

@@ -1,6 +1,8 @@
 defmodule EmbersWeb.Router do
   use EmbersWeb, :router
 
+  alias EmbersWeb.Plugs.{CheckPermissions, GetPermissions}
+
   pipeline :browser do
     plug(:accepts, ["html"])
     plug(:fetch_session)
@@ -8,8 +10,43 @@ defmodule EmbersWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(EmbersWeb.Authenticate)
-    plug(EmbersWeb.Plugs.GetPermissions)
+    plug(GetPermissions)
     plug(Phauxth.Remember, create_session_func: &EmbersWeb.Auth.Utils.create_session/1)
+  end
+
+  pipeline :admin do
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_flash)
+    plug(:put_secure_browser_headers)
+    plug(EmbersWeb.Authenticate)
+    plug(Phauxth.Remember, create_session_func: &EmbersWeb.Auth.Utils.create_session/1)
+    plug(GetPermissions)
+    plug(CheckPermissions, permission: "access_backoffice")
+
+    plug(
+      Plug.Static,
+      at: "/admin",
+      from: Path.expand('./priv/static/admin'),
+      gzip: true
+    )
+
+    plug(:protect_from_forgery)
+  end
+
+  scope "/admin" do
+    pipe_through([:admin])
+
+    get("/", EmbersWeb.Admin.DashboardController, :index)
+
+    get("/roles", EmbersWeb.Admin.RoleController, :index)
+    get("/roles/new", EmbersWeb.Admin.RoleController, :new)
+    post("/roles/new", EmbersWeb.Admin.RoleController, :create)
+    get("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :edit)
+    put("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :update)
+    delete("/roles/:name", EmbersWeb.Admin.RoleController, :destroy)
+
+    match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
   end
 
   scope "/", EmbersWeb do

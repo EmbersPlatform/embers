@@ -23,6 +23,17 @@ defmodule Embers.Authorization.Roles do
     |> Repo.insert()
   end
 
+  def update(name, attrs) do
+    role = get(name)
+    role = Role.changeset(role, attrs)
+    Repo.update(role)
+  end
+
+  def delete(name) do
+    role = get(name)
+    Repo.delete(role) |> IO.inspect()
+  end
+
   def roles_for(user_id) do
     from(ru in RoleUser,
       where: ru.user_id == ^user_id,
