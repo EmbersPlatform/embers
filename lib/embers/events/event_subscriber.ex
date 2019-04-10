@@ -1,4 +1,28 @@
 defmodule Embers.EventSubscriber do
+  @moduledoc """
+  Esta es la plantilla para los módulos que deseen escuchar a los eventos de
+  `EventBus`.
+
+  Primero se debe usar la plantilla para tener todas sus funciones.
+  En `EventBus`, los nombres de los eventos son llamados `topics`. Para
+  poder escuchar a estos topics, se debe indicar la lista de topics a
+  escuchar al usar el modulo:
+      use Embers.EventSubscriber, topics: ~w(post_created)
+
+  Luego, se registra el módulo al iniciar la aplicación, lo ideal es hacerlo en
+  `/lib/embers/application.ex`:
+
+      def start(_type, _args) do
+        # ...
+        MyModule.register()
+      end
+
+  Ahora que nuestro módulo ya está registrado y puede escuchar topics, queda
+  definir las funciones que se encargan de procesar los eventos:
+      def handle_event(:post_created, event) do
+        # Hacer algo con el evento
+      end
+  """
   defmacro __using__(opts) do
     topics = Keyword.get(opts, :topics, [])
 

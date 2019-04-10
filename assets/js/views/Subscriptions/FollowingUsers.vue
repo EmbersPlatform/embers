@@ -27,14 +27,14 @@ export default {
     return {
       followingUsers: null,
       oldestId: null,
-      reachedBottom: false,
+      last_page: false,
       loading: true,
       previousScrollPosition: 0
     };
   },
   computed: {
     infiniteScrollStill() {
-      return this.loading || this.reachedBottom;
+      return this.loading || this.last_page;
     }
   },
   methods: {
@@ -50,10 +50,16 @@ export default {
             return;
           }
           this.followingUsers = res.items;
+
+          this.followingUsers.map(user => {
+            user.following = true;
+            return user;
+          });
+
           if (res.items.length) {
             this.oldestId = res.items[res.items.length - 1].id;
           }
-          this.reachedBottom = res.last_page;
+          this.last_page = res.last_page;
         })
         .finally(() => {
           this.loading = false;
@@ -76,7 +82,7 @@ export default {
             this.followingUsers.push(...res.items);
             this.oldestId = res.items[res.items.length - 1].id;
           }
-          this.reachedBottom = res.last_page;
+          this.last_page = res.last_page;
         })
         .finally(() => {
           if (this._inactive) {

@@ -1,12 +1,25 @@
 defmodule Embers.Paginator do
+  @moduledoc """
+  Este modulo se encarga de paginar los resultados de una consulta a la
+  base de datos.
+
+  Cuando los resultados de una consulta son potencialmente muy numerosos, lo
+  mejor es dividirlos en subconjuntos de resultados, como si fueran páginas
+  de un catálogo.
+
+  El método que utiliza este módulo es el de paginación con cursores.
+  [Este artículo](https://coderwall.com/p/lkcaag/pagination-you-re-probably-doing-it-wrong)
+  explica bien las diferencias entre la paginación con cursores y la
+  paginación tradicional con offsets. TL;DR: la paginación por offsets es
+  poco precisa y más lenta.
+  """
+
   import Ecto.Query, warn: false
 
   alias Embers.Paginator.Options
   alias Embers.Paginator.Page
   alias Embers.Repo
   alias Embers.Helpers.IdHasher
-
-  @default_options %{before: nil, after: nil, limit: 50, max_limit: 500}
 
   @doc """
   Fetches all the results matching the query between the cursors
@@ -21,17 +34,17 @@ defmodule Embers.Paginator do
     will be capped by `:max_limit`. Defaults to 50
   * `max_limit` - Sets a maximum cap for `:limit`. This option can be useful when `:limit`
     is set dynamically (e.g from a URL param set by a user) but you still want to
-    enfore a maximum. Defaults to `500`.
+    enforce a maximum. Defaults to `500`.
 
   ## Usage
 
-      query
-      |> Paginator.paginate(opts)
+      iex> paginate(query, opts)
+      %Page{entries: [], last_page: false, next: "next cursor"}
 
   """
   @spec paginate(Ecto.Query.t(), list()) :: Embers.Paginator.Page.t()
   def paginate(queryable, opts \\ []) do
-    opts = normalize_opts(opts)
+    opts = Options.build(opts)
 
     limit_plus_one = opts.limit + 1
 
@@ -73,26 +86,5 @@ defmodule Embers.Paginator do
       end
 
     %Page{entries: entries, next: next, last_page: last_page}
-  end
-
-  defp normalize_opts(opts) do
-    opts =
-      struct(Options, %{
-        after: Keyword.get(opts, :after, @default_options.after),
-        before: Keyword.get(opts, :before, @default_options.before),
-        limit: Keyword.get(opts, :limit, @default_options.limit)
-      })
-
-    opts =
-      if is_binary(opts.limit) do
-        %{opts | limit: String.to_integer(opts.limit)}
-      end || opts
-
-    opts =
-      if is_nil(opts.limit) do
-        %{opts | limit: @default_options.limit}
-      end || opts
-
-    opts
   end
 end

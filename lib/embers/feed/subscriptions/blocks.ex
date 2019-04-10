@@ -1,6 +1,12 @@
 defmodule Embers.Feed.Subscriptions.Blocks do
   @moduledoc """
-  Context for user blocks
+  Los bloqueos son lo contrario a las suscripciones.
+  Mientras que una suscripcion representa el deseo de un usuario de recibir
+  publicaciones de una fuente, un bloqueo representa el deseo a no recibir
+  publicaciones de una fuente.
+
+  En los casos en que exista una suscripción y un bloqueo a una misma fuente,
+  se le dará prioridad siempre a los bloqueos.
   """
 
   import Ecto.Query
@@ -75,11 +81,7 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> Repo.all()
   end
 
-  @spec list_blocks_paginated(integer(), list()) :: %{
-          entries: [any()],
-          last_page: boolean(),
-          next: any()
-        }
+  @spec list_blocks_paginated(integer(), list()) :: Embers.Paginator.Page.t()
   def list_blocks_paginated(user_id, opts \\ []) do
     UserBlock
     |> where([block], block.user_id == ^user_id)
@@ -89,11 +91,7 @@ defmodule Embers.Feed.Subscriptions.Blocks do
     |> Paginator.paginate(opts)
   end
 
-  @spec list_blocks_ids_paginated(integer(), list()) :: %{
-          entries: [integer()],
-          last_page: boolean(),
-          next: any()
-        }
+  @spec list_blocks_ids_paginated(integer(), list()) :: Embers.Paginator.Page.t()
   def list_blocks_ids_paginated(user_id, opts \\ []) do
     UserBlock
     |> where([block], block.user_id == ^user_id)

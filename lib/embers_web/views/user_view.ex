@@ -17,6 +17,7 @@ defmodule EmbersWeb.UserView do
       username: user.username,
       email: user.email,
       badges: [],
+      canonical: user.canonical,
       stats: %{
         posts: 0,
         followers: 0,

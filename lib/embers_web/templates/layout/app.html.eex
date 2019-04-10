@@ -101,6 +101,7 @@
 			id: "<%= Embers.Helpers.IdHasher.encode(@user.id) %>",
 			username: "<%= @user.username %>",
 			email:"<%= @user.email %>",
+			canonical: "<%= @user.canonical %>",
       permissions: [],
 
       bio: "<%= @user.meta.bio %>",

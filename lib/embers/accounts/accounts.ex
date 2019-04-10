@@ -1,6 +1,14 @@
 defmodule Embers.Accounts do
   @moduledoc """
-  The boundary for the Accounts system.
+  La interfaz para las cuentas.
+  Las cuentas en este caso son lo mismo que los usuarios.
+
+  ## Confirmación de cuentas
+  Embers requiere que las cuentas sean confirmadas para poder ser usadas.
+  Una cuenta sin confirmar será rechazada a la hora de iniciar sesión.
+
+  Para confirmar una cuenta, basta con asignarle una fecha al campo
+  `:confirmed_at`, mediante la función `confirm_user/1`.
   """
 
   import Ecto.{Query, Changeset}, warn: false
@@ -13,18 +21,74 @@ defmodule Embers.Accounts do
     Sessions,
     Sessions.Session,
     Profile.Meta,
-    Repo
+    Repo,
+    Paginator
   }
 
-  def list_users do
-    Repo.all(User)
+  @doc """
+  Devuelve todos los usuarios existentes.
+  Es preferible utilizar `list_users_paginated/1` ya que esta función no es
+  capaz de dividir los resultados en fragmentos mas pequeños.
+
+  ## Ejemplo
+      iex> list_users()
+      [%User{}, ...]
+  """
+  def list_users(_opts \\ []) do
+    from(User) |> Repo.all()
   end
 
   @doc """
-  Gets a single user.
+  Devuelve un conjunto de los usuarios existentes.
+
+  ## Ejemplo
+      iex> list_users_paginated()
+      %Page{
+        entries: [%User{}, ...],
+        last_page: false,
+        next: "next cursor"
+      }
+
+  ## Opciones
+  Además de las opciones aceptadas por `Embers.Paginator.paginate/2`, acepta
+  las siguientes opciones:
+
+  - `:name`: Si es especificado, se buscaran todos los usuarios que contengan
+  este valor en el campo `canonical`.
   """
+  @spec list_users_paginated(keyword()) :: Embers.Paginator.Page.t()
+  def list_users_paginated(opts \\ []) do
+    query = from(users in User)
+
+    query =
+      if Keyword.has_key?(opts, :name) do
+        from(user in query, where: ilike(user.canonical, ^"%#{Keyword.get(opts, :name)}%"))
+      end || query
+
+    Paginator.paginate(query, opts)
+  end
+
+  @doc """
+  Devuelve un usuario de acuerdo al `id` proporcionado.
+
+  ## Ejemplos
+      iex> get_user(1)
+      %User{}
+      iex> get_user(0)
+      nil
+  """
+  @spec get_user(integer()) :: Embers.Accounts.User.t() | nil
   def get_user(id), do: Repo.get(User, id)
 
+  @doc """
+  Devuelve un usuario basado en el id o nombre de usuario provisto.
+
+  ## Ejemplos
+      iex> get_by_identifier(1)
+      %User{}
+      iex> get_by_identifier("jane")
+      %User{}
+  """
   def get_by_identifier(identifier) do
     case Float.parse(identifier) do
       {_id, ""} -> get_user(identifier)
@@ -32,11 +96,14 @@ defmodule Embers.Accounts do
     end
   end
 
+  @doc """
+  Similar a `get_by_identifier/1` pero devuelve al usuario con su `:meta`.
+  """
   def get_populated(identifier) do
     query =
       case is_integer(identifier) do
         true -> User |> where([user], user.id == ^identifier)
-        false -> User |> where([user], user.canonical == ^identifier)
+        false -> User |> where([user], user.canonical == ^String.downcase(identifier))
       end
 
     user =
@@ -52,8 +119,7 @@ defmodule Embers.Accounts do
   end
 
   @doc """
-  Gets a user based on the params.
-  This is used by Phauxth to get user information.
+  Devuelve al usuaro basado en el campo provisto.
   """
   def get_by(%{"session_id" => session_id}) do
     with %Session{user_id: user_id} <- Sessions.get_session(session_id), do: get_user(user_id)
@@ -77,6 +143,16 @@ defmodule Embers.Accounts do
     Repo.get_by(User, canonical: canonical)
   end
 
+  @doc """
+  Crea a un usuario y a las entidades asociadas.
+
+  Al crear a un usuario, se crean tambien su `Meta` y `Settings`,
+  y se le asigna el rol "member" para que pueda realizar todas las acciones
+  básicas.
+
+  Al realizarse dentro de una transacción, si alguna de las operaciones falla,
+  se da marcha atrás a la operación completa y se devolverá el error ocurrido.
+  """
   def create_user(attrs, opts \\ []) do
     raw = Keyword.get(opts, :raw, false)
 

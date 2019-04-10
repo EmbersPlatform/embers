@@ -1,0 +1,22 @@
+<div class="title is-3">Usuarios</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for user <- @users do %>
+    <tr>
+      <td><%= user.username %></td>
+      <td><%= user.email %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= if not @last_page do %>
+<a href="?after=<%= @next %>" class="button">Mas resultados</a>
+<% end %>

@@ -1,4 +1,16 @@
 defmodule Embers.Tags do
+  @moduledoc """
+  Los tags se utilizan para categorizar contenidos. Son también una
+  Fuente para las suscripciones.
+
+  La manera en que se relaciona un tag con un contenido es mediante una
+  tabla pivote. Por ejemplo, para los posts seria la tabla "tag_post".
+
+  ## Por hacer
+  Resta hacer que los tags tengan una descripcion, editable solo por
+  moderadores.
+  """
+
   alias Embers.Repo
   alias Embers.Tags.{Tag, TagPost}
 

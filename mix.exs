@@ -11,6 +11,7 @@ defmodule Embers.Mixfile do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
+      source_url: "https://gitlab.com/embers-project/embers/embers",
       docs: docs()
     ]
   end
@@ -57,7 +58,7 @@ defmodule Embers.Mixfile do
       {:sweet_xml, "~> 0.6"},
       {:recaptcha, "~> 2.3"},
       {:hashids, "~> 2.0"},
-      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.20", only: :dev, runtime: false},
       {:ex_machina, "~> 2.2"},
       {:timex, "~> 3.0"},
       {:mogrify, "~> 0.7.0"},

@@ -26,3 +26,5 @@ config :pbkdf2_elixir, rounds: 1
 
 # Mailer test configuration
 config :embers, Embers.Mailer, adapter: Bamboo.TestAdapter
+
+import_config "test.secret.exs"
