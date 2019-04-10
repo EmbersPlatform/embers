@@ -13,11 +13,24 @@ defmodule Embers.Accounts do
     Sessions,
     Sessions.Session,
     Profile.Meta,
-    Repo
+    Repo,
+    Paginator
   }
 
-  def list_users do
-    Repo.all(User)
+  def list_users(opts \\ []) do
+    from(User) |> Paginator.paginate(opts)
+  end
+
+  @spec list_users_paginated(keyword()) :: Embers.Paginator.Page.t()
+  def list_users_paginated(opts \\ []) do
+    query = from(users in User)
+
+    query =
+      if Keyword.has_key?(opts, :name) do
+        from(user in query, where: ilike(user.canonical, ^"%#{Keyword.get(opts, :name)}%"))
+      end || query
+
+    Paginator.paginate(query, opts)
   end
 
   @doc """

@@ -39,6 +39,8 @@ defmodule EmbersWeb.Router do
 
     get("/", EmbersWeb.Admin.DashboardController, :index)
 
+    get("/users", EmbersWeb.Admin.UserController, :index)
+
     get("/roles", EmbersWeb.Admin.RoleController, :index)
     get("/roles/new", EmbersWeb.Admin.RoleController, :new)
     post("/roles/new", EmbersWeb.Admin.RoleController, :create)

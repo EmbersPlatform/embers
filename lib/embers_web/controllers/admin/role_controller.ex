@@ -4,7 +4,6 @@ defmodule EmbersWeb.Admin.RoleController do
   import Ecto.Query
   import EmbersWeb.Helpers
   alias Embers.Repo
-  alias Embers.Authorization
   alias Embers.Authorization.{Role, Roles}
 
   plug(:put_layout, "dashboard.html")
