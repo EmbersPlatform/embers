@@ -339,6 +339,9 @@ defmodule Embers.Feed do
     |> Paginator.paginate(opts)
   end
 
+  @doc """
+  Crea las actividades para los recipientes
+  """
   def push_acitivity(post, recipients \\ []) do
     activities =
       Enum.map(recipients, fn elem ->
@@ -351,6 +354,7 @@ defmodule Embers.Feed do
   defp handle_tags(post, attrs) do
     hashtag_regex = ~r/(?<!\w)#\w+/
 
+    # Buscar tags en el cuerpo del post
     hashtags =
       if is_nil(post.body) do
         []
@@ -359,6 +363,7 @@ defmodule Embers.Feed do
         |> Enum.map(fn [txt] -> String.replace(txt, "#", "") end)
       end
 
+    # Sumarle los tags enviados en el campo "tags"
     hashtags =
       if Map.has_key?(attrs, "tags") and is_list(attrs["tags"]) do
         Enum.concat(hashtags, attrs["tags"])
@@ -366,8 +371,10 @@ defmodule Embers.Feed do
         hashtags
       end
 
+    # Crear los tags que hacaen falta y obtener los ids que hacen falta
     tags_ids = Tags.bulk_create_tags(hashtags)
 
+    # Generar una lista de los datos a insertar en la tabla "tag_post"
     tag_post_list =
       Enum.map(tags_ids, fn tag_id ->
         %{
@@ -379,6 +386,11 @@ defmodule Embers.Feed do
       end)
 
     Embers.Repo.insert_all(Embers.Tags.TagPost, tag_post_list)
+
+    # Devolver un tuple con {:ok, _algo} porque esta accion se realiza
+    # dentro de una transaccion.
+    # Se podria hacer que falle toda la operacion si no se pudo insertar
+    # un tag.
     {:ok, nil}
   end
 

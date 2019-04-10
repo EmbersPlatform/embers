@@ -16,6 +16,6 @@ Esto significa que para obtener las entradas que no han sido borradas con este m
 
     from(
       Embers.Feed.Post as post,
-      where: not is_nil(post.deleted_at)
+      where: is_nil(post.deleted_at)
     )
     |> Repo.all()
