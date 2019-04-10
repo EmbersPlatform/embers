@@ -1,4 +1,11 @@
 defmodule Embers.Feed.Subscriptions.Tags do
+  @moduledoc """
+  Este módulo es la interfaz para las suscripciones y bloqueos a tags.
+
+  Para una explicación más detallada sobre qué son las suscripciones y
+  bloqueos, ver la documentación de los módulos `Embers.Feed.Subscriptions` y
+  `Embers.Feed.Subscriptions.Blocks`.
+  """
   alias Embers.Feed.Subscriptions.{TagSubscription, TagBlock}
   alias Embers.Repo
   alias Embers.Paginator

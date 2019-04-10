@@ -1,6 +1,21 @@
 defmodule Embers.Profile do
   @moduledoc """
-  The Profile context.
+  El Perfil del usuario es el que contiene toda la informacion adicional de la
+  cuenta de un usuario, como su descripcion, avatar, etc.
+  Este modulo es el utilizado para interactuar con esa informacion, pero la
+  mayoria de las veces se hablará de metas, ya que ese es el nombre de la
+  relacion con el usuario.
+
+  # Avatares y portadas
+  Los archivos de avatares y portadas se guardan con el nombre del usuario y
+  no con un nombre único. Esto es a propósito para evitar generar urls cada
+  vez que se quiera obtener el nombre de un usuario, y tambien para evitar
+  la potencial existencia de avatares y portadas huerfanos.
+
+  Para que los clientes cacheen solo la ultima version de cada avatar y
+  portada, lo que se guarda en el perfil del usuario es el timestamp en que
+  fueron modificados por ultima vez, y es lo que se utilizara en las url para
+  el versionado de los archivos.
   """
 
   import Ecto.Query, warn: false

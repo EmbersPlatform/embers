@@ -1,4 +1,19 @@
 defmodule Embers.Paginator do
+  @moduledoc """
+  Este modulo se encarga de paginar los resultados de una consulta a la
+  base de datos.
+
+  Cuando los resultados de una consulta son potencialmente muy numerosos, lo
+  mejor es dividirlos en subconjuntos de resultados, como si fueran páginas
+  de un catálogo.
+
+  El método que utiliza este módulo es el de paginación con cursores.
+  [Este artículo](https://coderwall.com/p/lkcaag/pagination-you-re-probably-doing-it-wrong)
+  explica bien las diferencias entre la paginación con cursores y la
+  paginación tradicional con offsets. TL;DR: la paginación por offsets es
+  poco precisa y más lenta.
+  """
+
   import Ecto.Query, warn: false
 
   alias Embers.Paginator.Options
@@ -23,8 +38,8 @@ defmodule Embers.Paginator do
 
   ## Usage
 
-      query
-      |> Paginator.paginate(opts)
+      iex> paginate(query, opts)
+      %Page{entries: [], last_page: false, next: "next cursor"}
 
   """
   @spec paginate(Ecto.Query.t(), list()) :: Embers.Paginator.Page.t()

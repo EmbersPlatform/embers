@@ -1,6 +1,20 @@
 defmodule Embers.Feed.Subscriptions do
   @moduledoc """
-  A module to interface with subscriptions
+  Las suscripciones son relaciones entre usuarios o entre usuarios y posts.
+  Este módulo se centra en las relaciones entre usuarios. Para relaciones
+  con otro tipo de entidades, ver la documentación de módulos adyacentes
+  como `Embers.Feed.Subscriptions.Tags`.
+
+  En este modelo se tienen encuenta a un `suscriptor`, que es quien desea
+  recibir contenido, y a una `fuente` de contenidos(posts).
+  Un suscriptor es siempre un usuario, pero una fuente puede ser un usuario,
+  un tag o cualquier otra entidad de la cual provenga contenido.
+
+  Por ejemplo, al seguir a un usuario uno se está "suscribiendo" al mismo,
+  con lo que comienza a recibir en su feed los posts que este publica.
+  Lo mismo sucede al suscribirse a un tag. Si bien no es el tag quien
+  genera el contenido sino un usuario, a los fines prácticos podemos
+  considerar que el contenido proviene de un tag.
   """
 
   import Ecto.Query

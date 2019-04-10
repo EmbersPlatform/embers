@@ -1,0 +1,40 @@
+<div class="title is-3">Roles</div>
+
+<%= if info = get_flash(@conn, :info) do %>
+<article class="message is-info">
+  <div class="message-header">
+    <p><%= info %></p>
+  </div>
+</article>
+<% end %>
+
+<a href="/admin/roles/new" class="button is-primary">Crear rol</a>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Permisos</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for role <- @roles do %>
+    <tr>
+      <td><%= role.name %></td>
+      <td>
+        <%= for perm <- role.permissions do %>
+        <span class="tag <%= if perm == "any" do %>is-warning<% end %>"><%= perm %></span>
+        <% end %>
+      </td>
+      <td>
+        <%= if not role.name in ~w(admin member moderator) do %>
+        <%= button("Eliminar", to: "/admin/roles/#{role.name}", method: "delete", class: "button is-danger is-small", data: [confirm: "Eliminar rol?"]) %>
+        <% end %>
+        <%= if role.name != "admin" do %>
+        <a href="/admin/roles/edit/<%= role.name %>" class="button is-small">Editar</a>
+        <% end %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

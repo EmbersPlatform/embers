@@ -1,6 +1,7 @@
 defmodule Embers.Sessions do
   @moduledoc """
-  The Sessions context.
+  Las sesiones son guardadas en la base de datos y este es el modulo para
+  interactuar con ellas.
   """
 
   import Ecto.Query, warn: false

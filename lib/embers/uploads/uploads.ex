@@ -1,4 +1,25 @@
 defmodule Embers.Uploads do
+  @moduledoc """
+  Este modulo se encarga de guardar y eliminar archivos subidos por los
+  usuarios.
+
+  Por el momento esto se hace de dos formas: subiendolos al almacenamiento
+  local(en el directorio del proyecto), o a un servicio compatible con
+  AWS S3, en el bucket especificado en la configuracion.
+
+  ## Subir a S3
+  La subida de archivas a S3 se realiza con el modulo `ExAws.S3`, la
+  configuración por lo tanto es la misma, por ejemplo:
+
+      config :ex_aws, :s3, %{
+        access_key_id: "ACCESS_KEY",
+        secret_access_key: "SECRET_KEY",
+        scheme: "https://",
+        host: %{"nyc3" => "embers-host.nyc3.digitaloceanspaces.com"},
+        region: "nyc3"
+      }
+  """
+
   alias ExAws.S3
 
   @enforce_keys [:path, :url]
@@ -57,7 +78,10 @@ defmodule Embers.Uploads do
     case res do
       {:ok, _} ->
         {:ok,
-         %__MODULE__{path: path, url: "https://#{Application.get_env(:ex_aws, :s3).host["nyc3"]}/uploads/#{path}"}}
+         %__MODULE__{
+           path: path,
+           url: "https://#{Application.get_env(:ex_aws, :s3).host["nyc3"]}/uploads/#{path}"
+         }}
 
       {:error, reason} ->
         {:error, reason}
