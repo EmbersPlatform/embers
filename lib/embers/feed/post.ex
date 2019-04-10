@@ -1,6 +1,42 @@
 defmodule Embers.Feed.Post do
   @moduledoc """
-  The Posts entity schema
+  Un post es la unidad mínima de contenido en Embers. Consiste de un
+  cuerpo de texto que no exceda los 1600 caracteres, y opcionalmente
+  hasta 4 medios asociados(imagen, video, etc).
+
+  De los posts se derivan los comentarios, respuestas, compartidos, que son
+  posts a los que se les da un distinto significado basandose en campos como
+  `:nesting_level`/`:parent_id` y `:related_to_id`.
+
+  ## Nivel de anidamiento
+  El `nesting_level` o nivel de anidamiento, representa qué tan profundo se
+  encuentra el post en la cadena de posts. De acuerdo a este nivel, se
+  considera a un post como:
+  - `0` - Post
+  - `1` - Comentario
+  - `2` - Respuesta (a un Comentario)
+
+  Esto permite reutilizar el post para varios escenarios, evitando la
+  duplicación de código en el backend y limitando la superficie expuesta a
+  fallos.
+
+  Se eligió limitar el anidamiento para evitar lidiar con interfaces poco
+  amigables como es el caso de Reddit y HackerNews. Además hace que los
+  posts con un nivel de anidamiento muy alto acaben perdidos o que el se
+  vuelvan demasiado off-topic, al punto de ser molestos para el OP.
+
+  ## Compartidos
+  A los posts que están relacionados a otros posts se los considera como
+  Compartidos.
+  Este tipo de post puede tener un cuerpo, pero no puede tener medios
+  asociados.
+
+  Para que un post sea un Compartido, debe tener asignado un valor en el campo
+  `related_to_id`. Si el post "padre" es eliminado, también son eliminados
+  todos los posts compartidos derivados de éste.
+  Se diseñó de esta forma para asegurar la integridad de la información usando
+  llaves foráneas con eliminación por cascada y evitar la existencia de
+  compartidos huérfanos.
   """
 
   use Ecto.Schema

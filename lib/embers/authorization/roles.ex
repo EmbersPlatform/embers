@@ -1,4 +1,15 @@
 defmodule Embers.Authorization.Roles do
+  @moduledoc """
+  Los roles son los contenedores para los permisos. Sólo tienen un nombre y una
+  lista de permisos.
+
+  Un usuario puede tener muchos roles, lo que hace más fácil definirlos.
+  Por ejemplo, un miembro tiene el set de permisos básicos. Para que sea
+  un moderador, en vez de volver a definir los permisos basta con definir
+  sólo los que son específicos a la moderación. Los permisos totales que posee
+  un usuario resultan de la suma de los permisos de todos sus roles.
+  """
+
   alias Embers.Authorization.{Role, RoleUser}
   alias Embers.Repo
 

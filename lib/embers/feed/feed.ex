@@ -1,6 +1,7 @@
 defmodule Embers.Feed do
   @moduledoc """
-  The Feed context.
+  El modulo para interactuar con los posts y otras entidades que conforman
+  los distintos feeds de Embers.
   """
 
   import Ecto.Query, warn: false
@@ -29,7 +30,7 @@ defmodule Embers.Feed do
   end
 
   @doc """
-  Gets a single post with preloaded user and meta.
+  Gets a single post with preloaded associations.
 
   Raises `Ecto.NoResultsError` if the Post does not exist.
 
@@ -56,6 +57,9 @@ defmodule Embers.Feed do
       left_join: related_user_meta in assoc(related_user, :meta),
       left_join: related_tags in assoc(related, :tags),
       left_join: related_media in assoc(related, :media),
+      # Acá precargamos todo lo que levantamos más arriba con los joins,
+      # de lo contrario Ecto no mapeará los resultados a los esquemas
+      # correspondientes.
       preload: [
         user: {user, meta: meta},
         media: media,
@@ -90,30 +94,38 @@ defmodule Embers.Feed do
   def create_post(attrs) do
     post_changeset = Post.changeset(%Post{}, attrs)
 
+    # Inicializar la transaccion
     Multi.new()
+    # Intentamos insertar el post
     |> Multi.insert(:post, post_changeset)
+    # Si hay medios, asociarlos al post y quitarles el flag de temporal
     |> Multi.run(:medias, fn _repo, %{post: post} -> handle_medias(post, attrs) end)
+    # Buscar tags en los atributos y en el cuerpo el post
     |> Multi.run(:tags, fn _repo, %{post: post} -> handle_tags(post, attrs) end)
+    # Actualizar el contador de respuestas del post padre
     |> Multi.run(:post_replies, fn _repo, %{post: post} ->
       update_parent_post_replies(post, attrs)
     end)
+    # Si el post es compartido, realizar las acciones correspondientes
+    # (Como actualizar el contador de compartidos)
     |> Multi.run(:related_to, fn _repo, %{post: post} -> handle_related_to(post, attrs) end)
+    # Ejecutar la transaccion
     |> Repo.transaction()
     |> case do
       {:ok, %{post: post} = _results} ->
+        # El post se creo exitosamente, asi que levantamos todas las
+        # asociaciones que hacen falta para poder mostrarlo en el front
         post =
           post
           |> Repo.preload([[user: :meta], :media, :tags, [related_to: [:media, user: :meta]]])
 
+        # Disparamos un evento
         Embers.Event.emit(:post_created, post)
 
         {:ok, post}
 
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         {:error, failed_value}
-
-      error ->
-        error
     end
   end
 

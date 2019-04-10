@@ -1,6 +1,12 @@
 defmodule Embers.Feed.Subscriptions.Blocks do
   @moduledoc """
-  Context for user blocks
+  Los bloqueos son lo contrario a las suscripciones.
+  Mientras que una suscripcion representa el deseo de un usuario de recibir
+  publicaciones de una fuente, un bloqueo representa el deseo a no recibir
+  publicaciones de una fuente.
+
+  En los casos en que exista una suscripción y un bloqueo a una misma fuente,
+  se le dará prioridad siempre a los bloqueos.
   """
 
   import Ecto.Query

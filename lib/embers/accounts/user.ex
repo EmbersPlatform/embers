@@ -1,4 +1,42 @@
 defmodule Embers.Accounts.User do
+  @moduledoc """
+  El esquema de los usuarios.
+
+  ## Campos
+  - `:username` - Es el nombre del usuario. Puede tener entre 2 y 30 letras,
+    números, - y _.
+  - `:canonical` - Igual que `:username`, pero todas las letras son minúsculas.
+    Es preferible utilizar siempre este campo para buscar usuarios.
+  - `:email` - El email del usuario.
+  - `:password` - Es el campo que se recibe al crear el usuario, en texto
+    plano. Es un campo virtual: no se persiste en la db.
+  - `:password_hash` - Es el hash de la contraseña, que sí es almacenado en la
+    db. El algoritmo usado es `Pbkdf2` con `sha-256`.
+  - `:confirmed_at` - La fecha en que se confirmó la cuenta. Si este campo es
+    `nil`, el usuario no podrá iniciar sesión hasta que confirme su cuenta.
+  - `:reset_sent_at` - La fecha en que se envió el último mail para restablecer
+    la contraseña.
+
+  ## Asociaciones
+
+  - `:sessions`: Son las sesiones abiertas por el usuario. Hay más información sobre las
+  sesiones en el módulo `Embers.Sessions`
+
+  - `:meta`: Es la información adicional del usuario, como la descripción de su perfil,
+  o su avatar y portada.
+
+  - `:settings`: Es la configuración del usuario.
+
+  - `:posts`: Los posts creados por el usuario.
+
+  ## Campos virtuales
+
+  - `:following`: Usado para saber si el usuario actualmente autenticado está
+  siguiendo al usuario en cuestión.
+  - `:blocked`: Similar a `:following`, pero para saber si el usuario fue bloqueado.
+  - `:stats`: Usado para mostrar estadisticas del usuario, como la cantidad de
+  seguidores o de posts creados.
+  """
   use Ecto.Schema
 
   import Ecto.Changeset

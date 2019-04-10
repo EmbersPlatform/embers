@@ -1,4 +1,19 @@
 defmodule Embers.Feed.Favorites do
+  @moduledoc """
+  Los favoritos son los contenidos que el usuario guardó para ver más tarde.
+
+  Están implementados como una tabla pivote que relaciona a un post
+  con un usuario.
+  Para agregar o quitar un posts de los favoritos de un usuario, se debe
+  crear o eliminar una entrada en la db con las funciones `create/2` y
+  `delete/2`.
+
+  Dado que los favoritos no son posts sino las entidades que representan la
+  relación, al levantarlos de la db no traerán consigo al post en cuestión.
+  Debe tenerse en cuenta esto ya que los métodos `create/1` y `delete/2`
+  devuelven la entrada del favorito, no del post. Si se desea obetner el post,
+  debe levantarse utilizando el campo `post_id` del favorito.
+  """
   alias Embers.Feed.Favorite
   alias Embers.Repo
   alias Embers.Paginator
