@@ -58,6 +58,15 @@ defmodule EmbersWeb.Admin.UserController do
     end
   end
 
+  def confirm(conn, %{"id" => id}) do
+    id = String.to_integer(id)
+
+    with user <- Accounts.get_user(id),
+         {:ok, _user} <- Accounts.confirm_user(user) do
+      success(conn, "Usuario confirmado con exito", user_path(conn, :index))
+    end
+  end
+
   defp roles_list_to_int_list(roles) do
     roles
     |> Enum.map(&String.to_integer(&1))

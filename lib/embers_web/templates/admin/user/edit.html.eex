@@ -8,6 +8,10 @@
 </article>
 <% end %>
 
+<%= if is_nil(@changeset.data.confirmed_at) do %>
+<%= button("Confirmar usuario", to: "/admin/users/confirm/#{@changeset.data.id}", method: "patch", class: "button is-danger is-small", data: [confirm: "Confirmar al usuario?"]) %>
+<% end %>
+
 <div class="columns">
   <div class="column is-one-quarter">
     <figure class="image is-96x96">

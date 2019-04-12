@@ -24,6 +24,7 @@
       <th></th>
       <th>Nombre</th>
       <th>Email</th>
+      <th></th>
       <th>Roles</th>
       <th></th>
     </tr>
@@ -40,6 +41,11 @@
         <%= user.username %>
       </td>
       <td><%= user.email %></td>
+      <td>
+        <%= if is_nil(user.confirmed_at) do %>
+          <span class="tag is-warning">Sin confirmar</span>
+        <% end %>
+      </td>
       <td>
         <%= for role <- user.roles do %>
           <span class="tag"><%= role.name %></span>

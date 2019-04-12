@@ -57,6 +57,7 @@ defmodule EmbersWeb.Router do
     get("/users", EmbersWeb.Admin.UserController, :index)
     get("/users/edit/:name", EmbersWeb.Admin.UserController, :edit)
     put("/users/edit/:name", EmbersWeb.Admin.UserController, :update)
+    patch("/users/confirm/:id", EmbersWeb.Admin.UserController, :confirm)
 
     get("/roles", EmbersWeb.Admin.RoleController, :index)
     get("/roles/new", EmbersWeb.Admin.RoleController, :new)
@@ -64,6 +65,8 @@ defmodule EmbersWeb.Router do
     get("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :edit)
     put("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :update)
     delete("/roles/:name", EmbersWeb.Admin.RoleController, :destroy)
+
+    resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 
     match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
   end

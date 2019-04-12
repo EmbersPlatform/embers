@@ -36,18 +36,17 @@
 		#loader{
 			width: 100%;
 			height: 100%;
-			padding: 30px;
 			z-index: 3;
 			position:fixed;
-			background: #26272b;/*$dark*/
 			box-sizing: border-box;
 			display: flex;
+			flex-flow:column nowrap;
 			justify-content: center;
 			align-items: center;
+			padding: 30px;
 		}
 		#loader:before{
 			content: '';
-			z-index: 1;
 			display: block;
 			width: 100px;
 			height: 100px;
@@ -58,16 +57,20 @@
 			background-size: auto 100%;
 			background:url('/img/loading/_load_16c.png') no-repeat;
 			animation: load 1s steps(14) infinite;
+			z-index: 2;
 		}
-		#loader p{
-			z-index: 0;
+		#loader p, #loader span{
 			width: auto;
 			height: auto;
 			text-align: center;
-			color: rgba(255,255,255,0.3);
-			font-size: 22px;
-			font-style: italic;
+			text-shadow: 1px 1px 1px #000;
 			margin: 0 10%;
+			font-style: italic;
+		}
+		#loader p{
+			z-index: 1;
+			color: rgba(255,255,255,0.4);
+			font-size: 22px;
 		}
 		#loader p img{
 			display: block;
@@ -76,13 +79,27 @@
 			background: transparent;
 			margin: 0 auto 30px auto;
 		}
+		#loader span{
+			z-index: 0;
+			color: rgba(255,255,255,0.2);
+			font-size: 16px;
+		}
+
 	</style>
 	<link href="<%= static_path(@conn, "/css/main.css") %>" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous">
 </head>
 <body>
 	<div id="loader" class="not-vex">
-		<p>Cargando!</p>
+    <%= if not is_nil @loading_msg.url do %>
+      <img src="<%= @loading_msg.url %>">
+    <% end %>
+    <%= if not is_nil @loading_msg.title do %>
+		  <p style="<%= @loading_msg.styles %>"><%= @loading_msg.title %></p>
+    <% end %>
+    <%= if not is_nil @loading_msg.subtitle do %>
+		  <span><%= @loading_msg.subtitle %></span>
+    <% end %>
 	</div>
 	<%= render @view_module, @view_template, assigns %>
 	<script type="text/javascript">
