@@ -21,6 +21,7 @@ defmodule Embers.Profile.Meta do
     meta
     |> cast(attrs, [:user_id, :bio, :avatar, :avatar_version, :cover_version])
     |> validate_required([:user_id])
+    |> validate_length(:bio, max: 255)
   end
 
   def avatar_map(%Meta{avatar_version: nil} = _meta) do

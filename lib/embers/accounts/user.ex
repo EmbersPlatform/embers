@@ -65,6 +65,8 @@ defmodule Embers.Accounts.User do
     has_one(:settings, Embers.Profile.Settings.Setting)
     has_many(:posts, Embers.Feed.Post)
 
+    many_to_many(:roles, Embers.Authorization.Role, join_through: "role_user")
+
     timestamps()
   end
 
@@ -74,6 +76,7 @@ defmodule Embers.Accounts.User do
     |> validate_required([:email, :username])
     |> unique_email
     |> validate_username
+    |> cast_assoc(:meta)
   end
 
   def create_changeset(%User{} = user, attrs) do

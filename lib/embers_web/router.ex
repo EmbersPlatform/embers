@@ -40,6 +40,8 @@ defmodule EmbersWeb.Router do
     get("/", EmbersWeb.Admin.DashboardController, :index)
 
     get("/users", EmbersWeb.Admin.UserController, :index)
+    get("/users/edit/:name", EmbersWeb.Admin.UserController, :edit)
+    put("/users/edit/:name", EmbersWeb.Admin.UserController, :update)
 
     get("/roles", EmbersWeb.Admin.RoleController, :index)
     get("/roles/new", EmbersWeb.Admin.RoleController, :new)
