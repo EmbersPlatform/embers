@@ -65,7 +65,8 @@ defmodule Embers.Mixfile do
       {:ffmpex, "~> 0.5.2"},
       {:silent_video, "~> 0.3.0"},
       {:event_bus, "~> 1.6.0"},
-      {:corsica, "~> 1.0"}
+      {:corsica, "~> 1.0"},
+      {:cachex, "~> 3.1"}
     ]
   end
 
