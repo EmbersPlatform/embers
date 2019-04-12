@@ -58,6 +58,7 @@ defmodule EmbersWeb.Router do
     get("/users/edit/:name", EmbersWeb.Admin.UserController, :edit)
     put("/users/edit/:name", EmbersWeb.Admin.UserController, :update)
     patch("/users/confirm/:id", EmbersWeb.Admin.UserController, :confirm)
+    post("/users/send_pw_reset/:email", EmbersWeb.Admin.UserController, :send_password_reset)
 
     get("/roles", EmbersWeb.Admin.RoleController, :index)
     get("/roles/new", EmbersWeb.Admin.RoleController, :new)

@@ -67,6 +67,15 @@ defmodule EmbersWeb.Admin.UserController do
     end
   end
 
+  def send_password_reset(conn, %{"email" => email}) do
+    if Accounts.create_password_reset(%{"email" => email}) do
+      key = EmbersWeb.Auth.Token.sign(%{"email" => email})
+      EmbersWeb.Email.reset_request(email, key)
+    end
+
+    success(conn, "Email para restablecer contraseña enviado", user_path(conn, :index))
+  end
+
   defp roles_list_to_int_list(roles) do
     roles
     |> Enum.map(&String.to_integer(&1))
