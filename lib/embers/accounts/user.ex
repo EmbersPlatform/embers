@@ -216,3 +216,9 @@ defmodule Embers.Accounts.User do
 
   defp put_canonical_username(changeset), do: changeset
 end
+
+defimpl FunWithFlags.Actor, for: Embers.Accounts.User do
+  def id(%{id: id}) do
+    "user:#{id}"
+  end
+end

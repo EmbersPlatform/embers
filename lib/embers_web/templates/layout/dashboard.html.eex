@@ -53,6 +53,7 @@
           Configuracion
         </p>
         <ul class="menu-list">
+          <li><a href="/flags">Flags</a></li>
           <li><a href="/admin/roles">Roles</a></li>
           <li><a href="/admin/loading">Mensajes de carga</a></li>
           <li><a href="/admin/settings">Configuracion</a></li>
