@@ -71,9 +71,11 @@ defmodule EmbersWeb.FeedController do
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
         left_join: media in assoc(post, :media),
+        left_join: reactions in assoc(post, :reactions),
         preload: [
           user: {user, meta: meta},
-          media: media
+          media: media,
+          reactions: reactions
         ]
       )
       |> Paginator.paginate(
