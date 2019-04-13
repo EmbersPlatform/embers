@@ -17,7 +17,11 @@ defmodule Embers.LoadingMsg do
         list_all()
       end)
 
-    Enum.random(messages)
+    if Enum.empty?(messages) do
+      %Msg{title: "Cargando..."}
+    else
+      Enum.random(messages)
+    end
   end
 
   def create(attrs) do
