@@ -8,10 +8,24 @@
 </article>
 <% end %>
 
-<%= if is_nil(@changeset.data.confirmed_at) do %>
-<%= button("Confirmar usuario", to: "/admin/users/confirm/#{@changeset.data.id}", method: "patch", class: "button is-danger is-small", data: [confirm: "¿Confirmar al usuario?"]) %>
-<% end %>
-<%= button("Restablecer contraseña", to: "/admin/users/send_pw_reset/#{@changeset.data.email}", method: "post", class: "button is-danger is-small", data: [confirm: "¿Enviar mail para restablecer contraseña?"]) %>
+<div class="field">
+  <%= if is_nil(@changeset.data.confirmed_at) do %>
+  <%= button(
+    "Confirmar usuario",
+    to: "/admin/users/confirm/#{@changeset.data.id}",
+    method: "patch",
+    class: "button is-small",
+    data: [confirm: "¿Confirmar al usuario?"])
+  %>
+  <% end %>
+  <%= button(
+    "Restablecer contraseña",
+    to: "/admin/users/send_pw_reset/#{@changeset.data.email}",
+    method: "post",
+    class: "button is-small",
+    data: [confirm: "¿Enviar mail para restablecer contraseña?"])
+  %>
+</div>
 
 <div class="columns">
   <div class="column is-one-quarter">
