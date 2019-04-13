@@ -44,7 +44,12 @@ defmodule EmbersWeb.PageController do
           |> Meta.load_cover()
     }
 
-    render(conn, "index.html", user: user, tags: tags, notifications: notifications.items)
+    render(conn, "index.html",
+      user: user,
+      tags: tags,
+      notifications: notifications.items,
+      loading_msg: Embers.LoadingMsg.get_random()
+    )
   end
 
   def auth(conn, _params) do

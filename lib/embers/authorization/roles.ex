@@ -11,9 +11,14 @@ defmodule Embers.Authorization.Roles do
   """
 
   alias Embers.Authorization.{Role, RoleUser}
+  alias Embers.Accounts.User
   alias Embers.Repo
 
   import Ecto.Query, only: [from: 2]
+
+  def list_all() do
+    Repo.all(Role)
+  end
 
   def get(name) do
     from(role in Role,
@@ -54,8 +59,51 @@ defmodule Embers.Authorization.Roles do
     |> Repo.all()
   end
 
-  def attach_role(role_id, user_id) do
+  def attach_role(role_id, user_id) when is_integer(role_id) and is_integer(user_id) do
     RoleUser.changeset(%RoleUser{}, %{role_id: role_id, user_id: user_id})
     |> Repo.insert()
+  end
+
+  def attach_role(%Role{} = role, %User{} = user) do
+    attach_role(role.id, user.id)
+  end
+
+  def attach_role(rolename, user_id) when is_binary(rolename) and is_integer(user_id) do
+    case get(rolename) do
+      nil -> nil
+      role -> attach_role(role.id, user_id)
+    end
+  end
+
+  def attach_role(rolename, %User{} = user) when is_binary(rolename) do
+    attach_role(rolename, user.id)
+  end
+
+  def detach_role(role_id, user_id) when is_integer(role_id) and is_integer(user_id) do
+    case Repo.get_by(RoleUser, %{role_id: role_id, user_id: user_id}) do
+      nil -> nil
+      role -> Repo.delete(role)
+    end
+  end
+
+  def detach_role(%Role{} = role, %User{} = user) do
+    detach_role(role.id, user.id)
+  end
+
+  def detach_role(rolename, user_id) when is_binary(rolename) and is_integer(user_id) do
+    case get(rolename) do
+      nil -> nil
+      role -> detach_role(role.id, user_id)
+    end
+  end
+
+  def detach_role(rolename, %User{} = user) when is_binary(rolename) do
+    detach_role(rolename, user.id)
+  end
+
+  def update_roles(new_roles, user) when is_list(new_roles) do
+    old_roles = user.roles |> Enum.map(fn role -> role.id end)
+    Enum.each(new_roles -- old_roles, &attach_role(&1, user.id))
+    Enum.each(old_roles -- new_roles, &detach_role(&1, user.id))
   end
 end

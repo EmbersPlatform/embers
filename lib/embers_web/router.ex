@@ -34,12 +34,31 @@ defmodule EmbersWeb.Router do
     plug(:protect_from_forgery)
   end
 
+  pipeline :flags do
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:put_secure_browser_headers)
+    plug(EmbersWeb.Authenticate)
+    plug(Phauxth.Remember, create_session_func: &EmbersWeb.Auth.Utils.create_session/1)
+    plug(GetPermissions)
+    plug(CheckPermissions, permission: "access_backoffice")
+  end
+
+  scope "/flags" do
+    pipe_through(:flags)
+    forward("/", FunWithFlags.UI.Router, namespace: "flags")
+  end
+
   scope "/admin" do
     pipe_through([:admin])
 
     get("/", EmbersWeb.Admin.DashboardController, :index)
 
     get("/users", EmbersWeb.Admin.UserController, :index)
+    get("/users/edit/:name", EmbersWeb.Admin.UserController, :edit)
+    put("/users/edit/:name", EmbersWeb.Admin.UserController, :update)
+    patch("/users/confirm/:id", EmbersWeb.Admin.UserController, :confirm)
+    post("/users/send_pw_reset/:email", EmbersWeb.Admin.UserController, :send_password_reset)
 
     get("/roles", EmbersWeb.Admin.RoleController, :index)
     get("/roles/new", EmbersWeb.Admin.RoleController, :new)
@@ -47,6 +66,8 @@ defmodule EmbersWeb.Router do
     get("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :edit)
     put("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :update)
     delete("/roles/:name", EmbersWeb.Admin.RoleController, :destroy)
+
+    resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 
     match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
   end

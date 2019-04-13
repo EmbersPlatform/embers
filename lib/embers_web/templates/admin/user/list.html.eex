@@ -1,22 +1,60 @@
 <div class="title is-3">Usuarios</div>
 
+<%= if info = get_flash(@conn, :info) do %>
+<article class="message is-info">
+  <div class="message-header">
+    <p><%= info %></p>
+  </div>
+</article>
+<% end %>
+
+<%= form_for @conn, user_path(@conn, :index), [method: :get], fn f-> %>
+  <div class="field has-addons">
+    <div class="control">
+      <%= search_input f, :name, class: "input", placeholder: "Nombre de usuario" %>
+    </div>
+    <div class="control">
+      <%= submit "Buscar usuario", class: "button" %>
+    </div>
+  </div>
+<% end %>
 <table class="table">
   <thead>
     <tr>
+      <th></th>
       <th>Nombre</th>
       <th>Email</th>
+      <th></th>
+      <th>Roles</th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <%= for user <- @users do %>
     <tr>
-      <td><%= user.username %></td>
+      <td>
+        <figure class="image is-24x24">
+          <img class="is-rounded" src="<%= user.meta.avatar.small %>">
+        </figure>
+      </td>
+      <td>
+        <%= user.username %>
+      </td>
       <td><%= user.email %></td>
+      <td>
+        <%= if is_nil(user.confirmed_at) do %>
+          <span class="tag is-warning">Sin confirmar</span>
+        <% end %>
+      </td>
+      <td>
+        <%= for role <- user.roles do %>
+          <span class="tag"><%= role.name %></span>
+        <% end %>
+      </td>
+      <td>
+        <%= link("Editar", to: "/admin/users/edit/#{user.canonical}", class: "button is-small") %>
+      </td>
     </tr>
     <% end %>
   </tbody>
 </table>
-
-<%= if not @last_page do %>
-<a href="?after=<%= @next %>" class="button">Mas resultados</a>
-<% end %>

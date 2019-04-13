@@ -27,7 +27,7 @@
         <% end %>
       </td>
       <td>
-        <%= if not role.name in ~w(admin member moderator) do %>
+        <%= if role.name not in ~w(admin member moderator) do %>
         <%= button("Eliminar", to: "/admin/roles/#{role.name}", method: "delete", class: "button is-danger is-small", data: [confirm: "Eliminar rol?"]) %>
         <% end %>
         <%= if role.name != "admin" do %>

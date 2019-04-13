@@ -65,6 +65,11 @@ defmodule Embers.Accounts do
         from(user in query, where: ilike(user.canonical, ^"%#{Keyword.get(opts, :name)}%"))
       end || query
 
+    query =
+      if(Keyword.has_key?(opts, :preload)) do
+        from(user in query, preload: ^Keyword.get(opts, :preload))
+      end || query
+
     Paginator.paginate(query, opts)
   end
 
@@ -194,10 +199,28 @@ defmodule Embers.Accounts do
     end
   end
 
-  def update_user(%User{} = user, attrs) do
+  def update_user(%User{} = user, attrs, opts \\ []) do
     user
+    |> update_roles(opts)
     |> User.changeset(attrs)
     |> Repo.update()
+  end
+
+  defp update_roles(user, opts) do
+    if Keyword.has_key?(opts, :roles) do
+      user =
+        if not Ecto.assoc_loaded?(user.roles) do
+          user |> Repo.preload(:roles)
+        end || user
+
+      new_roles = Keyword.get(opts, :roles)
+
+      if not is_nil(new_roles) do
+        Embers.Authorization.Roles.update_roles(new_roles, user)
+      end
+
+      user
+    end || user
   end
 
   @doc """

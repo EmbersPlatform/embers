@@ -15,6 +15,7 @@ defmodule Embers.Application do
       # Start your own worker by calling: Embers.Worker.start_link(arg1, arg2, arg3)
       # worker(Embers.Worker, [arg1, arg2, arg3]),
       EmbersWeb.Presence,
+      worker(Cachex, [:embers, []]),
       supervisor(Task.Supervisor, [[name: TaskSupervisor, restart: :transient]])
     ]
 

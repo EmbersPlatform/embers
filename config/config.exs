@@ -36,6 +36,16 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :fun_with_flags, :cache,
+  enabled: true,
+  ttl: 900
+
+config :fun_with_flags, :persistence,
+  adapter: FunWithFlags.Store.Persistent.Ecto,
+  repo: Embers.Repo
+
+config :fun_with_flags, :cache_bust_notifications, enabled: false
+
 config :event_bus,
   topics: [
     :post_created,
