@@ -91,14 +91,16 @@
 </head>
 <body>
 	<div id="loader" class="not-vex">
-    <%= if not is_nil @loading_msg.url do %>
-      <img src="<%= @loading_msg.url %>">
-    <% end %>
-    <%= if not is_nil @loading_msg.title do %>
-		  <p style="<%= @loading_msg.styles %>"><%= @loading_msg.title %></p>
-    <% end %>
-    <%= if not is_nil @loading_msg.subtitle do %>
-		  <span><%= @loading_msg.subtitle %></span>
+    <%= if assigns[:loading_msg] do %>
+      <%= if not is_nil @loading_msg.url do %>
+        <img src="<%= @loading_msg.url %>">
+      <% end %>
+      <%= if not is_nil @loading_msg.title do %>
+        <p style="<%= @loading_msg.styles %>"><%= @loading_msg.title %></p>
+      <% end %>
+      <%= if not is_nil @loading_msg.subtitle do %>
+        <span><%= @loading_msg.subtitle %></span>
+      <% end %>
     <% end %>
 	</div>
 	<%= render @view_module, @view_template, assigns %>
