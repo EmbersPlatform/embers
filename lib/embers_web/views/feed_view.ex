@@ -18,7 +18,14 @@ defmodule EmbersWeb.FeedView do
 
   def render("posts.json", %{entries: posts} = metadata) do
     %{
-      items: render_many(posts, EmbersWeb.PostView, "show.json", as: :post),
+      items:
+        Enum.map(posts, fn post ->
+          render(
+            EmbersWeb.PostView,
+            "show.json",
+            %{post: post, current_user: metadata.current_user}
+          )
+        end),
       next: metadata.next,
       last_page: metadata.last_page
     }
