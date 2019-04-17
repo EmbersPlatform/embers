@@ -40,18 +40,20 @@ defmodule Embers.Notifications.Manager do
   end
 
   def handle_event(:user_mentioned, event) do
-    case Notifications.create_notification(%{
-           type: "mention",
-           from_id: event.data.from,
-           recipient_id: event.data.recipient,
-           source_id: event.data.source
-         }) do
-      {:ok, notification} ->
-        notification = notification |> Embers.Repo.preload(from: :meta)
-        Embers.Event.emit(:notification_created, notification)
+    if not Blocks.blocked?(event.data.from, event.data.recipient) do
+      case Notifications.create_notification(%{
+             type: "mention",
+             from_id: event.data.from,
+             recipient_id: event.data.recipient,
+             source_id: event.data.source
+           }) do
+        {:ok, notification} ->
+          notification = notification |> Embers.Repo.preload(from: :meta)
+          Embers.Event.emit(:notification_created, notification)
 
-      {:error, reason} ->
-        Embers.Event.emit(:create_notification_failed, reason)
+        {:error, reason} ->
+          Embers.Event.emit(:create_notification_failed, reason)
+      end
     end
   end
 
