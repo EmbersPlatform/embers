@@ -49,30 +49,21 @@ defmodule Embers.Feed do
       where: post.id == ^id and is_nil(post.deleted_at),
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
-      left_join: media in assoc(post, :media),
-      left_join: reactions in assoc(post, :reactions),
-      left_join: tags in assoc(post, :tags),
       left_join: related in assoc(post, :related_to),
       left_join: related_user in assoc(related, :user),
       left_join: related_user_meta in assoc(related_user, :meta),
-      left_join: related_tags in assoc(related, :tags),
-      left_join: related_media in assoc(related, :media),
+      preload: [:media, :tags, :reactions, related_to: [:media, :tags, :reactions]],
       # Acá precargamos todo lo que levantamos más arriba con los joins,
       # de lo contrario Ecto no mapeará los resultados a los esquemas
       # correspondientes.
       preload: [
         user: {user, meta: meta},
-        media: media,
-        reactions: reactions,
-        tags: tags,
         related_to: {
           related,
           user: {
             related_user,
             meta: related_user_meta
-          },
-          media: related_media,
-          tags: related_tags
+          }
         }
       ]
     )
@@ -278,6 +269,22 @@ defmodule Embers.Feed do
     Post.changeset(post, %{})
   end
 
+  def get_public(opts \\ []) do
+    from(
+      post in Post,
+      where: post.nesting_level == 0 and is_nil(post.deleted_at),
+      where: is_nil(post.related_to_id),
+      order_by: [desc: post.id],
+      left_join: user in assoc(post, :user),
+      left_join: meta in assoc(user, :meta),
+      preload: [:media, :reactions],
+      preload: [
+        user: {user, meta: meta}
+      ]
+    )
+    |> Paginator.paginate(opts)
+  end
+
   def get_timeline(user_id, opts \\ []) do
     from(
       activity in Activity,
@@ -287,31 +294,50 @@ defmodule Embers.Feed do
       order_by: [desc: activity.id],
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
-      left_join: media in assoc(post, :media),
-      left_join: reactions in assoc(post, :reactions),
-      left_join: tags in assoc(post, :tags),
       left_join: related in assoc(post, :related_to),
       left_join: related_user in assoc(related, :user),
       left_join: related_user_meta in assoc(related_user, :meta),
-      left_join: related_tags in assoc(related, :tags),
-      left_join: related_media in assoc(related, :media),
-      left_join: related_reactions in assoc(related, :reactions),
+      preload: [
+        [post: [:media, :reactions, :tags, related_to: [:media, :tags, :reactions]]]
+      ],
       preload: [
         post: {
           post,
           user: {user, meta: meta},
-          media: media,
-          reactions: reactions,
-          tags: tags,
           related_to: {
             related,
             user: {
               related_user,
               meta: related_user_meta
-            },
-            media: related_media,
-            tags: related_tags,
-            reactions: related_reactions
+            }
+          }
+        }
+      ]
+    )
+    |> Paginator.paginate(opts)
+  end
+
+  def get_user_activities(user_id, opts \\ []) do
+    from(
+      post in Post,
+      where: post.user_id == ^user_id,
+      where: is_nil(post.deleted_at),
+      order_by: [desc: post.id],
+      left_join: user in assoc(post, :user),
+      left_join: meta in assoc(user, :meta),
+      left_join: related in assoc(post, :related_to),
+      left_join: related_user in assoc(related, :user),
+      left_join: related_user_meta in assoc(related_user, :meta),
+      preload: [
+        [:media, :reactions, :tags, related_to: [:media, :tags, :reactions]]
+      ],
+      preload: [
+        user: {user, meta: meta},
+        related_to: {
+          related,
+          user: {
+            related_user,
+            meta: related_user_meta
           }
         }
       ]
