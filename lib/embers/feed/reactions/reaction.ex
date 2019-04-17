@@ -2,7 +2,6 @@ defmodule Embers.Feed.Reactions.Reaction do
   use Ecto.Schema
 
   import Ecto.Changeset
-  import Ecto.Query
 
   alias Embers.Repo
   alias Embers.Feed.Subscriptions.Blocks

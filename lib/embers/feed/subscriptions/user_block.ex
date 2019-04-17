@@ -3,9 +3,6 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
 
   import Ecto.Changeset
 
-  alias __MODULE__
-  alias Embers.Repo
-
   @type t :: %__MODULE__{}
 
   schema "user_blocks" do
