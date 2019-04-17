@@ -94,11 +94,12 @@ defmodule Embers.Accounts do
       iex> get_by_identifier("jane")
       %User{}
   """
-  def get_by_identifier(identifier) do
-    case Float.parse(identifier) do
-      {_id, ""} -> get_user(identifier)
-      _ -> get_by(%{"canonical" => identifier})
-    end
+  def get_by_identifier(identifier) when is_binary(identifier) do
+    get_by(%{"canonical" => identifier})
+  end
+
+  def get_by_identifier(identifier) when is_integer(identifier) do
+    get_user(identifier)
   end
 
   @doc """
