@@ -21,7 +21,7 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
     |> cast(attrs, [:user_id, :source_id])
     |> validate_required([:user_id, :source_id])
     |> validate_fields(attrs)
-    |> validate_unique_entry(attrs)
+    |> unique_constraint(:unique_user_blocks)
   end
 
   defp validate_fields(changeset, attrs) do
@@ -31,17 +31,6 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
         :invalid_params,
         "user_id and source_id cant't be the same"
       )
-    else
-      changeset
-    end
-  end
-
-  defp validate_unique_entry(changeset, attrs) do
-    entries = Repo.get_by(UserBlock, %{user_id: attrs.user_id, source_id: attrs.source_id})
-
-    if(not is_nil(entries)) do
-      changeset
-      |> Ecto.Changeset.add_error(:already_exists, "block already exists")
     else
       changeset
     end
