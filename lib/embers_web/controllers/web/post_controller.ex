@@ -20,7 +20,8 @@ defmodule EmbersWeb.PostController do
 
       # Si el body es vacio devuelve error.
       # TODO pensar si es mejor guardar el body trimeado o no
-      if (String.trim(post_params["body"]) === "") do
+
+      if (String.trim(post_params["body"]) === "" && length(post_params["medias"]) === 0) do
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(EmbersWeb.ErrorView)
