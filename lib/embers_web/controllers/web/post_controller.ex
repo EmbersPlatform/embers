@@ -15,37 +15,49 @@ defmodule EmbersWeb.PostController do
   end
 
   def create(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
+
     post_params = Map.put(params, "user_id", user.id)
 
-    post_params =
-      if(Map.has_key?(params, "parent_id")) do
-        %{post_params | "parent_id" => IdHasher.decode(params["parent_id"])}
-      end || post_params
+      # Si el body es vacio devuelve error.
+      # TODO pensar si es mejor guardar el body trimeado o no
 
-    post_params =
-      if(Map.has_key?(params, "related_to_id")) do
-        %{post_params | "related_to_id" => IdHasher.decode(params["related_to_id"])}
-      end || post_params
-
-    case Feed.create_post(post_params) do
-      {:ok, post} ->
-        user = Embers.Accounts.get_populated(user.canonical)
-        post = %{post | user: user}
-
-        conn
-        |> render("show.json", post: post)
-
-      {:error, %Ecto.Changeset{} = changeset} ->
+      if (String.trim(post_params["body"]) === "" && length(post_params["medias"]) === 0) do
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(EmbersWeb.ErrorView)
-        |> render("422.json", changeset: changeset)
+        |> render("422.json", %{error: "error"})
+      else
 
-      {:error, reason} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.ErrorView)
-        |> render("422.json", %{error: reason})
+      post_params =
+        if(Map.has_key?(params, "parent_id")) do
+          %{post_params | "parent_id" => IdHasher.decode(params["parent_id"])}
+        end || post_params
+
+      post_params =
+        if(Map.has_key?(params, "related_to_id")) do
+          %{post_params | "related_to_id" => IdHasher.decode(params["related_to_id"])}
+        end || post_params
+
+      case Feed.create_post(post_params) do
+        {:ok, post} ->
+          user = Embers.Accounts.get_populated(user.canonical)
+          post = %{post | user: user}
+
+          conn
+          |> render("show.json", post: post)
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> put_view(EmbersWeb.ErrorView)
+          |> render("422.json", changeset: changeset)
+
+        {:error, reason} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> put_view(EmbersWeb.ErrorView)
+          |> render("422.json", %{error: reason})
+      end
     end
   end
 
