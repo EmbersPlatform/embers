@@ -17,12 +17,12 @@ defmodule Embers.Accounts do
   alias Embers.{
     Accounts.User,
     Authorization.Roles,
-    Profile.Settings.Setting,
-    Sessions,
-    Sessions.Session,
+    Paginator,
     Profile.Meta,
+    Profile.Settings.Setting,
     Repo,
-    Paginator
+    Sessions,
+    Sessions.Session
   }
 
   @doc """
@@ -35,7 +35,7 @@ defmodule Embers.Accounts do
       [%User{}, ...]
   """
   def list_users(_opts \\ []) do
-    from(User) |> Repo.all()
+    Repo.all(User)
   end
 
   @doc """
@@ -66,7 +66,7 @@ defmodule Embers.Accounts do
       end || query
 
     query =
-      if(Keyword.has_key?(opts, :preload)) do
+      if Keyword.has_key?(opts, :preload) do
         from(user in query, preload: ^Keyword.get(opts, :preload))
       end || query
 
@@ -217,7 +217,7 @@ defmodule Embers.Accounts do
       new_roles = Keyword.get(opts, :roles)
 
       if not is_nil(new_roles) do
-        Embers.Authorization.Roles.update_roles(new_roles, user)
+        Roles.update_roles(new_roles, user)
       end
 
       user

@@ -1,4 +1,7 @@
 defmodule Embers.Tags.TagPost do
+  @moduledoc """
+  El esquema de la relacion entre los tags y los posts
+  """
   use Ecto.Schema
 
   import Ecto.Changeset

@@ -1,6 +1,14 @@
 defmodule Embers.Reports do
-  alias Embers.Repo
+  @moduledoc """
+  Tambien conocidos como denuncias, los reportes se generan cuando un
+  usuario quiere dar aviso al staff de contenido que infringe las reglas
+  del sitio.
+
+  Ejemplos de reportables son los Posts.
+  """
+
   alias Embers.Feed.Post
+  alias Embers.Repo
   alias Embers.Reports.Report
 
   @reportables [Post]

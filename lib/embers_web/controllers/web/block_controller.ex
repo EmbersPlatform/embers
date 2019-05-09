@@ -2,8 +2,8 @@ defmodule EmbersWeb.BlockController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.Helpers.IdHasher
   alias Embers.Feed.Subscriptions.Blocks
+  alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.FallbackController)
   plug(:user_check when action in [:update, :delete])

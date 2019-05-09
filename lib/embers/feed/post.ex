@@ -127,7 +127,7 @@ defmodule Embers.Feed.Post do
   end
 
   defp set_nesting_level(changeset, parent_nesting_level) do
-    if(parent_nesting_level < 2) do
+    if parent_nesting_level < 2 do
       changeset
       |> change(nesting_level: parent_nesting_level + 1)
     else
@@ -140,12 +140,13 @@ defmodule Embers.Feed.Post do
     user_id = get_change(changeset, :user_id)
 
     is_blocked? =
-      from(
-        b in Embers.Feed.Subscriptions.UserBlock,
-        where: b.source_id == ^user_id,
-        where: b.user_id == ^parent.user_id
+      Repo.exists?(
+        from(
+          b in Embers.Feed.Subscriptions.UserBlock,
+          where: b.source_id == ^user_id,
+          where: b.user_id == ^parent.user_id
+        )
       )
-      |> Repo.exists?()
 
     if is_blocked? do
       changeset
@@ -159,15 +160,17 @@ defmodule Embers.Feed.Post do
     parent_id = attrs["parent_id"]
     related_to_id = attrs["related_to_id"]
 
-    if not is_nil(parent_id) and not is_nil(related_to_id) do
-      Ecto.Changeset.add_error(
-        changeset,
-        :invalid_data,
-        "only one of `parent_id` and `related_to` can be present at the same time"
-      )
-    else
-      changeset
-    end
-    |> assoc_constraint(:related_to)
+    changeset =
+      if is_nil(parent_id) and not is_nil(related_to_id) do
+        changeset
+      else
+        Ecto.Changeset.add_error(
+          changeset,
+          :invalid_data,
+          "only one of `parent_id` and `related_to` can be present at the same time"
+        )
+      end
+
+    assoc_constraint(changeset, :related_to)
   end
 end

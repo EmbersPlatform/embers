@@ -3,9 +3,8 @@ defmodule EmbersWeb.TagController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.Helpers.IdHasher
-
   alias Embers.Feed.Subscriptions.Tags, as: Subscriptions
+  alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.FallbackController)
   plug(:user_check when action in ~w(list list_ids create create_by_name destroy)a)
@@ -70,7 +69,7 @@ defmodule EmbersWeb.TagController do
 
     Subscriptions.delete_subscription(user.id, id)
 
-    conn |> put_status(:no_content) |> json(nil)
+    conn |> put_status(200) |> json(nil)
   end
 
   def create_block(

@@ -1,10 +1,9 @@
 defmodule EmbersWeb.ConfirmController do
   use EmbersWeb, :controller
-
-  alias Phauxth.Confirm
   alias Embers.Accounts
   alias EmbersWeb.Email
   alias EmbersWeb.Router.Helpers, as: Routes
+  alias Phauxth.Confirm
 
   def index(conn, params) do
     case Confirm.verify(params) do

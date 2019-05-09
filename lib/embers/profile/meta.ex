@@ -1,9 +1,13 @@
 defmodule Embers.Profile.Meta do
+  @moduledoc """
+  Los Meta son la informacion adicional de los perfiles de los usuarios, como
+  la descripcion del perfil y el avatar
+  """
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Embers.Profile.Meta
   alias Embers.Helpers.IdHasher
+  alias Embers.Profile.Meta
 
   schema "user_metas" do
     field(:avatar_version, :string)

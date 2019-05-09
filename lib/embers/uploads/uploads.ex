@@ -100,7 +100,9 @@ defmodule Embers.Uploads do
   end
 
   def delete(bucket, path) do
-    case S3.delete_object(bucket, path) |> ExAws.request() do
+    request = S3.delete_object(bucket, path)
+
+    case ExAws.request(request) do
       {:ok, _} -> :ok
       error -> error
     end
@@ -108,7 +110,8 @@ defmodule Embers.Uploads do
 
   @spec parse_url(binary() | URI.t()) :: {binary(), binary()}
   def parse_url(url) do
-    URI.parse(url)
+    url
+    |> URI.parse()
     |> do_parse
   end
 

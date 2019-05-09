@@ -1,4 +1,5 @@
 defmodule Embers.Feed.Subscriptions.UserBlock do
+  @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset
@@ -22,7 +23,7 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
   end
 
   defp validate_fields(changeset, attrs) do
-    if(attrs.user_id == attrs.source_id) do
+    if attrs.user_id == attrs.source_id do
       Ecto.Changeset.add_error(
         changeset,
         :invalid_params,

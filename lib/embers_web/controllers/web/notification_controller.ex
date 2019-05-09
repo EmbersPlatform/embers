@@ -3,8 +3,8 @@ defmodule EmbersWeb.NotificationController do
 
   import EmbersWeb.Authorize
 
-  alias Embers.Notifications
   alias Embers.Helpers.IdHasher
+  alias Embers.Notifications
 
   plug(:user_check)
 

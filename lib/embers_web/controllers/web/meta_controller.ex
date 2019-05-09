@@ -3,6 +3,7 @@ defmodule EmbersWeb.MetaController do
 
   alias Embers.Profile
   alias Embers.Profile.Meta
+  alias Embers.Profile.Uploads
 
   action_fallback(EmbersWeb.FallbackController)
 
@@ -22,10 +23,12 @@ defmodule EmbersWeb.MetaController do
   def upload_avatar(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"avatar" => file}) do
     meta = Profile.get_meta!(user.id)
 
-    with :ok <- Embers.Profile.Uploads.Avatar.upload(file, user) do
+    with :ok <- Uploads.Avatar.upload(file, user) do
       {:ok, meta} =
         meta
-        |> Ecto.Changeset.change(avatar_version: DateTime.utc_now() |> DateTime.to_unix |> Integer.to_string())
+        |> Ecto.Changeset.change(
+          avatar_version: DateTime.utc_now() |> DateTime.to_unix() |> Integer.to_string()
+        )
         |> Embers.Repo.update()
 
       meta =
@@ -40,7 +43,7 @@ defmodule EmbersWeb.MetaController do
   def upload_cover(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"cover" => file}) do
     meta = Profile.get_meta!(user.id)
 
-    with :ok <- Embers.Profile.Uploads.Cover.upload(file, user) do
+    with :ok <- Uploads.Cover.upload(file, user) do
       {:ok, meta} =
         meta
         |> Ecto.Changeset.change(cover_version: Integer.to_string(:os.system_time(:seconds)))

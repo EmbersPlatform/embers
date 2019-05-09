@@ -22,26 +22,30 @@ defmodule Embers.Feed.Reactions do
     end
   end
 
+  def delete_reaction(nil), do: nil
+
   def delete_reaction(id) when is_integer(id) do
     reaction =
-      from(
-        reaction in Reaction,
-        where: reaction.id == ^id
+      Repo.one!(
+        from(
+          reaction in Reaction,
+          where: reaction.id == ^id
+        )
       )
-      |> Repo.one!()
 
     delete_reaction(reaction)
   end
 
   def delete_reaction(%{"name" => name, "user_id" => user_id, "post_id" => post_id}) do
     reaction =
-      from(
-        reaction in Reaction,
-        where: reaction.name == ^name,
-        where: reaction.user_id == ^user_id,
-        where: reaction.post_id == ^post_id
+      Repo.one(
+        from(
+          reaction in Reaction,
+          where: reaction.name == ^name,
+          where: reaction.user_id == ^user_id,
+          where: reaction.post_id == ^post_id
+        )
       )
-      |> Repo.one!()
 
     delete_reaction(reaction)
   end

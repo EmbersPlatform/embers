@@ -1,8 +1,8 @@
 defmodule EmbersWeb.PostView do
   use EmbersWeb, :view
 
-  alias EmbersWeb.{PostView, UserView, MediaView}
   alias Embers.Helpers.IdHasher
+  alias EmbersWeb.{MediaView, PostView, UserView}
 
   def render("show.json", %{post: post, current_user: current_user})
       when not is_nil(current_user) do
@@ -36,22 +36,29 @@ defmodule EmbersWeb.PostView do
       |> handle_media(post)
       |> handle_reactions(post, assigns)
 
-    if(Map.get(assigns, :with_related, true)) do
+    if Map.get(assigns, :with_related, true) do
       view
       |> handle_related(post)
     end || view
   end
 
-  def render("show_replies.json", %{entries: replies} = metadata) do
+  def render("show_replies.json", %{entries: posts} = metadata) do
     %{
-      items: render_many(replies, __MODULE__, "post.json", as: :post),
+      items:
+        Enum.map(posts, fn post ->
+          render(
+            __MODULE__,
+            "show.json",
+            %{post: post, current_user: metadata.current_user}
+          )
+        end),
       next: metadata.next,
       last_page: metadata.last_page
     }
   end
 
   defp handle_tags(view, post) do
-    if(Ecto.assoc_loaded?(post.tags)) do
+    if Ecto.assoc_loaded?(post.tags) do
       Map.put(view, "tags", render_many(post.tags, EmbersWeb.TagView, "tag.json", as: :tag))
     end || view
   end
@@ -80,13 +87,13 @@ defmodule EmbersWeb.PostView do
   end
 
   defp handle_media(view, post) do
-    if(Ecto.assoc_loaded?(post.media)) do
+    if Ecto.assoc_loaded?(post.media) do
       Map.put(view, "media", render_many(post.media, MediaView, "media.json", as: :media))
     end || view
   end
 
   defp handle_related(view, post) do
-    if(Ecto.assoc_loaded?(post.related_to) && not is_nil(post.related_to)) do
+    if Ecto.assoc_loaded?(post.related_to) && not is_nil(post.related_to) do
       Map.put(
         view,
         "related_to",
@@ -96,7 +103,7 @@ defmodule EmbersWeb.PostView do
   end
 
   defp handle_reactions(view, post, assigns) do
-    if(Ecto.assoc_loaded?(post.reactions)) do
+    if Ecto.assoc_loaded?(post.reactions) do
       my_reactions =
         if Map.has_key?(assigns, :current_user) do
           post.reactions

@@ -20,8 +20,8 @@ defmodule Embers.Feed.Subscriptions do
   import Ecto.Query
 
   alias Embers.Feed.Subscriptions.{UserSubscription}
-  alias Embers.Repo
   alias Embers.Paginator
+  alias Embers.Repo
 
   def get(id) do
     UserSubscription
@@ -82,7 +82,7 @@ defmodule Embers.Feed.Subscriptions do
   def delete_user_subscription(user_id, source_id) do
     sub = Repo.get_by(UserSubscription, %{user_id: user_id, source_id: source_id})
 
-    if(not is_nil(sub)) do
+    unless is_nil(sub) do
       Repo.delete(sub)
     end
   end
@@ -114,20 +114,22 @@ defmodule Embers.Feed.Subscriptions do
 
   def list_mutuals_ids(user_id) do
     followers =
-      from(
-        subscription in UserSubscription,
-        where: subscription.user_id == ^user_id,
-        select: subscription.source_id
+      Repo.all(
+        from(
+          subscription in UserSubscription,
+          where: subscription.user_id == ^user_id,
+          select: subscription.source_id
+        )
       )
-      |> Repo.all()
 
     followed =
-      from(
-        subscription in UserSubscription,
-        where: subscription.source_id == ^user_id,
-        select: subscription.user_id
+      Repo.all(
+        from(
+          subscription in UserSubscription,
+          where: subscription.source_id == ^user_id,
+          select: subscription.user_id
+        )
       )
-      |> Repo.all()
 
     intersection = MapSet.intersection(MapSet.new(followers), MapSet.new(followed))
 

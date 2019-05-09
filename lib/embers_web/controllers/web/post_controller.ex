@@ -2,9 +2,9 @@ defmodule EmbersWeb.PostController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias EmbersWeb.Plugs.CheckPermissions
   alias Embers.{Feed}
   alias Embers.Helpers.IdHasher
+  alias EmbersWeb.Plugs.CheckPermissions
 
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
   plug(CheckPermissions, [permission: "create_post"] when action in [:create])
@@ -18,12 +18,12 @@ defmodule EmbersWeb.PostController do
     post_params = Map.put(params, "user_id", user.id)
 
     post_params =
-      if(Map.has_key?(params, "parent_id")) do
+      if Map.has_key?(params, "parent_id") do
         %{post_params | "parent_id" => IdHasher.decode(params["parent_id"])}
       end || post_params
 
     post_params =
-      if(Map.has_key?(params, "related_to_id")) do
+      if Map.has_key?(params, "related_to_id") do
         %{post_params | "related_to_id" => IdHasher.decode(params["related_to_id"])}
       end || post_params
 

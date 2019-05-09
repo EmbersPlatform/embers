@@ -15,8 +15,8 @@ defmodule Embers.Feed.Favorites do
   debe levantarse utilizando el campo `post_id` del favorito.
   """
   alias Embers.Feed.Favorite
-  alias Embers.Repo
   alias Embers.Paginator
+  alias Embers.Repo
 
   import Ecto.Query
 
@@ -29,17 +29,20 @@ defmodule Embers.Feed.Favorites do
   def delete(user_id, post_id) do
     fav = Repo.get_by(Favorite, %{user_id: user_id, post_id: post_id})
 
-    if(not is_nil(fav)) do
+    unless is_nil(fav) do
       Repo.delete(fav)
     end
   end
 
   def list_paginated(user_id, opts \\ []) do
+    query =
     from(fav in Favorite,
       as: :favorite,
       where: fav.user_id == ^user_id,
       order_by: [desc: fav.inserted_at]
     )
+
+    query
     |> with_post()
     |> Paginator.paginate(opts)
   end

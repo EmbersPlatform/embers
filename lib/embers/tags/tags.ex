@@ -55,12 +55,12 @@ defmodule Embers.Tags do
   end
 
   def list_post_tags_ids(post_id) do
-    from(
+    query = from(
       tp in TagPost,
       where: tp.post_id == ^post_id,
       select: tp.tag_id
     )
-    |> Repo.all()
+    Repo.all(query)
   end
 
   defp insert_tag(name) do

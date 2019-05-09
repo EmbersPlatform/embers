@@ -2,10 +2,10 @@ defmodule EmbersWeb.SessionController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Phauxth.Remember
   alias Embers.Sessions
   alias EmbersWeb.Auth.Login
   alias EmbersWeb.Router.Helpers, as: Routes
+  alias Phauxth.Remember
 
   plug(:guest_check when action in [:new, :create])
   plug(:put_layout, "app_no_js.html")
@@ -19,6 +19,7 @@ defmodule EmbersWeb.SessionController do
   def create(conn, %{"id" => identifier, "password" => password}) do
     # The identifier is setted to downcase to be compared with the canonical user value
     identifier = String.downcase(identifier)
+
     user_params =
       case Regex.match?(~r/@/, identifier) do
         true -> %{"email" => identifier, "password" => password}

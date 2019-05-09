@@ -1,4 +1,5 @@
 defmodule EmbersWeb.FeedChannel do
+  @moduledoc false
   use Phoenix.Channel
 
   alias Embers.Helpers.IdHasher

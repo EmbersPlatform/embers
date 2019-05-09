@@ -1,4 +1,5 @@
 defmodule Embers.Profile.Uploads.Cover do
+  @moduledoc false
   alias Embers.Helpers.IdHasher
   alias Embers.Uploads
 
@@ -9,7 +10,7 @@ defmodule Embers.Profile.Uploads.Cover do
     upload(cover, user.id)
   end
   def upload(cover, user_id) when is_integer(user_id) do
-    if(valid?(cover)) do
+    if valid?(cover) do
       processed = process(cover)
 
       id = IdHasher.encode(user_id)
@@ -42,13 +43,13 @@ defmodule Embers.Profile.Uploads.Cover do
 
   defp process(image) do
     image.path
-      |> Mogrify.open() |> IO.inspect()
+      |> Mogrify.open()
       |> Mogrify.custom("strip")
       |> Mogrify.resize("800x500")
       |> Mogrify.custom("background", "#1a1b1d")
       |> Mogrify.gravity("center")
       |> Mogrify.extent("800x500")
       |> Mogrify.format("png")
-      |> Mogrify.save() |> IO.inspect()
+      |> Mogrify.save()
   end
 end

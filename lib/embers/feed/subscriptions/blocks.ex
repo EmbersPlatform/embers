@@ -12,8 +12,8 @@ defmodule Embers.Feed.Subscriptions.Blocks do
   import Ecto.Query
 
   alias Embers.Feed.Subscriptions.{UserBlock}
-  alias Embers.Repo
   alias Embers.Paginator
+  alias Embers.Repo
 
   @doc """
   Creates a user block
@@ -46,7 +46,7 @@ defmodule Embers.Feed.Subscriptions.Blocks do
   def delete_user_block(user_id, source_id) do
     sub = Repo.get_by(UserBlock, %{user_id: user_id, source_id: source_id})
 
-    if(not is_nil(sub)) do
+    unless is_nil(sub) do
       Repo.delete(sub)
     end
   end
@@ -55,22 +55,24 @@ defmodule Embers.Feed.Subscriptions.Blocks do
           Embers.Feed.Subscriptions.UserBlock.t()
         ]
   def list_users_blocked_ids_by(user_id) do
-    from(
-      block in UserBlock,
-      where: block.user_id == ^user_id,
-      select: block.source_id
+    Repo.all(
+      from(
+        block in UserBlock,
+        where: block.user_id == ^user_id,
+        select: block.source_id
+      )
     )
-    |> Repo.all()
   end
 
   @spec list_users_ids_that_blocked(integer()) :: [any()]
   def list_users_ids_that_blocked(user_id) do
-    from(
-      block in UserBlock,
-      where: block.source_id == ^user_id,
-      select: block.user_id
+    Repo.all(
+      from(
+        block in UserBlock,
+        where: block.source_id == ^user_id,
+        select: block.user_id
+      )
     )
-    |> Repo.all()
   end
 
   @spec list_blocks_ids(integer()) :: [any()]
@@ -100,10 +102,11 @@ defmodule Embers.Feed.Subscriptions.Blocks do
   end
 
   def blocked?(from, recipient) do
-    from(
-      block in UserBlock,
-      where: block.user_id == ^recipient and block.source_id == ^from
+    Repo.exists?(
+      from(
+        block in UserBlock,
+        where: block.user_id == ^recipient and block.source_id == ^from
+      )
     )
-    |> Repo.exists?()
   end
 end
