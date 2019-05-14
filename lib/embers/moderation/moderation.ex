@@ -1,6 +1,7 @@
 defmodule Embers.Moderation do
-  alias Embers.Moderation.Ban
+  # TODO documentar
   alias Embers.Accounts.User
+  alias Embers.Moderation.Ban
 
   alias Embers.Repo
   import Ecto.Query, only: [from: 2]
@@ -16,8 +17,7 @@ defmodule Embers.Moderation do
   end
 
   def get_active_ban(user_id) when is_integer(user_id) do
-    bans_query(user_id)
-    |> Repo.one()
+    Repo.one(bans_query(user_id))
   end
 
   def get_active_ban(%User{} = user) do
@@ -27,7 +27,8 @@ defmodule Embers.Moderation do
   def list_bans(user, opts \\ [])
 
   def list_bans(user_id, opts) when is_integer(user_id) do
-    bans_query(user_id, opts)
+    user_id
+    |> bans_query(opts)
     |> Repo.all()
   end
 
@@ -42,12 +43,13 @@ defmodule Embers.Moderation do
       duration = Keyword.get(opts, :duration)
       expires = Timex.shift(DateTime.utc_now(), days: duration)
 
-      Ban.changeset(%Ban{}, %{
-        user_id: user_id,
-        reason: Keyword.get(opts, :reason),
-        expires_at: expires
-      })
-      |> Repo.insert()
+      Repo.insert(
+        Ban.changeset(%Ban{}, %{
+          user_id: user_id,
+          reason: Keyword.get(opts, :reason),
+          expires_at: expires
+        })
+      )
     else
       {:error, :already_banned}
     end
@@ -71,8 +73,7 @@ defmodule Embers.Moderation do
   defp soft_delete(%Ban{} = ban) do
     current_datetime = DateTime.utc_now() |> DateTime.truncate(:second)
 
-    Ecto.Changeset.change(ban, %{deleted_at: current_datetime})
-    |> Repo.update()
+    Repo.update(Ecto.Changeset.change(ban, %{deleted_at: current_datetime}))
   end
 
   defp bans_query(user_id, opts \\ []) do

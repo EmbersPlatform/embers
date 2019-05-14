@@ -1,10 +1,11 @@
 defmodule Embers.Feed.Reactions.Reaction do
+  @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset
 
-  alias Embers.Repo
   alias Embers.Feed.Subscriptions.Blocks
+  alias Embers.Repo
 
   @valid_reactions ~w(thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire)
 
@@ -26,6 +27,10 @@ defmodule Embers.Feed.Reactions.Reaction do
       @valid_reactions,
       message: "is not a valid reaction, use one of: #{Enum.join(@valid_reactions, " ")}"
     )
+  end
+
+  def valid_reactions do
+    @valid_reactions
   end
 
   defp validate_post(changeset, %{"post_id" => post_id} = attrs) do

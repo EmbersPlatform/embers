@@ -1,3 +1,17 @@
+defprotocol Embers.Reportable do
+  @doc "Reporta a un reportable(ej: Post, User)"
+  def report(reportable, reporter, params)
+
+  def reports_for(reportable, opts \\ [])
+end
+
+defprotocol Embers.Report do
+  @doc "Marca un reporte como resuelto"
+  def resolve(report)
+
+  def open(report)
+end
+
 defmodule Embers.Reports do
   @moduledoc """
   Tambien conocidos como denuncias, los reportes se generan cuando un
@@ -6,34 +20,4 @@ defmodule Embers.Reports do
 
   Ejemplos de reportables son los Posts.
   """
-
-  alias Embers.Feed.Post
-  alias Embers.Repo
-  alias Embers.Reports.Report
-
-  @reportables [Post]
-
-  def list_reports(%r{} = reportable) when r in @reportables do
-    reportable
-    |> Ecto.assoc(:reports)
-    |> Repo.all()
-  end
-
-  def create_report(%r{} = reportable, attrs) when r in @reportables do
-    reportable
-    |> Ecto.build_assoc(:reports, attrs)
-    |> Repo.insert()
-  end
-
-  def resolve(%Report{} = report) do
-    report
-    |> Ecto.Changeset.change(resolved: true)
-    |> Repo.update()
-  end
-
-  def open(%Report{} = report) do
-    report
-    |> Ecto.Changeset.change(resolved: false)
-    |> Repo.update()
-  end
 end

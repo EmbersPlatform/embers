@@ -75,12 +75,16 @@ defmodule EmbersWeb.PostView do
     end || view
   end
 
-  defp handle_media(view, %{old_attachment: %{"url" => url, "meta" => meta}} = _post)
+  defp handle_media(
+         view,
+         %{old_attachment: %{"url" => url, "meta" => meta, "type" => type}} = _post
+       )
        when not is_nil(url) do
     Map.put(view, "media", [
       %{
+        "type" => type,
         "url" => url,
-        "meta" => meta,
+        "metadata" => meta,
         "legacy" => true
       }
     ])

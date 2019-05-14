@@ -129,6 +129,8 @@ defmodule EmbersWeb.Router do
         post("/posts/:post_id/reaction/:name", ReactionController, :create)
         delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
 
+        get("/reactions/valid", ReactionController, :list_valid_reactions)
+
         get("/feed", FeedController, :timeline)
         get("/feed/public", FeedController, :get_public_feed)
         get("/feed/user/:id", FeedController, :user_statuses)
@@ -141,6 +143,8 @@ defmodule EmbersWeb.Router do
 
         get("/notifications", NotificationController, :index)
         put("/notifications/:id", NotificationController, :read)
+
+        get("/search/:query", SearchController, :search)
       end
     end
 

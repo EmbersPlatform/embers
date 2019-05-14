@@ -7,9 +7,24 @@
   display: block;
   margin: 0 auto;
   @include box-sizing(border-box);
+
   &:focus {
     .card-wrapper {
       border: 1px solid $secondary;
+    }
+  }
+
+  .header-content {
+    @include font-size();
+
+    h4 {
+      padding-bottom: 5px;
+      @include font-size(2);
+    }
+
+    .card-date {
+      color: $secondary;
+      font-size: 12px;
     }
   }
 
@@ -28,62 +43,63 @@
     .card-wrapper {
       overflow: hidden;
       pointer-events: none;
-      > *:not(.header) {
+
+      >*:not(.header) {
         @include blur(2, em);
       }
     }
   }
-  &[data-card-size="big"] {
-  }
+
+  &[data-card-size="big"] {}
+
   &[data-card-size="medium"] {
     width: 100%;
+
     &:not(:last-child) {
       margin-bottom: 30px;
     }
+
     .card-flags {
       .flag {
         height: 35px;
         padding: 0 15px;
         margin-right: 15px;
+
         p {
           margin-right: 15px;
           @include font-size();
         }
       }
     }
+
     .card-wrapper {
       .header {
         @include box-sizing(content-box);
         min-height: 45px;
         padding: 15px;
+
         .avatar {
           width: 45px;
           height: 45px;
           margin-right: 10px;
         }
-        .header-content {
-          @include font-size();
-          h4 {
-            padding-bottom: 5px;
-            @include font-size(2);
-          }
-          .card-date {
-            color: $secondary;
-            font-size: 12px;
-          }
-        }
+
         .header-options {
-          > span {
+          >span {
             padding: 5px;
+
             svg {
               width: 15px;
               height: 15px;
             }
           }
+
           ul {
             padding: 0 5px;
+
             li {
               padding: 10px;
+
               span {
                 @include font-size(2);
               }
@@ -91,44 +107,57 @@
           }
         }
       }
+
       .card-wrapper-content {
         margin-bottom: 15px;
         @include font-size(4);
+
         &[class~="big-text"] {
           @include font-size(12);
         }
-        > p {
+
+        >p {
           margin: 0 15px;
+
           &:not(:last-child) {
             margin-bottom: 15px;
           }
         }
+
         .controls {
           margin: 0 15px;
+
           &:not(:last-child) {
             margin-bottom: 15px;
           }
         }
+
         .card-wrapper-content-pic {
           margin: 0 15px;
+
           &:not(:last-child) {
             margin-bottom: 15px;
           }
         }
+
         .multimedia {
           margin: 0 15px;
+
           &:not(:last-child) {
             margin-bottom: 15px;
           }
+
           .media {
             &:before {
               padding: 10px 15px;
               @include font-size(2);
             }
-            ~ .source {
+
+            ~.source {
               @include font-size();
             }
           }
+
           .source {
             display: inline-block;
             padding: 10px 0 10px 15px;
@@ -136,43 +165,55 @@
             @include font-size(12);
           }
         }
+
         .card-wrapper-content-tags {
           margin: 0 15px;
+
           .tag {
             @include font-size();
           }
         }
       }
     }
+
     .actions {
       padding: 5px 15px;
       margin: 0 5px;
       @include box-shadow(0 5px 15px negro(25));
+
       .reaction {
         padding: 0 10px;
         @include font-size(2);
       }
+
       .actions-reactions {
         padding: 5px 10px 0 0;
+
         .reaction {
           margin: 0 5px 5px 0;
           height: 2.5em;
+
           .emoji {
             margin-right: 10px;
           }
         }
       }
+
       .actions-panel {
         height: 35px;
         @include justify-content(flex-end);
-        > li:not(:last-child) {
+
+        >li:not(:last-child) {
           margin-right: 15px;
         }
-        > li {
+
+        >li {
           @include font-size(2);
+
           ul {
             padding: 10px 10px 5px 10px;
             @include column-gap(5px);
+
             .reaction {
               margin: 0 0 5px 0;
               height: 2em;
@@ -183,49 +224,61 @@
       }
     }
   }
+
   &[data-card-size="little"] {
     width: 230px;
     margin: 0 15px 30px 15px;
+
     .card-flags {
       .flag {
         height: 25px;
         padding: 0 10px;
         margin-right: 10px;
+
         p {
           margin-right: 10px;
           @include font-size();
         }
       }
     }
+
     .card-wrapper {
       .header {
         @include box-sizing(content-box);
         min-height: 35px;
         padding: 10px;
+
         .avatar {
           width: 35px;
           height: 35px;
           margin-right: 5px;
         }
+
         .header-content {
           @include font-size();
+
           h4 {
             padding-bottom: 5px;
             @include font-size();
           }
         }
+
         .header-options {
-          > span {
+          >span {
             padding: 5px;
+
             svg {
               width: 10px;
               height: 10px;
             }
           }
+
           ul {
             padding: 0 5px;
+
             li {
               padding: 5px;
+
               span {
                 @include font-size();
               }
@@ -233,87 +286,112 @@
           }
         }
       }
+
       .card-wrapper-content {
         margin-bottom: 10px;
         @include font-size(2);
+
         &[class~="big-text"] {
           @include font-size(6);
         }
-        > p {
+
+        >p {
           margin: 0 10px;
+
           &:not(:last-child) {
             margin-bottom: 10px;
           }
         }
+
         .controls {
           margin: 0 10px;
+
           &:not(:last-child) {
             margin-bottom: 10px;
           }
         }
+
         .card-wrapper-content-pic {
           margin: 0 10px;
+
           &:not(:last-child) {
             margin-bottom: 10px;
           }
         }
+
         .multimedia {
           margin: 0 10px;
+
           &:not(:last-child) {
             margin-bottom: 10px;
           }
+
           .media {
             &:before {
               padding: 5px 10px;
               @include font-size();
             }
-            ~ .source {
+
+            ~.source {
               @include font-size();
             }
           }
+
           .source {
             padding: 5px 0 5px 10px;
             margin: 10px 0 0 10px;
             @include font-size(6);
           }
         }
+
         .card-wrapper-content-tags {
           margin: 0 10px;
+
           .tag {
             @include font-size();
           }
         }
       }
     }
+
     .actions {
       padding: 5px 10px;
       margin: 0 5px;
       @include box-shadow(0 5px 15px negro(25));
+
       .reaction {
         padding: 0 5px;
         @include font-size();
       }
+
       .actions-reactions {
         padding: 5px 5px 0 0;
+
         .reaction {
           margin: 0 5px 5px 0;
           height: 2em;
+
           .emoji {
             margin-right: 5px;
           }
         }
       }
+
       .actions-panel {
         height: 25px;
         @include justify-content(flex-end);
-        > li:not(:last-child) {
+
+        >li:not(:last-child) {
           margin-right: 10px;
         }
-        > li {
+
+        >li {
           @include font-size();
+
           ul {
             padding: 5px 5px 0 5px;
             @include column-gap(5px);
+
             .reaction {
               margin: 0 0 5px 0;
               height: 2em;
@@ -324,6 +402,7 @@
       }
     }
   }
+
   .actions {
     z-index: 0;
     background: $blue_dark;
@@ -331,14 +410,16 @@
     border-bottom-right-radius: 3px;
   }
 
-  &.new > .card-wrapper {
+  &.new>.card-wrapper {
     border-color: $narrojo;
   }
 }
+
 // inicia .CARD CHILDS
 .card-flags {
   z-index: 1;
   margin: 0 5px;
+
   .flag {
     width: auto;
     border-bottom: 0;
@@ -349,24 +430,26 @@
     @include box-shadow(0 5px 15px negro(25));
     @include flexbox(row, nowrap, space-between, center, inline-flex);
     @include box-sizing(border-box);
+
     &[class*="nsfw"] {
       // background: rgba($narrojo, 0.4);
       // background: $t-error;
       // @include linear-gradient(45deg, lighten($t-error, 3), darken($t-error, 3));
-      @include linear-gradient(
-        45deg,
+      @include linear-gradient(45deg,
         rgba(lighten($narrojo, 3), 0.4),
-        rgba(darken($narrojo, 3), 0.4)
-      );
+        rgba(darken($narrojo, 3), 0.4));
     }
+
     p {
       z-index: 1;
-      ~ * {
+
+      ~* {
         z-index: 0;
       }
     }
   }
 }
+
 .card-wrapper {
   background: $dark_n1;
   border: 1px solid blanco("05");
@@ -374,54 +457,67 @@
   @include box-sizing(border-box);
   @include border-radius(3px);
   @include box-shadow(0 0 15px negro(25));
+
   &[class*="is-picker"] {
     z-index: 0;
     @include box-shadow(none);
-    ~ .actions {
+
+    ~.actions {
       z-index: 3;
     }
+
     .header {
       z-index: 0;
     }
+
     .card-wrapper-content {
       z-index: 1;
     }
   }
 }
+
 //inicia .CARD-WRAPPER CHILDS
 .card-wrapper-content {
   z-index: 0;
+
   p {
     font-size: inherit;
     color: $primary;
     font-weight: 400;
+
     a {
       color: $narrojo;
       font-weight: 400;
+
       &:hover {
         text-decoration: underline;
       }
     }
+
     code {
       line-height: 1.6em;
       font-size: inherit;
       margin: 5px 0;
     }
   }
-  > p {
+
+  >p {
     display: block;
+
     &[class~="folded"] {
       white-space: nowrap !important;
       overflow: hidden;
       text-overflow: ellipsis;
       height: 1.4em;
     }
+
     *:not(img):not(blockquote):not(p) {
       line-height: 1.6em;
       display: inline;
       margin: 0;
       font-size: inherit;
     }
+
     ul,
     ol {
       display: block !important;
@@ -430,16 +526,20 @@
     }
   }
 }
+
 //inicia .CARD-WRAPPER-CONTENT CHILDS
 .card-wrapper-content-tags {
   display: block;
+
   .tag {
     color: $secondary;
+
     &:hover {
       color: $primary;
     }
   }
 }
+
 //termina .CARD-WRAPPER-CONTENT CHILDS
 //termina :CARD-WRAPPER CHILDS
 // termina .CARD CHILDS

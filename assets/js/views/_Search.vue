@@ -7,62 +7,35 @@
       <div id="content" data-layout-type="masonry">
         <div
           id="feed"
-          :class="{renderbox : (loading || loadingMore), 'showing' : !loading && (hasPost || hasUsers)}"
+          :class="{renderbox : (loading || loadingMore), 'showing' : !loading && (hasPost)}"
           :data-renderbox-message="[loadingMore ? 'Cargando más resultados...' : 'Buscando...']"
           v-infinite-scroll="loadMore"
           :infinite-scroll-disabled="infiniteScrollStill"
         >
-          <template v-if="!loading">
-            <template v-if="hasPost || hasUsers">
-              <template v-if="results.users.length > 0">
-                <h3>
-                  <p>Usuarios:</p>
-                </h3>
-                <UserCard
-                  v-if="user"
-                  v-for="user in results.users"
-                  :key="user.id"
-                  :user="user"
-                  type="compact"
-                ></UserCard>
-              </template>
-              <template v-if="results.posts.items.length > 0">
-                <h3>
-                  <p>Posts:</p>
-                </h3>
-                <div
-                  v-if="isMasonry"
-                  id="masonry"
-                  v-masonry
-                  transition-duration=".3s"
-                  item-selector=".little"
-                  fit-width="true"
-                >
-                  <Card
-                    v-for="post in results.posts.items"
-                    :key="post.id"
-                    v-masonry-tile
-                    class="little"
-                    :post="post"
-                    size="little"
-                  ></Card>
-                </div>
-                <Card
-                  v-else
-                  v-for="post in results.posts.items"
-                  :key="post.id"
-                  :post="post"
-                  size="medium"
-                ></Card>
-              </template>
-            </template>
-            <h3
-              v-if="(!hasPost && !hasUsers) || reachedBottom"
-              :class="{'bottom': reachedBottom && (hasPost || hasUsers)}"
-            >
-              <p v-html="formatted"></p>
-            </h3>
-          </template>
+          <h3>
+            <p>Posts:</p>
+          </h3>
+          <div
+            v-if="isMasonry"
+            id="masonry"
+            v-masonry
+            transition-duration=".3s"
+            item-selector=".little"
+            fit-width="true"
+          >
+            <Card
+              v-for="post in results"
+              :key="post.id"
+              v-masonry-tile
+              class="little"
+              :post="post"
+              size="little"
+            ></Card>
+          </div>
+          <Card v-else v-for="post in results" :key="post.id" :post="post" size="medium"></Card>
+          <h3 v-if="(!hasPost) || last_page" :class="{'bottom': last_page && (hasPost)}">
+            <p v-html="formatted"></p>
+          </h3>
         </div>
       </div>
     </div>
@@ -88,34 +61,25 @@ export default {
       loading: true,
       loadingMore: false,
       searchParams: null,
-      results: {},
-      oldestId: null,
-      reachedBottom: false,
+      results: [],
+      next_cursor: null,
+      last_page: false,
       previousScrollPosition: 0,
       isMasonry: true
     };
   },
   computed: {
     infiniteScrollStill() {
-      return this.loading || this.reachedBottom;
+      return this.loading || this.last_page;
     },
     hasPost() {
-      if (jQuery.isEmptyObject(this.results.posts)) {
-        return false;
-      }
-      if (jQuery.isEmptyObject(this.results.posts.items)) {
-        return false;
-      }
-      return true;
-    },
-    hasUsers() {
-      if (jQuery.isEmptyObject(this.results.users)) {
+      if (this.results.length < 1) {
         return false;
       }
       return true;
     },
     formatted() {
-      return this.reachedBottom && (this.hasPost || this.hasUsers)
+      return this.last_page && this.hasPost
         ? formatter.format("No hay mas resultados :eggplant:")
         : "No pudimos encontrar lo que buscabas :c";
     }
@@ -133,22 +97,17 @@ export default {
       this.previousScrollPosition = $(window).scrollTop();
     },
     search() {
-      if (this._inactive) {
+      if (this._inactive || !this.searchParams) {
         return;
       }
       this.results = {};
       this.loading = true;
-      if (!this.searchParams) {
-        return (this.loading = false);
-      }
       searchApi
         .search(this.searchParams)
         .then(res => {
-          this.results = res;
-          if (res.posts.items.length) {
-            this.oldestId = res.posts.items[res.posts.items.length - 1].id;
-          }
-          this.reachedBottom = res.posts.last_page;
+          this.results = res.items;
+          this.next_cursor = res.next;
+          this.last_page = res.last_page;
         })
         .finally(() => (this.loading = false));
     },
@@ -160,22 +119,14 @@ export default {
       this.loadingMore = true;
       this.getPreviousScrollPosition();
       searchApi
-        .search(this.searchParams, this.oldestId)
+        .search(this.searchParams, { before: this.next_cursor })
         .then(res => {
           if (this._inactive) {
             return;
           }
-          if (res.posts.items.length) {
-            // If there are new results, create an array of posts with non duplicate ids
-            this.results.posts.items = _.unionBy(
-              this.results.posts.items,
-              res.posts.items,
-              "id"
-            );
-            // Set the oldest post id for the next search page
-            this.oldestId = res.posts.items[res.posts.items.length - 1].id;
-          }
-          this.reachedBottom = res.posts.last_page;
+          this.results = [...this.results.items, ...res.items];
+          this.next_cursor = res.next;
+          this.last_page = res.last_page;
         })
         .finally(() => {
           window.scrollTo(0, this.previousScrollPosition);

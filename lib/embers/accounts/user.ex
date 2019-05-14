@@ -175,13 +175,15 @@ defmodule Embers.Accounts.User do
   end
 
   defp unique_email(changeset) do
-    validate_format(changeset, :email, ~r/@/)
+    changeset
+    |> validate_format(:email, ~r/@/)
     |> validate_length(:email, max: 254)
     |> unique_constraint(:email)
   end
 
   defp validate_username(changeset) do
-    validate_format(changeset, :username, ~r/^([A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*)$/)
+    changeset
+    |> validate_format(:username, ~r/^([A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*)$/)
     |> validate_length(:username, max: 30, min: 2)
     |> unique_constraint(:username)
   end

@@ -27,7 +27,8 @@
           </ul>
           <ul v-if="loggedUser" class="actions-panel">
             <li>
-              <span @click.prevent="reply">Responder&nbsp;
+              <span @click.prevent="reply">
+                Responder&nbsp;
                 <svgicon name="s_reply" class="emoji"></svgicon>
               </span>
             </li>
@@ -137,20 +138,9 @@ export default {
      * All supported reactions
      */
     reactions() {
-      return [
-        "thumbsup",
-        "thumbsdown",
-        "tada",
-        "cry",
-        "heart",
-        "cookie",
-        "eggplant",
-        "hot_pepper",
-        "point_up",
-        "grin",
-        "thinking",
-        "angry_sock"
-      ];
+      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire".split(
+        " "
+      );
     },
     /**
      * Returns whether the owner of this comment is the authenticated user

@@ -349,18 +349,9 @@ export default {
      * All supported reactions
      */
     reactions() {
-      return [
-        "thumbsup",
-        "thumbsdown",
-        "tada",
-        "cry",
-        "heart",
-        "eggplant",
-        "grin",
-        "angry",
-        "open_mouth",
-        "fire"
-      ];
+      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire".split(
+        " "
+      );
     },
 
     /**

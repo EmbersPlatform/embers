@@ -249,7 +249,7 @@ defmodule Embers.Feed do
       )
     end
 
-    if not is_nil(post.related_to_id) do
+    unless is_nil(post.related_to_id) do
       Repo.update_all(
         from(
           p in Post,
@@ -365,6 +365,39 @@ defmodule Embers.Feed do
     Paginator.paginate(query, opts)
   end
 
+  @doc """
+  Devuelve los posts agrupados por los tags
+
+  Opciones:
+  - `limit`: La cantidad de posts por tag
+  """
+  def get_by_tags(tags, opts \\ []) when is_list(tags) do
+    limit = Keyword.get(opts, :limit, 10)
+
+    Enum.reduce(tags, %{}, fn tag, acc ->
+      query =
+        from(
+          post in Post,
+          where: is_nil(post.deleted_at),
+          where: is_nil(post.related_to_id),
+          left_join: tag in assoc(post, :tags),
+          where: tag.name == ^tag,
+          order_by: [desc: post.id],
+          left_join: user in assoc(post, :user),
+          left_join: meta in assoc(user, :meta),
+          preload: [
+            [:media, :reactions, :tags]
+          ],
+          preload: [
+            user: {user, meta: meta}
+          ],
+          limit: ^limit
+        )
+
+      Map.put(acc, tag, Repo.all(query))
+    end)
+  end
+
   def delete_activity(%Activity{} = activity) do
     with {:ok, activity} <- Repo.delete(activity) do
       Embers.Event.emit(:activity_deleted, activity)
@@ -373,6 +406,9 @@ defmodule Embers.Feed do
     end
   end
 
+  @doc """
+  Devuelve las respuestas a un post.
+  """
   def get_post_replies(parent_id, opts \\ []) do
     query =
       from(

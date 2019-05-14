@@ -11,6 +11,7 @@ defmodule Embers.Tags do
   moderadores.
   """
 
+  alias Embers.Feed.Subscriptions.TagSubscription
   alias Embers.Repo
   alias Embers.Tags.{Tag, TagPost}
 
@@ -54,12 +55,53 @@ defmodule Embers.Tags do
     |> Enum.map(fn tag -> tag.id end)
   end
 
+  def get_hot_tags(opts \\ []) do
+    limit = Keyword.get(opts, :limit, 10)
+
+    since_date =
+      Timex.now()
+      |> Timex.shift(days: -1)
+      |> Timex.beginning_of_day()
+
+    query =
+      from(
+        tag_post in TagPost,
+        where: tag_post.inserted_at >= ^since_date,
+        left_join: tag in assoc(tag_post, :tag),
+        group_by: tag.id,
+        select: %{tag: tag, count: fragment("count(?) as tag_count", tag_post.id)},
+        order_by: [desc: fragment("tag_count")],
+        limit: ^limit
+      )
+
+    Repo.all(query)
+  end
+
+  def get_popular_tags(opts \\ []) do
+    limit = Keyword.get(opts, :limit, 10)
+
+    query =
+      from(
+        tag_user in TagSubscription,
+        left_join: tag in assoc(tag_user, :source),
+        left_join: user in assoc(tag_user, :user),
+        group_by: tag.id,
+        select: %{tag: tag, count: fragment("count(?) as user_count", user.id)},
+        order_by: [desc: fragment("user_count")],
+        limit: ^limit
+      )
+
+    Repo.all(query)
+  end
+
   def list_post_tags_ids(post_id) do
-    query = from(
-      tp in TagPost,
-      where: tp.post_id == ^post_id,
-      select: tp.tag_id
-    )
+    query =
+      from(
+        tp in TagPost,
+        where: tp.post_id == ^post_id,
+        select: tp.tag_id
+      )
+
     Repo.all(query)
   end
 

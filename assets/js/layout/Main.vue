@@ -4,14 +4,6 @@
       <router-view name="sidebar"></router-view>
     </aside>
     <router-view></router-view>
-    <div id="presence">
-      <avatar
-        v-for="user in online_friends"
-        :key="user.id"
-        :user="user.username"
-        :avatar="user.avatar.small"
-      />
-    </div>
   </div>
 </template>
 <script>

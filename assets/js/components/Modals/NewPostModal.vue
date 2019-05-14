@@ -32,6 +32,13 @@ import Editor from "@/components/Editor";
 
 import EventBus from "@/lib/event_bus";
 
+let data = {
+  post: {
+    body: null,
+    related_to_id: null
+  }
+};
+
 export default {
   name: "new-post-modal",
   props: {
@@ -41,22 +48,17 @@ export default {
     }
   },
   components: { Editor, Card },
-  data() {
-    return {
-      post: {
-        body: null,
-        related_to_id: this.related.id
-      }
-    };
-  },
   computed: {
     can_publish() {
       return true;
+    },
+    post_data() {
+      return data.post;
     }
   },
   methods: {
     update_body(body) {
-      this.post.body = body;
+      data.post.body = body;
     },
     close() {
       EventBus.$emit("close_new_post_modal");
@@ -65,7 +67,7 @@ export default {
       if (event.target == this.$refs.root) this.close();
     },
     async add_post() {
-      let requestData = this.post;
+      let requestData = { ...data.post, related_to_id: this.related.id };
 
       try {
         let res = await post.create(requestData);

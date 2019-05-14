@@ -64,8 +64,6 @@ defmodule Embers.Feed.Post do
     has_many(:replies, Embers.Feed.Post)
     has_many(:reactions, Embers.Feed.Reactions.Reaction)
 
-    has_many(:reports, {"post_reports", Embers.Reports.Report}, foreign_key: :assoc_id)
-
     many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
     many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
     field(:old_attachment, {:map, :any})
@@ -97,9 +95,27 @@ defmodule Embers.Feed.Post do
     |> cast_embed(:old_attachment)
   end
 
-  defp validate_body(changeset, _attrs) do
-    changeset
-    |> validate_length(:body, max: @max_body_len)
+  defp must_have_body?(attrs) do
+    has_parent? = not is_nil(attrs["parent_id"])
+    is_shared? = not is_nil(attrs["related_to_id"])
+    has_media? = Map.get(attrs, "media_count", 0) > 0
+
+    if is_shared? do
+      false
+    else
+      has_parent? || !has_media?
+    end
+  end
+
+  defp validate_body(changeset, attrs) do
+    if must_have_body?(attrs) do
+      changeset
+      |> validate_required([:body])
+      |> validate_length(:body, min: 1)
+      |> validate_length(:body, max: @max_body_len)
+    else
+      changeset
+    end
   end
 
   defp trim_body(changeset, %{"body" => body} = _attrs) when not is_nil(body) do
@@ -161,14 +177,14 @@ defmodule Embers.Feed.Post do
     related_to_id = attrs["related_to_id"]
 
     changeset =
-      if is_nil(parent_id) and not is_nil(related_to_id) do
-        changeset
-      else
+      if not is_nil(parent_id) and not is_nil(related_to_id) do
         Ecto.Changeset.add_error(
           changeset,
           :invalid_data,
           "only one of `parent_id` and `related_to` can be present at the same time"
         )
+      else
+        changeset
       end
 
     assoc_constraint(changeset, :related_to)
