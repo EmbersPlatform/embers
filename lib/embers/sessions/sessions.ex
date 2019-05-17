@@ -6,8 +6,8 @@ defmodule Embers.Sessions do
 
   import Ecto.Query, warn: false
 
-  alias Embers.Repo
   alias Embers.Accounts.User
+  alias Embers.Repo
   alias Embers.Sessions.Session
 
   @doc """

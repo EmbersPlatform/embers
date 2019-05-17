@@ -1,4 +1,7 @@
 defmodule Embers.Tags.Tag do
+  @moduledoc """
+  El esquema de los tags
+  """
   use Ecto.Schema
 
   import Ecto.Changeset

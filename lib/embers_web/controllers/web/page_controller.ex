@@ -1,9 +1,13 @@
 defmodule EmbersWeb.PageController do
   use EmbersWeb, :controller
 
-  alias Embers.Repo
   alias Embers.Accounts.User
+  alias Embers.Feed
+  alias Embers.Feed.Subscriptions
+  alias Embers.LoadingMsg
+  alias Embers.Notifications
   alias Embers.Profile.Meta
+  alias Embers.Repo
 
   def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, params) do
     if is_nil(params["path"]) do
@@ -20,7 +24,7 @@ defmodule EmbersWeb.PageController do
       |> Repo.get(current_user.id)
       |> Repo.preload([:meta, :settings])
 
-    tags = Embers.Feed.Subscriptions.Tags.list_subscribed_tags(user.id)
+    tags = Subscriptions.Tags.list_subscribed_tags(user.id)
 
     tags =
       EmbersWeb.TagView.render(
@@ -28,7 +32,7 @@ defmodule EmbersWeb.PageController do
         %{tags: tags}
       )
 
-    notifications = Embers.Notifications.list_notifications_paginated(user.id)
+    notifications = Notifications.list_notifications_paginated(user.id)
 
     notifications =
       EmbersWeb.NotificationView.render(
@@ -48,8 +52,14 @@ defmodule EmbersWeb.PageController do
       user: user,
       tags: tags,
       notifications: notifications.items,
-      loading_msg: Embers.LoadingMsg.get_random()
+      loading_msg: LoadingMsg.get_random()
     )
+  end
+
+  def auth(%Plug.Conn{assigns: %{current_user: user}} = conn, _params) when not is_nil(user) do
+    tags = Feed.Subscriptions.Tags.list_subscribed_tags(user.id)
+
+    render(conn, "auth.json", conn: conn, tags: tags, user: user)
   end
 
   def auth(conn, _params) do

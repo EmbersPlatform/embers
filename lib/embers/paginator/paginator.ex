@@ -16,10 +16,10 @@ defmodule Embers.Paginator do
 
   import Ecto.Query, warn: false
 
+  alias Embers.Helpers.IdHasher
   alias Embers.Paginator.Options
   alias Embers.Paginator.Page
   alias Embers.Repo
-  alias Embers.Helpers.IdHasher
 
   @doc """
   Fetches all the results matching the query between the cursors
@@ -53,14 +53,14 @@ defmodule Embers.Paginator do
       |> limit(^limit_plus_one)
 
     query =
-      if(!is_nil(opts.before)) do
+      unless is_nil(opts.before) do
         from(q in query,
           where: q.id <= ^opts.before
         )
       end || query
 
     query =
-      if(!is_nil(opts.after)) do
+      unless is_nil(opts.after) do
         from(q in query,
           where: q.id >= ^opts.after
         )

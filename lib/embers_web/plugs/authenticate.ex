@@ -1,4 +1,6 @@
 defmodule EmbersWeb.Authenticate do
+  @moduledoc false
+
   use Phauxth.Authenticate.Base
 
   alias EmbersWeb.Auth.Token

@@ -36,8 +36,14 @@
     </li>
     <li class="nav_">
       <ul>
-        <li class="n_item tag" v-for="tag in tags" :key="tag.id">#{{tag.name}}</li>
-        <li v-if="!tags.length" class="no-results"><p>Aún no sigues ningún tag.</p></li>
+        <li class="n_item" v-for="tag in tags" :key="tag.id">
+          <router-link class="n_i_wrap" :to="`/search/in:${tag.name}`" exact>
+            <span class="n_i_w_content"># {{tag.name}}</span>
+          </router-link>
+        </li>
+        <li v-if="!tags.length" class="no-results">
+          <p>Aún no sigues ningún tag.</p>
+        </li>
       </ul>
     </li>
     <li class="nav_">
@@ -50,16 +56,15 @@
 <script>
 import axios from "axios";
 import Mutuals from "@/components/Mutuals";
-import {mapGetters} from "vuex"
+import { mapGetters } from "vuex";
 
 export default {
   components: { Mutuals },
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
-    ...mapGetters('tag', ["tags"])
+    ...mapGetters("tag", ["tags"])
   },
   created() {
     axios.get(`/api/v1/subscriptions/tags/list`).then(res => {

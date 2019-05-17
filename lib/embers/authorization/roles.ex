@@ -10,33 +10,35 @@ defmodule Embers.Authorization.Roles do
   un usuario resultan de la suma de los permisos de todos sus roles.
   """
 
-  alias Embers.Authorization.{Role, RoleUser}
   alias Embers.Accounts.User
+  alias Embers.Authorization.{Role, RoleUser}
   alias Embers.Repo
 
   import Ecto.Query, only: [from: 2]
 
-  def list_all() do
+  def list_all do
     Repo.all(Role)
   end
 
   def get(name) do
-    from(role in Role,
-      where: role.name == ^name
+    Repo.one(
+      from(role in Role,
+        where: role.name == ^name
+      )
     )
-    |> Repo.one()
   end
 
   def get!(name) do
-    from(role in Role,
-      where: role.name == ^name
+    Repo.one!(
+      from(role in Role,
+        where: role.name == ^name
+      )
     )
-    |> Repo.one!()
   end
 
   def create(name, permissions \\ []) do
-    Role.changeset(%Role{}, %{name: name, permissions: permissions})
-    |> Repo.insert()
+    changeset = Role.changeset(%Role{}, %{name: name, permissions: permissions})
+    Repo.insert(changeset)
   end
 
   def update(name, attrs) do
@@ -47,21 +49,22 @@ defmodule Embers.Authorization.Roles do
 
   def delete(name) do
     role = get(name)
-    Repo.delete(role) |> IO.inspect()
+    Repo.delete(role)
   end
 
   def roles_for(user_id) do
-    from(ru in RoleUser,
-      where: ru.user_id == ^user_id,
-      left_join: role in assoc(ru, :role),
-      select: role
+    Repo.all(
+      from(ru in RoleUser,
+        where: ru.user_id == ^user_id,
+        left_join: role in assoc(ru, :role),
+        select: role
+      )
     )
-    |> Repo.all()
   end
 
   def attach_role(role_id, user_id) when is_integer(role_id) and is_integer(user_id) do
-    RoleUser.changeset(%RoleUser{}, %{role_id: role_id, user_id: user_id})
-    |> Repo.insert()
+    changeset = RoleUser.changeset(%RoleUser{}, %{role_id: role_id, user_id: user_id})
+    Repo.insert(changeset)
   end
 
   def attach_role(%Role{} = role, %User{} = user) do

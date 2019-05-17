@@ -32,8 +32,8 @@ defmodule Embers.Media do
   """
   alias Embers.Media.MediaItem
   alias Embers.Repo
-  alias Embers.Uploads
   alias Embers.Thumbnex
+  alias Embers.Uploads
 
   import Ecto.Query
 
@@ -71,15 +71,16 @@ defmodule Embers.Media do
          {:ok, preview} <-
            make_preview(processed_file, dest_path, max_width: 500, max_height: 500) do
       media =
-        MediaItem.changeset(%MediaItem{}, %{
-          user_id: owner,
-          url: res.url,
-          type: processed_file.type,
-          metadata: %{
-            preview_url: preview.url
-          }
-        })
-        |> Repo.insert!()
+        Repo.insert!(
+          MediaItem.changeset(%MediaItem{}, %{
+            user_id: owner,
+            url: res.url,
+            type: processed_file.type,
+            metadata: %{
+              preview_url: preview.url
+            }
+          })
+        )
 
       {:ok, media}
     else
@@ -195,10 +196,12 @@ defmodule Embers.Media do
   end
 
   defp get_file_ext(file) do
-    Path.extname(file.path) |> String.slice(1..-1)
+    file.path
+    |> Path.extname()
+    |> String.slice(1..-1)
   end
 
-  defp get_bucket() do
+  defp get_bucket do
     Keyword.get(Application.get_env(:embers, Embers.Media), :bucket, "local")
   end
 end

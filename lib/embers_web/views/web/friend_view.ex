@@ -1,8 +1,8 @@
 defmodule EmbersWeb.FriendView do
   use EmbersWeb, :view
 
-  alias EmbersWeb.UserView
   alias Embers.Helpers.IdHasher
+  alias EmbersWeb.UserView
 
   def render("friends.json", %{entries: friends} = metadata) do
     %{

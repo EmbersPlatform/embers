@@ -2,9 +2,9 @@ defmodule EmbersWeb.PostController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias EmbersWeb.Plugs.CheckPermissions
   alias Embers.{Feed}
   alias Embers.Helpers.IdHasher
+  alias EmbersWeb.Plugs.CheckPermissions
 
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
   plug(CheckPermissions, [permission: "create_post"] when action in [:create])
@@ -15,49 +15,46 @@ defmodule EmbersWeb.PostController do
   end
 
   def create(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-
     post_params = Map.put(params, "user_id", user.id)
 
-      # Si el body es vacio devuelve error.
-      # TODO pensar si es mejor guardar el body trimeado o no
+    media_count =
+      if is_nil(params["medias"]) || Enum.empty?(params["medias"]) do
+        0
+      else
+        length(params["medias"])
+      end
 
-      if (String.trim(post_params["body"]) === "" && length(post_params["medias"]) === 0) do
+    post_params = Map.put(post_params, "media_count", media_count)
+
+    post_params =
+      if Map.has_key?(params, "parent_id") do
+        %{post_params | "parent_id" => IdHasher.decode(params["parent_id"])}
+      end || post_params
+
+    post_params =
+      if Map.has_key?(params, "related_to_id") do
+        %{post_params | "related_to_id" => IdHasher.decode(params["related_to_id"])}
+      end || post_params
+
+    case Feed.create_post(post_params) do
+      {:ok, post} ->
+        user = Embers.Accounts.get_populated(user.canonical)
+        post = %{post | user: user}
+
+        conn
+        |> render("show.json", post: post)
+
+      {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
         |> put_view(EmbersWeb.ErrorView)
-        |> render("422.json", %{error: "error"})
-      else
+        |> render("422.json", changeset: changeset)
 
-      post_params =
-        if(Map.has_key?(params, "parent_id")) do
-          %{post_params | "parent_id" => IdHasher.decode(params["parent_id"])}
-        end || post_params
-
-      post_params =
-        if(Map.has_key?(params, "related_to_id")) do
-          %{post_params | "related_to_id" => IdHasher.decode(params["related_to_id"])}
-        end || post_params
-
-      case Feed.create_post(post_params) do
-        {:ok, post} ->
-          user = Embers.Accounts.get_populated(user.canonical)
-          post = %{post | user: user}
-
-          conn
-          |> render("show.json", post: post)
-
-        {:error, %Ecto.Changeset{} = changeset} ->
-          conn
-          |> put_status(:unprocessable_entity)
-          |> put_view(EmbersWeb.ErrorView)
-          |> render("422.json", changeset: changeset)
-
-        {:error, reason} ->
-          conn
-          |> put_status(:unprocessable_entity)
-          |> put_view(EmbersWeb.ErrorView)
-          |> render("422.json", %{error: reason})
-      end
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(EmbersWeb.ErrorView)
+        |> render("422.json", %{error: reason})
     end
   end
 

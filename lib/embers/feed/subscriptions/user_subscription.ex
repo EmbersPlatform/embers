@@ -1,4 +1,5 @@
 defmodule Embers.Feed.Subscriptions.UserSubscription do
+  @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset
@@ -23,7 +24,7 @@ defmodule Embers.Feed.Subscriptions.UserSubscription do
   end
 
   defp validate_fields(changeset, attrs) do
-    if(attrs.user_id == attrs.source_id) do
+    if attrs.user_id == attrs.source_id do
       Ecto.Changeset.add_error(
         changeset,
         :invalid_params,
@@ -37,11 +38,11 @@ defmodule Embers.Feed.Subscriptions.UserSubscription do
   defp validate_unique_entry(changeset, attrs) do
     entries = Repo.get_by(UserSubscription, %{user_id: attrs.user_id, source_id: attrs.source_id})
 
-    if(not is_nil(entries)) do
+    if is_nil(entries) do
       changeset
-      |> Ecto.Changeset.add_error(:already_exists, "subscription already exists")
     else
       changeset
+      |> Ecto.Changeset.add_error(:already_exists, "subscription already exists")
     end
   end
 end

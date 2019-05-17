@@ -1,12 +1,12 @@
 defmodule EmbersWeb.AccountController do
+  @moduledoc false
   use EmbersWeb, :controller
-
   import EmbersWeb.Authorize
   alias Embers.Accounts
-  alias Phauxth.Log
   alias EmbersWeb.Auth.Token
   alias EmbersWeb.Email
   alias EmbersWeb.Router.Helpers, as: Routes
+  alias Phauxth.Log
 
   plug(:guest_check when action in [:new, :create])
   plug(:put_layout, "app_no_js.html")

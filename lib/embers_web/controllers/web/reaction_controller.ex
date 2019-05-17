@@ -42,4 +42,10 @@ defmodule EmbersWeb.ReactionController do
     |> put_view(EmbersWeb.PostView)
     |> render("show.json", %{post: post})
   end
+
+  def list_valid_reactions(conn, _parms) do
+    reactions = Reactions.Reaction.valid_reactions
+    conn
+    |> json(reactions)
+  end
 end

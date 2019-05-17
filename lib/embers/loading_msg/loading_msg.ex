@@ -26,7 +26,15 @@ defmodule Embers.LoadingMsg do
 
   def create(attrs) do
     msg = Msg.changeset(%Msg{}, attrs)
-    Repo.insert(msg)
+
+    case Repo.insert(msg) do
+      {:ok, msg} ->
+        bust_cache()
+        {:ok, msg}
+
+      error ->
+        error
+    end
   end
 
   def remove(id) when is_integer(id) do
@@ -37,6 +45,7 @@ defmodule Embers.LoadingMsg do
   end
 
   def remove(%Msg{} = msg) do
+    bust_cache()
     Repo.delete(msg)
   end
 
@@ -52,7 +61,11 @@ defmodule Embers.LoadingMsg do
 
   def update(%Msg{} = msg, attrs) do
     msg = Msg.changeset(msg, attrs)
-    Cachex.del(:embers, "loading_msg")
+    bust_cache()
     Repo.update(msg)
+  end
+
+  defp bust_cache() do
+    Cachex.del(:embers, "loading_msg")
   end
 end

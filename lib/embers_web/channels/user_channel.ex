@@ -1,8 +1,10 @@
 defmodule EmbersWeb.UserChannel do
+  @moduledoc false
   use Phoenix.Channel
 
-  alias EmbersWeb.Presence
+  alias Embers.Feed.Subscriptions
   alias Embers.Helpers.IdHasher
+  alias EmbersWeb.Presence
 
   def join("user:" <> id, _payload, socket) do
     case check_user(id, socket) do
@@ -34,7 +36,7 @@ defmodule EmbersWeb.UserChannel do
   # Let's pretend that the current user is allowed to see the presence of users with an id between
   # 10 less than and 100 more than it's own id.
   defp friend_list(user_id) do
-    Embers.Feed.Subscriptions.list_mutuals_ids(user_id)
+    Subscriptions.list_mutuals_ids(user_id)
   end
 
   # Track the current process as a presence for the given user on it's designated presence topic

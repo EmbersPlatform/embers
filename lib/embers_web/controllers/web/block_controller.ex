@@ -2,8 +2,8 @@ defmodule EmbersWeb.BlockController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.Helpers.IdHasher
   alias Embers.Feed.Subscriptions.Blocks
+  alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.FallbackController)
   plug(:user_check when action in [:update, :delete])
@@ -38,12 +38,7 @@ defmodule EmbersWeb.BlockController do
       ) do
     source_id = IdHasher.decode(source_id)
 
-    block_params = %{
-      user_id: user.id,
-      source_id: source_id
-    }
-
-    do_create_block(conn, block_params)
+    do_create_block(conn, user.id, source_id)
   end
 
   def create_by_name(
@@ -52,12 +47,7 @@ defmodule EmbersWeb.BlockController do
       ) do
     source = Embers.Accounts.get_by_identifier(name)
 
-    block_params = %{
-      user_id: user.id,
-      source_id: source.id
-    }
-
-    do_create_block(conn, block_params)
+    do_create_block(conn, user.id, source.id)
   end
 
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
@@ -68,8 +58,8 @@ defmodule EmbersWeb.BlockController do
     conn |> put_status(:no_content) |> json(nil)
   end
 
-  defp do_create_block(conn, block_params) do
-    case Blocks.create_user_block(block_params["user_id"], block_params["source_id"]) do
+  defp do_create_block(conn, user_id, source_id) do
+    case Blocks.create_user_block(user_id, source_id) do
       {:ok, _} ->
         conn
         |> put_status(:no_content)

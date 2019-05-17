@@ -5,14 +5,13 @@ defmodule Embers.Feed do
   """
 
   import Ecto.Query, warn: false
-  alias Embers.Repo
-  alias Embers.Paginator
   alias Ecto.Multi
+  alias Embers.Feed.{Activity, Post}
   alias Embers.Helpers.IdHasher
   alias Embers.Media.MediaItem
+  alias Embers.Paginator
+  alias Embers.Repo
   alias Embers.Tags
-
-  alias Embers.Feed.{Post, Activity}
 
   @max_media_count 4
 
@@ -44,39 +43,32 @@ defmodule Embers.Feed do
 
   """
   def get_post!(id) do
-    from(
-      post in Post,
-      where: post.id == ^id and is_nil(post.deleted_at),
-      left_join: user in assoc(post, :user),
-      left_join: meta in assoc(user, :meta),
-      left_join: media in assoc(post, :media),
-      left_join: reactions in assoc(post, :reactions),
-      left_join: tags in assoc(post, :tags),
-      left_join: related in assoc(post, :related_to),
-      left_join: related_user in assoc(related, :user),
-      left_join: related_user_meta in assoc(related_user, :meta),
-      left_join: related_tags in assoc(related, :tags),
-      left_join: related_media in assoc(related, :media),
-      # Acá precargamos todo lo que levantamos más arriba con los joins,
-      # de lo contrario Ecto no mapeará los resultados a los esquemas
-      # correspondientes.
-      preload: [
-        user: {user, meta: meta},
-        media: media,
-        reactions: reactions,
-        tags: tags,
-        related_to: {
-          related,
-          user: {
-            related_user,
-            meta: related_user_meta
-          },
-          media: related_media,
-          tags: related_tags
-        }
-      ]
-    )
-    |> Repo.one()
+    query =
+      from(
+        post in Post,
+        where: post.id == ^id and is_nil(post.deleted_at),
+        left_join: user in assoc(post, :user),
+        left_join: meta in assoc(user, :meta),
+        left_join: related in assoc(post, :related_to),
+        left_join: related_user in assoc(related, :user),
+        left_join: related_user_meta in assoc(related_user, :meta),
+        preload: [:media, :tags, :reactions, related_to: [:media, :tags, :reactions]],
+        # Acá precargamos todo lo que levantamos más arriba con los joins,
+        # de lo contrario Ecto no mapeará los resultados a los esquemas
+        # correspondientes.
+        preload: [
+          user: {user, meta: meta},
+          related_to: {
+            related,
+            user: {
+              related_user,
+              meta: related_user_meta
+            }
+          }
+        ]
+      )
+
+    Repo.one(query)
   end
 
   @doc """
@@ -130,14 +122,17 @@ defmodule Embers.Feed do
   end
 
   defp update_parent_post_replies(post, _attrs) do
-    if(post.nesting_level > 0) do
+    if post.nesting_level > 0 do
       {_, [parent]} =
-        from(
-          p in Post,
-          where: p.id == ^post.parent_id,
-          update: [inc: [replies_count: 1]]
+        Repo.update_all(
+          from(
+            p in Post,
+            where: p.id == ^post.parent_id,
+            update: [inc: [replies_count: 1]]
+          ),
+          [],
+          returning: true
         )
-        |> Repo.update_all([], returning: true)
 
       Embers.Event.emit(:post_comment, %{
         from: post.user_id,
@@ -150,17 +145,18 @@ defmodule Embers.Feed do
   end
 
   defp handle_related_to(post, _attrs) do
-    if(not is_nil(post.related_to_id)) do
-      post.related_to_id |> IO.inspect()
-
+    if not is_nil(post.related_to_id) do
       {_, [parent]} =
-        from(
-          p in Post,
-          where: p.id == ^post.related_to_id,
-          where: is_nil(p.deleted_at),
-          update: [inc: [shares_count: 1]]
+        Repo.update_all(
+          from(
+            p in Post,
+            where: p.id == ^post.related_to_id,
+            where: is_nil(p.deleted_at),
+            update: [inc: [shares_count: 1]]
+          ),
+          [],
+          returning: true
         )
-        |> Repo.update_all([], returning: true)
 
       Embers.Event.emit(:post_shared, %{
         from: post.user_id,
@@ -175,15 +171,20 @@ defmodule Embers.Feed do
   defp handle_medias(post, attrs) do
     medias = attrs["medias"]
 
-    if(not is_nil(medias)) do
-      if(length(medias) <= @max_media_count) do
+    if is_nil(medias) do
+      {:ok, nil}
+    else
+      if length(medias) <= @max_media_count do
         medias = attrs["medias"]
 
         ids = Enum.map(medias, fn x -> IdHasher.decode(x["id"]) end)
 
         {_count, medias} =
-          from(m in MediaItem, where: m.id in ^ids)
-          |> Repo.update_all([set: [temporary: false]], returning: true)
+          Repo.update_all(
+            from(m in MediaItem, where: m.id in ^ids),
+            [set: [temporary: false]],
+            returning: true
+          )
 
         post
         |> Repo.preload(:media)
@@ -193,8 +194,6 @@ defmodule Embers.Feed do
       else
         {:error, "media count exceeded"}
       end
-    else
-      {:ok, nil}
     end
   end
 
@@ -240,21 +239,25 @@ defmodule Embers.Feed do
   def hard_delete_post(%Post{} = post) do
     if post.nesting_level > 0 do
       # Update parent post replies count
-      from(
-        p in Post,
-        where: p.id == ^post.parent_id,
-        update: [inc: [replies_count: -1]]
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [replies_count: -1]]
+        ),
+        []
       )
-      |> Repo.update_all([])
     end
 
-    if(not is_nil(post.related_to_id)) do
-      from(
-        p in Post,
-        where: p.id == ^post.parent_id,
-        update: [inc: [shares_count: -1]]
+    unless is_nil(post.related_to_id) do
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [shares_count: -1]]
+        ),
+        []
       )
-      |> Repo.update_all([])
     end
 
     with {:ok, deleted_post} <- Repo.delete(post) do
@@ -278,45 +281,121 @@ defmodule Embers.Feed do
     Post.changeset(post, %{})
   end
 
+  def get_public(opts \\ []) do
+    query =
+      from(
+        post in Post,
+        where: post.nesting_level == 0 and is_nil(post.deleted_at),
+        where: is_nil(post.related_to_id),
+        order_by: [desc: post.id],
+        left_join: user in assoc(post, :user),
+        left_join: meta in assoc(user, :meta),
+        preload: [:media, :reactions],
+        preload: [
+          user: {user, meta: meta}
+        ]
+      )
+
+    Paginator.paginate(query, opts)
+  end
+
   def get_timeline(user_id, opts \\ []) do
-    from(
-      activity in Activity,
-      where: activity.user_id == ^user_id,
-      left_join: post in assoc(activity, :post),
-      where: is_nil(post.deleted_at),
-      order_by: [desc: activity.id],
-      left_join: user in assoc(post, :user),
-      left_join: meta in assoc(user, :meta),
-      left_join: media in assoc(post, :media),
-      left_join: reactions in assoc(post, :reactions),
-      left_join: tags in assoc(post, :tags),
-      left_join: related in assoc(post, :related_to),
-      left_join: related_user in assoc(related, :user),
-      left_join: related_user_meta in assoc(related_user, :meta),
-      left_join: related_tags in assoc(related, :tags),
-      left_join: related_media in assoc(related, :media),
-      left_join: related_reactions in assoc(related, :reactions),
-      preload: [
-        post: {
-          post,
+    query =
+      from(
+        activity in Activity,
+        where: activity.user_id == ^user_id,
+        left_join: post in assoc(activity, :post),
+        where: is_nil(post.deleted_at),
+        order_by: [desc: activity.id],
+        left_join: user in assoc(post, :user),
+        left_join: meta in assoc(user, :meta),
+        left_join: related in assoc(post, :related_to),
+        left_join: related_user in assoc(related, :user),
+        left_join: related_user_meta in assoc(related_user, :meta),
+        preload: [
+          [post: [:media, :reactions, :tags, related_to: [:media, :tags, :reactions]]]
+        ],
+        preload: [
+          post: {
+            post,
+            user: {user, meta: meta},
+            related_to: {
+              related,
+              user: {
+                related_user,
+                meta: related_user_meta
+              }
+            }
+          }
+        ]
+      )
+
+    query
+    |> Paginator.paginate(opts)
+    |> activities_to_posts
+  end
+
+  def get_user_activities(user_id, opts \\ []) do
+    query =
+      from(
+        post in Post,
+        where: post.user_id == ^user_id,
+        where: is_nil(post.deleted_at),
+        order_by: [desc: post.id],
+        left_join: user in assoc(post, :user),
+        left_join: meta in assoc(user, :meta),
+        left_join: related in assoc(post, :related_to),
+        left_join: related_user in assoc(related, :user),
+        left_join: related_user_meta in assoc(related_user, :meta),
+        preload: [
+          [:media, :reactions, :tags, related_to: [:media, :tags, :reactions]]
+        ],
+        preload: [
           user: {user, meta: meta},
-          media: media,
-          reactions: reactions,
-          tags: tags,
           related_to: {
             related,
             user: {
               related_user,
               meta: related_user_meta
-            },
-            media: related_media,
-            tags: related_tags,
-            reactions: related_reactions
+            }
           }
-        }
-      ]
-    )
-    |> Paginator.paginate(opts)
+        ]
+      )
+
+    Paginator.paginate(query, opts)
+  end
+
+  @doc """
+  Devuelve los posts agrupados por los tags
+
+  Opciones:
+  - `limit`: La cantidad de posts por tag
+  """
+  def get_by_tags(tags, opts \\ []) when is_list(tags) do
+    limit = Keyword.get(opts, :limit, 10)
+
+    Enum.reduce(tags, %{}, fn tag, acc ->
+      query =
+        from(
+          post in Post,
+          where: is_nil(post.deleted_at),
+          where: is_nil(post.related_to_id),
+          left_join: tag in assoc(post, :tags),
+          where: tag.name == ^tag,
+          order_by: [desc: post.id],
+          left_join: user in assoc(post, :user),
+          left_join: meta in assoc(user, :meta),
+          preload: [
+            [:media, :reactions, :tags]
+          ],
+          preload: [
+            user: {user, meta: meta}
+          ],
+          limit: ^limit
+        )
+
+      Map.put(acc, tag, Repo.all(query))
+    end)
   end
 
   def delete_activity(%Activity{} = activity) do
@@ -327,16 +406,22 @@ defmodule Embers.Feed do
     end
   end
 
+  @doc """
+  Devuelve las respuestas a un post.
+  """
   def get_post_replies(parent_id, opts \\ []) do
-    from(
-      post in Post,
-      where: post.parent_id == ^parent_id and is_nil(post.deleted_at),
-      left_join: user in assoc(post, :user),
-      left_join: meta in assoc(user, :meta),
-      order_by: [asc: post.inserted_at],
-      preload: [user: {user, meta: meta}]
-    )
-    |> Paginator.paginate(opts)
+    query =
+      from(
+        post in Post,
+        where: post.parent_id == ^parent_id and is_nil(post.deleted_at),
+        left_join: user in assoc(post, :user),
+        left_join: meta in assoc(user, :meta),
+        order_by: [desc: post.inserted_at],
+        preload: [user: {user, meta: meta}],
+        preload: [:reactions, :media]
+      )
+
+    Paginator.paginate(query, opts)
   end
 
   @doc """
@@ -359,7 +444,8 @@ defmodule Embers.Feed do
       if is_nil(post.body) do
         []
       else
-        Regex.scan(hashtag_regex, post.body)
+        hashtag_regex
+        |> Regex.scan(post.body)
         |> Enum.map(fn [txt] -> String.replace(txt, "#", "") end)
       end
 
@@ -394,7 +480,11 @@ defmodule Embers.Feed do
     {:ok, nil}
   end
 
-  defp current_date_naive() do
+  defp current_date_naive do
     NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+  end
+
+  defp activities_to_posts(page) do
+    %{page | entries: Enum.map(page.entries, fn a -> a.post end)}
   end
 end

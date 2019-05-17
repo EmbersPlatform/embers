@@ -1,4 +1,5 @@
 defmodule Embers.Feed.Subscriptions.TagSubscription do
+  @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset

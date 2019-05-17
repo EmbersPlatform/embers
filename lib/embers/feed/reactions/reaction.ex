@@ -1,9 +1,10 @@
 defmodule Embers.Feed.Reactions.Reaction do
+  @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset
-  import Ecto.Query
 
+  alias Embers.Feed.Subscriptions.Blocks
   alias Embers.Repo
 
   @valid_reactions ~w(thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire)
@@ -28,6 +29,10 @@ defmodule Embers.Feed.Reactions.Reaction do
     )
   end
 
+  def valid_reactions do
+    @valid_reactions
+  end
+
   defp validate_post(changeset, %{"post_id" => post_id} = attrs) do
     case Repo.get(Embers.Feed.Post, post_id) do
       nil ->
@@ -41,15 +46,7 @@ defmodule Embers.Feed.Reactions.Reaction do
   end
 
   defp check_if_can_react(changeset, %{"user_id" => user_id}, post) do
-    is_blocked? =
-      from(
-        b in Embers.Feed.Subscriptions.UserBlock,
-        where: b.source_id == ^user_id,
-        where: b.user_id == ^post.user_id
-      )
-      |> Repo.exists?()
-
-    if is_blocked? do
+    if Blocks.blocked?(user_id, post.user_id) do
       changeset
       |> Ecto.Changeset.add_error(:blocked, "post owner has blocked the user")
     else

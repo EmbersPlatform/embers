@@ -2,8 +2,9 @@ defmodule EmbersWeb.FriendController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.Helpers.IdHasher
+
   alias Embers.Feed.Subscriptions
+  alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.FallbackController)
   plug(:id_check when action in [:update, :delete])

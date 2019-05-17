@@ -13,8 +13,9 @@ defmodule Embers.Notifications.Manager do
 
   import Ecto.Query
 
-  alias Embers.Notifications
   alias Embers.Feed.Subscriptions.Blocks
+  alias Embers.Notifications
+  alias Embers.Repo
 
   @doc false
   def handle_event(:post_created, event) do
@@ -22,7 +23,7 @@ defmodule Embers.Notifications.Manager do
   end
 
   def handle_event(:post_comment, event) do
-    if(event.data.from != event.data.recipient) do
+    if event.data.from != event.data.recipient do
       case Notifications.create_notification(%{
              type: "comment",
              from_id: event.data.from,
@@ -40,18 +41,20 @@ defmodule Embers.Notifications.Manager do
   end
 
   def handle_event(:user_mentioned, event) do
-    case Notifications.create_notification(%{
-           type: "mention",
-           from_id: event.data.from,
-           recipient_id: event.data.recipient,
-           source_id: event.data.source
-         }) do
-      {:ok, notification} ->
-        notification = notification |> Embers.Repo.preload(from: :meta)
-        Embers.Event.emit(:notification_created, notification)
+    if not Blocks.blocked?(event.data.from, event.data.recipient) do
+      case Notifications.create_notification(%{
+             type: "mention",
+             from_id: event.data.from,
+             recipient_id: event.data.recipient,
+             source_id: event.data.source
+           }) do
+        {:ok, notification} ->
+          notification = notification |> Embers.Repo.preload(from: :meta)
+          Embers.Event.emit(:notification_created, notification)
 
-      {:error, reason} ->
-        Embers.Event.emit(:create_notification_failed, reason)
+        {:error, reason} ->
+          Embers.Event.emit(:create_notification_failed, reason)
+      end
     end
   end
 
@@ -74,35 +77,49 @@ defmodule Embers.Notifications.Manager do
   end
 
   defp handle_mentions(%Embers.Feed.Post{body: body} = post) when not is_nil(body) do
-    regex = ~r/(?:^|[^a-zA-Z0-9_＠!@#$%&*])(?:(?:@|＠)(?!\/))([a-zA-Z0-9_]{1,15})(?:\b(?!@|＠)|$)/
-    results = Regex.scan(regex, body) |> Enum.map(fn [_, txt] -> txt end)
+    mentions = extract_mentions(body)
 
     recipients =
-      from(
-        user in Embers.Accounts.User,
-        where: user.canonical in ^results,
-        select: user.id
+      Repo.all(
+        from(
+          user in Embers.Accounts.User,
+          where: user.canonical in ^mentions,
+          select: user.id
+        )
       )
-      |> Embers.Repo.all()
-      # don't notify the user that mentioned himself
+
+    # don't notify the user that mentioned himself
+    recipients =
+      recipients
       |> Enum.reject(fn recipient -> recipient == post.user_id end)
 
-    recipients =
-      if not is_nil(post.parent_id) do
-        post =
-          if !Ecto.assoc_loaded?(post.parent) do
-            Embers.Repo.preload(post, :parent)
-          end || post
-
-        if Enum.member?(recipients, post.parent.user_id) do
-          Enum.reject(recipients, fn recipient -> recipient == post.parent.user_id end)
-        end
-      end || recipients
+    recipients = remove_self_from_recipients(recipients, post)
 
     create_mention_notifications(recipients, post)
   end
 
   defp handle_mentions(_), do: :ok
+
+  defp maybe_preload_post_parent(post) do
+    unless Ecto.assoc_loaded?(post.parent) do
+      Repo.preload(post, :parent)
+    end || post
+  end
+
+  defp remove_self_from_recipients(recipients, post) do
+    unless is_nil(post.parent_id) do
+      post = maybe_preload_post_parent(post)
+      Enum.reject(recipients, fn recipient -> recipient == post.parent.user_id end)
+    end || recipients
+  end
+
+  defp extract_mentions(body) do
+    regex = ~r/(?:^|[^a-zA-Z0-9_＠!@#$%&*])(?:(?:@|＠)(?!\/))([a-zA-Z0-9_]{1,15})(?:\b(?!@|＠)|$)/
+
+    regex
+    |> Regex.scan(body)
+    |> Enum.map(fn [_, txt] -> txt end)
+  end
 
   defp create_mention_notifications(recipients, post) do
     recipients

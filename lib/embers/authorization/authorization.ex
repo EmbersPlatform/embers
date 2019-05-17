@@ -2,8 +2,8 @@ defmodule Embers.Authorization do
   @moduledoc """
   Módulo usado para checkear si un usuario es capaz de realizar una acción.
   """
-  alias Embers.Authorization.Roles
   alias Embers.Accounts.User
+  alias Embers.Authorization.Roles
 
   @doc """
   Devuelve si el usuario posee el permiso indicado.
@@ -23,14 +23,10 @@ defmodule Embers.Authorization do
   """
   @spec check_permission(Enum.t(), String.t()) :: atom()
   def check_permission(permissions, permission) do
-    if(Enum.member?(permissions, "any")) do
+    if Enum.member?(permissions, "any") || Enum.member?(permissions, permission) do
       :ok
     else
-      if(Enum.member?(permissions, permission)) do
-        :ok
-      else
-        :denegated
-      end
+      :denegated
     end
   end
 
@@ -39,7 +35,8 @@ defmodule Embers.Authorization do
   """
   @spec extract_permissions(Embers.Accounts.User.t()) :: [String.t()]
   def extract_permissions(user) do
-    Roles.roles_for(user.id)
+    user.id
+    |> Roles.roles_for()
     |> Enum.reduce([], fn x, acc -> Enum.concat(acc, x.permissions) end)
     |> Enum.uniq()
   end

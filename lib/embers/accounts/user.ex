@@ -55,6 +55,7 @@ defmodule Embers.Accounts.User do
     field(:password_hash, :string)
     field(:confirmed_at, :utc_datetime)
     field(:reset_sent_at, :utc_datetime)
+    field(:banned_at, :utc_datetime)
     has_many(:sessions, Session, on_delete: :delete_all)
 
     field(:following, :boolean, virtual: true)
@@ -64,6 +65,8 @@ defmodule Embers.Accounts.User do
     has_one(:meta, Embers.Profile.Meta)
     has_one(:settings, Embers.Profile.Settings.Setting)
     has_many(:posts, Embers.Feed.Post)
+
+    has_many(:bans, Embers.Moderation.Ban)
 
     many_to_many(:roles, Embers.Authorization.Role, join_through: "role_user")
 
@@ -172,13 +175,15 @@ defmodule Embers.Accounts.User do
   end
 
   defp unique_email(changeset) do
-    validate_format(changeset, :email, ~r/@/)
+    changeset
+    |> validate_format(:email, ~r/@/)
     |> validate_length(:email, max: 254)
     |> unique_constraint(:email)
   end
 
   defp validate_username(changeset) do
-    validate_format(changeset, :username, ~r/^([A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*)$/)
+    changeset
+    |> validate_format(:username, ~r/^([A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*)$/)
     |> validate_length(:username, max: 30, min: 2)
     |> unique_constraint(:username)
   end

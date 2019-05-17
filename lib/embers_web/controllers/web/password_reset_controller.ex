@@ -1,10 +1,10 @@
 defmodule EmbersWeb.PasswordResetController do
   use EmbersWeb, :controller
 
-  alias Phauxth.Confirm.PassReset
   alias Embers.Accounts
   alias EmbersWeb.{Auth.Token, Email}
   alias EmbersWeb.Router.Helpers, as: Routes
+  alias Phauxth.Confirm.PassReset
 
   plug(:put_layout, "app_no_js.html")
 

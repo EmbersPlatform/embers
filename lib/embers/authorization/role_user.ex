@@ -1,4 +1,5 @@
 defmodule Embers.Authorization.RoleUser do
+  @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset

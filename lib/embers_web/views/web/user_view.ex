@@ -1,7 +1,7 @@
 defmodule EmbersWeb.UserView do
   use EmbersWeb, :view
-  alias EmbersWeb.{UserView, MetaView}
   alias Embers.Helpers.IdHasher
+  alias EmbersWeb.{MetaView, UserView}
 
   def render("index.json", %{users: users}) do
     %{data: render_many(users, UserView, "user.json")}
@@ -28,7 +28,7 @@ defmodule EmbersWeb.UserView do
     }
 
     view =
-      if(is_nil(user.stats)) do
+      if is_nil(user.stats) do
         view
       else
         %{view | stats: user.stats}

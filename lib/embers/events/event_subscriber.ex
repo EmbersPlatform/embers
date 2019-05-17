@@ -27,7 +27,7 @@ defmodule Embers.EventSubscriber do
     topics = Keyword.get(opts, :topics, [])
 
     quote do
-      def register() do
+      def register do
         EventBus.subscribe({__MODULE__, unquote(topics)})
       end
 

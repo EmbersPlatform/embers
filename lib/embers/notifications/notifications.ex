@@ -17,8 +17,8 @@ defmodule Embers.Notifications do
   """
 
   alias Embers.Notifications.Notification
-  alias Embers.Repo
   alias Embers.Paginator
+  alias Embers.Repo
 
   import Ecto.Query
 
@@ -68,8 +68,8 @@ defmodule Embers.Notifications do
   @spec create_notification(map()) ::
           {:ok, Embers.Notifications.Notification.t()} | {:error, Ecto.Changeset.t()}
   def create_notification(attrs) do
-    Notification.create_changeset(%Notification{}, attrs)
-    |> Repo.insert()
+    changeset = Notification.create_changeset(%Notification{}, attrs)
+    Repo.insert(changeset)
   end
 
   @doc """
@@ -109,7 +109,7 @@ defmodule Embers.Notifications do
   def delete_notification(id) do
     notification = get(id)
 
-    if not is_nil(notification) do
+    unless is_nil(notification) do
       Repo.delete(notification)
     end
 
@@ -124,7 +124,7 @@ defmodule Embers.Notifications do
       [entries: [%Notification{}, ...], ...]
   """
   def list_notifications_paginated(user_id, opts \\ []) when is_integer(user_id) do
-    results =
+    query =
       from(
         notif in Notification,
         where: notif.recipient_id == ^user_id,
@@ -135,25 +135,19 @@ defmodule Embers.Notifications do
           from: {user, meta: user_meta}
         ]
       )
-      |> Paginator.paginate(opts)
+
+    results = Paginator.paginate(query, opts)
 
     mark_as_read = Keyword.get(opts, :mark_as_read, false)
 
     results =
-      if(mark_as_read) do
+      if mark_as_read do
         ids = Enum.map(results.entries, fn o -> o.id end)
         set_status(ids, 1)
 
-        entries =
-          Enum.map(results.entries, fn o ->
-            if(o.status < 1) do
-              %{o | status: 1}
-            end || o
-          end)
-
         %{
           results
-          | entries: entries
+          | entries: set_read_status(results.entries)
         }
       end || results
 
@@ -171,20 +165,32 @@ defmodule Embers.Notifications do
   def set_status(id, status \\ 2)
 
   def set_status(id, status) when is_integer(id) do
-    from(
-      notif in Notification,
-      where: notif.id == ^id,
-      update: [set: [status: ^status]]
+    Repo.update_all(
+      from(
+        notif in Notification,
+        where: notif.id == ^id,
+        update: [set: [status: ^status]]
+      ),
+      []
     )
-    |> Repo.update_all([])
   end
 
   def set_status(ids, status) when is_list(ids) do
-    from(
-      notif in Notification,
-      where: notif.id in ^ids and notif.status < ^status,
-      update: [set: [status: ^status]]
+    Repo.update_all(
+      from(
+        notif in Notification,
+        where: notif.id in ^ids and notif.status < ^status,
+        update: [set: [status: ^status]]
+      ),
+      []
     )
-    |> Repo.update_all([])
+  end
+
+  defp set_read_status(entries) do
+    Enum.map(entries, fn o ->
+      if o.status < 1 do
+        %{o | status: 1}
+      end || o
+    end)
   end
 end
