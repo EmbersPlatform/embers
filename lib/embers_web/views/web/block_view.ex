@@ -6,7 +6,7 @@ defmodule EmbersWeb.BlockView do
 
   def render("blocks.json", %{entries: blocks} = metadata) do
     %{
-      items: render_many(blocks, __MODULE__, "friend.json"),
+      items: render_many(blocks, __MODULE__, "block.json"),
       next: metadata.next,
       last_page: metadata.last_page
     }
@@ -14,7 +14,7 @@ defmodule EmbersWeb.BlockView do
 
   def render("blocks_ids.json", %{entries: ids} = metadata) do
     %{
-      ids: render_many(ids, __MODULE__, "friend_id"),
+      ids: render_many(ids, __MODULE__, "block_ids"),
       next: metadata.next,
       last_page: metadata.last_page
     }
