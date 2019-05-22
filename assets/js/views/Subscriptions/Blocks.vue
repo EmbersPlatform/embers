@@ -86,6 +86,10 @@ export default {
             return;
           }
           this.users = res.items;
+          this.users.map(user => {
+            user.blocked = true;
+            return user;
+          });
         })
         .finally(() => {
           this.loading = false;
