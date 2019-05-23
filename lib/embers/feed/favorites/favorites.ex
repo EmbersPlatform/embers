@@ -36,11 +36,11 @@ defmodule Embers.Feed.Favorites do
 
   def list_paginated(user_id, opts \\ []) do
     query =
-    from(fav in Favorite,
-      as: :favorite,
-      where: fav.user_id == ^user_id,
-      order_by: [desc: fav.inserted_at]
-    )
+      from(fav in Favorite,
+        as: :favorite,
+        where: fav.user_id == ^user_id,
+        order_by: [desc: fav.inserted_at]
+      )
 
     query
     |> with_post()
@@ -53,12 +53,10 @@ defmodule Embers.Feed.Favorites do
       as: :post,
       left_join: post_user in assoc(post, :user),
       left_join: post_user_meta in assoc(post_user, :meta),
-      left_join: post_media in assoc(post, :media),
-      left_join: post_tags in assoc(post, :tags),
       left_join: related in assoc(post, :related_to),
       left_join: related_user in assoc(related, :user),
       left_join: related_user_meta in assoc(related_user, :meta),
-      left_join: related_media in assoc(related, :media),
+      preload: [post: [:tags, :media, :links, related_to: [:media, :links]]],
       preload: [
         post: {
           post,
@@ -66,11 +64,9 @@ defmodule Embers.Feed.Favorites do
             post_user,
             meta: post_user_meta
           },
-          media: post_media,
-          tags: post_tags,
           related_to: {
             related,
-            media: related_media, user: {related_user, meta: related_user_meta}
+            user: {related_user, meta: related_user_meta}
           }
         }
       ]

@@ -228,9 +228,11 @@ export default {
 
       let requestData = {
         body: this.post.body,
-        nsfw: this.post.nsfw,
         tags: this.post.tags.split(" ")
       };
+      if(this.post.nsfw) {
+        requestData.tags.push("nsfw")
+      }
 
       if (this.post.medias !== null) {
         requestData.medias = this.post.medias;

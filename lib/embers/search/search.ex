@@ -31,7 +31,7 @@ defmodule Embers.Search do
   import Ecto.Query
 
   @operators %{
-    tag: ~r/(?<!["])in:(\pL(?:(?:[\pL\pN][\.\-_])?[\pL\pN]){1,30})(?!["])/,
+    tag: ~r/(?<!["])(?:in:|#)(\pL(?:(?:[\pL\pN][\.\-_])?[\pL\pN]){1,30})(?!["])/,
     author: ~r/(?<!["])@(\pL(?:(?:[\pL\pN][\.\-_])?[\pL\pN]){0,19})(?!["])/,
     nsfw: ~r/(?<!["])-nsfw(?!["])/,
     sfw: ~r/(?<!["])-sfw(?!["])/,

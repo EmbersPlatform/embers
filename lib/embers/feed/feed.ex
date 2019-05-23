@@ -119,6 +119,7 @@ defmodule Embers.Feed do
             :tags,
             [related_to: [:media, :links, user: :meta]]
           ])
+          |> Post.fill_nsfw()
 
         # Disparamos un evento
         Embers.Event.emit(:post_created, post)
@@ -328,7 +329,9 @@ defmodule Embers.Feed do
         ]
       )
 
-    Paginator.paginate(query, opts)
+    query
+    |> Paginator.paginate(opts)
+    |> fill_nsfw()
   end
 
   def get_timeline(user_id, opts \\ []) do
@@ -372,7 +375,8 @@ defmodule Embers.Feed do
 
     query
     |> Paginator.paginate(opts)
-    |> activities_to_posts
+    |> activities_to_posts()
+    |> fill_nsfw()
   end
 
   def get_user_activities(user_id, opts \\ []) do
@@ -402,7 +406,9 @@ defmodule Embers.Feed do
         ]
       )
 
-    Paginator.paginate(query, opts)
+    query
+    |> Paginator.paginate(opts)
+    |> fill_nsfw()
   end
 
   @doc """
@@ -434,7 +440,12 @@ defmodule Embers.Feed do
           limit: ^limit
         )
 
-      Map.put(acc, tag, Repo.all(query))
+      results =
+        query
+        |> Repo.all()
+        |> Enum.map(fn post -> Post.fill_nsfw(post) end)
+
+      Map.put(acc, tag, results)
     end)
   end
 
@@ -461,7 +472,9 @@ defmodule Embers.Feed do
         preload: [:reactions, :media, :links]
       )
 
-    Paginator.paginate(query, opts)
+    query
+    |> Paginator.paginate(opts)
+    |> fill_nsfw()
   end
 
   @doc """
@@ -526,5 +539,12 @@ defmodule Embers.Feed do
 
   defp activities_to_posts(page) do
     %{page | entries: Enum.map(page.entries, fn a -> a.post end)}
+  end
+
+  defp fill_nsfw(page) do
+    %{
+      page
+      | entries: Enum.map(page.entries, fn post -> Post.fill_nsfw(post) end)
+    }
   end
 end

@@ -1,7 +1,7 @@
 <template>
   <div class="media-zone single-media">
     <media-item v-if="media.legacy" :media="media"/>
-    <media-preview v-else :media="media"/>
+    <media-preview v-else :media="media" @clicked="clicked(media)"/>
   </div>
 </template>
 
@@ -24,7 +24,7 @@ export default {
   },
   methods: {
     clicked(media) {
-      this.$emit("clicked");
+      this.$emit("clicked", media.id);
     }
   }
 };

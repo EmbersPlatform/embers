@@ -54,6 +54,7 @@ defmodule Embers.Feed.Post do
     field(:shares_count, :integer, default: 0)
     field(:my_reactions, {:array, :string}, virtual: true)
     field(:mentions, {:array, :string}, virtual: true)
+    field(:nsfw, :boolean, virtual: true, default: false)
 
     belongs_to(:user, Embers.Accounts.User)
 
@@ -94,6 +95,17 @@ defmodule Embers.Feed.Post do
     |> validate_parent_and_set_nesting_level(attrs)
     |> validate_number(:nesting_level, less_than_or_equal_to: 2)
     |> cast_embed(:old_attachment)
+  end
+
+  def fill_nsfw(%Post{} = post) do
+    if Ecto.assoc_loaded?(post.tags) do
+      %{
+        post
+        | nsfw: Enum.any?(post.tags, fn tag -> tag.name == "nsfw" end)
+      }
+    else
+      post
+    end
   end
 
   defp must_have_body?(attrs) do
