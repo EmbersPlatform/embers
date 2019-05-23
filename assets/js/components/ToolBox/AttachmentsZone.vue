@@ -7,6 +7,7 @@
       @removed="remove"
       @clicked="clicked(index)"
     ></attachments-item>
+    <attachments-item v-if="uploading" :placeholder="true"/>
   </div>
 </template>
 
@@ -15,7 +16,16 @@ import AttachmentsItem from "./AttachmentsItem";
 export default {
   name: "attachments-zone",
   components: { AttachmentsItem },
-  props: ["attachments"],
+  props: {
+    attachments: {
+      type: Array,
+      default: []
+    },
+    uploading: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
     remove(id) {
       this.$emit("attachment-removed", id);

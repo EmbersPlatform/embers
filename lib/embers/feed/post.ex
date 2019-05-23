@@ -66,6 +66,7 @@ defmodule Embers.Feed.Post do
 
     many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
     many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
+    many_to_many(:links, Embers.Links.Link, join_through: "link_post")
     field(:old_attachment, {:map, :any})
 
     field(:deleted_at, :naive_datetime)
@@ -99,11 +100,12 @@ defmodule Embers.Feed.Post do
     has_parent? = not is_nil(attrs["parent_id"])
     is_shared? = not is_nil(attrs["related_to_id"])
     has_media? = Map.get(attrs, "media_count", 0) > 0
+    has_link? = Map.get(attrs, "links_count", 0) > 0
 
     if is_shared? do
       false
     else
-      has_parent? || !has_media?
+      has_parent? || (!has_media? && !has_link?)
     end
   end
 

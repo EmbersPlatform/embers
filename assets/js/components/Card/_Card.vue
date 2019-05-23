@@ -62,7 +62,6 @@
                 :to="`/@${post.user.username}`"
                 :data-badge="`${post.user.badges[0]}`"
               >{{post.user.username}}</router-link>
-              <p>compartio:</p>
             </template>
           </h4>
           <router-link
@@ -70,44 +69,17 @@
             :to="`/@${post.user.username}/${post.id}`"
           >{{ $moment.utc(post.created_at).local().from() }}</router-link>
         </div>
-        <div v-if="tools && loggedUser" class="header-options" focusable tabindex="-1">
+        <div
+          v-if="tools && loggedUser && can('access_mod_tools')"
+          class="header-options"
+          focusable
+          tabindex="-1"
+        >
           <span>
-            <svgicon name="n_left-sign"></svgicon>
+            <i class="fas fa-gavel"/>
           </span>
           <ul>
-            <li v-if="hasReactions">
-              <span @click.prevent="reactionsDetails">
-                <i class="far fa-smile"></i>
-                Reacciones
-              </span>
-            </li>
-            <template v-if="!isOwner">
-              <li>
-                <span v-if="!post.user.following" @click.prevent="follow">
-                  <i class="fas fa-user-plus"></i>
-                  Seguir
-                </span>
-                <span v-else @click.prevent="unfollow">
-                  <i class="fas fa-minus-circle"></i>
-                  Dejar de seguir
-                </span>
-              </li>
-              <template v-if="user.can('user.kick')">
-                <li v-if="post.user.active">
-                  <span @click.prevent="kick">
-                    <i class="fas fa-pause-circle"></i>
-                    Expulsar
-                  </span>
-                </li>
-                <li v-else>
-                  <span @click.prevent="unkick">
-                    <i class="fas fa-play-circle"></i>
-                    Rehabilitar
-                  </span>
-                </li>
-              </template>
-            </template>
-            <li v-if="isOwner || user.can('post.delete_third_party')">
+            <li>
               <span @click.prevent="deletePost(post)">
                 <i class="fas fa-trash-alt"></i>
                 Eliminar
@@ -123,16 +95,28 @@
                 No es NSFW
               </span>
             </li>
-            <li v-if="user.can('user.avatar.delete_third_party')">
-              <span @click.prevent="deleteAvatar">
-                <i class="fas fa-user-circle"></i>
-                Quitar avatar
-              </span>
-            </li>
-            <li v-if="user.can('user.cover.delete_third_party')">
-              <span @click.prevent="deleteCover">
-                <i class="far address-book"></i>
-                Quitar portada
+          </ul>
+        </div>
+        <div v-if="tools && loggedUser" class="header-options" focusable tabindex="-1">
+          <span
+            @click="toggleFav"
+            :data-tip="(post.isFaved) ? 'Quitar de mis favoritos' : 'Agregar a favoritos'"
+            data-tip-position="bottom"
+            data-tip-text
+          >
+            <i v-if="!post.isFaved" class="far fa-bookmark"/>
+            <i v-else class="fas fa-bookmark"/>
+          </span>
+        </div>
+        <div v-if="tools && loggedUser" class="header-options" focusable tabindex="-1">
+          <span>
+            <svgicon name="n_left-sign"></svgicon>
+          </span>
+          <ul>
+            <li v-if="hasReactions">
+              <span @click.prevent="reactionsDetails">
+                <i class="far fa-smile"></i>
+                Reacciones
               </span>
             </li>
           </ul>
@@ -158,12 +142,13 @@
             data-button-normal-text
           >Ir al post</router-link>
         </div>
-        <template v-if="post.media">
-          <div class="multimedia">
-            <media-zone :medias="post.media" :previews="true" @clicked="media_clicked"/>
-          </div>
-        </template>
-        <template v-if="post.related_to">
+        <div v-if="post.links && post.links.length && !post.media.length" class="links">
+          <link-item :link="post.links[0]"/>
+        </div>
+        <div class="multimedia" v-if="post.media.length">
+          <media-zone :medias="post.media" :previews="true" @clicked="media_clicked"/>
+        </div>
+        <template v-if="with_related && post.related_to">
           <card :post="post.related_to" :tools="false" :footer="false" class="related"/>
         </template>
         <template v-if="post.attachment">
@@ -220,18 +205,6 @@
             </li>
           </ul>
         </li>
-        <li v-if="loggedUser">
-          <span
-            @click="toggleFav"
-            :data-tip="(post.isFaved) ? 'Quitar de mis favoritos' : 'Agregar a favoritos'"
-            data-tip-position="bottom"
-            data-tip-text
-          >
-            {{(post.stats.favorites > 0) ? post.stats.favorites+'&nbsp;' : ''}}
-            <svgicon v-if="!post.isFaved" name="s_sponsored" class="emoji"></svgicon>
-            <svgicon v-if="post.isFaved" name="s_sponsored_filled" class="emoji"></svgicon>
-          </span>
-        </li>
         <li v-if="!isPostView">
           <router-link
             :to="`/@${post.user.username}/${post.id}`"
@@ -284,6 +257,7 @@ import AudioPlayer from "./AudioPlayer";
 import MediaZone from "@/components/Media/MediaZone";
 import MediaSlides from "@/components/Media/MediaSlides";
 import Tag from "@/components/Tag/Tag";
+import LinkItem from "@/components/Link/Link";
 
 import formatter from "@/lib/formatter";
 import avatar from "@/components/Avatar";
@@ -327,6 +301,10 @@ export default {
     tools: {
       type: Boolean,
       default: true
+    },
+    with_related: {
+      type: Boolean,
+      default: true
     }
   },
   components: {
@@ -336,9 +314,11 @@ export default {
     MediaZone,
     MediaSlides,
     avatar,
-    Tag
+    Tag,
+    LinkItem
   },
   computed: {
+    ...mapGetters(["can"]),
     isPostView() {
       return this.$route.path === this.post.url;
     },
@@ -740,3 +720,23 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.card {
+  .links {
+    padding: 0 20px;
+  }
+
+  .header-options {
+    & > span:hover {
+      i {
+        color: #ffffffb3;
+      }
+    }
+    i {
+      color: #ffffff4d;
+    }
+  }
+}
+</style>
+

@@ -56,7 +56,7 @@ defmodule Embers.Mixfile do
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.7"},
-      {:httpoison, "~> 0.13"},
+      {:httpoison, "~> 1.5"},
       {:sweet_xml, "~> 0.6"},
       {:recaptcha, "~> 2.3"},
       {:hashids, "~> 2.0"},
@@ -70,7 +70,8 @@ defmodule Embers.Mixfile do
       {:corsica, "~> 1.0"},
       {:cachex, "~> 3.1"},
       {:fun_with_flags, "~> 1.2.1"},
-      {:fun_with_flags_ui, "~> 0.7.1"}
+      {:fun_with_flags_ui, "~> 0.7.1"},
+      {:oembed, "~> 0.3.0"}
     ]
   end
 

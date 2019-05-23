@@ -8,6 +8,7 @@ defmodule Embers.Feed do
   alias Ecto.Multi
   alias Embers.Feed.{Activity, Post}
   alias Embers.Helpers.IdHasher
+  alias Embers.Links.Link
   alias Embers.Media.MediaItem
   alias Embers.Paginator
   alias Embers.Repo
@@ -52,7 +53,7 @@ defmodule Embers.Feed do
         left_join: related in assoc(post, :related_to),
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
-        preload: [:media, :tags, :reactions, related_to: [:media, :tags, :reactions]],
+        preload: [:media, :links, :tags, :reactions, related_to: [:media, :tags, :reactions]],
         # Acá precargamos todo lo que levantamos más arriba con los joins,
         # de lo contrario Ecto no mapeará los resultados a los esquemas
         # correspondientes.
@@ -92,6 +93,8 @@ defmodule Embers.Feed do
     |> Multi.insert(:post, post_changeset)
     # Si hay medios, asociarlos al post y quitarles el flag de temporal
     |> Multi.run(:medias, fn _repo, %{post: post} -> handle_medias(post, attrs) end)
+    # Si hay links, asociarlos al post y quitarles el flag de temporal
+    |> Multi.run(:links, fn _repo, %{post: post} -> handle_links(post, attrs) end)
     # Buscar tags en los atributos y en el cuerpo el post
     |> Multi.run(:tags, fn _repo, %{post: post} -> handle_tags(post, attrs) end)
     # Actualizar el contador de respuestas del post padre
@@ -109,7 +112,13 @@ defmodule Embers.Feed do
         # asociaciones que hacen falta para poder mostrarlo en el front
         post =
           post
-          |> Repo.preload([[user: :meta], :media, :tags, [related_to: [:media, user: :meta]]])
+          |> Repo.preload([
+            [user: :meta],
+            :media,
+            :links,
+            :tags,
+            [related_to: [:media, :links, user: :meta]]
+          ])
 
         # Disparamos un evento
         Embers.Event.emit(:post_created, post)
@@ -194,6 +203,29 @@ defmodule Embers.Feed do
       else
         {:error, "media count exceeded"}
       end
+    end
+  end
+
+  defp handle_links(post, attrs) do
+    links = attrs["links"]
+
+    if is_nil(links) do
+      {:ok, nil}
+    else
+      ids = Enum.map(links, fn x -> IdHasher.decode(x["id"]) end)
+
+      {_count, links} =
+        Repo.update_all(
+          from(l in Link, where: l.id in ^ids),
+          [set: [temporary: false]],
+          returning: true
+        )
+
+      post
+      |> Repo.preload(:links)
+      |> Ecto.Changeset.change()
+      |> Ecto.Changeset.put_assoc(:links, links)
+      |> Repo.update()
     end
   end
 
@@ -290,7 +322,7 @@ defmodule Embers.Feed do
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        preload: [:media, :reactions],
+        preload: [:tags, :media, :links, :reactions],
         preload: [
           user: {user, meta: meta}
         ]
@@ -313,7 +345,15 @@ defmodule Embers.Feed do
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
         preload: [
-          [post: [:media, :reactions, :tags, related_to: [:media, :tags, :reactions]]]
+          [
+            post: [
+              :media,
+              :links,
+              :reactions,
+              :tags,
+              related_to: [:media, :links, :tags, :reactions]
+            ]
+          ]
         ],
         preload: [
           post: {
@@ -348,7 +388,7 @@ defmodule Embers.Feed do
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
         preload: [
-          [:media, :reactions, :tags, related_to: [:media, :tags, :reactions]]
+          [:media, :links, :reactions, :tags, related_to: [:media, :links, :tags, :reactions]]
         ],
         preload: [
           user: {user, meta: meta},
@@ -386,7 +426,7 @@ defmodule Embers.Feed do
           left_join: user in assoc(post, :user),
           left_join: meta in assoc(user, :meta),
           preload: [
-            [:media, :reactions, :tags]
+            [:media, :links, :reactions, :tags]
           ],
           preload: [
             user: {user, meta: meta}
@@ -416,9 +456,9 @@ defmodule Embers.Feed do
         where: post.parent_id == ^parent_id and is_nil(post.deleted_at),
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        order_by: [desc: post.inserted_at],
+        order_by: [asc: post.inserted_at],
         preload: [user: {user, meta: meta}],
-        preload: [:reactions, :media]
+        preload: [:reactions, :media, :links]
       )
 
     Paginator.paginate(query, opts)

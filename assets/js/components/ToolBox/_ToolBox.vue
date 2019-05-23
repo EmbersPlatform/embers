@@ -3,6 +3,8 @@
     class="toolbox"
     :class="{'tool-box-open': canShowEditor, 'renderbox': status.loading}"
     data-renderbox-message="Publicando..."
+    v-shortkey="['esc']"
+    @shortkey="close"
   >
     <div class="toolbox__overlay" v-if="has_overlay && show_overlay" @click="close"></div>
     <div class="toolbox__container">
@@ -20,11 +22,28 @@
           <input type="text" placeholder="Tags separados por espacios" v-model="post.tags">
         </div>
 
+        <div class="tool" v-if="status.loading_link">
+          <div class="status-text">Obteniendo vista previa...</div>
+        </div>
+        <div class="tool" v-if="status.uploading_media">
+          <div class="status-text">Subiendo imagen/video...</div>
+        </div>
+
+        <div class="link-preview tool">
+          <template v-if="post.links.length > 0 && !post.medias.length && !status.uploading_media">
+            <span class="remove-link" @click="remove_link">
+              <i class="fa fa-times"></i>
+            </span>
+            <link-item :link="post.links[0]"/>
+          </template>
+        </div>
+
         <attachments-zone
           :attachments="post.medias"
           @attachment-removed="remove_media"
           @clicked="media_clicked"
           v-show="canShowEditor"
+          :uploading="status.uploading_media"
         ></attachments-zone>
 
         <div class="controls tool" v-if="canShowEditor">
@@ -97,8 +116,9 @@ import post from "../../api/post";
  * Import PostCreator child components
  */
 import Editor from "../Editor";
-import AudioRecorder from "./AudioRecorder";
 import AttachmentsZone from "./AttachmentsZone";
+
+import LinkItem from "@/components/Link/Link";
 
 import MediaSlides from "@/components/Media/MediaSlides";
 
@@ -109,7 +129,6 @@ import Switch from "../inputSwitch";
 
 import VideoEmbed from "../Card/VideoEmbed";
 import LinkEmbed from "../Card/LinkEmbed";
-import AudioPlayer from "../Card/AudioPlayer";
 
 const initialData = function() {
   return {
@@ -117,6 +136,7 @@ const initialData = function() {
       body: null,
       nsfw: false,
       medias: [],
+      links: [],
       tags: "",
       related_to_id: null
     },
@@ -124,7 +144,8 @@ const initialData = function() {
       open: false,
       loading: false,
       errors: null,
-      recordingAudio: false
+      loading_link: false,
+      uploading_media: false
     },
     show_overlay: false,
     show_media_slides: false,
@@ -136,13 +157,12 @@ export default {
   name: "PostCreator",
   components: {
     Editor,
-    AudioRecorder,
     VideoEmbed,
     LinkEmbed,
-    AudioPlayer,
     AttachmentsZone,
     MediaSlides,
-    "input-switch": Switch
+    "input-switch": Switch,
+    LinkItem
   },
   props: {
     related_to: {
@@ -159,11 +179,12 @@ export default {
     canShowEditor() {
       return this.status.open;
     },
-    canShowAudioRecorder() {
-      return this.canShowEditor && this.status.recordingAudio;
-    },
     canPublish() {
-      if (!this.post.body && !this.post.medias.length) {
+      if (
+        !this.post.body &&
+        !this.post.medias.length &&
+        !this.post.links.length
+      ) {
         return false;
       }
       return true;
@@ -214,6 +235,9 @@ export default {
       if (this.post.medias !== null) {
         requestData.medias = this.post.medias;
       }
+      if (this.post.links !== null) {
+        requestData.links = this.post.links;
+      }
       post
         .create(requestData)
         .then(res => {
@@ -240,16 +264,23 @@ export default {
           this.close();
         });
     },
-    handlePaste(e) {
+    async handlePaste(e) {
       let files = e.clipboardData.files;
-      Array.from(files).forEach(this.uploadFile);
+      if (files.length) {
+        Array.from(files).forEach(await this.uploadFile);
+      }
 
       let text = e.clipboardData.getData("text");
       let urlRegex = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.​\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[​6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1​,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00​a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u​00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?/g;
       if (urlRegex.test(text)) {
-        // An url was pasted, parse it
-        console.log("Handle pasted link");
+        this.handle_link(text);
       }
+    },
+    async handle_link(text) {
+      this.status.loading_link = true;
+      const link = await axios.post(`/api/v1/link`, { url: text });
+      this.post.links = [link.data];
+      this.status.loading_link = false;
     },
     uploadFiles(_event) {
       let files = this.$refs.imageUploadInput.files;
@@ -257,6 +288,7 @@ export default {
       this.$refs.imageUploadInput.value = "";
     },
     async uploadFile(file) {
+      this.status.uploading_media = true;
       try {
         this.validate_uploaded_file(file);
         if (this.post.medias.length == 4)
@@ -275,12 +307,16 @@ export default {
           type: "error"
         });
       }
+      this.status.uploading_media = false;
     },
     triggerUpload() {
       this.$refs.imageUploadInput.click();
     },
     remove_media(id) {
       this.post.medias = this.post.medias.filter(o => o.id != id);
+    },
+    remove_link() {
+      this.post.links = [];
     },
     validate_uploaded_file(file) {
       const valid_types = ["image", "video"];
@@ -314,11 +350,19 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+@import "~@/../sass/base/_variables.scss";
+
+.tool {
+  .status-text {
+    text-align: center;
+    color: #ffffff77;
+  }
+}
+
 .attachment {
   display: inline-block;
   margin: 2px;
-  opacity: 0.75;
   position: relative;
 }
 
@@ -329,5 +373,31 @@ export default {
 
 .attachment:hover {
   opacity: 1;
+}
+
+.link-preview {
+  position: relative;
+}
+
+.remove-link {
+  opacity: 0.7;
+  cursor: pointer;
+  position: absolute;
+  top: 2px;
+  right: 10px;
+  color: white;
+  font-size: 1rem;
+  background: $narrojo;
+  padding: 1px;
+  width: 1.2em;
+  height: 1.2em;
+  box-sizing: border-box;
+  display: block;
+  text-align: center;
+  border-radius: 2px;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 </style>

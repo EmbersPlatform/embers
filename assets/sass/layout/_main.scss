@@ -6,33 +6,42 @@
   background: $dark;
   z-index: 0;
   @include flexbox(row, nowrap, flex-start, stretch);
+
   &[data-layout-type="chat"] {
     height: 100vh;
     min-height: auto;
     overflow: hidden;
+
     &[data-vh-issue] {
       height: calc(100vh - 55px);
+
       #board {
         height: calc(100vh - 55px);
       }
     }
+
     #board {
       height: 100vh;
+
       #wrapper {
         overflow: hidden;
         padding: 0;
         @include flex(1 1 auto);
         @include flexbox(column, nowrap, flex-start, stretch);
+
         #content[data-layout-type="chat"] {
           padding: 0 30px;
           @include flex(1 1 auto);
-          > * {
+
+          >* {
             z-index: 1;
           }
+
           &:before {
             z-index: 2;
           }
         }
+
         .editor {
           .canvas {
             padding: 0 30px 10px;
@@ -41,6 +50,7 @@
       }
     }
   }
+
   &:not([data-layout-type="chat"]) {
     &:before {
       content: "π";
@@ -54,6 +64,7 @@
     }
   }
 }
+
 // inicia #MAIN CHILDS
 #sidebar {
   width: 230px;
@@ -66,22 +77,27 @@
   overflow-y: auto;
   overflow-x: visible;
   @include box-sizing(border-box);
+
   &::-webkit-scrollbar {
     background-color: $dark_n1;
   }
+
   &:empty {
     width: 10px;
     padding: 0;
-    ~ #board {
+
+    ~#board {
       margin-left: 10px;
       max-width: calc(100% - 10px);
     }
   }
-  ~ #board {
+
+  ~#board {
     margin-left: 230px;
     max-width: calc(100% - 230px);
   }
 }
+
 // inicia #SIDEBAR CHILDS
 #column {
   z-index: 1;
@@ -92,11 +108,13 @@
   display: flex;
   flex-direction: column;
 }
+
 // inicia #COLUMN CHILDS
 .nav_ {
+
   h2,
   h3,
-  > span {
+  >span {
     display: block;
     text-transform: uppercase;
     color: $secondary;
@@ -105,12 +123,15 @@
     font-weight: 400;
     @include font-size();
   }
+
   ul {
     &:not(:last-child) {
       margin-bottom: 15px;
     }
+
     .n_item {
       margin-bottom: 3px;
+
       .n_i_wrap {
         width: 100%;
         height: 40px;
@@ -121,30 +142,44 @@
         @include flexbox(row, nowrap, flex-start, center);
         @include border-radius(3px);
         @include box-sizing(border-box);
+
         &:not(.active) {
           .n_i_w_clip {
+            i {
+              color: $primary;
+            }
+
             svg {
               * {
                 fill: $primary;
               }
             }
           }
+
           .n_i_w_content {
             color: $primary;
           }
+
           &:hover {
             background: blanco(1);
             cursor: pointer;
+
+            i {
+              color: #fff;
+            }
+
             svg {
               * {
                 fill: #fff;
               }
             }
+
             .n_i_w_content {
               color: #fff;
             }
           }
         }
+
         &[data-count]:not([data-count="0"]) {
           &:after {
             content: attr(data-count);
@@ -162,38 +197,45 @@
             @include box-sizing(border-box);
           }
         }
+
         .n_i_w_clip {
           width: 15px;
           height: 15px;
           float: left;
           margin: 0 10px 0 0;
         }
+
         .avatar {
           width: 35px;
           height: 35px;
           float: left;
           margin: 0 10px 0 0;
         }
+
         .n_i_w_content {
           font-weight: 400;
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
+
           &:not(.u_name):first-letter {
             text-transform: capitalize;
           }
         }
-        .u_name {
-        }
+
+        .u_name {}
       }
+
       .active {
         background: negro(2);
+
         svg {
           * {
             fill: $narrojo;
             @include transition(0.3s all ease-out);
           }
         }
+
         .n_i_w_content {
           color: $narrojo;
         }
@@ -201,6 +243,7 @@
     }
   }
 }
+
 .sub_ {
   &:before {
     content: "";
@@ -213,9 +256,11 @@
     z-index: 1;
     background: negro(1);
   }
+
   h3 {
     padding: 5px 10px 5px 49px;
   }
+
   ul {
     .n_item {
       .n_i_wrap {
@@ -226,6 +271,7 @@
     }
   }
 }
+
 // termina #COLUMN CHILDS
 // termina #SIDEBAR CHILDS
 #board {
@@ -234,32 +280,40 @@
   @include flex(1 1 auto);
   @include flexbox(column, nowrap, flex-start, stretch);
 }
+
 // inicia #BOARD CHILDS
 #heading {
   z-index: 0;
+
   &[class*="user"] {
     background: #000;
-    ~ #wrapper {
+
+    ~#wrapper {
       margin-top: -60px;
       padding-top: 0;
     }
-    > hr {
+
+    >hr {
       display: block;
     }
+
     #top {
       border-bottom: none;
+
       #breadcrumbs {
         color: $primary;
         text-shadow: 1px 1px 0 #000;
         font-weight: 500;
       }
+
       #search {
         background: $dark;
         @include box-shadow(0 5px 15px negro(25));
       }
     }
   }
-  > hr {
+
+  >hr {
     display: none;
     z-index: 0;
     width: 100%;
@@ -271,6 +325,7 @@
     background-repeat: repeat;
     overflow: hidden;
     @include background-size(cover);
+
     &:before {
       content: "";
       display: block;
@@ -281,6 +336,7 @@
     }
   }
 }
+
 //inicia #HEADING CHILDS
 #top {
   z-index: 1;
@@ -289,34 +345,42 @@
   border-bottom: 1px solid negro(2);
   @include flexbox(row, nowrap, flex-start, center);
   @include box-sizing(border-box);
-  > *:not(:last-child) {
+
+  >*:not(:last-child) {
     margin-right: 15px;
   }
 }
+
 //inicia #TOP CHILDS
 #breadcrumbs {
   color: $secondary;
   @include flexbox(row, nowrap, flex-start, center);
+
   li {
     padding: 0 5px;
     @include font-size();
+
     &:first-child {
       padding-left: 0;
     }
+
     &:last-child {
       padding-right: 0;
     }
+
     a {
       color: inherit;
       text-transform: capitalize;
       text-shadow: inherit;
       font-size: inherit;
+
       &:hover {
         color: #fff;
       }
     }
   }
 }
+
 #search {
   width: auto;
   height: 25px;
@@ -328,10 +392,12 @@
   @include flexbox(row, nowrap, flex-start, center);
   @include border-radius(3px);
   @include box-sizing(border-box);
+
   &:focus {
     border: 1px solid $secondary;
   }
 }
+
 // termina #TOP CHILDS
 // termina #HEADING CHILDS
 #wrapper {
@@ -340,33 +406,40 @@
   @include flex(1 1 auto);
   @include flexbox(row-reverse, nowrap, center, stretch);
   @include box-sizing(border-box);
+
   &[data-layout-type="column"] {
     @include flexbox(column, nowrap, flex-start, center);
   }
+
   .block {
     margin: 0;
     padding: 0;
     min-height: auto;
   }
 }
+
 // inicia #WRAPPER CHILDS
 #secondary {
   width: 230px;
   margin: 0 0 0 30px;
   @include font-size();
   @include box-sizing(border-box);
-  > *,
-  #secondary-sticky > * {
+
+  >*,
+  #secondary-sticky>* {
     &:not(:last-child) {
       margin-bottom: 15px;
     }
+
     p {
       display: block;
     }
   }
+
   #secondary-sticky {
     font-size: inherit;
   }
+
   h3 {
     text-transform: uppercase;
     font-size: inherit;
@@ -375,10 +448,12 @@
     padding: 0 10px 15px 10px;
     font-weight: 400;
     border-bottom: 4px solid negro(1);
+
     &:not(:first-of-type) {
       margin-top: 30px;
     }
   }
+
   p {
     margin-bottom: 5px;
     width: 100%;
@@ -386,27 +461,33 @@
     color: $secondary;
     font-size: inherit;
     @include box-sizing(border-box);
+
     &[class*="centered"] {
       text-align: center;
     }
+
     a {
       color: $narrojo;
       font-size: inherit;
       font-weight: 400;
+
       &:hover {
         text-decoration: underline;
       }
     }
   }
+
   .bio {
     color: $primary;
     @include font-size(2);
   }
+
   .avatar {
     width: 35px;
     height: 35px;
     float: left;
     margin: 0 10px 10px 0;
+
     &[data-size*="wide"] {
       width: 100%;
       max-width: 230px;
@@ -414,6 +495,7 @@
       float: none;
       clear: both;
       margin: 0 auto 30px;
+
       &:after {
         content: attr(data-uploading-percent);
         display: block;
@@ -430,17 +512,21 @@
       }
     }
   }
+
   .made-with {
     font-size: inherit;
     margin-top: 15px;
+
     img {
       opacity: 0.3;
     }
   }
+
   .button {
     width: 100%;
   }
 }
+
 // inicia #SECONDARY CHILDS
 #secondary-sticky {
   position: fixed;
@@ -448,6 +534,7 @@
   display: inline;
   width: 230px;
 }
+
 // termina #SECONDARY CHILDS
 #content {
   &[data-layout-type="single-column"] {
@@ -455,20 +542,24 @@
     min-width: $min_column_width;
     overflow: visible;
   }
+
   &[data-layout-type="wide"] {
     width: 100%;
     overflow: visible;
   }
+
   &[data-layout-type="masonry"] {
     width: 100%;
     overflow: visible;
     @include flexbox(column, nowrap, flex-end, stretch);
   }
+
   &[data-layout-type="chat"] {
     width: auto;
     overflow-y: auto;
     overflow-x: hidden;
   }
+
   &[data-layout-type="middle"] {
     width: auto;
     overflow-y: auto;
@@ -476,6 +567,7 @@
     @include flex(1 1 auto);
     @include flexbox(column, nowrap, center, stretch);
   }
+
   &:before {
     content: "";
     display: none;
@@ -488,34 +580,42 @@
     left: 0;
     background: #000;
   }
+
   form {
     margin-bottom: 30px;
   }
-  > .button {
+
+  >.button {
     margin: 30px auto;
   }
 }
+
 // inicia #CONTENT CHILDS
 #home-controls {
   z-index: 0;
   margin: 0 0 30px 0;
   overflow: hidden;
+
   &[class~="open"] {
     .controls {
       border-bottom: 4px solid negro(1);
     }
+
     .triggers {
       @include flexbox(row, nowrap, flex-start, flex-start);
     }
   }
-  & ~ .renderbox {
+
+  &~.renderbox {
     &:before {
       margin-top: 0;
     }
   }
+
   .controls {
     padding: 0 15px;
     height: 3em;
+
     button {
       cursor: pointer;
       background: transparent;
@@ -524,24 +624,30 @@
       touch-action: manipulation; // disables tap zoom
       @include font-size(2);
       @include flexbox(row, nowrap, center, center);
+
       &:hover {
         cursor: pointer;
         color: $primary;
       }
+
       i {
         margin-right: 5px;
         display: inline-block;
       }
     }
   }
+
   .triggers {
     margin-top: 15px;
     display: none;
+
     .row {
       @include flex(1 1 auto);
+
       &:not(:last-child) {
         margin-right: 15px;
       }
+
       h5 {
         text-transform: uppercase;
         color: $secondary;
@@ -551,8 +657,10 @@
         // margin: 30px 0 0 0;
         @include font-size();
       }
+
       .checkbox {
         margin-left: 10px;
+
         &:not(:last-child) {
           margin-bottom: 15px;
         }
@@ -560,27 +668,34 @@
     }
   }
 }
+
 #feed {
   z-index: 0;
   @include flex(1 1 auto);
   @include flexbox(column, nowrap, center, center);
+
   &[class*="showing"] {
     @include flexbox(column, nowrap, flex-start, stretch);
+
     h3:not([class~="bottom"]) {
       text-align: left;
       margin-bottom: 30px;
     }
   }
+
   h3 {
     text-align: center;
+
     p {
       color: $secondary;
       font-weight: 300;
       @include font-size(10);
+
       a {
         font-size: 400;
         font-size: inherit;
         color: $primary;
+
         &:hover {
           color: $primary;
         }
@@ -588,34 +703,41 @@
     }
   }
 }
+
 // inicia #FEED CHILDS
 #masonry {
-  overflow: hidden;
+  overflow: visible;
   height: auto;
   min-height: 100vh;
   margin: 0 auto;
   @include flexbox(column, nowrap, flex-end, center);
-  ~ h3 {
+
+  ~h3 {
     margin-top: 15px;
   }
+
   &:empty {
     display: none;
-    ~ h3 {
+
+    ~h3 {
       margin-top: 0;
     }
   }
 }
+
 // termina #FEED CHILDS
 #post {
   z-index: 0;
-  > *:not(:last-child) {
+
+  >*:not(:last-child) {
     margin-bottom: 30px;
   }
-  .comments-list {
-  }
-  .new-comment {
-  }
+
+  .comments-list {}
+
+  .new-comment {}
 }
+
 // termina #CONTENT CHILDS
 #new-chat-modal {
   width: 100%;
@@ -626,6 +748,7 @@
   left: 0;
   z-index: 1000;
   @include flexbox(column, nowrap, center, center);
+
   .body {
     z-index: 1;
     background-color: $dark;
@@ -636,14 +759,17 @@
     @include flex_flow(column, nowrap);
     @include border-radius(3px);
     @include box-shadow(0 5px 15px negro(25));
-    > *:not(:last-child) {
+
+    >*:not(:last-child) {
       margin-bottom: 15px;
     }
-    > .nav_ {
+
+    >.nav_ {
       flex-grow: 1;
       overflow-y: auto;
     }
   }
 }
+
 // termina #WRAPPER CHILDS
 // termina #MAIN CHILDS

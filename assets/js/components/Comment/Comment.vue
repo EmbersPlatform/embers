@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import comment from "../../api/comment";
+import post from "../../api/post";
 import avatar from "@/components/Avatar";
 import user from "../../api/user";
 import { mapGetters } from "vuex";
@@ -187,8 +187,8 @@ export default {
             default: true,
             class: "button danger",
             handler: () => {
-              comment
-                .deleteComment(this.postId, commentObject.id)
+              post
+                .deletePost(commentObject.id)
                 .then(() => this.$emit("deleted", commentObject));
               this.$modal.hide("dialog");
             }

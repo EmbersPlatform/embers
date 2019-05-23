@@ -10,10 +10,10 @@ export default {
     return wrap(() => axios.get(`${config.prefix}/tag/block`));
   },
   subscribe(tag) {
-    return wrap(() => axios.post(`${config.prefix}/tag/${tag}`));
+    return wrap(() => axios.post(`${config.prefix}/subscriptions/tags/${tag}`));
   },
   unsubscribe(tag) {
-    return wrap(() => axios.delete(`${config.prefix}/tag/${tag}`));
+    return wrap(() => axios.delete(`${config.prefix}/subscriptions/tags/${tag}`));
   },
   block(tag) {
     return wrap(() => axios.post(`${config.prefix}/tag/block/${tag}`));

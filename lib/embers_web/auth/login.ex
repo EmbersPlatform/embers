@@ -10,11 +10,13 @@ defmodule EmbersWeb.Auth.Login do
   alias Phauxth.Remember
   alias Embers.Sessions
 
+  import EmbersWeb.Gettext
+
   @impl true
   def authenticate(%{"password" => password} = params, _, opts) do
     case Accounts.get_by(params) do
-      nil -> {:error, "no user found"}
-      %{confirmed_at: nil} -> {:error, "account unconfirmed"}
+      nil -> {:error, gettext("no user found")}
+      %{confirmed_at: nil} -> {:error, gettext("account unconfirmed")}
       user -> Pbkdf2.check_pass(user, password, opts)
     end
   end

@@ -106,11 +106,11 @@
 	<%= render @view_module, @view_template, assigns %>
 	<script type="text/javascript">
     <%= if not is_nil(@conn.assigns.current_user) do %>
-      window.user_token = <%= raw Poison.encode!(@conn.assigns.user_token) %>
+      window.user_token = <%= raw Jason.encode!(@conn.assigns.user_token) %>
     <% end %>
 
 		var appData = {};
-		appData.csrfToken = <%= raw Poison.encode!(Plug.CSRFProtection.get_csrf_token()) %>;
+		appData.csrfToken = <%= raw Jason.encode!(Plug.CSRFProtection.get_csrf_token()) %>;
 		appData.user = null;
 		appData.realtime = null;
 		appData.recaptcha = "6Lde6G4UAAAAAN2QJXkcOnuwzJY4na6SH5vs5ZGl";
@@ -121,7 +121,7 @@
 			username: "<%= @user.username %>",
 			email:"<%= @user.email %>",
 			canonical: "<%= @user.canonical %>",
-      permissions: [],
+      permissions: <%= raw Jason.encode!(@conn.assigns.permissions) %>,
 
       bio: "<%= @user.meta.bio %>",
       cover: "<%= @user.meta.cover %>",

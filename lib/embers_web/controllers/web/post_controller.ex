@@ -24,7 +24,15 @@ defmodule EmbersWeb.PostController do
         length(params["medias"])
       end
 
+    links_count =
+      if is_nil(params["links"]) || Enum.empty?(params["links"]) do
+        0
+      else
+        length(params["links"])
+      end
+
     post_params = Map.put(post_params, "media_count", media_count)
+    post_params = Map.put(post_params, "links_count", links_count)
 
     post_params =
       if Map.has_key?(params, "parent_id") do

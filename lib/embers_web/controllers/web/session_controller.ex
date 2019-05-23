@@ -30,7 +30,7 @@ defmodule EmbersWeb.SessionController do
       {:ok, user} ->
         conn
         |> Login.add_session(user, user_params)
-        |> put_flash(:info, "User successfully logged in.")
+        |> put_flash(:info, gettext("User successfully logged in."))
         |> redirect(to: Routes.page_path(conn, :index))
 
       {:error, message} ->

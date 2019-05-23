@@ -21,7 +21,8 @@ config :embers, EmbersWeb.Endpoint,
 config :phauxth,
   token_salt: "geDDVmqL",
   user_context: Embers.Accounts,
-  token_module: EmbersWeb.Auth.Token
+  token_module: EmbersWeb.Auth.Token,
+  user_messages: EmbersWeb.UserMessages
 
 # Mailer configuration
 config :embers, EmbersWeb.Mailer,

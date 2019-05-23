@@ -2,7 +2,14 @@
   <div id="new-post-modal" @click="click_outside" ref="root">
     <div class="new-post-modal__content">
       <Editor data-editor-style="normal" rel="editor" @update="update_body"></Editor>
-      <Card :post="related" v-if="related" :tools="false" :footer="false" class="related"></Card>
+      <Card
+        :post="related"
+        v-if="related"
+        :with_related="false"
+        :tools="false"
+        :footer="false"
+        class="related"
+      ></Card>
       <div class="m_block">
         <button
           @click.prevent="close"

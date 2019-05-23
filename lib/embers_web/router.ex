@@ -140,6 +140,7 @@ defmodule EmbersWeb.Router do
         delete("/feed/favorites/:post_id", FavoriteController, :destroy)
 
         post("/media", MediaController, :upload)
+        post("/link", LinkController, :parse)
 
         get("/notifications", NotificationController, :index)
         put("/notifications/:id", NotificationController, :read)
