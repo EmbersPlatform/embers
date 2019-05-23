@@ -100,7 +100,7 @@ export default {
       if (this._inactive || !this.searchParams) {
         return;
       }
-      this.results = {};
+      this.results = [];
       this.loading = true;
       searchApi
         .search(this.searchParams)

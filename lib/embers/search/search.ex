@@ -79,7 +79,6 @@ defmodule Embers.Search do
         post in Post,
         where: is_nil(post.deleted_at),
         where: post.nesting_level == 0,
-        where: ilike(post.body, ^"%#{params.term}%"),
         where: is_nil(post.related_to_id),
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
@@ -93,10 +92,12 @@ defmodule Embers.Search do
       )
 
     posts_query
+    |> maybe_search_by_term(params)
     |> maybe_search_by_tags(params)
     |> maybe_search_by_authors(params)
     |> maybe_search_by_media_type(params)
     |> Paginator.paginate(opts)
+    |> fill_nsfw()
   end
 
   defp parse_tags(query) do
@@ -158,6 +159,17 @@ defmodule Embers.Search do
     end
   end
 
+  defp maybe_search_by_term(query, %Params{term: term}) when is_binary(term) do
+    if String.length(term) > 0 do
+      from(
+        post in query,
+        where: ilike(post.body, ^"%#{term}%")
+      )
+    end || query
+  end
+
+  defp maybe_search_by_term(query, _params), do: query
+
   defp maybe_search_by_authors(query, %Params{authors: authors}) when is_list(authors) do
     authors =
       Repo.all(
@@ -193,4 +205,8 @@ defmodule Embers.Search do
   end
 
   defp maybe_search_by_media_type(query, _params), do: query
+
+  defp fill_nsfw(%Embers.Paginator.Page{} = page) do
+    %{page | entries: Enum.map(page.entries, fn post -> Post.fill_nsfw(post) end)}
+  end
 end
