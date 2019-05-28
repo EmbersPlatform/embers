@@ -50,9 +50,6 @@
           <li><a href="/admin/roles">Tags</a></li>
         </ul>
         <ul class="menu-list">
-          <a href="/admin/settings">Configuracion</a></li>
-        </ul>
-        <ul class="menu-list">
           <li><a href="/flags">Flags</a></li>
           <li><a href="/admin/roles">Roles</a></li>
           <li><a href="/admin/loading">Mensajes de carga</a></li>
