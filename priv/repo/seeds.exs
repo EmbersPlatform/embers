@@ -31,3 +31,11 @@ end)
 
 Embers.Accounts.confirm_user(user)
 Embers.Authorization.Roles.attach_role(1, 1)
+
+settings = [
+  %{name: "rules", string_value: "Reglas del sitio"},
+  %{name: "faq", string_value: "FAQ"},
+  %{name: "acknowledgments", string_value: "Agradecimientos"}
+]
+
+Enum.each(settings, fn attrs -> Embers.Settings.create(attrs) end)

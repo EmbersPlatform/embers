@@ -67,6 +67,10 @@ defmodule EmbersWeb.Router do
     put("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :update)
     delete("/roles/:name", EmbersWeb.Admin.RoleController, :destroy)
 
+    get("/settings", EmbersWeb.Admin.SettingController, :index)
+    get("/settings/edit/:name", EmbersWeb.Admin.SettingController, :edit)
+    put("/settings/edit/:name", EmbersWeb.Admin.SettingController, :update)
+
     resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 
     match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
@@ -76,6 +80,10 @@ defmodule EmbersWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :index)
+
+    get("/static/rules", PageController, :rules)
+    get("/static/faq", PageController, :faq)
+    get("/static/acknowledgments", PageController, :acknowledgments)
 
     get("/login", SessionController, :new)
     post("/login", SessionController, :create)

@@ -11,7 +11,7 @@ defmodule Embers.Settings.Setting do
     timestamps()
   end
 
-  def changeset(setting, sttrs) do
+  def changeset(setting, attrs) do
     setting
     |> cast(attrs, [:name, :string_value, :int_value])
     |> validate_required([:name])

@@ -33,7 +33,7 @@ export default {
   computed: {
     overflowed() {
       if (this.media.metadata.height == "undefined") return false;
-      return this.media.metadata.height > 600;
+      return this.media.metadata.height > 500;
     }
   },
   methods: {
