@@ -385,6 +385,7 @@ defmodule Embers.Feed do
         post in Post,
         where: post.user_id == ^user_id,
         where: is_nil(post.deleted_at),
+        where: post.nesting_level == 0,
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),

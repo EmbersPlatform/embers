@@ -1,7 +1,7 @@
 <template>
   <div class="media-zone single-media">
     <media-item v-if="media.legacy" :media="media"/>
-    <media-preview v-else :media="media" @clicked="clicked(media)"/>
+    <media-preview v-else :media="media" @clicked="clicked(media)" big/>
   </div>
 </template>
 
@@ -34,7 +34,6 @@ export default {
 .media-zone.single-media {
   .media-preview {
     width: 100%;
-    height: 300px;
   }
 }
 </style>

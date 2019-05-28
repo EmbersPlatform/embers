@@ -1,5 +1,5 @@
 <template>
-  <div class="attachments-zone tool">
+  <div class="attachments-zone">
     <attachments-item
       v-for="(attachment, index) in attachments"
       :key="attachment.id"

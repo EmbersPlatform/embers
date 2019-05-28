@@ -330,7 +330,7 @@ const routes = [
     path: "/@:name",
     components: {
       default: _UserProfile,
-      sidebar: SB_Profile
+      sidebar: SB_Home
     },
     meta: {
       title: "Embers",
@@ -350,7 +350,7 @@ const routes = [
     path: "/@:username/:id",
     components: {
       default: _PostDetails,
-      sidebar: SB_Profile
+      sidebar: SB_Home
     },
     meta: {
       title: "Embers",
@@ -362,7 +362,7 @@ const routes = [
     path: "/post/:id",
     components: {
       default: _PostDetails,
-      sidebar: SB_Profile
+      sidebar: SB_Home
     },
     meta: {
       title: "Embers",

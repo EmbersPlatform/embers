@@ -40,8 +40,10 @@ defmodule EmbersWeb.Admin.UserController do
   end
 
   def update(conn, %{"name" => name} = params) do
-    IO.inspect(params)
-    user = Accounts.get_populated(name) |> Repo.preload(:roles)
+    user =
+      name
+      |> Accounts.get_populated()
+      |> Repo.preload(:roles)
 
     with {:ok, _} <-
            Accounts.update_user(user, params["user"],

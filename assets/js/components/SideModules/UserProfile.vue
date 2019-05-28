@@ -42,9 +42,9 @@ export default {
     fetch_followers() {
       this.loading = true;
       user
-        .getFollowing({ id: this.user.id })
+        .getFollowing({ id: this.user.id, limit: 10 })
         .then(res => {
-          this.followers = res.friends;
+          this.followers = res.items.slice(0, 10);
         })
         .finally(() => {
           this.loading = false;

@@ -1,6 +1,13 @@
 <template>
-  <div class="media-preview" @click="clicked">
+  <div class="media-preview big" @click="clicked">
+    <div v-if="big" class="media-preview__image--big">
+      <img :src="media.url">
+      <div v-if="overflowed" class="media-preview__overflowed-button">
+        <i class="fas fa-caret-down"/>
+      </div>
+    </div>
     <div
+      v-else
       class="media-preview__image"
       :style="{'background-image': `url(${media.metadata.preview_url})`}"
     />
@@ -17,6 +24,16 @@ export default {
     media: {
       type: Object,
       required: true
+    },
+    big: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    overflowed() {
+      if (this.media.metadata.height == "undefined") return false;
+      return this.media.metadata.height > 600;
     }
   },
   methods: {
@@ -37,6 +54,16 @@ export default {
   position: relative;
   transition: all 0.3s ease;
   transform: scale(1);
+  background-size: cover;
+  background-position: center;
+  flex-grow: 1;
+  height: 160px;
+
+  &.big {
+    height: auto;
+    max-width: 100%;
+    max-height: 600px;
+  }
 
   &:hover {
     box-shadow: 0 5px 5px #00000050;
@@ -66,5 +93,22 @@ export default {
       font-size: 1.5rem;
     }
   }
+}
+.media-preview__image--big {
+  width: 100%;
+  max-height: 500px;
+  text-align: center;
+  overflow: hidden;
+}
+.media-preview__overflowed-button {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  font-size: 3em;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 0 2px black;
+  background: linear-gradient(transparent, #000000cc);
 }
 </style>

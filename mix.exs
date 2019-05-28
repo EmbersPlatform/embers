@@ -71,7 +71,8 @@ defmodule Embers.Mixfile do
       {:cachex, "~> 3.1"},
       {:fun_with_flags, "~> 1.2.1"},
       {:fun_with_flags_ui, "~> 0.7.1"},
-      {:oembed, "~> 0.3.0"}
+      {:oembed, "~> 0.3.0"},
+      {:fastimage, "~> 0.0.7"}
     ]
   end
 

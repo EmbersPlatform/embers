@@ -68,7 +68,11 @@ defmodule EmbersWeb.PostController do
 
   def show(conn, %{"id" => id}) do
     post_id = IdHasher.decode(id)
-    post = Feed.get_post!(post_id)
+
+    post =
+      post_id
+      |> Feed.get_post!()
+      |> populate_user(conn)
 
     conn =
       if is_nil(post) do
@@ -109,4 +113,16 @@ defmodule EmbersWeb.PostController do
   defp can_delete?(user, post) do
     Embers.Authorization.is_owner?(user, post) || Embers.Authorization.can?("delete_post", user)
   end
+
+  defp populate_user(nil, _), do: nil
+
+  defp populate_user(post, %Plug.Conn{assigns: %{current_user: current_user}})
+       when not is_nil(current_user) do
+    %{
+      post
+      | user: Embers.Accounts.User.load_following_status(post.user, current_user.id)
+    }
+  end
+
+  defp populate_user(post, _), do: post
 end

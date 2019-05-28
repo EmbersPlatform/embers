@@ -78,14 +78,13 @@ defmodule Embers.Links do
         nil
 
       {:ok, og} ->
-        {:ok,
-         %EmbedSchema{
-           url: og.url,
-           type: og.type,
-           title: og.title,
-           description: og.description,
-           thumbnail_url: og.image
-         }}
+        %EmbedSchema{
+          url: og.url,
+          type: og.type,
+          title: og.title,
+          description: og.description,
+          thumbnail_url: og.image
+        }
     end
   end
 

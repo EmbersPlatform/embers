@@ -13,6 +13,7 @@
         <div id="content" data-layout-type="single-column">
           <div id="post" v-if="post" :class="{container: !user}">
             <Card :post="post" @deleted="postDeleted"></Card>
+            <p class="loading-comments" v-if="loadingComments">Cargando comentarios...</p>
             <CommentList
               :comments="comments"
               :loading="loadingComments"
@@ -21,7 +22,22 @@
               :postId="id"
               @loadMore="loadComments"
             ></CommentList>
-            <NewCommentBox v-if="user" :postId="id" @created="addComment"></NewCommentBox>
+            <div class="new-comment">
+              <div class="comment">
+                <header class="header">
+                  <avatar :avatar="$store.getters.user.avatar.small"></avatar>
+                  <Toolbox
+                    v-if="user"
+                    flat
+                    :with_tags="false"
+                    :parent_id="id"
+                    :has_overlay="false"
+                    type="comment"
+                    @created="addComment"
+                  ></Toolbox>
+                </header>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -40,15 +56,17 @@ import { mapGetters } from "vuex";
 
 import Card from "@/components/Card/_Card";
 import CommentList from "@/components/Comment/CommentList";
-import NewCommentBox from "@/components/Comment/NewCommentBox";
+import Toolbox from "@/components/Toolbox/_Toolbox";
+import Avatar from "@/components/Avatar";
 
 export default {
   components: {
     Card,
     CommentList,
-    NewCommentBox,
+    Toolbox,
     Top,
-    UserCard
+    UserCard,
+    Avatar
   },
 
   /**
@@ -181,3 +199,11 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.loading-comments {
+  text-align: center;
+  color: #ffffff70;
+}
+</style>
+

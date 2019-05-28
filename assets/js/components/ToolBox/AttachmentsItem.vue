@@ -49,12 +49,27 @@ export default {
   background-position: center;
   width: 100px;
   height: 100px;
+  margin-top: 10px;
+
+  &:first-child {
+    margin-left: 10px;
+  }
+  &:last-child {
+    margin-right: 10px;
+  }
 
   @media #{$query-mobile} {
     width: 50%;
     height: 150px;
     box-sizing: border-box;
     margin: 5px 0;
+
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
 
     .remove_attachment {
       width: 2em !important;
@@ -121,6 +136,7 @@ export default {
 }
 
 .attachment--placeholder {
+  overflow: hidden;
   padding: 31px;
   box-sizing: border-box;
   i {

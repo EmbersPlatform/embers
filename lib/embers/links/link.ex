@@ -20,7 +20,7 @@ defmodule Embers.Links.Link do
     |> cast(attrs, [:user_id])
     |> foreign_key_constraint(:link_post)
     |> put_change(:embed, attrs.embed)
-    |> change(url: attrs.embed.url)
+    |> change([url: attrs.embed.url])
     |> validate_required([:user_id, :embed, :url])
   end
 end

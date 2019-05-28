@@ -1,16 +1,15 @@
 <template>
   <div
     class="toolbox"
-    :class="{'tool-box-open': canShowEditor, 'renderbox': status.loading}"
-    data-renderbox-message="Publicando..."
+    :class="{'tool-box-open': canShowEditor, 'renderbox': status.loading, flat: flat}"
     v-shortkey="['esc']"
     @shortkey="close"
   >
     <div class="toolbox__overlay" v-if="has_overlay && show_overlay" @click="close"></div>
     <div class="toolbox__container">
-      <template v-if="!status.loading">
+      <template>
         <Editor
-          type="toolbox"
+          :type="type"
           @update="updateBody"
           @paste="handlePaste"
           @focus="openEditor"
@@ -18,24 +17,30 @@
           data-editor-style="toolbox"
           rel="editor"
         ></Editor>
-        <div class="tags-wrapper tool" :class="{'compact':!canPublish || !canShowEditor}">
+        <div
+          v-if="with_tags"
+          class="tags-wrapper tool"
+          :class="{'compact':!canPublish || !canShowEditor}"
+        >
           <input type="text" placeholder="Tags separados por espacios" v-model="post.tags">
         </div>
 
         <div class="tool" v-if="status.loading_link">
           <div class="status-text">Obteniendo vista previa...</div>
         </div>
-        <div class="tool" v-if="status.uploading_media">
-          <div class="status-text">Subiendo imagen/video...</div>
+
+        <div class="tool" v-if="has_errors">
+          <div class="status-text error">Hubo un error al publicar el post: {{status.error}}</div>
         </div>
 
-        <div class="link-preview tool">
-          <template v-if="post.links.length > 0 && !post.medias.length && !status.uploading_media">
-            <span class="remove-link" @click="remove_link">
-              <i class="fa fa-times"></i>
-            </span>
-            <link-item :link="post.links[0]"/>
-          </template>
+        <div
+          class="link-preview tool"
+          v-if="post.links.length > 0 && !post.medias.length && !status.uploading_media"
+        >
+          <span class="remove-link" @click="remove_link">
+            <i class="fa fa-times"></i>
+          </span>
+          <link-item :link="post.links[0]"/>
         </div>
 
         <attachments-zone
@@ -130,6 +135,11 @@ import Switch from "../inputSwitch";
 import VideoEmbed from "../Card/VideoEmbed";
 import LinkEmbed from "../Card/LinkEmbed";
 
+/**
+ * Import helpers
+ */
+import { text_has_link, process_link } from "@/lib/links";
+
 const initialData = function() {
   return {
     post: {
@@ -138,12 +148,13 @@ const initialData = function() {
       medias: [],
       links: [],
       tags: "",
-      related_to_id: null
+      related_to_id: null,
+      parent_id: null
     },
     status: {
       open: false,
       loading: false,
-      errors: null,
+      error: null,
       loading_link: false,
       uploading_media: false
     },
@@ -169,21 +180,41 @@ export default {
       type: String,
       default: null
     },
+    parent_id: {
+      type: String,
+      default: null
+    },
     has_overlay: {
       type: Boolean,
       default: true
+    },
+    with_tags: {
+      type: Boolean,
+      default: true
+    },
+    flat: {
+      type: Boolean,
+      default: false
+    },
+    type: {
+      type: String,
+      default: "toolbox"
     }
   },
   data: initialData,
   computed: {
+    has_errors() {
+      return this.status.error !== null;
+    },
     canShowEditor() {
       return this.status.open;
     },
     canPublish() {
       if (
-        !this.post.body &&
-        !this.post.medias.length &&
-        !this.post.links.length
+        (!this.post.body &&
+          !this.post.medias.length &&
+          !this.post.links.length) ||
+        this.status.loading
       ) {
         return false;
       }
@@ -214,6 +245,7 @@ export default {
     close() {
       this.status.open = false;
       this.show_overlay = false;
+      this.$emit("closed");
       //this.$root.$emit("blurToolBox", false);
     },
     reset() {
@@ -230,8 +262,12 @@ export default {
         body: this.post.body,
         tags: this.post.tags.split(" ")
       };
-      if(this.post.nsfw) {
-        requestData.tags.push("nsfw")
+      if (this.post.nsfw) {
+        requestData.tags.push("nsfw");
+      }
+
+      if (this.parent_id) {
+        requestData.parent_id = this.parent_id;
       }
 
       if (this.post.medias !== null) {
@@ -243,7 +279,9 @@ export default {
       post
         .create(requestData)
         .then(res => {
-          this.$store.dispatch("addFeedPost", res);
+          this.$emit("created", res);
+          if (!this.parent_id) this.$store.dispatch("addFeedPost", res);
+
           if (
             res.nsfw &&
             this.$store.getters.settings.content_nsfw === "hide"
@@ -260,10 +298,24 @@ export default {
               }
             });
           }
-        })
-        .finally(() => {
           this.reset();
           this.close();
+        })
+        .catch(error => {
+          console.log(JSON.parse(JSON.stringify(error)));
+          switch (error.status) {
+            case 422:
+              this.status.error = error.res.errors.body[0];
+              break;
+            case 500:
+              this.status.error =
+                "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.";
+            default:
+              throw error;
+          }
+        })
+        .finally(() => {
+          this.status.loading = false;
         });
     },
     async handlePaste(e) {
@@ -272,17 +324,13 @@ export default {
         Array.from(files).forEach(await this.uploadFile);
       }
 
-      let text = e.clipboardData.getData("text");
-      let urlRegex = /(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.​\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[​6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1​,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00​a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u​00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?/g;
-      if (urlRegex.test(text)) {
-        this.handle_link(text);
+      const text = e.clipboardData.getData("text");
+      if (text_has_link(text)) {
+        this.status.loading_link = true;
+        const link = await process_link(text);
+        this.post.links = [link];
+        this.status.loading_link = false;
       }
-    },
-    async handle_link(text) {
-      this.status.loading_link = true;
-      const link = await axios.post(`/api/v1/link`, { url: text });
-      this.post.links = [link.data];
-      this.status.loading_link = false;
     },
     uploadFiles(_event) {
       let files = this.$refs.imageUploadInput.files;
@@ -359,6 +407,12 @@ export default {
   .status-text {
     text-align: center;
     color: #ffffff77;
+
+    &.error {
+      text-align: left;
+      color: $t-error;
+      font-weight: bold;
+    }
   }
 }
 
@@ -397,9 +451,21 @@ export default {
   display: block;
   text-align: center;
   border-radius: 2px;
+  z-index: 20;
 
   &:hover {
     opacity: 1;
+  }
+  @media #{$query-mobile} {
+    width: 2em !important;
+    height: 2em !important;
+    font-size: 1.2em !important;
+    border-radius: 50% !important;
+    line-height: 1.8em !important;
+    border: 2px solid #ffffffcc;
+    box-sizing: border-box;
+    right: 5px !important;
+    top: 5px !important;
   }
 }
 </style>

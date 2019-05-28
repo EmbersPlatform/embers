@@ -227,17 +227,21 @@
       }
 
       .active {
-        background: negro(2);
+        background: $narrojo;
 
         svg {
           * {
-            fill: $narrojo;
+            fill: negro(8);
             @include transition(0.3s all ease-out);
           }
         }
 
+        i {
+          color: negro(8);
+        }
+
         .n_i_w_content {
-          color: $narrojo;
+          color: negro(8);
         }
       }
     }

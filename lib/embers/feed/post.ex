@@ -55,6 +55,7 @@ defmodule Embers.Feed.Post do
     field(:my_reactions, {:array, :string}, virtual: true)
     field(:mentions, {:array, :string}, virtual: true)
     field(:nsfw, :boolean, virtual: true, default: false)
+    field(:faved, :boolean, virtual: true, default: false)
 
     belongs_to(:user, Embers.Accounts.User)
 
@@ -117,7 +118,7 @@ defmodule Embers.Feed.Post do
     if is_shared? do
       false
     else
-      has_parent? || (!has_media? && !has_link?)
+      !has_media? && !has_link?
     end
   end
 

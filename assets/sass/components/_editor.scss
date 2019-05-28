@@ -1,199 +1,240 @@
-.editor{
-	opacity: 1;
-	z-index: 1;
-	max-height: 100vh;
-	transition: max-height .3s ease-in-out;
-	&.compressed{
-		max-height: 100px;
-		transition: max-height .3s cubic-bezier(0, 1, 0, 1);
-		.toolbar{
-			display: none;
-			visibility: hidden;
-			opacity: 0;
-		}
-	}
-	&.big-text .canvas{
-		.markup, .markup.preview *{
-			@include font-size(12);
-		}
-	}
-	&[data-editor-style="toolbox"]{
-		overflow:hidden;
-		@include flexbox(row, nowrap, flex-start, stretch);
-		.toolbar{
-			width: 45px;
-			padding-top: 15px;
-			margin-right: 4px;
-			@include flexbox(column, nowrap, flex-start, center);
-			li{
-				margin-bottom: 10px;
-			}
-		}
-		.canvas{
-			max-width: calc(100% - 49px);
-			padding: 40px 0 0 0;
-			&:before{
-				top: 15px;
-				left: 20px;
-			}
-			.markup{
-				padding: 0 20px;
-			}
-		}
-	}
-	&[data-editor-style="chat"]{
-		overflow:visible;
-		height: auto;
-		.toolbar{
-			display:none;
-		}
-		.canvas{
-			height: auto;
-			display: block;
-			&:before{
-				display: none;
-			}
-			.markup{
-				height: auto;
-				padding: 10px;
-				border: 1px solid negro(1);
-				background:negro(1);
-				@include border-radius(3px);
-			}
-			textarea{
-				max-height: 90px;
-			}
-		}
-	}
-	&[data-editor-style="normal"]{
-		overflow:hidden;
-		@include flex(1 1 auto);
-		@include flexbox(column-reverse, nowrap, flex-start, stretch);
-		.toolbar{
-			width: auto;
-			height: 45px;
-			padding: 0;
-			margin-right: 0;
-			@include flexbox(row, nowrap, flex-start, center);
-			li{
-				margin-bottom: 0;
-				margin-right:10px;
-			}
-		}
-		.canvas{
-			padding: 25px 0 0 0;
-			&:before{
-				top: 0;
-				left: 0;
-			}
-			.markup{
-				padding: 0;
-			}
-			textarea{
-				max-height: 90px;
-			}
-		}
-	}
-	.toolbar{
-		height: 100%;
-		z-index: 1;
-		@include box-sizing(content-box);
-		li{
-			z-index: 0;
-			width: 15px;
-			height: 15px;
-			padding: 5px;
-			text-align:center;
-			color: $secondary;
-			border: 1px solid negro(2);
-			cursor: pointer;
-			user-select: none; // unselectable
-			touch-action: manipulation; // disables tap zoom
-			@include border-radius(3px);
-			@include font-size(4);
-			@include flexbox(row, nowrap, center, center);
-			&:hover{
-				color: $primary;
-				background: negro(2);
-				border: 1px solid transparent;
-				.tooltip{
-					@include filter(brightness(130%));
-				}
-			}
-			&[class*="active"]{
-				background: #fff;
-				color: negro(7);
-				border: 1px solid transparent;
-				&:hover{
-					background: #fff;
-					color: negro(7);
-					border: 1px solid transparent;
-				}
-			}
-			&:last-child{
-				margin-bottom: 0;
-			}
-			.tooltip{
-				display: block;
-				width: inherit;
-				height: inherit;
-				background:transparent;
-				@include transition(.3s all ease-out);
-				span{
-					width: 100%;
-					height: 100%;
-				}
-			}
-		}
-		.emoji-picker{
-			z-index: 1;
-			button{
-				cursor: inherit;
-			}
-		}
-	}
-	.canvas{
-		z-index: 0;
-		@include flexbox(row, nowrap, flex-start, stretch);
-		@include flex(1 1 auto);
-		&:before{
-			content: attr(data-title);
-			display: block;
-			position: absolute;
-			color: $secondary;
-			line-height: 15px;
-			font-weight: 400;
-			@include font-size();
-		}
-		textarea{
-			height: auto;
-			@include font-size(4);
-		}
-		.markup{
-			width: 100%;
-			height: auto;
-			background:transparent;
-			color: $primary;
-			word-wrap: break-word;
-			min-height: 100px;
-			@include box-sizing(border-box);
-			p{
-				margin-bottom: 10px;
-				// code + code{
-				// 	margin-top: 0;
-				// 	border-top:0;
-				// 	padding-top:0;
-				// 	border-top-left-radius: 0;
-				// 	border-top-right-radius: 0;
-				// }
-				&:last-child{
-					margin-bottom: 0;
-				}
-			}
+.editor {
+  opacity: 1;
+  z-index: 1;
+  max-height: 100vh;
 
-			&, p{
-				transition: font-size .25s ease;
-			}
-		}
-	}
+  &.compressed {
+    max-height: 100px;
+
+    .toolbar {
+      display: none;
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+
+  &.big-text .canvas {
+
+    .markup,
+    .markup.preview * {
+      @include font-size(12);
+    }
+  }
+
+  &[data-editor-style="toolbox"] {
+    overflow: hidden;
+
+    .toolbar {
+      padding-top: 10px;
+      @include flexbox(row, nowrap, flex-start, center);
+
+      li {
+        margin-bottom: 0;
+        margin-right: 10px;
+      }
+    }
+
+    .canvas {
+      max-width: 100%;
+    }
+
+    .markup {
+      margin-top: 20px;
+    }
+  }
+
+  &[data-editor-style="chat"] {
+    overflow: visible;
+    height: auto;
+    @include flex(1 1 auto);
+
+    .toolbar {
+      width: auto;
+      height: 45px;
+      padding: 0;
+      margin-right: 0;
+      @include flexbox(row, nowrap, flex-start, center);
+
+      li {
+        margin-bottom: 0;
+        margin-right: 10px;
+      }
+    }
+
+    .canvas {
+      height: auto;
+      display: block;
+
+      &:before {
+        display: none;
+      }
+
+      .markup {
+        height: auto;
+        padding: 10px;
+        border: 1px solid negro(1);
+        background: negro(1);
+        @include border-radius(3px);
+      }
+
+      textarea {
+        max-height: 90px;
+      }
+    }
+  }
+
+  &[data-editor-style="normal"] {
+    overflow: hidden;
+    @include flex(1 1 auto);
+
+    .toolbar {
+      width: auto;
+      height: 45px;
+      padding: 0;
+      margin-right: 0;
+      @include flexbox(row, nowrap, flex-start, center);
+
+      li {
+        margin-bottom: 0;
+        margin-right: 10px;
+      }
+    }
+
+    .canvas {
+      padding: 25px 0 0 0;
+
+      &:before {
+        top: 0;
+        left: 0;
+      }
+
+      .markup {
+        padding: 0;
+      }
+
+      textarea {
+        max-height: 90px;
+      }
+    }
+  }
+
+  .toolbar {
+    height: 100%;
+    z-index: 1;
+    @include box-sizing(content-box);
+
+    li {
+      z-index: 0;
+      width: 15px;
+      height: 15px;
+      padding: 5px;
+      text-align: center;
+      color: $secondary;
+      border: 1px solid negro(2);
+      cursor: pointer;
+      user-select: none; // unselectable
+      touch-action: manipulation; // disables tap zoom
+      @include border-radius(3px);
+      @include font-size(4);
+      @include flexbox(row, nowrap, center, center);
+
+      &:hover {
+        color: $primary;
+        background: negro(2);
+        border: 1px solid transparent;
+
+        .tooltip {
+          @include filter(brightness(130%));
+        }
+      }
+
+      &[class*="active"] {
+        background: #fff;
+        color: negro(7);
+        border: 1px solid transparent;
+
+        &:hover {
+          background: #fff;
+          color: negro(7);
+          border: 1px solid transparent;
+        }
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .tooltip {
+        display: block;
+        width: inherit;
+        height: inherit;
+        background: transparent;
+        @include transition(.3s all ease-out);
+
+        span {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+    .emoji-picker {
+      z-index: 1;
+
+      button {
+        cursor: inherit;
+      }
+    }
+  }
+
+  .canvas {
+    z-index: 0;
+    @include flexbox(row, nowrap, flex-start, stretch);
+    @include flex(1 1 auto);
+
+    &:before {
+      content: attr(data-title);
+      display: block;
+      position: absolute;
+      color: $secondary;
+      line-height: 15px;
+      font-weight: 400;
+      @include font-size();
+    }
+
+    textarea {
+      height: auto;
+      @include font-size(4);
+    }
+
+    .markup {
+      width: 100%;
+      height: auto;
+      background: transparent;
+      color: $primary;
+      word-wrap: break-word;
+      min-height: 100px;
+      @include box-sizing(border-box);
+
+      p {
+        margin-bottom: 10px;
+
+        // code + code{
+        // 	margin-top: 0;
+        // 	border-top:0;
+        // 	padding-top:0;
+        // 	border-top-left-radius: 0;
+        // 	border-top-right-radius: 0;
+        // }
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      &,
+      p {
+        transition: font-size .25s ease;
+      }
+    }
+  }
 }

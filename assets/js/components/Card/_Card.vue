@@ -100,11 +100,11 @@
         <div v-if="tools && loggedUser" class="header-options" focusable tabindex="-1">
           <span
             @click="toggleFav"
-            :data-tip="(post.isFaved) ? 'Quitar de mis favoritos' : 'Agregar a favoritos'"
+            :data-tip="(post.faved) ? 'Quitar de mis favoritos' : 'Agregar a favoritos'"
             data-tip-position="bottom"
             data-tip-text
           >
-            <i v-if="!post.isFaved" class="far fa-bookmark"/>
+            <i v-if="!post.faved" class="far fa-bookmark"/>
             <i v-else class="fas fa-bookmark"/>
           </span>
         </div>
@@ -531,14 +531,14 @@ export default {
     },
 
     toggleFav() {
-      if (!this.post.isFaved) {
+      if (!this.post.faved) {
         post.favorite(this.post.id).then(res => {
-          this.post.isFaved = true;
+          this.post.faved = true;
           this.post.stats = res;
         });
       } else {
         post.unfavorite(this.post.id).then(res => {
-          this.post.isFaved = false;
+          this.post.faved = false;
           this.post.stats = res;
         });
       }

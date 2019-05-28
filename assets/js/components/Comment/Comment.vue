@@ -12,6 +12,9 @@
           <p>comento {{ $moment.utc(comment.created_at).local().from() }}:</p>
         </h4>
         <p v-if="comment.body" v-html="formattedBody"></p>
+        <div class="multimedia" v-if="comment.media.length">
+          <media-zone small :medias="comment.media" :previews="true" @clicked="media_clicked"/>
+        </div>
         <footer class="actions">
           <ul class="actions-reactions">
             <li
@@ -115,6 +118,12 @@
         </ul>
       </div>
     </header>
+    <media-slides
+      v-if="show_media_slides"
+      :medias="comment.media"
+      :index="clicked_media_index"
+      @closed="show_media_slides = false"
+    ></media-slides>
   </div>
 </template>
 
@@ -125,10 +134,14 @@ import user from "../../api/user";
 import { mapGetters } from "vuex";
 import ReactionsModal from "../ReactionsModal/ReactionsModal";
 
+import MediaZone from "@/components/Media/MediaZone";
+import MediaSlides from "@/components/Media/MediaSlides";
+import LinkItem from "@/components/Link/Link";
+
 import formatter from "@/lib/formatter";
 
 export default {
-  components: { avatar },
+  components: { avatar, MediaZone, MediaSlides, LinkItem },
   props: ["comment", "postId"],
   computed: {
     loggedUser() {
@@ -360,6 +373,10 @@ export default {
           this.comment.stats = res;
         });
       }
+    },
+    media_clicked(id) {
+      this.clicked_media_index = this.comment.media.findIndex(m => m.id == id);
+      this.show_media_slides = true;
     }
   },
 
@@ -371,6 +388,7 @@ export default {
     return {
       App: this.$store.state.appData,
       isPicker: false,
+      show_media_slides: false,
       user
     };
   },

@@ -38,19 +38,20 @@ defmodule Embers.Feed.Favorites do
     query =
       from(fav in Favorite,
         as: :favorite,
-        where: fav.user_id == ^user_id,
-        order_by: [desc: fav.inserted_at]
+        where: fav.user_id == ^user_id
       )
 
     query
     |> with_post()
     |> Paginator.paginate(opts)
+    |> set_faved_status()
   end
 
   defp with_post(query) do
     from([favorite: fav] in query,
       left_join: post in assoc(fav, :post),
       as: :post,
+      order_by: [desc: fav.inserted_at, desc: post.inserted_at],
       left_join: post_user in assoc(post, :user),
       left_join: post_user_meta in assoc(post_user, :meta),
       left_join: related in assoc(post, :related_to),
@@ -71,5 +72,12 @@ defmodule Embers.Feed.Favorites do
         }
       ]
     )
+  end
+
+  defp set_faved_status(%Embers.Paginator.Page{entries: favs} = page) do
+    %{
+      page
+      | entries: Enum.map(favs, fn fav -> %{fav | post: %{fav.post | faved: true}} end)
+    }
   end
 end

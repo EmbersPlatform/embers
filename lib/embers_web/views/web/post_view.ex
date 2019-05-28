@@ -29,7 +29,8 @@ defmodule EmbersWeb.PostView do
           shares: post.shares_count
         },
         nesting_level: post.nesting_level,
-        nsfw: post.nsfw
+        nsfw: post.nsfw,
+        faved: post.faved
       }
       |> handle_tags(post)
       |> put_in_reply_to(post)
