@@ -2,7 +2,7 @@ defmodule EmbersWeb.PostController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.{Feed}
+  alias Embers.{Feed, Repo}
   alias Embers.Helpers.IdHasher
   alias EmbersWeb.Plugs.CheckPermissions
 

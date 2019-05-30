@@ -20,4 +20,23 @@ defmodule Embers.Reports do
 
   Ejemplos de reportables son los Posts.
   """
+
+  alias Embers.Report
+  alias Embers.Reportable
+
+  def report(reportable, reporter, params) do
+    Reportable.report(reportable, reporter, params)
+  end
+
+  def reports_for(reportable, opts \\ []) do
+    Reportable.reports_for(reportable, opts)
+  end
+
+  def resolve(report) do
+    Report.resolve(report)
+  end
+
+  def open(report) do
+    Report.open(report)
+  end
 end

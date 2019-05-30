@@ -5,8 +5,8 @@ html {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  // overflow-x: hidden; // probably causing the infinite scroll issue on chrome android
-  overflow-x: visible; // posible fix
+  overflow-x: hidden; // probably causing the infinite scroll issue on chrome android
+  // overflow-x: visible; // posible fix
 }
 
 i {
@@ -82,6 +82,7 @@ form {
   }
 
   input[type="text"],
+  input[type="number"],
   input[type="email"],
   input[type="password"],
   input[type="url"],
@@ -93,6 +94,7 @@ form {
   }
 
   input[type="text"],
+  input[type="number"],
   input[type="email"],
   input[type="password"],
   input[type="url"] {
@@ -168,6 +170,48 @@ form {
       margin: 0.3em;
       @include border-radius(50%);
       @include box-sizing(border-box);
+    }
+  }
+
+  input[type="checkbox"] {
+    width: 2em;
+    height: 2em;
+    border: 3px solid negro(1);
+    cursor: pointer;
+    border-radius: 5px;
+
+    &:checked {
+      border: 3px solid $narrojo;
+
+      &:hover {
+        border: 3px solid $narrojo;
+      }
+
+      &:after {
+        color: #fff;
+      }
+    }
+
+    &:hover {
+      border: 3px solid #fff;
+
+      &:after {
+        color: #fff;
+      }
+    }
+
+    &:after {
+      content: "🗸";
+      display: block;
+      color: #444;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      font-size: 1.5em;
+      line-height: 100%;
+      transform: translateY(-.2em);
+      margin: calc(100% - .75em) 0;
+      text-align: center;
     }
   }
 

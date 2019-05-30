@@ -23,6 +23,7 @@ defmodule Embers.Reports.PostReport do
     |> validate_required([:reporter_id, :post_id])
     |> foreign_key_constraint(:post_id)
     |> foreign_key_constraint(:reporter_id)
+    |> validate_length(:comments, min: 4, max: 255)
   end
 end
 

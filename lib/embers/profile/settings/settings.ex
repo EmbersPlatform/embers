@@ -40,5 +40,5 @@ defmodule Embers.Profile.Settings do
       ** (Ecto.NoResultsError)
 
   """
-  def get_setting!(id), do: Repo.get!(Setting, id)
+  def get_setting!(id), do: Repo.get_by(Setting, %{user_id: id})
 end

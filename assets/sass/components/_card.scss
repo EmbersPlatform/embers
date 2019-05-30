@@ -42,9 +42,12 @@
   &[class*="locked"] {
     .card-wrapper {
       overflow: hidden;
-      pointer-events: none;
 
       >*:not(.header) {
+        pointer-events: none;
+      }
+
+      >*:not(.header)>*:not(.card-wrapper-content-tags) {
         @include blur(2, em);
       }
     }

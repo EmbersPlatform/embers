@@ -13,12 +13,48 @@ defmodule EmbersWeb.Auth.Login do
   import EmbersWeb.Gettext
 
   @impl true
-  def authenticate(%{"password" => password} = params, _, opts) do
+  def authenticate(%{"password" => password} = params, _user_context, opts) do
     case Accounts.get_by(params) do
-      nil -> {:error, gettext("no user found")}
-      %{confirmed_at: nil} -> {:error, gettext("account unconfirmed")}
-      user -> Pbkdf2.check_pass(user, password, opts)
+      nil ->
+        {:error, gettext("invalid credentials")}
+
+      %{confirmed_at: nil} ->
+        {:error, gettext("account unconfirmed")}
+
+      user ->
+        if Embers.Moderation.banned?(user) do
+          ban = Embers.Moderation.get_active_ban(user.id)
+
+          if Embers.Moderation.ban_expired?(ban) do
+            Embers.Moderation.unban_user(user.id)
+            Pbkdf2.check_pass(user, password, opts)
+          else
+            formatted_duration =
+              if is_nil(ban.expires_at) do
+                "indefinidamente"
+              else
+                formatted_date = Timex.format!(ban.expires_at, "{D}/{0M}/{YYYY}")
+                "hasta el #{formatted_date}"
+              end
+
+            {:error,
+             "Tu cuenta se encuentra baneada #{formatted_duration} con el motivo: #{ban.reason}"}
+          end
+        else
+          Pbkdf2.check_pass(user, password, opts)
+        end
     end
+  end
+
+  @impl true
+  def report({:ok, user}, meta) do
+    Log.info(%Log{user: user.id, message: "successful login", meta: meta})
+    {:ok, Map.drop(user, Config.drop_user_keys())}
+  end
+
+  def report({:error, message}, meta) do
+    Log.warn(%Log{message: message, meta: meta})
+    {:error, message}
   end
 
   def add_session(conn, user, params) do

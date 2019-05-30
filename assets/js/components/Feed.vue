@@ -5,8 +5,6 @@
     :data-renderbox-message="[loading ? 'Cargando posts...' : 'Actualizando feed...']"
     :data-renderbox-top="refreshing"
     ref="postList"
-    v-infinite-scroll="loadMore"
-    :infinite-scroll-disabled="infiniteScrollStill"
   >
     <template v-if="isMasonry">
       <div
@@ -54,6 +52,7 @@
       ></Card>
       <Card v-else :post="post" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
     </template>
+    <intersector @intersect="loadMore"/>
     <template v-if="reachedBottom && !loading && !refreshing">
       <h3 v-html="formattedNoResults" v-if="feed.length === 0"></h3>
       <h3 v-html="formattedReachedBottom" v-else></h3>
@@ -67,13 +66,15 @@ import feed from "../api/feed";
 import formatter from "@/lib/formatter";
 
 import Card from "./Card/_Card";
+import Intersector from "./Intersector";
 
 import { mapGetters } from "vuex";
 
 export default {
   props: ["name", "filters", "size"],
   components: {
-    Card
+    Card,
+    Intersector
   },
 
   /**

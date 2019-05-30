@@ -16,6 +16,12 @@ defmodule Embers.Moderation do
     not is_nil(get_active_ban(user_id))
   end
 
+  def ban_expired?(%{expires_at: nil}), do: false
+
+  def ban_expired?(ban) do
+    Timex.compare(ban.expires_at, Timex.now(), :days) <= 0
+  end
+
   def get_active_ban(user_id) when is_integer(user_id) do
     Repo.one(bans_query(user_id))
   end
@@ -40,8 +46,13 @@ defmodule Embers.Moderation do
 
   def ban_user(user_id, opts) when is_integer(user_id) do
     if is_nil(get_active_ban(user_id)) do
-      duration = Keyword.get(opts, :duration)
-      expires = Timex.shift(DateTime.utc_now(), days: duration)
+      duration = Keyword.get(opts, :duration, 7)
+      indefinite? = duration <= 0
+
+      expires =
+        unless indefinite? do
+          Timex.shift(DateTime.utc_now(), days: duration)
+        end
 
       Repo.insert(
         Ban.changeset(%Ban{}, %{

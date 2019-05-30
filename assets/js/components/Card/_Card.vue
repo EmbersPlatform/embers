@@ -85,14 +85,20 @@
                 Eliminar
               </span>
             </li>
-            <li v-if="user.can('post.delete_third_party')">
+            <li v-if="can('update_post')">
               <span v-if="!post.nsfw" @click.prevent="markAsNsfw">
-                <i class="fas flag-checkered"></i>
+                <i class="fas fa-pepper-hot"></i>
                 Es NSFW
               </span>
               <span v-else @click.prevent="unmarkAsNsfw">
-                <i class="far fa-flag"></i>
+                <i class="fas fa-pepper-hot"></i>
                 No es NSFW
+              </span>
+            </li>
+            <li>
+              <span @click.prevent="ban_user">
+                <i class="fas fa-gavel"></i>
+                Suspender usuario
               </span>
             </li>
           </ul>
@@ -117,6 +123,12 @@
               <span @click.prevent="reactionsDetails">
                 <i class="far fa-smile"></i>
                 Reacciones
+              </span>
+            </li>
+            <li v-if="can('create_report')">
+              <span @click.prevent="report_post">
+                <i class="far fa-flag"></i>
+                Reportar
               </span>
             </li>
           </ul>
@@ -250,6 +262,7 @@
 import post from "../../api/post";
 import user from "../../api/user";
 import attachment from "../../api/attachment";
+import axios from "axios";
 
 import VideoEmbed from "./VideoEmbed";
 import LinkEmbed from "./LinkEmbed";
@@ -263,6 +276,8 @@ import formatter from "@/lib/formatter";
 import avatar from "@/components/Avatar";
 
 import ReactionsModal from "../ReactionsModal/ReactionsModal";
+import ReportPostModal from "@/components/Modals/ReportPostModal";
+import BanUserModal from "@/components/Modals/BanUserModal";
 
 import EventBus from "@/lib/event_bus";
 
@@ -637,38 +652,59 @@ export default {
     /**
      * Marks the post as Not Safe For Work
      */
-    markAsNsfw() {
-      post.nsfw(this.post.id, true).then(res => {
-        this.post.nsfw = true;
-        this.show =
-          !this.post.nsfw ||
-          this.$store.getters.settings.content_nsfw !== "hide";
-        this.locked =
-          this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
-      });
+    async markAsNsfw() {
+      let tags = this.post.tags.map(x => x.name);
+      tags.push("nsfw");
+      let { data: res } = await axios.post(
+        "/api/v1/moderation/post/update_tags",
+        {
+          post_id: this.post.id,
+          tag_names: tags
+        }
+      );
+      this.post.nsfw = true;
+      this.post.tags = res.tags;
+      this.show =
+        !this.post.nsfw || this.$store.getters.settings.content_nsfw !== "hide";
+      this.locked =
+        this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
     },
     /**
      * Unmarks the post as Not Safe For Work
      */
-    unmarkAsNsfw() {
-      post.nsfw(this.post.id, false).then(res => {
-        this.post.nsfw = false;
-        this.show =
-          !this.post.nsfw ||
-          this.$store.getters.settings.content_nsfw !== "hide";
-        this.locked =
-          this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
-        if (this.locked) {
-          this.lock();
+    async unmarkAsNsfw() {
+      let tags = this.post.tags.map(x => x.name).filter(x => x != "nsfw");
+      let { data: res } = await axios.post(
+        "/api/v1/moderation/post/update_tags",
+        {
+          post_id: this.post.id,
+          tag_names: tags
         }
-        if (!this.locked) {
-          this.unlock();
-        }
-      });
+      );
+      this.post.nsfw = false;
+      this.post.tags = res.tags;
+      this.show =
+        !this.post.nsfw || this.$store.getters.settings.content_nsfw !== "hide";
+      this.locked =
+        this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
     },
     media_clicked(id) {
       this.clicked_media_index = this.post.media.findIndex(m => m.id == id);
       this.show_media_slides = true;
+    },
+    report_post() {
+      this.$modal.show(
+        ReportPostModal,
+        { post_id: this.post.id },
+        { height: "auto", adaptive: true, maxWidth: 400, scrollable: true }
+      );
+    },
+    ban_user() {
+      this.$modal.show(
+        BanUserModal,
+        { user_id: this.post.user.id },
+        { height: "auto", adaptive: true, maxWidth: 400, scrollable: true }
+      );
     }
   },
 

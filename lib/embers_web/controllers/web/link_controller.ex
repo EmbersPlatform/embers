@@ -2,6 +2,9 @@ defmodule EmbersWeb.LinkController do
   use EmbersWeb, :controller
 
   alias Embers.Links
+  alias EmbersWeb.Plugs.CheckPermissions
+
+  plug(CheckPermissions, [permission: "create_media"] when action in [:parse])
 
   def parse(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"url" => url}) do
     with {:ok, embed} <- Links.fetch(url),
@@ -11,7 +14,7 @@ defmodule EmbersWeb.LinkController do
     else
       {:error, :file_not_supported} ->
         conn
-        |> put_status(:cant_process_url)
+        |> put_status(:unprocessable_entity)
         |> put_view(EmbersWeb.ErrorView)
         |> render("422.json", error: gettext("Couldn't process link"))
 

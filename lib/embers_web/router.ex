@@ -71,6 +71,8 @@ defmodule EmbersWeb.Router do
     get("/settings/edit/:name", EmbersWeb.Admin.SettingController, :edit)
     put("/settings/edit/:name", EmbersWeb.Admin.SettingController, :update)
 
+    get("/reports", EmbersWeb.Admin.ReportController, :overview)
+
     resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 
     match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
@@ -111,6 +113,9 @@ defmodule EmbersWeb.Router do
         post("/account/cover", MetaController, :upload_cover)
         put("/account/settings", SettingController, :update)
 
+        post("/moderation/ban", ModerationController, :ban_user)
+        post("/moderation/post/update_tags", ModerationController, :update_tags)
+
         get("/friends/:id/ids", FriendController, :list_ids)
         get("/friends/:id/list", FriendController, :list)
         post("/friends", FriendController, :create)
@@ -133,9 +138,9 @@ defmodule EmbersWeb.Router do
 
         resources("/posts", PostController, only: [:show, :create, :delete])
         get("/posts/:id/replies", PostController, :show_replies)
-
         post("/posts/:post_id/reaction/:name", ReactionController, :create)
         delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
+        post("/posts/:post_id/report", PostReportController, :create)
 
         get("/reactions/valid", ReactionController, :list_valid_reactions)
 

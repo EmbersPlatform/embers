@@ -34,24 +34,28 @@
           Moderacion
         </p>
         <ul class="menu-list">
-          <li><a href="/admin/reports">Reportes</a></li>
-          <li><a href="/admin/mod-history">Historial</a></li>
+          <li><a href="/admin/reports">Reportes // todo</a></li>
+          <li><a href="/admin/mod-history">Auditoría // todo</a></li>
+          <li><a href="/admin/bans">Suspensiones // todo</a></li>
         </ul>
         <p class="menu-label">
           Desarrollo
         </p>
         <ul class="menu-list">
-          <li><a href="/admin/logs">Logs</a></li>
+          <li><a href="/admin/dev/monitor">Monitor // todo</a></li>
         </ul>
         <p class="menu-label">
           Contenido
         </p>
         <ul class="menu-list">
-          <li><a href="/admin/roles">Tags</a></li>
+          <li><a href="/admin/roles">Tags // todo</a></li>
+          <li><a href="/admin/roles">Roles</a></li>
         </ul>
+        <p class="menu-label">
+          Configuracion
+        </p>
         <ul class="menu-list">
           <li><a href="/flags">Flags</a></li>
-          <li><a href="/admin/roles">Roles</a></li>
           <li><a href="/admin/loading">Mensajes de carga</a></li>
           <li><a href="/admin/settings">Configuracion</a></li>
         </ul>
