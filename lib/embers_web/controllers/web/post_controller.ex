@@ -2,7 +2,7 @@ defmodule EmbersWeb.PostController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.{Feed}
+  alias Embers.{Feed, Repo}
   alias Embers.Helpers.IdHasher
   alias EmbersWeb.Plugs.CheckPermissions
 
@@ -24,7 +24,15 @@ defmodule EmbersWeb.PostController do
         length(params["medias"])
       end
 
+    links_count =
+      if is_nil(params["links"]) || Enum.empty?(params["links"]) do
+        0
+      else
+        length(params["links"])
+      end
+
     post_params = Map.put(post_params, "media_count", media_count)
+    post_params = Map.put(post_params, "links_count", links_count)
 
     post_params =
       if Map.has_key?(params, "parent_id") do
@@ -60,7 +68,11 @@ defmodule EmbersWeb.PostController do
 
   def show(conn, %{"id" => id}) do
     post_id = IdHasher.decode(id)
-    post = Feed.get_post!(post_id)
+
+    post =
+      post_id
+      |> Feed.get_post!()
+      |> populate_user(conn)
 
     conn =
       if is_nil(post) do
@@ -101,4 +113,16 @@ defmodule EmbersWeb.PostController do
   defp can_delete?(user, post) do
     Embers.Authorization.is_owner?(user, post) || Embers.Authorization.can?("delete_post", user)
   end
+
+  defp populate_user(nil, _), do: nil
+
+  defp populate_user(post, %Plug.Conn{assigns: %{current_user: current_user}})
+       when not is_nil(current_user) do
+    %{
+      post
+      | user: Embers.Accounts.User.load_following_status(post.user, current_user.id)
+    }
+  end
+
+  defp populate_user(post, _), do: post
 end

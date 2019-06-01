@@ -5,8 +5,6 @@
     :data-renderbox-message="[loading ? 'Cargando posts...' : 'Actualizando feed...']"
     :data-renderbox-top="refreshing"
     ref="postList"
-    v-infinite-scroll="loadMore"
-    :infinite-scroll-disabled="infiniteScrollStill"
   >
     <template v-if="isMasonry">
       <div
@@ -18,7 +16,7 @@
         item-selector=".little"
         fit-width="true"
       >
-        <template v-for="(post, index) in feed">
+        <template v-for="(post, index) in posts">
           <Card
             v-if="post.isShared"
             v-masonry-tile
@@ -35,14 +33,14 @@
             :post="post"
             v-masonry-tile
             class="little"
-            :key="index"
+            :key="post.id"
             :showThumbnail="showThumbnail"
             :size="size"
           ></Card>
         </template>
       </div>
     </template>
-    <template v-else v-for="(post, index) in feed">
+    <template v-else v-for="(post, index) in posts">
       <Card
         v-if="post.isShared"
         :post="post.source"
@@ -52,10 +50,11 @@
         :isShared="post.isShared"
         :size="size"
       ></Card>
-      <Card v-else :post="post" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
+      <Card v-else :post="post" :key="post.id" :showThumbnail="showThumbnail" :size="size"></Card>
     </template>
+    <intersector @intersect="loadMore"/>
     <template v-if="reachedBottom && !loading && !refreshing">
-      <h3 v-html="formattedNoResults" v-if="feed.length === 0"></h3>
+      <h3 v-html="formattedNoResults" v-if="posts.length === 0"></h3>
       <h3 v-html="formattedReachedBottom" v-else></h3>
     </template>
   </div>
@@ -67,13 +66,15 @@ import feed from "../api/feed";
 import formatter from "@/lib/formatter";
 
 import Card from "./Card/_Card";
+import Intersector from "./Intersector";
 
 import { mapGetters } from "vuex";
 
 export default {
   props: ["name", "filters", "size"],
   components: {
-    Card
+    Card,
+    Intersector
   },
 
   /**
@@ -87,11 +88,11 @@ export default {
       previousScrollPosition: 0,
       refreshing: false,
       firstLoad: false,
-      isMasonry: true
+      isMasonry: true,
+      posts: []
     };
   },
   computed: {
-    ...mapGetters({ feed: "feed" }),
     showThumbnail() {
       return !!this.$store.getters.settings.content_lowres_images;
     },
@@ -158,7 +159,7 @@ export default {
           if (this._inactive) {
             return;
           }
-          this.$store.dispatch("setFeedPosts", _res);
+          this.posts = _res;
           if (res.items.length) {
             this.next_activity = res.next;
           }
@@ -175,6 +176,9 @@ export default {
      * Loads the next page of the current feed
      */
     loadMore() {
+      this.do_load_more();
+    },
+    do_load_more() {
       if (this.infiniteScrollStill) {
         return;
       }
@@ -191,7 +195,7 @@ export default {
             return;
           }
           if (res.items.length) {
-            this.$store.dispatch("appendFeedPosts", _res);
+            this.posts = [...this.posts, ..._res];
             this.next_activity = res.next;
           }
           this.reachedBottom = res.last_page;
@@ -202,38 +206,18 @@ export default {
         });
     }
   },
-  watch: {
-    filters() {
-      this.reload();
-    },
-    name() {
-      this.reload();
-    }
-  },
 
   /**
    * Triggered when a component instance is created
    */
   created() {
-    feed
-      .get(this.name, { filters: this.filters })
-      .then(res => {
-        var _res = this.concat_post(res.items);
-        if (this._inactive) {
-          return;
-        }
-        if (res.items.length) {
-          this.$store.dispatch("setFeedPosts", _res);
-          this.next_activity = res.next;
-        }
-        this.reachedBottom = res.last_page;
-        this.$store.dispatch("resetNewActivity");
-      })
-      .finally(() => {
-        this.loading = false;
-        this.firstLoad = true;
-      });
+    this.reload();
     this.$root.$on("refresh_feed", this.reload);
+    this.$root.$on("addFeedPost", new_post => this.posts.unshift(new_post));
+    this.$root.$on("prepend_new_posts", () => {
+      const new_posts = this.$store.state.feed.new_posts;
+      this.posts = [...new_posts, ...this.posts];
+    });
     this.noMasonry(); //check if can show masonry at page load
     window.addEventListener("resize", this.noMasonry);
   },

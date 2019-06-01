@@ -10,8 +10,8 @@ defmodule EmbersWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(EmbersWeb.Authenticate)
-    plug(GetPermissions)
     plug(Phauxth.Remember, create_session_func: &EmbersWeb.Auth.Utils.create_session/1)
+    plug(GetPermissions)
   end
 
   pipeline :admin do
@@ -67,6 +67,13 @@ defmodule EmbersWeb.Router do
     put("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :update)
     delete("/roles/:name", EmbersWeb.Admin.RoleController, :destroy)
 
+    get("/settings", EmbersWeb.Admin.SettingController, :index)
+    get("/settings/edit/:name", EmbersWeb.Admin.SettingController, :edit)
+    put("/settings/edit/:name", EmbersWeb.Admin.SettingController, :update)
+
+    get("/reports", EmbersWeb.Admin.ReportController, :overview)
+    get("/bans", EmbersWeb.Admin.BanController, :index)
+
     resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 
     match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
@@ -76,6 +83,10 @@ defmodule EmbersWeb.Router do
     pipe_through(:browser)
 
     get("/", PageController, :index)
+
+    get("/static/rules", PageController, :rules)
+    get("/static/faq", PageController, :faq)
+    get("/static/acknowledgments", PageController, :acknowledgments)
 
     get("/login", SessionController, :new)
     post("/login", SessionController, :create)
@@ -103,6 +114,9 @@ defmodule EmbersWeb.Router do
         post("/account/cover", MetaController, :upload_cover)
         put("/account/settings", SettingController, :update)
 
+        post("/moderation/ban", ModerationController, :ban_user)
+        post("/moderation/post/update_tags", ModerationController, :update_tags)
+
         get("/friends/:id/ids", FriendController, :list_ids)
         get("/friends/:id/list", FriendController, :list)
         post("/friends", FriendController, :create)
@@ -125,9 +139,9 @@ defmodule EmbersWeb.Router do
 
         resources("/posts", PostController, only: [:show, :create, :delete])
         get("/posts/:id/replies", PostController, :show_replies)
-
         post("/posts/:post_id/reaction/:name", ReactionController, :create)
         delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
+        post("/posts/:post_id/report", PostReportController, :create)
 
         get("/reactions/valid", ReactionController, :list_valid_reactions)
 
@@ -140,6 +154,7 @@ defmodule EmbersWeb.Router do
         delete("/feed/favorites/:post_id", FavoriteController, :destroy)
 
         post("/media", MediaController, :upload)
+        post("/link", LinkController, :parse)
 
         get("/notifications", NotificationController, :index)
         put("/notifications/:id", NotificationController, :read)

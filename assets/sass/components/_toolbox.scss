@@ -4,6 +4,7 @@
   min-height: 100px;
   margin: 0 0 30px 0;
   z-index: 0;
+  flex-grow: 1;
 
   .toolbox__container {
     height: 100%;
@@ -11,6 +12,14 @@
     border: 1px solid blanco("05");
     @include box-shadow(0 5px 20px negro(3));
     @include border-radius(3px);
+  }
+
+  &.flat {
+    .toolbox__container {
+      box-shadow: none;
+      background: none;
+      border: none;
+    }
   }
 
   .toolbox__overlay {
@@ -22,29 +31,27 @@
     left: 0;
   }
 
+  .editor {
+    padding: 10px 10px 0 10px;
+  }
+
   &[class*="tool-box-open"] {
     z-index: 2;
     @include box-shadow(none);
-    &:before {
-      display: block;
-    }
-    &:not(.renderbox) {
-      &:after {
-        content: "";
-        width: 4px;
-        height: calc(100% - 30px);
-        display: block;
-        position: absolute;
-        top: 15px;
-        left: 45px;
-        z-index: 0;
-        background: negro(1);
-      }
-      .tool {
-        padding-left: 69px;
+
+    .tool {
+      opacity: 1;
+      overflow: hidden;
+      z-index: 0;
+      padding: 15px 15px 0 15px;
+      @include transition(0.3s height linear, 0.3s opacity ease-out);
+
+      &:last-child:not([class*="compact"]) {
+        margin-bottom: 15px;
       }
     }
   }
+
   .multimedia {
     .media {
       &:before {
@@ -52,6 +59,7 @@
         @include font-size(2);
       }
     }
+
     .source {
       display: inline-block;
       padding: 10px 0 10px 15px;
@@ -59,22 +67,14 @@
       @include font-size();
     }
   }
-  .tool {
-    opacity: 1;
-    overflow: hidden;
-    z-index: 0;
-    padding: 15px 15px 0 15px;
-    @include transition(0.3s height linear, 0.3s opacity ease-out);
-    &:last-child:not([class*="compact"]) {
-      margin-bottom: 15px;
-    }
-  }
+
   .compact {
     height: 0;
     opacity: 0;
     padding: 0 !important;
     margin: 0;
   }
+
   .remove-attachment {
     position: absolute;
     right: 0;
@@ -94,11 +94,12 @@
     flex-direction: row;
     margin: 0;
 
-    & > * {
+    &>* {
       margin-left: 15px;
     }
   }
 }
+
 // inicia .TOOLBOX CHILDS
 .picker {
   height: 100px;
@@ -107,6 +108,7 @@
   z-index: 1;
   @include transition(0.3s height linear);
   @include flexbox(row, nowrap, center, center);
+
   li {
     width: auto;
     height: 70px;
@@ -117,23 +119,28 @@
     @include box-sizing(border-box);
     @include flex(1 1 100%);
     @include flexbox(column, nowrap, center, center);
+
     &:hover {
       cursor: pointer;
+
       &:before,
       &:after {
         opacity: 1;
       }
+
       svg {
         * {
           fill: $narrojo;
         }
       }
+
       p {
         height: 1.2em;
         opacity: 1;
         margin-top: 5;
       }
     }
+
     &:before {
       content: "";
       display: block;
@@ -146,6 +153,7 @@
       left: 10px;
       @include transition(0.3s all ease-out);
     }
+
     &:after {
       content: "";
       display: block;
@@ -158,16 +166,20 @@
       right: 10px;
       @include transition(0.3s all ease-out);
     }
+
     &:last-child {
       border-right: 0;
     }
+
     svg {
       width: 25px;
       height: 25px;
+
       * {
         fill: $primary;
       }
     }
+
     p {
       display: block;
       width: auto;
@@ -179,26 +191,31 @@
       overflow: hidden;
       opacity: 0;
       @include transition(0.1s all ease-out);
+
       &:first-letter {
         text-transform: capitalize;
       }
     }
   }
 }
+
 .url-uploader {
   @include flexbox(column, nowrap, center, stretch);
+
   .supported {
     font-size: 3em;
     margin-bottom: 15px;
     color: $secondary;
     @include flexbox(row, nowrap, space-around, flex-start);
   }
+
   form {
     * {
       &:last-child {
         margin-bottom: 0;
       }
     }
+
     a,
     label:not([for]),
     .error {
@@ -207,8 +224,10 @@
     }
   }
 }
+
 .audio-recorder {
   @include flexbox(row, nowrap, center, center);
+
   button {
     width: 55px;
     height: 55px;
@@ -224,22 +243,27 @@
     @include border-radius(50%);
     @include box-sizing(border-box);
     @include transition(0.3s background ease-out, 0.3s border ease-out);
+
     &:hover {
       background: $narrojo;
       border-color: #fff;
     }
+
     &[class*="recording"] {
       background: $narrojo;
       animation: pulse 2s infinite;
       @include box-shadow(0 0 0 0 rgba($narrojo, 0.4));
+
       &:hover {
         animation: none;
       }
     }
   }
 }
+
 .tags-wrapper {
   @include flexbox(row, wrap, flex-start, center);
+
   .tag {
     background: $dark;
     padding: 5px 10px;
@@ -249,12 +273,15 @@
     @include border-radius(3px);
     @include font-size();
     @include flexbox(row, nowrap, center, center);
+
     &:hover {
       color: $dark;
+
       button {
         @include flexbox(row, nowrap, center, center);
       }
     }
+
     button {
       z-index: 1;
       display: none;
@@ -269,6 +296,7 @@
       @include font-size(2);
     }
   }
+
   input[type="text"] {
     display: block;
     background: transparent;
@@ -279,4 +307,5 @@
     @include font-size(2);
   }
 }
+
 // termina .TOOLBOX CHILDS

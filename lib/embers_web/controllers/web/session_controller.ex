@@ -26,16 +26,17 @@ defmodule EmbersWeb.SessionController do
         false -> %{"canonical" => identifier, "password" => password}
       end
 
-    case Login.verify(user_params, crypto: Pbkdf2) do
+    case Login.verify(user_params) do
       {:ok, user} ->
         conn
         |> Login.add_session(user, user_params)
-        |> put_flash(:info, "User successfully logged in.")
+        |> Remember.add_rem_cookie(user.id)
+        |> put_flash(:info, gettext("User successfully logged in."))
         |> redirect(to: Routes.page_path(conn, :index))
 
       {:error, message} ->
         conn
-        |> put_flash(:error, message)
+        |> put_flash(:login_error, message)
         |> redirect(to: Routes.session_path(conn, :new))
     end
   end

@@ -1,0 +1,16 @@
+<h1 class="title">Reportes</h1>
+
+<div class="columns">
+  <div class="column">
+    <div class="box">
+      <div class="title is-4">Usuarios</div>
+      <div class="title is-3"><%= @counts.user %></div>
+    </div>
+  </div>
+  <div class="column">
+    <div class="box">
+      <div class="title is-4">Posts</div>
+      <div class="title is-3"><%= @counts.post %></div>
+    </div>
+  </div>
+</div>

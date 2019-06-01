@@ -8,7 +8,8 @@
       <h2>
         <template v-if="type == 'compact'">
           <avatar :avatar="user.avatar.medium" :status="user.online" :user="user.name"></avatar>
-          <span>@
+          <span>
+            @
             <router-link
               :to="`/@${user.username}`"
               class="u_name"
@@ -70,6 +71,18 @@
             <i class="fas fa-cog"></i>&nbsp;Cambiar apariencia
           </router-link>
         </li>
+        <li v-if="can('ban_user')">
+          <button
+            @click.prevent="ban_user"
+            class="button"
+            data-button-size="medium"
+            data-button-font="big"
+            data-button-unmask
+            data-button-dark
+          >
+            <i class="fas fa-gavel"></i>
+          </button>
+        </li>
         <li v-if="!isAuthUser">
           <button
             v-if="user.blocked"
@@ -118,10 +131,13 @@
 import user from "../api/user";
 import formatter from "@/lib/formatter";
 import avatar from "@/components/Avatar";
+import { mapGetters } from "vuex";
+import BanUserModal from "@/components/Modals/BanUserModal";
 
 export default {
   components: {
-    avatar
+    avatar,
+    BanUserModal
   },
   props: {
     user: {
@@ -138,6 +154,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["can"]),
     isAuthUser() {
       if (!this.$store.getters.user) return false;
       return this.user.id === this.$store.getters.user.id;
@@ -182,6 +199,13 @@ export default {
       user.unblock(this.user.id).then(res => {
         this.user.blocked = false;
       });
+    },
+    ban_user() {
+      this.$modal.show(
+        BanUserModal,
+        { user_id: this.user.id },
+        { height: "auto", adaptive: true, maxWidth: 400, scrollable: true }
+      );
     }
   }
 };

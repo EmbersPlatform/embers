@@ -120,9 +120,7 @@ window.addEventListener("unhandledrejection", function (event) {
 });
 
 $(document).ready(function () {
-  setTimeout(() => {
-    $("#loader").remove();
-  }, 1000);
+  $("#loader").remove();
 
   // /**
   //  * Autoresize text inputs

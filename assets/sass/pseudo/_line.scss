@@ -1,11 +1,20 @@
 // converts items in a container in a horizontal line (used with switch & checkbox module)
-._line{
-	@include flexbox(row, nowrap, flex-start, center);
-	input[type="radio"], .tip{
-		margin-right: 5px;
-	}
-	label:not(.tip){
-		width: auto;
-		@include flex(1 1 auto);
-	}
+._line {
+  display: flex;
+  align-items: center;
+
+  &>label {
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="radio"],
+  .tip {
+    margin-right: 5px;
+  }
+
+  label:not(.tip) {
+    width: auto;
+    @include flex(1 1 auto);
+  }
 }

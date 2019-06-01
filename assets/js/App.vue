@@ -104,7 +104,7 @@ export default {
     },
     refreshFeed() {
       this.toTop();
-      this.$store.dispatch("prepend_new_posts");
+      this.$root.$emit("prepend_new_posts");
       this.$store.dispatch("resetNewActivity");
     }
   },

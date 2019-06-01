@@ -2,7 +2,7 @@ defmodule EmbersWeb.PostView do
   use EmbersWeb, :view
 
   alias Embers.Helpers.IdHasher
-  alias EmbersWeb.{MediaView, PostView, UserView}
+  alias EmbersWeb.{LinkView, MediaView, PostView, UserView}
 
   def render("show.json", %{post: post, current_user: current_user})
       when not is_nil(current_user) do
@@ -28,12 +28,15 @@ defmodule EmbersWeb.PostView do
           replies: post.replies_count,
           shares: post.shares_count
         },
-        nesting_level: post.nesting_level
+        nesting_level: post.nesting_level,
+        nsfw: post.nsfw,
+        faved: post.faved
       }
       |> handle_tags(post)
       |> put_in_reply_to(post)
       |> put_user(post)
       |> handle_media(post)
+      |> handle_links(post)
       |> handle_reactions(post, assigns)
 
     if Map.get(assigns, :with_related, true) do
@@ -80,6 +83,13 @@ defmodule EmbersWeb.PostView do
          %{old_attachment: %{"url" => url, "meta" => meta, "type" => type}} = _post
        )
        when not is_nil(url) do
+    meta =
+      case meta do
+        nil -> nil
+        %{"image" => image} -> Map.put(meta, "preview_url", image)
+        _ -> Map.put(meta, "preview_url", url)
+      end
+
     Map.put(view, "media", [
       %{
         "type" => type,
@@ -93,6 +103,12 @@ defmodule EmbersWeb.PostView do
   defp handle_media(view, post) do
     if Ecto.assoc_loaded?(post.media) do
       Map.put(view, "media", render_many(post.media, MediaView, "media.json", as: :media))
+    end || view
+  end
+
+  defp handle_links(view, post) do
+    if Ecto.assoc_loaded?(post.links) do
+      Map.put(view, "links", render_many(post.links, LinkView, "link.json", as: :link))
     end || view
   end
 

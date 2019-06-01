@@ -42,15 +42,19 @@
   &[class*="locked"] {
     .card-wrapper {
       overflow: hidden;
-      pointer-events: none;
 
-      >*:not(.header) {
+      > *:not(.header) {
+        pointer-events: none;
+      }
+
+      > *:not(.header) > *:not(.card-wrapper-content-tags) {
         @include blur(2, em);
       }
     }
   }
 
-  &[data-card-size="big"] {}
+  &[data-card-size="big"] {
+  }
 
   &[data-card-size="medium"] {
     width: 100%;
@@ -85,7 +89,7 @@
         }
 
         .header-options {
-          >span {
+          > span {
             padding: 5px;
 
             svg {
@@ -116,7 +120,7 @@
           @include font-size(12);
         }
 
-        >p {
+        > p {
           margin: 0 15px;
 
           &:not(:last-child) {
@@ -153,7 +157,7 @@
               @include font-size(2);
             }
 
-            ~.source {
+            ~ .source {
               @include font-size();
             }
           }
@@ -203,11 +207,11 @@
         height: 35px;
         @include justify-content(flex-end);
 
-        >li:not(:last-child) {
+        > li:not(:last-child) {
           margin-right: 15px;
         }
 
-        >li {
+        > li {
           @include font-size(2);
 
           ul {
@@ -264,7 +268,7 @@
         }
 
         .header-options {
-          >span {
+          > span {
             padding: 5px;
 
             svg {
@@ -295,7 +299,7 @@
           @include font-size(6);
         }
 
-        >p {
+        > p {
           margin: 0 10px;
 
           &:not(:last-child) {
@@ -332,7 +336,7 @@
               @include font-size();
             }
 
-            ~.source {
+            ~ .source {
               @include font-size();
             }
           }
@@ -381,11 +385,11 @@
         height: 25px;
         @include justify-content(flex-end);
 
-        >li:not(:last-child) {
+        > li:not(:last-child) {
           margin-right: 10px;
         }
 
-        >li {
+        > li {
           @include font-size();
 
           ul {
@@ -410,7 +414,7 @@
     border-bottom-right-radius: 3px;
   }
 
-  &.new>.card-wrapper {
+  &.new > .card-wrapper {
     border-color: $narrojo;
   }
 }
@@ -435,15 +439,17 @@
       // background: rgba($narrojo, 0.4);
       // background: $t-error;
       // @include linear-gradient(45deg, lighten($t-error, 3), darken($t-error, 3));
-      @include linear-gradient(45deg,
+      @include linear-gradient(
+        45deg,
         rgba(lighten($narrojo, 3), 0.4),
-        rgba(darken($narrojo, 3), 0.4));
+        rgba(darken($narrojo, 3), 0.4)
+      );
     }
 
     p {
       z-index: 1;
 
-      ~* {
+      ~ * {
         z-index: 0;
       }
     }
@@ -462,7 +468,7 @@
     z-index: 0;
     @include box-shadow(none);
 
-    ~.actions {
+    ~ .actions {
       z-index: 3;
     }
 
@@ -501,7 +507,7 @@
     }
   }
 
-  >p {
+  > p {
     display: block;
 
     &[class~="folded"] {

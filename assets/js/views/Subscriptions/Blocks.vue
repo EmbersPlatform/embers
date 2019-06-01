@@ -10,11 +10,7 @@
       :data-renderbox-message="renderboxMessage"
     >
       <div class="user-row" v-for="user in users" :key="user.id">
-        <router-link
-          :to="`/@${user.name}`"
-          class="u_name"
-          :data-badge="`${user.badges[0]}`"
-        >{{ user.name }}</router-link>
+        <a class="u_name" v-text="user.username"/>
         <button
           v-if="user.blocked"
           @click.prevent="unblock(user)"
@@ -82,10 +78,15 @@ export default {
       userAPI
         .getBlocked()
         .then(res => {
+          console.log(res);
           if (this._inactive) {
             return;
           }
-          this.users = res;
+          this.users = res.items;
+          this.users.map(user => {
+            user.blocked = true;
+            return user;
+          });
         })
         .finally(() => {
           this.loading = false;

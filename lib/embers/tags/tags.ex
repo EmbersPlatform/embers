@@ -11,6 +11,7 @@ defmodule Embers.Tags do
   moderadores.
   """
 
+  alias Embers.Feed.Post
   alias Embers.Feed.Subscriptions.TagSubscription
   alias Embers.Repo
   alias Embers.Tags.{Tag, TagPost}
@@ -108,5 +109,48 @@ defmodule Embers.Tags do
   defp insert_tag(name) do
     tag = Tag.create_changeset(%Tag{}, %{"name" => name})
     Repo.insert!(tag)
+  end
+
+  def add_tag(post, tag_name) when is_binary(tag_name) do
+    tag = create_tag(%{"name" => tag_name})
+    add_tag(post, tag.id)
+  end
+
+  def add_tag(%Post{id: pid}, tid) do
+    add_tag(pid, tid)
+  end
+
+  def add_tag(pid, tid) do
+    %TagPost{}
+    |> TagPost.create_changeset(%{post_id: pid, tag_id: tid})
+    |> Repo.insert()
+  end
+
+  def remove_tag(post, tag_name) when is_binary(tag_name) do
+    case Repo.get_by(Tag, %{name: tag_name}) do
+      nil -> nil
+      tag -> remove_tag(post, tag.id)
+    end
+  end
+
+  def remove_tag(%Post{id: pid}, tid) do
+    remove_tag(pid, tid)
+  end
+
+  def remove_tag(pid, tid) do
+    case Repo.get_by(TagPost, %{post_id: pid, tag_id: tid}) do
+      nil -> nil
+      tag_post -> Repo.delete(tag_post)
+    end
+  end
+
+  def tags_loaded(%Post{tags: tags}) do
+    tags |> Enum.map(& &1.name)
+  end
+
+  def update_tags(post, new_tags) when is_list(new_tags) do
+    old_tags = tags_loaded(post)
+    Enum.each(new_tags -- old_tags, &add_tag(post, &1))
+    Enum.each(old_tags -- new_tags, &remove_tag(post, &1))
   end
 end

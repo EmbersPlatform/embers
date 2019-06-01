@@ -65,4 +65,19 @@ defmodule EmbersWeb.PageController do
   def auth(conn, _params) do
     render(conn, "auth.json", conn: conn)
   end
+
+  def rules(conn, _params) do
+    rules = Embers.Settings.get!("rules")
+    send_resp(conn, 200, rules.string_value)
+  end
+
+  def faq(conn, _params) do
+    faq = Embers.Settings.get!("faq")
+    send_resp(conn, 200, faq.string_value)
+  end
+
+  def acknowledgments(conn, _params) do
+    acknowledgments = Embers.Settings.get!("acknowledgments")
+    send_resp(conn, 200, acknowledgments.string_value)
+  end
 end

@@ -33,7 +33,11 @@ defmodule EmbersWeb.AccountController do
             Email.confirm_request(email, key)
 
             conn
-            |> json(%{success: true})
+            |> put_flash(
+              :info,
+              "Tu cuenta ha sido creada, pero antes debes activarla. Te enviamos un email con un enlace para activarla."
+            )
+            |> redirect(to: Routes.session_path(conn, :new))
 
           {:error, %Ecto.Changeset{} = changeset} ->
             render(conn, "new.html", changeset: changeset)

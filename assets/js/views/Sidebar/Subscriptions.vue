@@ -8,26 +8,33 @@
         <li class="n_item">
           <router-link class="n_i_wrap" to="/subscriptions/users" exact>
             <span class="n_i_w_clip">
-              <svgicon name="s_account"></svgicon>
+              <i class="fas fa-user"></i>
             </span>
             <span class="n_i_w_content">usuarios</span>
           </router-link>
         </li>
-        <!-- DELAYED
-        <li class="n_item">
-          <router-link class="n_i_wrap" to="/subscriptions/tags" exact>
-            <span class="n_i_w_clip">
-              <svgicon name="s_account"></svgicon>
-            </span>
-            <span class="n_i_w_content">tags</span>
-          </router-link>
-        </li> -->
         <li class="n_item">
           <router-link class="n_i_wrap" to="/subscriptions/blocks" exact>
             <span class="n_i_w_clip">
-              <svgicon name="s_account_block"></svgicon>
+              <i class="fas fa-user-slash"></i>
             </span>
-            <span class="n_i_w_content">bloqueos</span>
+            <span class="n_i_w_content">usuarios bloqueados</span>
+          </router-link>
+        </li>
+        <li class="n_item">
+          <router-link class="n_i_wrap" to="/subscriptions/tags" exact>
+            <span class="n_i_w_clip">
+              <i class="fas fa-tags"></i>
+            </span>
+            <span class="n_i_w_content">tags</span>
+          </router-link>
+        </li>
+        <li class="n_item">
+          <router-link class="n_i_wrap" to="/subscriptions/blocked_tags" exact>
+            <span class="n_i_w_clip">
+              <i class="fas fa-ban"></i>
+            </span>
+            <span class="n_i_w_content">tags bloqueados</span>
           </router-link>
         </li>
       </ul>

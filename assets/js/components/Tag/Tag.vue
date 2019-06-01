@@ -12,9 +12,14 @@
           :data-button-important="!subbed"
         ></button>
       </div>
-      <div class="tag-description">Aca va la descripcion del tag(si la tiene)</div>
+      <div class="tag-description" v-if="tag.description" v-text="tag.description"/>
     </div>
-    <router-link slot="reference" :to="`/search/in:${tag.name}`" class="tag" :class="{active: subbed}">
+    <router-link
+      slot="reference"
+      :to="`/search/in:${tag.name}`"
+      class="tag"
+      :class="{active: subbed}"
+    >
       <span>#{{tag.name}}</span>
     </router-link>
   </popper>

@@ -32,6 +32,16 @@ defmodule EmbersWeb.FavoriteController do
         |> put_status(:no_content)
         |> json(nil)
 
+      {:error,
+       %Ecto.Changeset{
+         errors: [
+           unique_favorite: _
+         ]
+       }} ->
+        conn
+        |> put_status(:no_content)
+        |> json(nil)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

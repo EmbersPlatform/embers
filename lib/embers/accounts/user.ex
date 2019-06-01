@@ -58,7 +58,8 @@ defmodule Embers.Accounts.User do
     field(:banned_at, :utc_datetime)
     has_many(:sessions, Session, on_delete: :delete_all)
 
-    field(:following, :boolean, virtual: true)
+    field(:following, :boolean, virtual: true, default: false)
+    field(:follows_me, :boolean, virtual: true, default: false)
     field(:blocked, :boolean, virtual: true)
     field(:stats, :map, virtual: true, default: false)
 
@@ -119,6 +120,17 @@ defmodule Embers.Accounts.User do
       |> Embers.Repo.one()
 
     %{user | following: count > 0}
+  end
+
+  def load_follows_me_status(%User{} = user, follower_id) do
+    count =
+      Embers.Feed.Subscriptions.UserSubscription
+      |> where([s], s.source_id == ^follower_id)
+      |> where([s], s.user_id == ^user.id)
+      |> select([s], count(s.id))
+      |> Embers.Repo.one()
+
+    %{user | follows_me: count > 0}
   end
 
   def load_blocked_status(%User{} = user, follower_id) do

@@ -11,6 +11,12 @@ defmodule Embers.Repo do
     |> __MODULE__.update()
   end
 
+  def restore_entry(query) do
+    query
+    |> Ecto.Changeset.change(deleted_at: nil)
+    |> __MODULE__.update()
+  end
+
   def with_undeleted(query) do
     query
     |> where([t], is_nil(t.deleted_at))

@@ -54,6 +54,8 @@ defmodule Embers.Feed.Post do
     field(:shares_count, :integer, default: 0)
     field(:my_reactions, {:array, :string}, virtual: true)
     field(:mentions, {:array, :string}, virtual: true)
+    field(:nsfw, :boolean, virtual: true, default: false)
+    field(:faved, :boolean, virtual: true, default: false)
 
     belongs_to(:user, Embers.Accounts.User)
 
@@ -66,6 +68,7 @@ defmodule Embers.Feed.Post do
 
     many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
     many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
+    many_to_many(:links, Embers.Links.Link, join_through: "link_post")
     field(:old_attachment, {:map, :any})
 
     field(:deleted_at, :naive_datetime)
@@ -95,15 +98,27 @@ defmodule Embers.Feed.Post do
     |> cast_embed(:old_attachment)
   end
 
+  def fill_nsfw(%Post{} = post) do
+    if Ecto.assoc_loaded?(post.tags) do
+      %{
+        post
+        | nsfw: Enum.any?(post.tags, fn tag -> tag.name == "nsfw" end)
+      }
+    else
+      post
+    end
+  end
+
   defp must_have_body?(attrs) do
     has_parent? = not is_nil(attrs["parent_id"])
     is_shared? = not is_nil(attrs["related_to_id"])
     has_media? = Map.get(attrs, "media_count", 0) > 0
+    has_link? = Map.get(attrs, "links_count", 0) > 0
 
     if is_shared? do
       false
     else
-      has_parent? || !has_media?
+      !has_media? && !has_link?
     end
   end
 

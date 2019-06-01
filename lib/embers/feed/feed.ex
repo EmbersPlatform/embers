@@ -8,6 +8,7 @@ defmodule Embers.Feed do
   alias Ecto.Multi
   alias Embers.Feed.{Activity, Post}
   alias Embers.Helpers.IdHasher
+  alias Embers.Links.Link
   alias Embers.Media.MediaItem
   alias Embers.Paginator
   alias Embers.Repo
@@ -52,7 +53,7 @@ defmodule Embers.Feed do
         left_join: related in assoc(post, :related_to),
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
-        preload: [:media, :tags, :reactions, related_to: [:media, :tags, :reactions]],
+        preload: [:media, :links, :tags, :reactions, related_to: [:media, :tags, :reactions]],
         # Acá precargamos todo lo que levantamos más arriba con los joins,
         # de lo contrario Ecto no mapeará los resultados a los esquemas
         # correspondientes.
@@ -68,7 +69,9 @@ defmodule Embers.Feed do
         ]
       )
 
-    Repo.one(query)
+    query
+    |> Repo.one()
+    |> Post.fill_nsfw()
   end
 
   @doc """
@@ -92,6 +95,8 @@ defmodule Embers.Feed do
     |> Multi.insert(:post, post_changeset)
     # Si hay medios, asociarlos al post y quitarles el flag de temporal
     |> Multi.run(:medias, fn _repo, %{post: post} -> handle_medias(post, attrs) end)
+    # Si hay links, asociarlos al post y quitarles el flag de temporal
+    |> Multi.run(:links, fn _repo, %{post: post} -> handle_links(post, attrs) end)
     # Buscar tags en los atributos y en el cuerpo el post
     |> Multi.run(:tags, fn _repo, %{post: post} -> handle_tags(post, attrs) end)
     # Actualizar el contador de respuestas del post padre
@@ -109,7 +114,14 @@ defmodule Embers.Feed do
         # asociaciones que hacen falta para poder mostrarlo en el front
         post =
           post
-          |> Repo.preload([[user: :meta], :media, :tags, [related_to: [:media, user: :meta]]])
+          |> Repo.preload([
+            [user: :meta],
+            :media,
+            :links,
+            :tags,
+            [related_to: [:media, :links, user: :meta]]
+          ])
+          |> Post.fill_nsfw()
 
         # Disparamos un evento
         Embers.Event.emit(:post_created, post)
@@ -197,6 +209,29 @@ defmodule Embers.Feed do
     end
   end
 
+  defp handle_links(post, attrs) do
+    links = attrs["links"]
+
+    if is_nil(links) do
+      {:ok, nil}
+    else
+      ids = Enum.map(links, fn x -> IdHasher.decode(x["id"]) end)
+
+      {_count, links} =
+        Repo.update_all(
+          from(l in Link, where: l.id in ^ids),
+          [set: [temporary: false]],
+          returning: true
+        )
+
+      post
+      |> Repo.preload(:links)
+      |> Ecto.Changeset.change()
+      |> Ecto.Changeset.put_assoc(:links, links)
+      |> Repo.update()
+    end
+  end
+
   @doc """
   Updates a post.
 
@@ -216,8 +251,63 @@ defmodule Embers.Feed do
   end
 
   def delete_post(%Post{} = post) do
+    if post.nesting_level > 0 do
+      # Update parent post replies count
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [replies_count: -1]]
+        ),
+        []
+      )
+    end
+
+    unless is_nil(post.related_to_id) do
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [shares_count: -1]]
+        ),
+        []
+      )
+    end
+
     with {:ok, post} <- Repo.soft_delete(post) do
       Embers.Event.emit(:post_deleted, post)
+      {:ok, post}
+    else
+      error -> error
+    end
+  end
+
+  def restore_post(%Post{} = post) do
+    if post.nesting_level > 0 do
+      # Update parent post replies count
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [replies_count: 1]]
+        ),
+        []
+      )
+    end
+
+    unless is_nil(post.related_to_id) do
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [shares_count: 1]]
+        ),
+        []
+      )
+    end
+
+    with {:ok, post} <- Repo.restore_entry(post) do
+      Embers.Event.emit(:post_restored, post)
       {:ok, post}
     else
       error -> error
@@ -290,13 +380,15 @@ defmodule Embers.Feed do
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        preload: [:media, :reactions],
+        preload: [:tags, :media, :links, :reactions],
         preload: [
           user: {user, meta: meta}
         ]
       )
 
-    Paginator.paginate(query, opts)
+    query
+    |> Paginator.paginate(opts)
+    |> fill_nsfw()
   end
 
   def get_timeline(user_id, opts \\ []) do
@@ -313,7 +405,15 @@ defmodule Embers.Feed do
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
         preload: [
-          [post: [:media, :reactions, :tags, related_to: [:media, :tags, :reactions]]]
+          [
+            post: [
+              :media,
+              :links,
+              :reactions,
+              :tags,
+              related_to: [:media, :links, :tags, :reactions]
+            ]
+          ]
         ],
         preload: [
           post: {
@@ -332,7 +432,8 @@ defmodule Embers.Feed do
 
     query
     |> Paginator.paginate(opts)
-    |> activities_to_posts
+    |> activities_to_posts()
+    |> fill_nsfw()
   end
 
   def get_user_activities(user_id, opts \\ []) do
@@ -341,6 +442,7 @@ defmodule Embers.Feed do
         post in Post,
         where: post.user_id == ^user_id,
         where: is_nil(post.deleted_at),
+        where: post.nesting_level == 0,
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
@@ -348,7 +450,7 @@ defmodule Embers.Feed do
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
         preload: [
-          [:media, :reactions, :tags, related_to: [:media, :tags, :reactions]]
+          [:media, :links, :reactions, :tags, related_to: [:media, :links, :tags, :reactions]]
         ],
         preload: [
           user: {user, meta: meta},
@@ -362,7 +464,9 @@ defmodule Embers.Feed do
         ]
       )
 
-    Paginator.paginate(query, opts)
+    query
+    |> Paginator.paginate(opts)
+    |> fill_nsfw()
   end
 
   @doc """
@@ -386,7 +490,7 @@ defmodule Embers.Feed do
           left_join: user in assoc(post, :user),
           left_join: meta in assoc(user, :meta),
           preload: [
-            [:media, :reactions, :tags]
+            [:media, :links, :reactions, :tags]
           ],
           preload: [
             user: {user, meta: meta}
@@ -394,7 +498,12 @@ defmodule Embers.Feed do
           limit: ^limit
         )
 
-      Map.put(acc, tag, Repo.all(query))
+      results =
+        query
+        |> Repo.all()
+        |> Enum.map(fn post -> Post.fill_nsfw(post) end)
+
+      Map.put(acc, tag, results)
     end)
   end
 
@@ -416,12 +525,14 @@ defmodule Embers.Feed do
         where: post.parent_id == ^parent_id and is_nil(post.deleted_at),
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        order_by: [desc: post.inserted_at],
+        order_by: [asc: post.inserted_at],
         preload: [user: {user, meta: meta}],
-        preload: [:reactions, :media]
+        preload: [:reactions, :media, :links, :tags]
       )
 
-    Paginator.paginate(query, opts)
+    query
+    |> Paginator.paginate(opts)
+    |> fill_nsfw()
   end
 
   @doc """
@@ -486,5 +597,12 @@ defmodule Embers.Feed do
 
   defp activities_to_posts(page) do
     %{page | entries: Enum.map(page.entries, fn a -> a.post end)}
+  end
+
+  defp fill_nsfw(page) do
+    %{
+      page
+      | entries: Enum.map(page.entries, fn post -> Post.fill_nsfw(post) end)
+    }
   end
 end

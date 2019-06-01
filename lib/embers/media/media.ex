@@ -70,17 +70,31 @@ defmodule Embers.Media do
            ),
          {:ok, preview} <-
            make_preview(processed_file, dest_path, max_width: 500, max_height: 500) do
-      media =
-        Repo.insert!(
-          MediaItem.changeset(%MediaItem{}, %{
-            user_id: owner,
-            url: res.url,
-            type: processed_file.type,
-            metadata: %{
-              preview_url: preview.url
-            }
-          })
-        )
+      media_data = %{
+        user_id: owner,
+        url: res.url,
+        type: processed_file.type,
+        metadata: %{
+          preview_url: preview.url
+        }
+      }
+
+      media_data =
+        case Fastimage.size(processed_file.path) do
+          %{height: height, width: width} ->
+            metadata =
+              media_data.metadata
+              |> put_in([:height], height)
+              |> put_in([:width], width)
+
+            %{media_data | metadata: metadata}
+
+          error ->
+            Logger.error("Couldn't get image dimentions: #{inspect(error)}")
+            media_data
+        end
+
+      media = Repo.insert!(MediaItem.changeset(%MediaItem{}, media_data))
 
       {:ok, media}
     else

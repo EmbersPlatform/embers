@@ -1,64 +1,24 @@
 <template>
-  <div class="media-zone">
-    <template v-if="medias.length < 3">
-      <div class="row">
-        <template v-if="previews">
-          <div
-            class="media-preview big"
-            v-for="media in medias"
-            :key="media.id"
-            :style="{'background-image': `url(${media.metadata.preview_url})`}"
-            @click="clicked(media.id)"
-          ></div>
-        </template>
-        <template v-else>
-          <media-item
-            v-for="media in medias"
-            :media="media"
-            :key="media.id"
-            @clicked="clicked(media.id)"
-          ></media-item>
-        </template>
-      </div>
-    </template>
+  <div class="media-zone" :class="{small: small}">
+    <small-medias v-if="small" :medias="medias" @clicked="clicked"/>
     <template v-else>
-      <template v-if="previews">
-        <div
-          class="media-preview big"
-          :style="{'background-image': `url(${medias_head.metadata.preview_url})`}"
-          @click="clicked(medias_head.id)"
-        ></div>
-      </template>
+      <inline-medias v-if="$mq == 'sm' && !small" :medias="medias" @clicked="clicked"/>
       <template v-else>
-        <media-item :media="medias_head" @clicked="clicked(medias_head.id)"></media-item>
+        <single-media v-if="medias_length === 1" @clicked="clicked" :medias="medias"/>
+        <two-medias v-if="medias_length === 2" @clicked="clicked" :medias="medias"/>
+        <many-medias v-if="medias_length > 2" @clicked="clicked" :medias="medias"/>
       </template>
-      <div class="row">
-        <template v-if="previews">
-          <div
-            class="media-preview"
-            v-for="media in medias_tail"
-            :key="media.id"
-            :style="{'background-image': `url(${media.metadata.preview_url})`}"
-            @click="clicked(media.id)"
-          ></div>
-        </template>
-        <template v-else>
-          <media-item
-            v-for="media in medias_tail"
-            :media="media"
-            :key="media.id"
-            @clicked="clicked(media.id)"
-          ></media-item>
-        </template>
-      </div>
     </template>
   </div>
 </template>
 
 <script>
 import _ from "lodash";
-import MediaItem from "./MediaItem";
-
+import SingleMedia from "./layouts/SingleMedia";
+import TwoMedias from "./layouts/TwoMedias";
+import ManyMedias from "./layouts/ManyMedias";
+import InlineMedias from "./layouts/InlineMedias";
+import SmallMedias from "./layouts/SmallMedias";
 export default {
   name: "media-zone",
   props: {
@@ -69,20 +29,20 @@ export default {
     previews: {
       type: Boolean,
       default: false
+    },
+    small: {
+      type: Boolean,
+      default: false
     }
   },
-  components: { MediaItem },
+  components: { SingleMedia, TwoMedias, ManyMedias, InlineMedias, SmallMedias },
   computed: {
-    medias_head() {
-      return _.head(this.medias);
-    },
-    medias_tail() {
-      return _.tail(this.medias);
+    medias_length() {
+      return this.medias.length;
     }
   },
   methods: {
     clicked(id) {
-      console.log("xd");
       this.$emit("clicked", id);
     }
   }
@@ -90,17 +50,9 @@ export default {
 </script>
 
 <style lang="scss">
-.media-preview {
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  flex-grow: 1;
-  height: 160px;
-  margin: 2px;
-
-  &.big {
-    height: 340px;
-  }
+.media-zone {
+  border-radius: 10px;
+  overflow: hidden;
 }
 </style>
 

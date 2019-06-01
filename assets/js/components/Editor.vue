@@ -1,29 +1,5 @@
 <template>
   <div class="editor">
-    <ul class="toolbar">
-      <li @click="format('bold')">
-        <i class="fas fa-bold"></i>
-      </li>
-      <li @click="format('italic')">
-        <i class="fas fa-italic"></i>
-      </li>
-      <li @click="format('strikethrough')">
-        <i class="fas fa-strikethrough"></i>
-      </li>
-      <li v-if="type == 'comment'" @click="insertImage">
-        <i class="fas fa-image"></i>
-      </li>
-      <li @click="format('code')">
-        <i class="fas fa-code"></i>
-      </li>
-      <emoji-picker @selected="addEmoji"></emoji-picker>
-      <li :class="{active: preview}" @click="previewPost">
-        <i class="fas fa-eye"></i>
-      </li>
-      <li @click="showHelp">
-        <i class="fas fa-question"></i>
-      </li>
-    </ul>
     <div class="canvas" :data-title="canvasTitle">
       <textarea
         class="markup"
@@ -39,6 +15,27 @@
       ></textarea>
       <div class="markup preview" v-if="preview" v-html="formattedBody"></div>
     </div>
+    <ul class="toolbar">
+      <li @click="format('bold')">
+        <i class="fas fa-bold"></i>
+      </li>
+      <li @click="format('italic')">
+        <i class="fas fa-italic"></i>
+      </li>
+      <li @click="format('strikethrough')">
+        <i class="fas fa-strikethrough"></i>
+      </li>
+      <li @click="format('code')">
+        <i class="fas fa-code"></i>
+      </li>
+      <emoji-picker @selected="addEmoji"></emoji-picker>
+      <li :class="{active: preview}" @click="previewPost">
+        <i class="fas fa-eye"></i>
+      </li>
+      <li @click="showHelp">
+        <i class="fas fa-question"></i>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -164,7 +161,6 @@ export default {
               "**negrita**: \\*\\*negrita** o \\_\\_negrita\\_\\_\r\n" +
               "`codigo`: \\`codigo\\`\r\n" +
               "~~tachado~~: \\~\\~tachado\\~\\~\r\n" +
-              "imagen: `![](url)` *sólo en comentarios*\r\n" +
               "Mencionar a un usuario: `@usuario`\r\n" +
               ">be me\n" +
               ">greentexting outside of 4chan"
@@ -200,6 +196,10 @@ export default {
 
     this.$parent.$on("reset", () => {
       this.resetData();
+    });
+
+    this.$parent.$on("closed", () => {
+      this.$refs.textarea.blur();
     });
 
     this.$root.$on(this._uid + "-insert-image", url => {

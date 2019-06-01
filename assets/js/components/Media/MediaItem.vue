@@ -9,7 +9,8 @@
       </video>
     </div>
     <div class="media-video" v-if="media.type == 'video'">
-      <video controls :autoplay="autoplay" :poster="media.metadata.preview_url">
+      <old-video v-if="media.legacy" :video="media"/>
+      <video v-else controls :autoplay="autoplay" :poster="media.metadata.preview_url">
         <source :src="media.url" type="video/mp4">
       </video>
     </div>
@@ -17,8 +18,11 @@
 </template>
 
 <script>
+import OldVideo from "./OldVideo";
+
 export default {
   name: "media-item",
+  components: { OldVideo },
   props: {
     media: {
       type: Object,

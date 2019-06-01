@@ -16,7 +16,9 @@ export default {
    * @param identifier
    */
   follow(id) {
-    return wrap(() => axios.post(`${config.prefix}/friends`, { id: id }));
+    return wrap(() => axios.post(`${config.prefix}/friends`, {
+      id: id
+    }));
   },
 
   /**
@@ -28,7 +30,9 @@ export default {
   },
 
   block(id) {
-    return wrap(() => axios.post(`${config.prefix}/blocks/`, { id: id }));
+    return wrap(() => axios.post(`${config.prefix}/blocks/`, {
+      id: id
+    }));
   },
 
   unblock(id) {
@@ -79,17 +83,21 @@ export default {
     let query = {};
     let id = null;
 
-    if (typeof params.before !== "undefined" && !isNaN(params.before))
+    if (!isNaN(params.before))
       query.before = params.before;
 
-    if (typeof params.before !== "undefined" && !isNaN(params.after))
+    if (!isNaN(params.after))
       query.after = params.after;
+
+    query.limit = params.limit;
 
     if (isNaN(params.id)) id = window.appData.user.id;
     else id = params.id;
 
     return wrap(() =>
-      axios.get(`${config.prefix}/friends/${id}/list`, { query })
+      axios.get(`${config.prefix}/friends/${id}/list`, {
+        query
+      })
     );
   },
 
@@ -106,13 +114,15 @@ export default {
 
     if (isNaN(params.id)) id = window.appData.user.id;
     return wrap(() =>
-      axios.get(`${config.prefix}/followers/${id}/list`, { params })
+      axios.get(`${config.prefix}/followers/${id}/list`, {
+        params
+      })
     );
   },
 
   getBlocked() {
     let id = window.appData.user.id;
-    return wrap(() => axios.get(`${config.prefix}/users/${id}/block`));
+    return wrap(() => axios.get(`${config.prefix}/blocks/list`));
   },
 
   getPasses() {
