@@ -88,7 +88,8 @@ defmodule EmbersWeb.Email do
   end
 
   defp port() do
-    case Application.get_env(:embers, EmbersWeb.Endpoint)[:http][:port] do
+    case System.get_env("PORT") do
+      nil -> ""
       80 -> ""
       port -> ":#{port}"
     end
