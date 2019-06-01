@@ -41,14 +41,13 @@ import Comment from "./Comment";
 export default {
   props: ["postId", "comments", "bottomComments", "lastPage", "loading"],
   components: { Comment },
-
   methods: {
     /**
      * Deletes a specified comment from the list
      * @param comment Comment object
      */
     deleteComment(comment) {
-      this.comments = this.comments.filter(c => c.id !== comment.id);
+      this.$emit("comment_deleted", comment);
     },
 
     /**

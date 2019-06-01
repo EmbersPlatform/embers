@@ -10,10 +10,7 @@
       :data-renderbox-message="renderboxMessage"
     >
       <div class="user-row" v-for="user in users" :key="user.id">
-        <router-link
-          :to="`/@${user.username}`"
-          class="u_name"
-        >{{ user.username }}</router-link>
+        <a class="u_name" v-text="user.username"/>
         <button
           v-if="user.blocked"
           @click.prevent="unblock(user)"

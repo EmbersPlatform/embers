@@ -3,6 +3,7 @@ defmodule Embers.Moderation do
   alias Embers.Accounts.User
   alias Embers.Moderation.Ban
 
+  alias Embers.Paginator
   alias Embers.Repo
   import Ecto.Query, only: [from: 2]
 
@@ -28,6 +29,11 @@ defmodule Embers.Moderation do
 
   def get_active_ban(%User{} = user) do
     get_active_ban(user.id)
+  end
+
+  def list_all_bans(opts \\ []) do
+    from(ban in Ban, order_by: [desc: ban.id], where: is_nil(ban.deleted_at))
+    |> Paginator.paginate(opts)
   end
 
   def list_bans(user, opts \\ [])

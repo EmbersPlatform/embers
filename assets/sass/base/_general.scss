@@ -209,8 +209,8 @@ form {
       box-sizing: border-box;
       font-size: 1.5em;
       line-height: 100%;
-      transform: translateY(-.2em);
-      margin: calc(100% - .75em) 0;
+      transform: translateY(-0.2em);
+      margin: calc(100% - 0.75em) 0;
       text-align: center;
     }
   }
@@ -278,7 +278,7 @@ blockquote {
     content: ">";
   }
 
-  &>p {
+  & > p {
     display: inline-block;
     color: inherit !important;
   }
@@ -305,11 +305,23 @@ blockquote {
 .controls {
   @include flexbox(row, nowrap, flex-end, center);
 
-  >* {
+  > * {
     margin-left: 15px;
   }
 
   ._line {
     color: $secondary;
+  }
+}
+
+.--danger {
+  color: $t-error!important;
+  svg {
+    * {
+      fill: $t-error!important;
+    }
+  }
+  i {
+    color: $t-error!important;
   }
 }

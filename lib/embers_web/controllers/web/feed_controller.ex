@@ -12,6 +12,8 @@ defmodule EmbersWeb.FeedController do
         limit: params["limit"]
       )
 
+    conn |> IO.inspect()
+
     render(conn, "timeline.json", results)
   end
 

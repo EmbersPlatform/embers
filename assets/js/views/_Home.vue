@@ -6,24 +6,20 @@
     <div id="wrapper">
       <SideModule v-if="$mq == 'lg'"></SideModule>
       <div id="content" data-layout-type="single-column">
-        <ToolBox v-if="auth.loggedIn()"></ToolBox>
-        <div id="home-controls">
-          <div class="controls">
-            <button class="filter-button" @click.prevent="refreshFeed">
-              <i class="fas fa-sync-alt"></i>&nbsp;Actualizar
-            </button>
-          </div>
-        </div>
-        <Feed></Feed>
+        <ToolBox v-if="auth.loggedIn()" @created="handle_new_post"></ToolBox>
+        <Feed :posts="posts"></Feed>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import auth from "../auth";
 import formatter from "@/lib/formatter";
+import { concat_post } from "@/lib/posts";
 
+import Intersector from "@/components/Intersector";
 import ToolBox from "../components/ToolBox/_ToolBox";
 import Feed from "../components/Feed";
 import CheckBox from "../components/inputCheckbox";
@@ -39,7 +35,8 @@ export default {
     Feed,
     CheckBox,
     SideModule,
-    Top
+    Top,
+    Intersector
   },
   /**
    * Component data
@@ -47,25 +44,14 @@ export default {
    */
   data() {
     return {
-      auth,
-      new_posts: []
+      auth
     };
   },
 
   methods: {
-    toggleFilterControls() {
-      this.open = !this.open;
-    },
-
-    refreshFeed() {
-      this.$root.$emit("refresh_feed");
+    handle_new_post(new_post) {
+      this.$root.$emit("addFeedPost", new_post);
     }
-  },
-  /**
-   * Triggered before this component instance is destroyed
-   */
-  destroyed() {
-    this.$store.dispatch("cleanFeedPosts");
   }
 };
 </script>

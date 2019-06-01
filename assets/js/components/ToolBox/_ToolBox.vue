@@ -83,6 +83,7 @@
               class="button"
               data-button-size="medium"
               data-button-font="medium"
+              v-if="!always_open"
             >cancelar</button>
             <button
               :disabled="!canPublish"
@@ -199,7 +200,8 @@ export default {
     type: {
       type: String,
       default: "toolbox"
-    }
+    },
+    always_open: { type: Boolean, default: false }
   },
   data: initialData,
   computed: {
@@ -207,6 +209,7 @@ export default {
       return this.status.error !== null;
     },
     canShowEditor() {
+      if (this.always_open) return true;
       return this.status.open;
     },
     canPublish() {
@@ -263,7 +266,11 @@ export default {
         tags: this.post.tags.split(" ")
       };
       if (this.post.nsfw) {
-        requestData.tags.push("nsfw");
+        if (this.post.tags.length) {
+          requestData.tags.push("nsfw");
+        } else {
+          requestData.tags = ["nsfw"];
+        }
       }
 
       if (this.parent_id) {

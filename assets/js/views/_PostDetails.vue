@@ -21,6 +21,7 @@
               :lastPage="lastPage"
               :postId="id"
               @loadMore="loadComments"
+              @comment_deleted="comment_deleted"
             ></CommentList>
             <div class="new-comment">
               <div class="comment">
@@ -32,6 +33,7 @@
                     :with_tags="false"
                     :parent_id="id"
                     :has_overlay="false"
+                    always_open
                     type="comment"
                     @created="addComment"
                   ></Toolbox>
@@ -177,6 +179,11 @@ export default {
         text: "Post eliminado exitosamente.",
         type: "success"
       });
+    },
+    comment_deleted(comment) {
+      console.log("filtering comment:", comment);
+      this.comments = this.comments.filter(x => x.id != comment.id);
+      this.bottomComments = this.bottomComments.filter(x => x.id != comment.id);
     }
   },
 

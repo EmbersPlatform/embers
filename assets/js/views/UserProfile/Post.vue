@@ -9,6 +9,7 @@
         :lastPage="lastPage"
         :postId="id"
         @loadMore="loadComments"
+        @comment_deleted="comment_deleted"
       ></CommentList>
       <NewCommentBox v-if="user" :postId="id" @created="addComment"></NewCommentBox>
     </div>
@@ -130,6 +131,11 @@ export default {
         text: "Post eliminado exitosamente.",
         type: "success"
       });
+    },
+    comment_deleted(comment) {
+      console.log("filtering comment:", comment);
+      this.comments = this.comments.filter(x => x.id != comment.id);
+      this.bottomComments = this.bottomComments.filter(x => x.id != comment.id);
     }
   },
 

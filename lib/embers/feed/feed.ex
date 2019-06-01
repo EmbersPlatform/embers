@@ -69,7 +69,9 @@ defmodule Embers.Feed do
         ]
       )
 
-    Repo.one(query)
+    query
+    |> Repo.one()
+    |> Post.fill_nsfw()
   end
 
   @doc """
@@ -249,8 +251,63 @@ defmodule Embers.Feed do
   end
 
   def delete_post(%Post{} = post) do
+    if post.nesting_level > 0 do
+      # Update parent post replies count
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [replies_count: -1]]
+        ),
+        []
+      )
+    end
+
+    unless is_nil(post.related_to_id) do
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [shares_count: -1]]
+        ),
+        []
+      )
+    end
+
     with {:ok, post} <- Repo.soft_delete(post) do
       Embers.Event.emit(:post_deleted, post)
+      {:ok, post}
+    else
+      error -> error
+    end
+  end
+
+  def restore_post(%Post{} = post) do
+    if post.nesting_level > 0 do
+      # Update parent post replies count
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [replies_count: 1]]
+        ),
+        []
+      )
+    end
+
+    unless is_nil(post.related_to_id) do
+      Repo.update_all(
+        from(
+          p in Post,
+          where: p.id == ^post.parent_id,
+          update: [inc: [shares_count: 1]]
+        ),
+        []
+      )
+    end
+
+    with {:ok, post} <- Repo.restore_entry(post) do
+      Embers.Event.emit(:post_restored, post)
       {:ok, post}
     else
       error -> error
@@ -470,7 +527,7 @@ defmodule Embers.Feed do
         left_join: meta in assoc(user, :meta),
         order_by: [asc: post.inserted_at],
         preload: [user: {user, meta: meta}],
-        preload: [:reactions, :media, :links]
+        preload: [:reactions, :media, :links, :tags]
       )
 
     query

@@ -79,12 +79,6 @@
             <i class="fas fa-gavel"/>
           </span>
           <ul>
-            <li>
-              <span @click.prevent="deletePost(post)">
-                <i class="fas fa-trash-alt"></i>
-                Eliminar
-              </span>
-            </li>
             <li v-if="can('update_post')">
               <span v-if="!post.nsfw" @click.prevent="markAsNsfw">
                 <i class="fas fa-pepper-hot"></i>
@@ -96,7 +90,13 @@
               </span>
             </li>
             <li>
-              <span @click.prevent="ban_user">
+              <span @click.prevent="deletePost(post)" class="--danger">
+                <i class="fas fa-trash-alt"></i>
+                Eliminar
+              </span>
+            </li>
+            <li>
+              <span @click.prevent="ban_user" class="--danger">
                 <i class="fas fa-gavel"></i>
                 Suspender usuario
               </span>
@@ -129,6 +129,12 @@
               <span @click.prevent="report_post">
                 <i class="far fa-flag"></i>
                 Reportar
+              </span>
+            </li>
+            <li v-if="isOwner">
+              <span @click.prevent="deletePost(post)" class="--danger">
+                <i class="fas fa-trash-alt"></i>
+                Eliminar
               </span>
             </li>
           </ul>
@@ -714,8 +720,10 @@ export default {
   data() {
     return {
       App: this.$store.state.appData,
-      show: false,
-      locked: false,
+      show:
+        !this.post.nsfw || this.$store.getters.settings.content_nsfw !== "hide",
+      locked:
+        this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask",
       unfolded: false,
       imageTooLarge: false,
       imageSize: null,
@@ -726,16 +734,6 @@ export default {
       show_media_slides: false,
       clicked_media_index: 0
     };
-  },
-
-  /**
-   * Triggered when an instance of this component gets created
-   */
-  created() {
-    this.show =
-      !this.post.nsfw || this.$store.getters.settings.content_nsfw !== "hide";
-    this.locked =
-      this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
   },
   mounted() {
     $(this.$refs.trg_picker).on({

@@ -11,8 +11,6 @@ defmodule EmbersWeb.ModerationController do
   plug(CheckPermissions, [permission: "update_post"] when action in [:update_tags])
 
   def ban_user(conn, %{"user_id" => id, "duration" => duration, "reason" => reason} = _params) do
-    duration = String.to_integer(duration)
-
     with user <- Embers.Accounts.get_user(decode(id)),
          {:ok, _ban} <- Moderation.ban_user(user, duration: duration, reason: reason) do
       conn
