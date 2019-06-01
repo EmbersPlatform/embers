@@ -58,7 +58,7 @@ import { mapGetters } from "vuex";
 
 import Card from "@/components/Card/_Card";
 import CommentList from "@/components/Comment/CommentList";
-import Toolbox from "@/components/Toolbox/_Toolbox";
+import Toolbox from "@/components/Toolbox/_ToolBox";
 import Avatar from "@/components/Avatar";
 
 export default {

@@ -13,10 +13,10 @@
 
 <script>
 import axios from "axios";
-import feed from "../../api/feed";
-import ToolBox from "../../components/ToolBox/_ToolBox";
-import Feed from "../../components/Feed";
-import user from "../../api/user";
+import feed from "@/api/feed";
+import ToolBox from "@/components/ToolBox/_ToolBox";
+import Feed from "@/components/Feed";
+import user from "@/api/user";
 import Intersector from "@/components/Intersector";
 
 import formatter from "@/lib/formatter";
