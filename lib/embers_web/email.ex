@@ -30,7 +30,7 @@ defmodule EmbersWeb.Email do
   def confirm_request(address, key) do
     prep_mail(address)
     |> subject("Confirmar cuenta")
-    |> text_body("Confirma tu cuenta en este enlace http://localhost:4000/confirm?key=#{key}")
+    |> text_body("Confirma tu cuenta en este enlace http://#{host()}#{port()}/confirm?key=#{key}")
     |> Mailer.deliver_now()
   end
 
@@ -81,5 +81,16 @@ defmodule EmbersWeb.Email do
     new_email()
     |> to(address)
     |> from("noreply@embers.pw")
+  end
+
+  defp host() do
+    Application.get_env(:embers, EmbersWeb.Endpoint)[:url][:host]
+  end
+
+  defp port() do
+    case Application.get_env(:embers, EmbersWeb.Endpoint)[:http][:port] do
+      80 -> ""
+      port -> ":#{port}"
+    end
   end
 end
