@@ -50,6 +50,9 @@ defmodule EmbersWeb.Email do
   end
 
   def reset_request(address, key) do
+    port = port()
+    host = host()
+
     prep_mail(address)
     |> subject("Reset your password")
     |> text_body(
