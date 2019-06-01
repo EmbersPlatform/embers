@@ -148,8 +148,8 @@ import avatar from "@/components/Avatar";
 import user from "../../api/user";
 import { mapGetters } from "vuex";
 import ReactionsModal from "@/components/ReactionsModal/ReactionsModal";
-import ReportPostModal from "@/components/modals/ReportPostModal";
-import BanUserModal from "@/components/modals/BanUserModal";
+import ReportPostModal from "@/components/Modals/ReportPostModal";
+import BanUserModal from "@/components/Modals/BanUserModal";
 
 import MediaZone from "@/components/Media/MediaZone";
 import MediaSlides from "@/components/Media/MediaSlides";
