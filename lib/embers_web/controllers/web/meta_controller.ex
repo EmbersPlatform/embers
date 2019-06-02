@@ -13,7 +13,7 @@ defmodule EmbersWeb.MetaController do
   end
 
   def update(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-    meta = Profile.get_meta!(user.id)
+    meta = Profile.get_meta_for!(user.id)
 
     with {:ok, %Meta{} = meta} <- Profile.update_meta(meta, params) do
       render(conn, "show.json", meta: meta)
@@ -21,7 +21,7 @@ defmodule EmbersWeb.MetaController do
   end
 
   def upload_avatar(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"avatar" => file}) do
-    meta = Profile.get_meta!(user.id)
+    meta = Profile.get_meta_for!(user.id)
 
     with :ok <- Uploads.Avatar.upload(file, user) do
       {:ok, meta} =
@@ -33,6 +33,7 @@ defmodule EmbersWeb.MetaController do
 
       meta =
         meta
+        |> IO.inspect()
         |> Meta.load_avatar_map()
         |> Meta.load_cover()
 
@@ -41,7 +42,7 @@ defmodule EmbersWeb.MetaController do
   end
 
   def upload_cover(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"cover" => file}) do
-    meta = Profile.get_meta!(user.id)
+    meta = Profile.get_meta_for!(user.id)
 
     with :ok <- Uploads.Cover.upload(file, user) do
       {:ok, meta} =

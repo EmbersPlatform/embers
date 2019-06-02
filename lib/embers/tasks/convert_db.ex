@@ -14,7 +14,6 @@ defmodule Mix.Tasks.Embers.ConvertDb do
     Converter.convert_reactions("#{path}reactions.json")
     Converter.convert_favorites("#{path}favorites.json")
     Converter.convert_follows("#{path}follows.json")
-    Converter.convert_blocks("#{path}blockables.json")
     Converter.convert_tags("#{path}tags.json")
     Converter.convert_tag_post("#{path}tag_post.json")
   end

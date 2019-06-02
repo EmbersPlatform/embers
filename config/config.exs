@@ -17,6 +17,11 @@ config :embers, EmbersWeb.Endpoint,
   render_errors: [view: EmbersWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Embers.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :embers, Embers.Profile,
+  bucket: "profile",
+  avatar_path: "/user/avatar",
+  cover_path: "/user/cover"
+
 # Phauxth authentication configuration
 config :phauxth,
   token_salt: "geDDVmqL",

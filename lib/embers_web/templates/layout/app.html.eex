@@ -114,6 +114,7 @@
 		appData.user = null;
 		appData.realtime = null;
 		appData.recaptcha = "6Lde6G4UAAAAAN2QJXkcOnuwzJY4na6SH5vs5ZGl";
+    window.appData = appData;
 
 		<%= if @current_user do %>
 		window.appData.user = {
@@ -123,7 +124,7 @@
 			canonical: "<%= @user.canonical %>",
       permissions: <%= raw Jason.encode!(@conn.assigns.permissions) %>,
 
-      bio: "<%= @user.meta.bio %>",
+      bio: "<%= ~s(#{String.replace(@user.meta.bio, "\n", "\\n")}) %>",
       cover: "<%= @user.meta.cover %>",
       avatar: {
         small: "<%= @user.meta.avatar.small %>",
