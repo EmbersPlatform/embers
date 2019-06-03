@@ -1,7 +1,8 @@
 <template>
   <div class="media-preview big" @click="clicked">
     <div v-if="big" class="media-preview__image--big">
-      <img :src="media.url">
+      <img v-if="media.type == 'image'" :src="media.url">
+      <img v-else :src="media.metadata.preview_url">
       <div v-if="overflowed" class="media-preview__overflowed-button">
         <i class="fas fa-caret-down"/>
       </div>
@@ -12,7 +13,7 @@
       :style="{'background-image': `url(${media.metadata.preview_url})`}"
     />
     <div v-if="media.type == 'video'" class="media-preview__play-button">
-      <font-awesome-icon :icon="['fas', 'play']"/>
+      <i class="fas fa-play"/>
     </div>
   </div>
 </template>
