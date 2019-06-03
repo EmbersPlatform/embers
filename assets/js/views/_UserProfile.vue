@@ -62,12 +62,13 @@ export default {
       user
         .get(this.$route.params.name)
         .then(res => {
-          if (
-            res.data.canonical !=
-            this.$route.params.name.toLowerCase()
-          ) {
+          if (res.data.canonical != this.$route.params.name.toLowerCase()) {
             return;
           }
+          this.$store.dispatch(
+            "title/update",
+            "@" + this.$route.params.name + " en Embers"
+          );
           this.$store.dispatch("setUserProfile", res.data);
         })
         .catch(() => {
@@ -83,13 +84,6 @@ export default {
    */
   created() {
     this.fetchUser();
-  },
-
-  /**
-   * Triggered before this component instance is destroyed
-   */
-  beforeDestroy() {
-    this.$store.dispatch("setUserProfile", null);
   }
 };
 </script>

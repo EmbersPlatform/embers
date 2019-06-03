@@ -1,7 +1,7 @@
 <template>
   <div id="content" data-layout-type="single-column">
     <ToolBox v-if="isSelfProfile"></ToolBox>
-    <Feed v-if="user" :posts="posts"></Feed>
+    <Feed v-if="user" :name="`user/${user.id}`"></Feed>
     <intersector @intersect="load_more" style="height: 20px;"/>
     <h3 v-if="!last_page">Cargando mas resultados...</h3>
     <template v-if="last_page && !loading && !loading_more">
@@ -21,6 +21,7 @@ import Intersector from "@/components/Intersector";
 
 import formatter from "@/lib/formatter";
 import { concat_post } from "@/lib/posts";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -39,9 +40,7 @@ export default {
     };
   },
   computed: {
-    user() {
-      return this.$store.state.userProfile;
-    },
+    ...mapState({ user: state => state.userProfile }),
     isSelfProfile() {
       if (!this.$store.getters.user) {
         return false;
@@ -59,12 +58,6 @@ export default {
     }
   },
   methods: {
-    fetchUser() {
-      this.$store.dispatch(
-        "title/update",
-        "@" + this.$route.params.name + " en Embers"
-      );
-    },
     load_posts() {
       this.loading = true;
       axios
@@ -104,7 +97,6 @@ export default {
   },
   watch: {
     $route() {
-      this.fetchUser();
       this.load_posts();
     }
   },
@@ -113,7 +105,6 @@ export default {
    * Triggered when a component instance is created
    */
   created() {
-    this.fetchUser();
     this.load_posts();
   }
 };

@@ -8,7 +8,7 @@
   >
     <template v-if="isMasonry">
       <div
-        v-if="firstLoad"
+        v-if="first_load"
         id="masonry"
         ref="masonry"
         v-masonry
@@ -87,7 +87,7 @@ export default {
       reachedBottom: false,
       previousScrollPosition: 0,
       refreshing: false,
-      firstLoad: false,
+      first_load: false,
       isMasonry: true,
       posts: []
     };
@@ -151,7 +151,7 @@ export default {
     },
     reload() {
       this.refreshing = true;
-      this.firstLoad = false;
+      this.first_load = false;
       feed
         .get(this.name, { filters: this.filters })
         .then(res => {
@@ -168,7 +168,7 @@ export default {
         })
         .finally(() => {
           this.refreshing = false;
-          this.firstLoad = true;
+          this.first_load = true;
         });
     },
 
@@ -179,7 +179,7 @@ export default {
       this.do_load_more();
     },
     do_load_more() {
-      if (this.infiniteScrollStill) {
+      if (this.infiniteScrollStill || this.first_load) {
         return;
       }
       this.loading = true;
