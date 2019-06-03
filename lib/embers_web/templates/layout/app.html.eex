@@ -124,7 +124,7 @@
 			canonical: "<%= @user.canonical %>",
       permissions: <%= raw Jason.encode!(@conn.assigns.permissions) %>,
 
-      bio: "<%= ~s(#{String.replace(@user.meta.bio, "\n", "\\n")}) %>",
+      bio: "<%= if is_nil(@user.meta.bio), do: nil, else: ~s(#{String.replace(@user.meta.bio, "\n", "\\n")}) %>",
       cover: "<%= @user.meta.cover %>",
       avatar: {
         small: "<%= @user.meta.avatar.small %>",
