@@ -113,7 +113,7 @@ export default {
           this.$route.name == "post_no_user" ||
           this.$route.params.username !== this.post.user.username
         ) {
-          this.$router.push({
+          this.$router.replace({
             name: "post",
             params: { username: this.post.user.username, id: this.post.id }
           });
