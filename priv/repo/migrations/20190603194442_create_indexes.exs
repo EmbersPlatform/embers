@@ -8,5 +8,8 @@ defmodule Embers.Repo.Migrations.CreateIndexes do
     create(index(:reactions, [:post_id]))
     create(index(:posts, [:parent_id]))
     create(index(:posts, [:related_to_id]))
+    create(index(:user_metas, :user_id))
+    create(index(:feed_activity, :user_id))
+    create(index(:feed_activity, :post_id))
   end
 end
