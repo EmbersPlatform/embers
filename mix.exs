@@ -72,7 +72,9 @@ defmodule Embers.Mixfile do
       {:fun_with_flags, "~> 1.2.1"},
       {:fun_with_flags_ui, "~> 0.7.1"},
       {:oembed, "~> 0.3.0"},
-      {:fastimage, "~> 0.0.7"}
+      {:fastimage, "~> 0.0.7"},
+      {:benchee, "~> 1.0", only: :dev},
+      {:benchee_html, "~> 1.0", only: :dev}
     ]
   end
 
