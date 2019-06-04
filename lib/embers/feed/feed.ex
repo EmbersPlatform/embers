@@ -380,10 +380,7 @@ defmodule Embers.Feed do
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        preload: [:tags, :media, :links, :reactions],
-        preload: [
-          user: {user, meta: meta}
-        ]
+        preload: [:tags, :reactions, :links, :media, user: {user, meta: meta}]
       )
 
     query
@@ -401,32 +398,14 @@ defmodule Embers.Feed do
         order_by: [desc: activity.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        left_join: related in assoc(post, :related_to),
-        left_join: related_user in assoc(related, :user),
-        left_join: related_user_meta in assoc(related_user, :meta),
-        preload: [
-          [
-            post: [
-              :media,
-              :links,
-              :reactions,
-              :tags,
-              related_to: [:media, :links, :tags, :reactions]
-            ]
-          ]
-        ],
         preload: [
           post: {
             post,
-            user: {user, meta: meta},
-            related_to: {
-              related,
-              user: {
-                related_user,
-                meta: related_user_meta
-              }
-            }
+            user: {user, meta: meta}
           }
+        ],
+        preload: [
+          post: [:media, :links, :tags, :reactions, related_to: [:media, :links, user: :meta]]
         ]
       )
 
