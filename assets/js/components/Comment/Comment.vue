@@ -21,13 +21,13 @@
         <footer class="actions">
           <ul class="actions-reactions">
             <li
-              v-for="(meta, reaction) in comment.stats.reactions"
-              @click="react(reaction)"
+              v-for="(meta, reaction) in comment.reactions"
+              @click="react(meta.name)"
               class="reaction"
               :key="reaction.id"
               :reacted="meta.reacted"
             >
-              <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji">
+              <img :src="`/img/emoji/${meta.name}.svg`" :alt="reaction" class="emoji">
               {{ meta.total }}
             </li>
           </ul>
@@ -381,17 +381,17 @@ export default {
         return;
       }
       if (
-        this.comment.stats.reactions[reaction] &&
-        this.comment.stats.reactions[reaction].reacted
+        this.comment.reactions[reaction] &&
+        this.comment.reactions[reaction].reacted
       ) {
-        comment.deleteReaction(this.comment.id, reaction).then(res => {
+        post.deleteReaction(this.comment.id, reaction).then(res => {
           this.comment.reacted = false;
-          this.comment.stats = res;
+          this.comment.reactions = res.reactions;
         });
       } else {
-        comment.addReaction(this.comment.id, reaction).then(res => {
+        post.addReaction(this.comment.id, reaction).then(res => {
           this.comment.reacted = true;
-          this.comment.stats = res;
+          this.comment.reactions = res.reactions;
         });
       }
     },

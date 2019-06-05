@@ -216,7 +216,11 @@ export default {
     this.$root.$on("addFeedPost", new_post => this.posts.unshift(new_post));
     this.$root.$on("prepend_new_posts", () => {
       const new_posts = this.$store.state.feed.new_posts;
-      this.posts = [...new_posts, ...this.posts];
+      const old_posts = this.posts.map(p => {
+        p.new = false;
+        return p;
+      })
+      this.posts = [...new_posts, ...old_posts];
     });
     this.noMasonry(); //check if can show masonry at page load
     window.addEventListener("resize", this.noMasonry);
