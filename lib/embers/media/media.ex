@@ -30,6 +30,8 @@ defmodule Embers.Media do
   La manipulacion de imagenes se realiza mediante la libreria `Mogrify`,
   que es una interfaz para utilizar la herramienta de ImageMagick.
   """
+  use FFmpex.Options
+
   alias Embers.Media.MediaItem
   alias Embers.Repo
   alias Embers.Thumbnex
@@ -187,7 +189,7 @@ defmodule Embers.Media do
   # pero si es otro tipo de video habria que procesarlo de otra manera.
   defp process_file(%{content_type: "video/" <> format} = file)
        when format in @supported_formats do
-    with :ok <- file.path |> SilentVideo.convert_mobile(file.path <> ".mp4") do
+    with :ok <- file.path |> process_video(file.path <> ".mp4") do
       {:ok,
        %{
          type: "video",
@@ -219,5 +221,21 @@ defmodule Embers.Media do
 
   defp get_bucket do
     Keyword.get(Application.get_env(:embers, Embers.Media), :bucket, "local")
+  end
+
+  defp process_video(video_path, output_path) do
+    FFmpex.new_command()
+    |> FFmpex.add_global_option(option_y())
+    |> FFmpex.add_input_file(video_path)
+    |> FFmpex.add_output_file(output_path)
+    |> FFmpex.add_stream_specifier(stream_type: :video)
+    |> FFmpex.add_stream_option(option_codec("libx264"))
+    |> FFmpex.add_stream_option(option_b(400_000))
+    |> FFmpex.add_stream_option(option_maxrate(400_000))
+    |> FFmpex.add_stream_option(option_bufsize(800_000))
+    |> FFmpex.add_file_option(option_profile("main"))
+    |> FFmpex.add_file_option(option_r(30))
+    |> FFmpex.add_file_option(option_movflags("faststart"))
+    |> FFmpex.execute()
   end
 end
