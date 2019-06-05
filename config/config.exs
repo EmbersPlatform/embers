@@ -65,7 +65,7 @@ config :event_bus,
     :user_created,
     :user_followed,
     :user_mentioned,
-    :activity_created
+    :new_activity
   ]
 
 # Import environment specific config. This must remain at the bottom

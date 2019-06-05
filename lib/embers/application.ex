@@ -19,9 +19,10 @@ defmodule Embers.Application do
       supervisor(Task.Supervisor, [[name: TaskSupervisor, restart: :transient]])
     ]
 
+    Embers.Feed.ActivitySubscriber.register()
     Embers.Notifications.Manager.register()
     EmbersWeb.NotificationSubscriber.register()
-    EmbersWeb.PostSubscriber.register()
+    EmbersWeb.ActivitySubscriber.register()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
