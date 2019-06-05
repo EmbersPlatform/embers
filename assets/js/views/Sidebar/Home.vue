@@ -66,9 +66,6 @@ import { mapGetters } from "vuex";
 
 export default {
   components: { Mutuals },
-  data() {
-    return {};
-  },
   computed: {
     ...mapGetters("tag", ["tags"])
   },
@@ -80,7 +77,7 @@ export default {
   },
   created() {
     axios.get(`/api/v1/subscriptions/tags/list`).then(res => {
-      this.tags = res.data.tags;
+      this.$store.dispatch("tag/update", res.items.map(x => x.name));
     });
   }
 };

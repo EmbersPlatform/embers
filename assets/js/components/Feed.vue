@@ -52,7 +52,7 @@
       ></Card>
       <Card v-else :post="post" :key="post.id" :showThumbnail="showThumbnail" :size="size"></Card>
     </template>
-    <intersector @intersect="loadMore"/>
+    <intersector @intersect="loadMore" style="height: 10px;"/>
     <template v-if="reachedBottom && !loading && !refreshing">
       <h3 v-html="formattedNoResults" v-if="posts.length === 0"></h3>
       <h3 v-html="formattedReachedBottom" v-else></h3>
@@ -82,7 +82,7 @@ export default {
    */
   data() {
     return {
-      loading: true,
+      loading: false,
       next_activity: null,
       reachedBottom: false,
       previousScrollPosition: 0,
@@ -179,7 +179,7 @@ export default {
       this.do_load_more();
     },
     do_load_more() {
-      if (this.infiniteScrollStill || this.first_load) {
+      if (this.infiniteScrollStill || !this.first_load) {
         return;
       }
       this.loading = true;
@@ -219,7 +219,7 @@ export default {
       const old_posts = this.posts.map(p => {
         p.new = false;
         return p;
-      })
+      });
       this.posts = [...new_posts, ...old_posts];
     });
     this.noMasonry(); //check if can show masonry at page load

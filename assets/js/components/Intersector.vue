@@ -13,17 +13,24 @@ export default {
     observer: null
   }),
   mounted() {
-    const options = this.options || {}
+    const options = this.options || {};
     this.observer = new IntersectionObserver(([entry]) => {
       if (entry && entry.isIntersecting) {
-        this.$emit('intersect')
+        this.$emit("intersect");
       }
-    }, options)
+    }, options);
 
-    this.observer.observe(this.$el)
+    this.observer.observe(this.$el);
   },
   destroyed() {
-    this.observer.disconnect()
+    this.observer.disconnect();
   }
-}
+};
 </script>
+
+<style lang="scss">
+.intersector {
+  height: 1px;
+}
+</style>
+
