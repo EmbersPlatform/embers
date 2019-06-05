@@ -54,8 +54,8 @@ export default {
       width: auto;
       height: 160px;
       justify-content: space-between;
-      &:nth-child(2) {
-        margin: 0 5px;
+      &:not(:last-child) {
+        margin-right: 5px;
       }
     }
   }

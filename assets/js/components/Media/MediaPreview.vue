@@ -15,6 +15,9 @@
     <div v-if="media.type == 'video'" class="media-preview__play-button">
       <i class="fas fa-play"/>
     </div>
+    <div v-if="media.type == 'gif'" class="media-preview__gif-button">
+      <span>GIF</span>
+    </div>
   </div>
 </template>
 
@@ -68,7 +71,7 @@ export default {
 
   &:hover {
     box-shadow: 0 5px 5px #00000050;
-    transform: scale(1.005);
+    filter: brightness(80%);
   }
 
   .media-preview__image {
@@ -95,11 +98,34 @@ export default {
     }
   }
 }
+
+.media-preview__gif-button {
+  position: absolute;
+  top: calc(50% - 1.5em);
+  left: calc(50% - 1.5em);
+  width: 3em;
+  height: 3em;
+  border-radius: 50%;
+  background-color: #000000aa;
+  border: 2px dotted #fff;
+  color: #fff;
+  line-height: 3em;
+  text-align: center;
+  font-size: 1.5em;
+  span {
+    font-weight: 500;
+    font-size: 0.9em;
+  }
+}
+
 .media-preview__image--big {
   width: 100%;
   max-height: 500px;
   text-align: center;
   overflow: hidden;
+  img {
+    border-radius: 10px;
+  }
 }
 .media-preview__overflowed-button {
   position: absolute;
