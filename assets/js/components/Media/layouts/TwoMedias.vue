@@ -39,6 +39,7 @@ export default {
     }
     .media-preview__image {
       padding-top: 100%;
+      height: fit-content;
     }
   }
 }
