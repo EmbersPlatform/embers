@@ -6,12 +6,21 @@
       :style="`max-height: ${preview_height};`"
       @clicked="clicked(first_media)"
     />
-    <media-preview
-      v-else
-      :media="first_media"
-      @clicked="clicked(first_media)"
-      :style="`height: ${preview_height};`"
-    />
+    <template v-else>
+      <media-preview
+        v-if="little"
+        :media="first_media"
+        @clicked="clicked(first_media)"
+        class="media-zone__first-media"
+      />
+      <media-preview
+        v-else
+        :media="first_media"
+        @clicked="clicked(first_media)"
+        :style="`height: ${preview_height};`"
+      />
+    </template>
+
     <div class="row" ref="minis">
       <media-preview
         v-for="media in remaining"
@@ -102,6 +111,13 @@ export default {
       .media-preview__image {
         padding-top: 100%;
       }
+    }
+  }
+  .media-zone__first-media {
+    height: auto;
+    .media-preview__image {
+      padding-top: 100%;
+      height: fit-content;
     }
   }
 }
