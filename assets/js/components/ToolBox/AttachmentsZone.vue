@@ -1,7 +1,7 @@
 <template>
   <div class="attachments-zone">
     <attachments-item
-      v-for="(attachment, index) in attachments"
+      v-for="(attachment, index) in ordered_attachments"
       :key="attachment.id"
       :attachment="attachment"
       @removed="remove"
@@ -24,6 +24,11 @@ export default {
     uploading: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    ordered_attachments() {
+      return this.attachments.sort(x => x.timestamp);
     }
   },
   methods: {

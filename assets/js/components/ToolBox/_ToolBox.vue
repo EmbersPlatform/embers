@@ -358,6 +358,7 @@ export default {
           throw "Debes eliminar una foto antes de añadir otra.";
         this.post.medias.push(media);
       } catch (error) {
+        this.status.error = error;
         this.$notify({
           group: "top",
           text: error,
