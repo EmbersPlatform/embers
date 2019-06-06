@@ -1,12 +1,17 @@
 <template>
   <div class="media-zone" :class="{small: small}">
-    <small-medias v-if="small" :medias="medias" @clicked="clicked"/>
+    <small-medias v-if="small" :medias="ordered_medias" @clicked="clicked"/>
     <template v-else>
-      <inline-medias v-if="$mq == 'sm' && !small" :medias="medias" @clicked="clicked"/>
+      <inline-medias v-if="$mq == 'sm' && !small" :medias="ordered_medias" @clicked="clicked"/>
       <template v-else>
-        <single-media v-if="medias_length === 1" @clicked="clicked" :medias="medias"/>
-        <two-medias v-if="medias_length === 2" @clicked="clicked" :medias="medias"/>
-        <many-medias v-if="medias_length > 2" @clicked="clicked" :medias="medias" :little="little"/>
+        <single-media v-if="medias_length === 1" @clicked="clicked" :medias="ordered_medias"/>
+        <two-medias v-if="medias_length === 2" @clicked="clicked" :medias="ordered_medias"/>
+        <many-medias
+          v-if="medias_length > 2"
+          @clicked="clicked"
+          :medias="ordered_medias"
+          :little="little"
+        />
       </template>
     </template>
   </div>
@@ -43,6 +48,9 @@ export default {
   computed: {
     medias_length() {
       return this.medias.length;
+    },
+    ordered_medias() {
+      return this.medias.sort(x => x.timestamp);
     }
   },
   methods: {

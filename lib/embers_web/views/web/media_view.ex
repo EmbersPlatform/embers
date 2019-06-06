@@ -9,7 +9,8 @@ defmodule EmbersWeb.MediaView do
       url: media.url,
       type: media.type,
       temp: media.temporary,
-      metadata: media.metadata
+      metadata: media.metadata,
+      timestamp: media.inserted_at
     }
   end
 end
