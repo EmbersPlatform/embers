@@ -164,7 +164,12 @@
           <link-item :link="post.links[0]"/>
         </div>
         <div class="multimedia" v-if="post.media.length">
-          <media-zone :medias="post.media" :previews="true" @clicked="media_clicked"/>
+          <media-zone
+            :medias="post.media"
+            :previews="true"
+            @clicked="media_clicked"
+            :little="size == 'little'"
+          />
         </div>
         <template v-if="with_related && post.related_to">
           <card :post="post.related_to" :tools="false" :footer="false" class="related"/>

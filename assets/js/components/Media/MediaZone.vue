@@ -6,7 +6,7 @@
       <template v-else>
         <single-media v-if="medias_length === 1" @clicked="clicked" :medias="medias"/>
         <two-medias v-if="medias_length === 2" @clicked="clicked" :medias="medias"/>
-        <many-medias v-if="medias_length > 2" @clicked="clicked" :medias="medias"/>
+        <many-medias v-if="medias_length > 2" @clicked="clicked" :medias="medias" :little="little"/>
       </template>
     </template>
   </div>
@@ -31,6 +31,10 @@ export default {
       default: false
     },
     small: {
+      type: Boolean,
+      default: false
+    },
+    little: {
       type: Boolean,
       default: false
     }
