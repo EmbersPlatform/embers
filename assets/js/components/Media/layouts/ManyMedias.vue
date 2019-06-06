@@ -1,6 +1,13 @@
 <template>
   <div class="media-zone many-medias">
+    <media-item
+      v-if="first_media.type == 'image'"
+      :media="first_media"
+      :style="`max-height: ${preview_height};`"
+      @clicked="clicked(first_media)"
+    />
     <media-preview
+      v-else
       :media="first_media"
       @clicked="clicked(first_media)"
       :style="`height: ${preview_height};`"
@@ -18,9 +25,10 @@
 
 <script>
 import MediaPreview from "../MediaPreview";
+import MediaItem from "../MediaItem";
 
 export default {
-  components: { MediaPreview },
+  components: { MediaPreview, MediaItem },
   props: {
     medias: {
       type: Array,
@@ -53,7 +61,7 @@ export default {
         document.documentElement.clientWidth,
         window.innerWidth || 0
       );
-      if (media.metadata.height > 0.75 * vw) return "75vw";
+      if (media.metadata.height > 0.75 * vw) return "75vh";
       return media.metadata.height + "px";
     }
   },
@@ -71,6 +79,14 @@ export default {
     width: 100%;
     height: 75vw;
     margin-bottom: 5px;
+  }
+  & > .media {
+    justify-content: flex-start;
+    margin-bottom: 5px;
+    overflow: hidden;
+    img {
+      width: 100%;
+    }
   }
   .row {
     display: flex;
