@@ -78,10 +78,12 @@ export default {
     .media-preview {
       flex-grow: 1;
       width: auto;
-      height: 160px;
       justify-content: space-between;
       &:not(:last-child) {
         margin-right: 5px;
+      }
+      .media-preview__image {
+        padding-top: 100%;
       }
     }
   }
