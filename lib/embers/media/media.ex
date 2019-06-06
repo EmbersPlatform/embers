@@ -173,7 +173,6 @@ defmodule Embers.Media do
       file.path
       |> Mogrify.open()
       |> Mogrify.custom("strip")
-      |> Mogrify.resize_to_limit("1500x1500")
       |> Mogrify.custom("background", "#1a1b1d")
       |> Mogrify.format(format)
       |> Mogrify.save()

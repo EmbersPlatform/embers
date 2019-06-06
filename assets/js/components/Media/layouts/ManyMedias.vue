@@ -94,6 +94,7 @@ export default {
     .media-preview {
       flex-grow: 1;
       width: auto;
+      height: fit-content;
       justify-content: space-between;
       &:not(:last-child) {
         margin-right: 5px;
