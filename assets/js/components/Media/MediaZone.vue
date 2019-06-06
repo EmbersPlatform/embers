@@ -24,6 +24,7 @@ import TwoMedias from "./layouts/TwoMedias";
 import ManyMedias from "./layouts/ManyMedias";
 import InlineMedias from "./layouts/InlineMedias";
 import SmallMedias from "./layouts/SmallMedias";
+
 export default {
   name: "media-zone",
   props: {
@@ -50,7 +51,9 @@ export default {
       return this.medias.length;
     },
     ordered_medias() {
-      return this.medias.sort(x => x.timestamp);
+      const ordered = _.orderBy(this.medias, "timestamp", "asc");
+      console.log(ordered);
+      return ordered;
     }
   },
   methods: {

@@ -12,7 +12,9 @@
 </template>
 
 <script>
+import _ from "lodash";
 import AttachmentsItem from "./AttachmentsItem";
+
 export default {
   name: "attachments-zone",
   components: { AttachmentsItem },
@@ -28,7 +30,7 @@ export default {
   },
   computed: {
     ordered_attachments() {
-      return this.attachments.sort(x => x.timestamp);
+      return _.orderBy(this.attachments, "timestamp", "asc");
     }
   },
   methods: {
