@@ -71,7 +71,7 @@ defmodule Embers.Media do
              dest_path <> ".#{ext}"
            ),
          {:ok, preview} <-
-           make_preview(processed_file, dest_path, max_width: 500, max_height: 500) do
+           make_preview(processed_file, dest_path, max_width: 800, max_height: 800) do
       media_data = %{
         user_id: owner,
         url: res.url,
