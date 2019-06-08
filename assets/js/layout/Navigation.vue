@@ -173,7 +173,6 @@ export default {
       this.$store.dispatch("chat/updateUnreadMessagesCount", 0);
     },
     hideMobileSidebar() {
-      console.log(this.$mq);
       if (this.$mq === "sm") {
         this.openSidebar = false;
         this.$root.$emit("closeSidebar");

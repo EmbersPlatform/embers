@@ -34,6 +34,9 @@ img:not(.emoji) {
     font-weight: 400;
     color: $secondary;
     z-index: 1;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    height: 100%;
   }
 
   &:after {
@@ -315,13 +318,13 @@ blockquote {
 }
 
 .--danger {
-  color: $t-error!important;
+  color: $t-error !important;
   svg {
     * {
-      fill: $t-error!important;
+      fill: $t-error !important;
     }
   }
   i {
-    color: $t-error!important;
+    color: $t-error !important;
   }
 }

@@ -8,12 +8,10 @@ export default {
    * @param name
    * @param before
    */
-  search(searchParams = '', before = null) {
-    let params = {};
+  search(searchParams = '', params = {}) {
 
-    if (!isNaN(before))
-      params.before = before;
-
-    return wrap(() => axios.get(`${config.prefix}/search/${searchParams}`, { params }));
+    return wrap(() => axios.get(`${config.prefix}/search/${searchParams}`, {
+      params: params
+    }));
   }
 };

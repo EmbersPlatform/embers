@@ -1,5 +1,6 @@
 defmodule Embers.Repo do
   use Ecto.Repo, otp_app: :embers, adapter: Ecto.Adapters.Postgres
+  use Scrivener, page_size: 20
 
   import Ecto.Query
 

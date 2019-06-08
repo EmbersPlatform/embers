@@ -72,7 +72,13 @@ defmodule EmbersWeb.Router do
     put("/settings/edit/:name", EmbersWeb.Admin.SettingController, :update)
 
     get("/reports", EmbersWeb.Admin.ReportController, :overview)
+    get("/reports/post/:id", EmbersWeb.Admin.ReportController, :post_report)
+    delete("/reports/post/:id", EmbersWeb.Admin.ReportController, :delete_post)
+    put("/reports/post/:id", EmbersWeb.Admin.ReportController, :resolve_post_reports)
+
     get("/bans", EmbersWeb.Admin.BanController, :index)
+    get("/bans/:user_id", EmbersWeb.Admin.BanController, :show)
+    delete("/bans/:user_id", EmbersWeb.Admin.BanController, :delete)
 
     resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 

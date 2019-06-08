@@ -53,6 +53,20 @@ defmodule Embers.Moderation do
   def ban_user(user_id, opts) when is_integer(user_id) do
     if is_nil(get_active_ban(user_id)) do
       duration = Keyword.get(opts, :duration, 7)
+
+      duration =
+        cond do
+          is_integer(duration) ->
+            duration
+
+          is_binary(duration) ->
+            {duration, _} = Integer.parse(duration)
+            duration
+
+          true ->
+            nil
+        end
+
       indefinite? = duration <= 0
 
       expires =

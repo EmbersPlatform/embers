@@ -1,12 +1,7 @@
 <template>
   <div class="media" @click="clicked">
-    <div class="media-image" v-if="media.type == 'image'">
+    <div class="media-image" v-if="'image gif'.includes(media.type)">
       <img :src="media.url">
-    </div>
-    <div class="media-gif" v-if="media.type == 'gif'">
-      <video muted autoplay loop :poster="media.metadata.preview_url">
-        <source :src="media.url" type="video/mp4">
-      </video>
     </div>
     <div class="media-video" v-if="media.type == 'video'">
       <old-video v-if="media.legacy" :video="media"/>

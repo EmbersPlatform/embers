@@ -19,9 +19,13 @@
       >
         <i class="fa fa-chevron-left"></i>
       </button>
-      <template v-for="(media, index) in medias">
-        <media-item :key="index" :media="media" v-show="index == current_index" :autoplay="true"></media-item>
-      </template>
+      <media-item
+        v-for="(media, index) in ordered_medias"
+        :key="index"
+        :media="media"
+        v-show="index == current_index"
+        :autoplay="true"
+      ></media-item>
       <button
         @click="next"
         v-visible="medias_count - 1 != current_index"
@@ -36,6 +40,7 @@
 </template>
 
 <script>
+import _ from "lodash";
 import MediaItem from "./MediaItem";
 
 export default {
@@ -63,7 +68,11 @@ export default {
       return this.medias.length;
     },
     current_media() {
-      return this.medias[this.current_index];
+      return this.ordered_medias[this.current_index];
+    },
+    ordered_medias() {
+      const ordered = _.orderBy(this.medias, "timestamp", "asc");
+      return ordered;
     }
   },
   methods: {

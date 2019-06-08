@@ -153,11 +153,11 @@ defmodule Embers.Media do
   end
 
   defp process_file(%{content_type: "image/gif"} = file) do
-    with :ok <- file.path |> SilentVideo.convert_mobile(file.path <> ".mp4") do
+    with :ok <- file.path |> File.rename(file.path <> ".gif") do
       {:ok,
        %{
          type: "gif",
-         path: file.path <> ".mp4"
+         path: file.path <> ".gif"
        }}
     else
       {:error, reason} -> {:error, reason}
@@ -173,7 +173,6 @@ defmodule Embers.Media do
       file.path
       |> Mogrify.open()
       |> Mogrify.custom("strip")
-      |> Mogrify.custom("background", "#1a1b1d")
       |> Mogrify.format(format)
       |> Mogrify.save()
 

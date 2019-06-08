@@ -309,7 +309,6 @@ export default {
           this.close();
         })
         .catch(error => {
-          console.log(JSON.parse(JSON.stringify(error)));
           switch (error.status) {
             case 422:
               this.status.error = error.res.errors.body[0];

@@ -57,7 +57,6 @@ export default {
   cursor: pointer;
   position: relative;
   transition: all 0.3s ease;
-  transform: scale(1);
   background-size: cover;
   background-position: center;
   flex-grow: 1;

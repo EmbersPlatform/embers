@@ -98,6 +98,8 @@ defmodule Embers.Feed.Post do
     |> cast_embed(:old_attachment)
   end
 
+  def fill_nsfw(nil), do: nil
+
   def fill_nsfw(%Post{} = post) do
     if Ecto.assoc_loaded?(post.tags) do
       %{

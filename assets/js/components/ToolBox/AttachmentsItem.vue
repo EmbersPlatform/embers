@@ -27,7 +27,6 @@ export default {
       this.$emit("removed", this.attachment.id);
     },
     clicked(ev) {
-      console.log(ev.target, this.$refs.remove_button);
       if (
         ev.target != this.$refs.remove_button &&
         !this.$refs.remove_button.contains(ev.target)

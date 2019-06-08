@@ -43,7 +43,7 @@ defmodule Embers.Feed do
       ** (Ecto.NoResultsError)
 
   """
-  def get_post!(id) do
+  def get_post(id) do
     query =
       from(
         post in Post,
@@ -69,9 +69,19 @@ defmodule Embers.Feed do
         ]
       )
 
-    query
-    |> Repo.one()
-    |> Post.fill_nsfw()
+    res = Repo.one(query)
+
+    case res do
+      nil -> {:error, :not_found}
+      post -> {:ok, post |> Post.fill_nsfw()}
+    end
+  end
+
+  def get_post!(id) do
+    case get_post(id) do
+      {:error, reason} -> nil
+      {:ok, post} -> post
+    end
   end
 
   @doc """

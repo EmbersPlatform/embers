@@ -109,7 +109,7 @@ export default {
         margin-right: 5px;
       }
       .media-preview__image {
-        padding-top: 100%;
+        padding-top: 75%;
       }
     }
   }

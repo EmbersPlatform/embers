@@ -181,7 +181,6 @@ export default {
       });
     },
     comment_deleted(comment) {
-      console.log("filtering comment:", comment);
       this.comments = this.comments.filter(x => x.id != comment.id);
       this.bottomComments = this.bottomComments.filter(x => x.id != comment.id);
     }

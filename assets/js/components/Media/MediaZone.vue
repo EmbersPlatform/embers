@@ -2,8 +2,6 @@
   <div class="media-zone" :class="{small: small}">
     <small-medias v-if="small" :medias="ordered_medias" @clicked="clicked"/>
     <template v-else>
-      <inline-medias v-if="$mq == 'sm' && !small" :medias="ordered_medias" @clicked="clicked"/>
-      <template v-else>
         <single-media v-if="medias_length === 1" @clicked="clicked" :medias="ordered_medias"/>
         <two-medias v-if="medias_length === 2" @clicked="clicked" :medias="ordered_medias"/>
         <many-medias
@@ -12,7 +10,6 @@
           :medias="ordered_medias"
           :little="little"
         />
-      </template>
     </template>
   </div>
 </template>
@@ -52,7 +49,6 @@ export default {
     },
     ordered_medias() {
       const ordered = _.orderBy(this.medias, "timestamp", "asc");
-      console.log(ordered);
       return ordered;
     }
   },
@@ -68,6 +64,15 @@ export default {
 .media-zone {
   border-radius: 10px;
   overflow: hidden;
+
+  .media {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    &:hover {
+      box-shadow: 0 5px 5px #00000050;
+      filter: brightness(80%);
+    }
+  }
 }
 </style>
 

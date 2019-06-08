@@ -78,7 +78,6 @@ export default {
       userAPI
         .getBlocked()
         .then(res => {
-          console.log(res);
           if (this._inactive) {
             return;
           }

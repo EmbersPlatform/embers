@@ -34,9 +34,9 @@
           Moderacion
         </p>
         <ul class="menu-list">
-          <li><a href="/admin/reports">Reportes // todo</a></li>
+          <li><a href="/admin/reports">Reportes</a></li>
           <li><a href="/admin/mod-history">Auditoría // todo</a></li>
-          <li><a href="/admin/bans">Suspensiones // todo</a></li>
+          <li><a href="/admin/bans">Suspensiones</a></li>
         </ul>
         <p class="menu-label">
           Desarrollo

@@ -1,4 +1,4 @@
-console.log(
+console.info(
   "%c Embers %c Red social basada en la comunidad ",
   "padding: 2px; color: #fff; background-color: #eb3d2d; border-radius: 2px 0 0 2px;",
   "padding: 2px; color: #fff; background-color: #333; border-radius: 0 2px 2px 0;"
