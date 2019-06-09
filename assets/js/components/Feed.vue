@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import _ from "lodash";
+
 import feed from "../api/feed";
 
 import formatter from "@/lib/formatter";
@@ -123,25 +125,25 @@ export default {
     // TODO concatenar post entre peticiones loadmore y vista actual
     concat_post(items) {
       outer: for (var i = 0; i < items.length; i++) {
-        if (items[i].isShared) {
+        if (items[i].related_to != null && items[i].body == null) {
           var sharers = [items[i].user];
           inner: for (var o = i + 1; o < items.length; o++) {
-            if (items[o].isShared) {
-              if (items[o].source.id == items[i].source.id) {
+            if (items[o].related_to != null && items[o].body == null) {
+              if (items[o].related_to.id == items[i].related_to.id) {
                 //is another shared from same post, save and delete
                 sharers.push(items[o].user);
                 items.splice(o, 1);
                 o -= 1;
               }
             } else {
-              if (items[o].id == items[i].source.id) {
+              if (items[o].id == items[i].related_to.id) {
                 //is original post
                 items.splice(o, 1);
                 break inner;
               }
             }
           }
-          items[i]["sharers"] = sharers;
+          items[i]["sharers"] = _.uniqBy(sharers, x => x.username);
         }
       }
       return items;

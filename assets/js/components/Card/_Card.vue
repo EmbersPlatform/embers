@@ -25,35 +25,36 @@
       </div>
     </div>
     <div class="card-wrapper" :class="{'locked' : locked, 'is-picker': isPicker}">
-      <header class="header">
+      <header class="header" v-if="!no_header">
         <avatar
-          :avatar="post.user.avatar.small"
-          :user="post.user.username"
+          v-if="isShared"
+          :avatar="post.related_to.user.avatar.small"
+          :user="post.related_to.user.username"
           :isShared="isShared"
-          :sharers="sharers"
+          :sharers="post.sharers"
         ></avatar>
+        <avatar v-else :avatar="post.user.avatar.small" :user="post.user.username"></avatar>
         <div class="header-content">
           <h4>
             <template v-if="isShared">
-              <template v-if="sharers.length == 2">
+              <template v-if="post.sharers.length == 2">
                 <router-link
                   class="username"
-                  :to="`/@${sharers[sharers.length-1].username}`"
-                  :data-badge="`${sharers[sharers.length-1].badges[0]}`"
-                >{{ sharers[sharers.length-1].username }}</router-link>
+                  :to="`/@${post.sharers[post.sharers.length-1].username}`"
+                >{{ post.sharers[post.sharers.length-1].username }}</router-link>
                 <p>&nbsp;y&nbsp;</p>
               </template>
               <router-link
                 class="username"
-                :to="`/@${sharers[0].username}`"
-                :data-badge="`${sharers[0].badges[0]}`"
-              >{{ sharers[0].username }}</router-link>
+                :to="`/@${post.sharers[0].username}`"
+                :data-badge="`${post.sharers[0].badges[0]}`"
+              >{{ post.sharers[0].username }}</router-link>
               <p v-html="s_message"></p>
               <router-link
                 class="username"
-                :to="`/@${post.user.username}`"
-                :data-badge="`${post.user.badges[0]}`"
-              >{{post.user.username}}</router-link>
+                :to="`/@${post.related_to.user.username}`"
+                :data-badge="`${post.related_to.user.badges[0]}`"
+              >{{post.related_to.user.username}}</router-link>
               <p>:</p>
             </template>
             <template v-else>
@@ -172,7 +173,13 @@
           />
         </div>
         <template v-if="with_related && post.related_to">
-          <card :post="post.related_to" :tools="false" :footer="false" class="related"/>
+          <card
+            :no_header="isShared"
+            :post="post.related_to"
+            :tools="false"
+            :footer="false"
+            class="related"
+          />
         </template>
         <template v-if="post.attachment">
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>
@@ -301,15 +308,6 @@ export default {
       type: Object,
       required: true
     },
-    isShared: {
-      type: Boolean,
-      default: false,
-      required: false
-    },
-    sharers: {
-      type: Array,
-      required: false
-    },
     showThumbnail: {
       type: Boolean,
       default: false,
@@ -331,6 +329,10 @@ export default {
     with_related: {
       type: Boolean,
       default: true
+    },
+    no_header: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -368,6 +370,10 @@ export default {
         return false;
       }
       return this.post.user.id === this.$store.getters.user.id;
+    },
+
+    isShared() {
+      return !!this.post.sharers;
     },
 
     /**
@@ -413,14 +419,14 @@ export default {
     },
     //shared message
     s_message() {
-      if (this.sharers.length > 1) {
-        if (this.sharers.length > 2) {
-          var usuarios = "@" + this.sharers[0].username;
-          for (var i = 1; i < this.sharers.length; i++) {
-            if (i == this.sharers.length - 1) {
-              usuarios += " y @" + this.sharers[i].username;
+      if (this.post.sharers.length > 1) {
+        if (this.post.sharers.length > 2) {
+          var usuarios = "@" + this.post.sharers[0].username;
+          for (var i = 1; i < this.post.sharers.length; i++) {
+            if (i == this.post.sharers.length - 1) {
+              usuarios += " y @" + this.post.sharers[i].username;
             } else {
-              usuarios += ", @" + this.sharers[i].username;
+              usuarios += ", @" + this.post.sharers[i].username;
             }
           }
           return (
