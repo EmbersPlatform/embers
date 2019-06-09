@@ -6,6 +6,7 @@
   overflow: visible;
   display: block;
   margin: 0 auto;
+  z-index: -1;
   @include box-sizing(border-box);
 
   &:focus {

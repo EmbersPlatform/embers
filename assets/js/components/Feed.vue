@@ -143,6 +143,7 @@ export default {
               }
             }
           }
+          items[i] = items[i]["related_to"];
           items[i]["sharers"] = _.uniqBy(sharers, x => x.username);
         }
       }

@@ -7,6 +7,12 @@
     focusable
     tabindex="-1"
   >
+    <media-slides
+      v-if="show_media_slides"
+      :medias="post.media"
+      :index="clicked_media_index"
+      @closed="show_media_slides = false"
+    ></media-slides>
     <div class="card-flags" v-if="post.nsfw">
       <div v-if="post.nsfw" class="flag nsfw" :class="{'isLocked' : locked}">
         <p>
@@ -28,8 +34,8 @@
       <header class="header" v-if="!no_header">
         <avatar
           v-if="isShared"
-          :avatar="post.related_to.user.avatar.small"
-          :user="post.related_to.user.username"
+          :avatar="post.user.avatar.small"
+          :user="post.user.username"
           :isShared="isShared"
           :sharers="post.sharers"
         ></avatar>
@@ -52,9 +58,9 @@
               <p v-html="s_message"></p>
               <router-link
                 class="username"
-                :to="`/@${post.related_to.user.username}`"
-                :data-badge="`${post.related_to.user.badges[0]}`"
-              >{{post.related_to.user.username}}</router-link>
+                :to="`/@${post.user.username}`"
+                :data-badge="`${post.user.badges[0]}`"
+              >{{post.user.username}}</router-link>
               <p>:</p>
             </template>
             <template v-else>
@@ -267,12 +273,6 @@
         </li>
       </ul>
     </footer>
-    <media-slides
-      v-if="show_media_slides"
-      :medias="post.media"
-      :index="clicked_media_index"
-      @closed="show_media_slides = false"
-    ></media-slides>
   </article>
 </template>
 
