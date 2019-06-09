@@ -8,6 +8,8 @@ defmodule Embers.AuditEntry do
     field(:action, :string, null: false)
     field(:source, :string, null: false)
     embeds_many(:details, Embers.AuditDetail)
+
+    timestamps()
   end
 
   def changeset(entry, attrs) do

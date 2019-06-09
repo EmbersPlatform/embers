@@ -80,6 +80,8 @@ defmodule EmbersWeb.Router do
     get("/bans/:user_id", EmbersWeb.Admin.BanController, :show)
     delete("/bans/:user_id", EmbersWeb.Admin.BanController, :delete)
 
+    get("/audit", EmbersWeb.Admin.AuditController, :index)
+
     resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 
     match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)

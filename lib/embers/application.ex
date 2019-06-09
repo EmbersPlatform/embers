@@ -19,6 +19,7 @@ defmodule Embers.Application do
       supervisor(Task.Supervisor, [[name: TaskSupervisor, restart: :transient]])
     ]
 
+    Embers.Audit.Manager.register()
     Embers.Feed.ActivitySubscriber.register()
     Embers.Notifications.Manager.register()
     EmbersWeb.NotificationSubscriber.register()

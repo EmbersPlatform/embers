@@ -74,13 +74,21 @@ defmodule Embers.Moderation do
           Timex.shift(DateTime.utc_now(), days: duration)
         end
 
-      Repo.insert(
-        Ban.changeset(%Ban{}, %{
-          user_id: user_id,
-          reason: Keyword.get(opts, :reason),
-          expires_at: expires
-        })
-      )
+      case Repo.insert(
+             Ban.changeset(%Ban{}, %{
+               user_id: user_id,
+               reason: Keyword.get(opts, :reason),
+               expires_at: expires
+             })
+           ) do
+        {:ok, ban} ->
+          actor = Keyword.get(opts, :actor, nil)
+          Embers.Event.emit(:user_banned, %{ban: ban, actor: actor})
+          {:ok, ban}
+
+        error ->
+          error
+      end
     else
       {:error, :already_banned}
     end

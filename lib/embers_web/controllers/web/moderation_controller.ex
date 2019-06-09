@@ -12,7 +12,7 @@ defmodule EmbersWeb.ModerationController do
 
   def ban_user(conn, %{"user_id" => id, "duration" => duration, "reason" => reason} = _params) do
     with user <- Embers.Accounts.get_user(decode(id)),
-         {:ok, _ban} <- Moderation.ban_user(user, duration: duration, reason: reason) do
+         {:ok, _ban} <- Moderation.ban_user(user, duration: duration, reason: reason, actor: conn.assigns.current_user.id) do
       conn
       |> put_status(:no_content)
       |> json(nil)

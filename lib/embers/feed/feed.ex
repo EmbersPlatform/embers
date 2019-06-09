@@ -261,7 +261,7 @@ defmodule Embers.Feed do
     |> Repo.update()
   end
 
-  def delete_post(%Post{} = post) do
+  def delete_post(%Post{} = post, actor \\ nil) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -286,14 +286,14 @@ defmodule Embers.Feed do
     end
 
     with {:ok, post} <- Repo.soft_delete(post) do
-      Embers.Event.emit(:post_deleted, post)
+      Embers.Event.emit(:post_disabled, %{post: post, actor: actor})
       {:ok, post}
     else
       error -> error
     end
   end
 
-  def restore_post(%Post{} = post) do
+  def restore_post(%Post{} = post, actor \\ nil) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -318,7 +318,7 @@ defmodule Embers.Feed do
     end
 
     with {:ok, post} <- Repo.restore_entry(post) do
-      Embers.Event.emit(:post_restored, post)
+      Embers.Event.emit(:post_restored, %{post: post, actor: actor})
       {:ok, post}
     else
       error -> error
@@ -337,7 +337,7 @@ defmodule Embers.Feed do
       {:error, %Ecto.Changeset{}}
 
   """
-  def hard_delete_post(%Post{} = post) do
+  def hard_delete_post(%Post{} = post, actor \\ nil) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -362,7 +362,7 @@ defmodule Embers.Feed do
     end
 
     with {:ok, deleted_post} <- Repo.delete(post) do
-      Embers.Event.emit(:post_deleted, deleted_post)
+      Embers.Event.emit(:post_deleted, %{post: deleted_post, actor: actor})
       {:ok, deleted_post}
     else
       error -> error

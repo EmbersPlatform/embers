@@ -59,12 +59,16 @@ config :event_bus,
     :post_disabled,
     :post_deleted,
     :post_shared,
+    :post_updated,
+    :post_restored,
     :comment_reply,
     :notification_created,
     :created_notificaion_failed,
     :user_created,
     :user_followed,
     :user_mentioned,
+    :user_updated,
+    :user_banned,
     :new_activity
   ]
 

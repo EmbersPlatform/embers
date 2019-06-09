@@ -35,7 +35,7 @@
         </p>
         <ul class="menu-list">
           <li><a href="/admin/reports">Reportes</a></li>
-          <li><a href="/admin/mod-history">Auditoría // todo</a></li>
+          <li><a href="/admin/audit">Auditoría</a></li>
           <li><a href="/admin/bans">Suspensiones</a></li>
         </ul>
         <p class="menu-label">
@@ -48,13 +48,14 @@
           Contenido
         </p>
         <ul class="menu-list">
-          <li><a href="/admin/roles">Tags // todo</a></li>
-          <li><a href="/admin/roles">Roles</a></li>
+          <li><a href="/admin/tags">Tags // todo</a></li>
+          <li><a href="/admin/deleted_posts">Posts eliminados // todo</a></li>
         </ul>
         <p class="menu-label">
           Configuracion
         </p>
         <ul class="menu-list">
+          <li><a href="/admin/roles">Roles</a></li>
           <li><a href="/flags">Flags</a></li>
           <li><a href="/admin/loading">Mensajes de carga</a></li>
           <li><a href="/admin/settings">Configuracion</a></li>
