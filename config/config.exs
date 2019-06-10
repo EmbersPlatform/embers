@@ -69,7 +69,10 @@ config :event_bus,
     :user_mentioned,
     :user_updated,
     :user_banned,
-    :new_activity
+    :new_activity,
+    :chat_message_created,
+    :chat_message_deleted,
+    :chat_message_updated
   ]
 
 config :scrivener_html,

@@ -1,5 +1,5 @@
 <template>
-  <nav id="navigation">
+  <nav id="navigation" v-if="show">
     <h1>
       <router-link to="/" exact>
         <img
@@ -49,7 +49,7 @@
       </li>
       <!-- no hay matching de sub rutas ej: chat/2 TODO figure out how? -->
       <li
-        :class="{'active' : $route.path == '/chat', 'alert': new_message}"
+        :class="{'active' : $route.path == '/chat', 'alert': are_unread_notifications}"
         class="page not-vex"
         data-tip="mensajes"
         data-tip-position="right"
@@ -109,8 +109,10 @@
 <script>
 import auth from "../api/auth";
 import notifications from "../components/Notifications";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import _ from "lodash";
+
+import EventBus from "@/lib/event_bus";
 
 export default {
   components: {
@@ -128,8 +130,12 @@ export default {
     ...mapGetters({
       newActivity: "newActivity"
     }),
+    ...mapState(["show_navigation"]),
     ...mapGetters("notifications", ["unseen"]),
-    ...mapGetters("chat", ["unread_messages", "new_message"]),
+    ...mapGetters("chat", ["unread_conversations_count"]),
+    are_unread_notifications() {
+      return this.unread_conversations_count > 0;
+    },
     n_notif: function() {
       if (this.unseen > 0) {
         return true;
@@ -154,6 +160,9 @@ export default {
       });
 
       return efemeride;
+    },
+    show() {
+      return this.$mq != "sm" || this.show_navigation;
     }
   },
   methods: {
@@ -213,6 +222,10 @@ export default {
         // If click is issued outside user menu and outside menu's trigger
         this.show_userMenu = false;
       }
+    });
+
+    EventBus.$on("toggle_navigation", value => {
+      this.$store.dispatch("toggle_navigation", value);
     });
   }
 };

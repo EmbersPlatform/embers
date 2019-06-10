@@ -13,59 +13,73 @@
     </li>
     <li class="nav_ nav-grow">
       <ul :class="{'renderbox' : loading}">
-        <li v-for="conversation in conversations" class="n_item" :key="conversation.id">
-          <span
-            @click="conversationSelected(conversation)"
+        <li v-for="conversation in mapped_conversations" :key="conversation.id" class="n_item">
+          <router-link
             active-class="active"
+            :to="`/chat/${conversation.canonical}`"
             class="n_i_wrap"
-            :data-count="[conversation.unread <= 9 ? conversation.unread : '9+']"
+            :data-count="unread_conversations.includes(conversation.id) ? '•' : false"
           >
-            <avatar :avatar="conversation.user.avatar.small"></avatar>
-            <span
-              class="n_i_w_content u_name"
-              :data-badge="`${conversation.user.badges[0]}`"
-            >{{conversation.user.name}}</span>
-          </span>
+            <avatar :avatar="conversation.avatar.small" :status="conversation.status"></avatar>
+            <span class="n_i_w_content u_name">{{conversation.username}}</span>
+          </router-link>
         </li>
       </ul>
     </li>
   </ul>
 </template>
 <script>
-import chatAPI from "@/api/conversation";
+import axios from "axios";
 import avatar from "@/components/Avatar";
+import EventBus from "@/lib/event_bus";
 
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 import _ from "lodash";
 
 export default {
   name: "SB_Chat",
   components: { avatar },
-  data() {
-    return {
-      loading: false
-    };
-  },
+  data: () => ({
+    loading: false,
+    conversations: []
+  }),
   computed: {
-    ...mapGetters("chat", ["conversations"]),
+    ...mapState("chat", ["unread_conversations", "online_friends"]),
+    ...mapGetters(["user"]),
     hasConversations() {
       return this.conversations && this.conversations.length > 0;
+    },
+    mapped_conversations() {
+      return this.conversations.map(user => {
+        user.status =
+          _.find(this.online_friends, friend => friend.id == user.id) !=
+          undefined
+            ? "online"
+            : "";
+        return user;
+      });
     }
   },
   methods: {
-    loadConversations() {
-      return new Promise((resolve, reject) => {
-        chatAPI
-          .get()
-          .then(conversations => {
-            this.$store.dispatch("chat/updateConversations", conversations);
-            resolve(conversations);
-          })
-          .catch(err => {
-            reject(err);
-          });
-      });
+    async loadConversations() {
+      const { data: conversations } = await axios.get(
+        "/api/v1/chat/conversations"
+      );
+      this.conversations = conversations;
+    },
+    add_conversation(message) {
+      console.log("okasd", message);
+      const sender = message.sender;
+      const receiver = message.receiver;
+      let user = null;
+      if (sender.id == this.user.id) {
+        user = receiver;
+      }
+      if (receiver.id == this.user.id) {
+        user = sender;
+      }
+      this.conversations = _.uniqBy([user, ...this.conversations], x => x.id);
     },
     conversationSelected(conversation) {
       this.$store.dispatch("chat/updateConversation", conversation);
@@ -82,6 +96,10 @@ export default {
   },
   created() {
     this.loadConversations();
+    EventBus.$on("new_chat_message", this.add_conversation);
+  },
+  beforeDestroy() {
+    EventBus.$off("new_chat_message", this.add_conversation);
   }
 };
 </script>

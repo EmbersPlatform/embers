@@ -142,6 +142,7 @@
 
     window.appData.tags = <%= raw Jason.encode!(@tags) %>
     window.appData.notifications = <%= raw Jason.encode!(@notifications) %>
+    window.appData.unread_conversations = <%= raw Jason.encode!(@unread_conversations) %>
 		<% end %>
 	</script>
 	<script src="<%= static_path(@conn, "/js/manifest.js") %>" async></script>

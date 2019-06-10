@@ -33,7 +33,6 @@ defmodule EmbersWeb.MetaController do
 
       meta =
         meta
-        |> IO.inspect()
         |> Meta.load_avatar_map()
         |> Meta.load_cover()
 

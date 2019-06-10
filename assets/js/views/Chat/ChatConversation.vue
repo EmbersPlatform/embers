@@ -1,207 +1,202 @@
 <template>
-  <div
-    id="content"
-    data-layout-type="chat"
-    ref="conversationDiv"
-    :class="{'renderbox' : isLoading}"
-  >
-    <template v-if="!isLoading">
-      <button
-        v-if="!lastPage"
-        @click="loadMore"
-        class="button"
-        data-button-size="medium"
-        data-button-font="little"
-        data-button-uppercase
-        :disabled="isLoadingMore"
-      >{{!isLoadingMore ? 'Cargar mensajes antiguos' : 'Cargando más mensajes...'}}</button>
-      <div class="message" v-for="messages in messageBlocks" :key="messages">
-        <avatar :avatar="getMessageUser(messages[0].user_id).avatar.small"></avatar>
-        <div class="message-content">
-          <strong class="username">{{getMessageUser(messages[0].user_id).name}}</strong>
-          <small>{{$moment.utc(messages[0].created_at).local().calendar()}}</small>
-          <p v-html="formatMessage(message.content)" v-for="message in messages" :key="message"></p>
-        </div>
+  <div id="content" class="chat-conversation" data-layout-type="chat">
+    <template v-if="!loading_party">
+      <div class="chat-header">
+        <h3>Conversacion con @{{party.username}}</h3>
+      </div>
+      <div class="chat-content" ref="content">
+        <template v-if="!loading_messages">
+          <chat-message
+            v-for="(message, index) in messages"
+            :key="index"
+            :message="message"
+            @sent="message_sent(index)"
+          ></chat-message>
+        </template>
+        <h3 v-else>Cargando mensajes...</h3>
+      </div>
+      <div class="chat-editor">
+        <input
+          type="text"
+          v-model="text"
+          @keyup.enter="send_message"
+          placeholder="Escribe un mensaje..."
+          @focus="toggle_navigation(false)"
+          @blur="toggle_navigation(true)"
+        >
       </div>
     </template>
+    <h3 v-else>Cargando conversacion...</h3>
   </div>
 </template>
 <script>
-import chatAPI from "../../api/conversation";
-import userAPI from "../../api/user";
-
+import axios from "axios";
 import avatar from "@/components/Avatar";
 
 import formatter from "@/lib/formatter";
 
-import _ from "lodash";
+import EventBus from "@/lib/event_bus";
+
+import ChatMessage from "@/components/Chat/ChatMessage";
 
 import { mapGetters } from "vuex";
 
 export default {
   name: "ChatConversation",
-  components: { avatar },
-  data() {
-    return {
-      partner: null,
-      isLoading: false,
-      isLoadingMore: false,
-      lastPage: false,
-      oldestId: null
-    };
-  },
-  computed: {
-    ...mapGetters("chat", ["conversation", "messages", "unread_messages"]),
-    messageBlocks() {
-      // The message blocks array that will be returned by the function
-      let messageBlocks = [];
-
-      // The user of the current message block
-      let loopCurrentUser = null;
-      // The index of the current block in the messageBlocks array
-      let loopCurrentIndex = -1;
-
-      // Get the conversation messages (too lazy to type this everytime)
-      const messages = this.messages ? [...this.messages].reverse() : [];
-
-      // Initializing variable outside the for loop
-      let tooNewMessage = false;
-
-      for (var key in messages) {
-        // Check if there is a previous message
-        if (typeof messages[key - 1] !== "undefined") {
-          // Get the timestamps
-          let currentMessageTimestamp = this.$moment(
-            messages[key].created_at
-          ).format("X");
-          let previousMessageTimestamp = this.$moment(
-            messages[key - 1].created_at
-          ).format("X");
-
-          // If 5 minutes elapsed from last message, message is new enough to be put in a separate block
-          tooNewMessage =
-            currentMessageTimestamp - 3000 >= previousMessageTimestamp;
-        }
-
-        // If the user is different from the previous message user, or the message is new enough, put it in a separate block
-        if (loopCurrentUser !== messages[key].user_id || tooNewMessage) {
-          // Different index = different messages block
-          loopCurrentIndex++;
-          loopCurrentUser = messages[key].user_id;
-        }
-
-        if (typeof messageBlocks[loopCurrentIndex] === "undefined") {
-          // If the block does not exist, create it
-          messageBlocks[loopCurrentIndex] = [];
-        }
-
-        // Push the current message to the end of the block
-        messageBlocks[loopCurrentIndex].push(messages[key]);
-      }
-
-      // Return the result
-      return messageBlocks;
+  components: { avatar, ChatMessage },
+  props: {
+    party_id: {
+      type: String,
+      required: true
     }
+  },
+  data: () => ({
+    loading_party: false,
+    loading_messages: false,
+    loading_older_messages: false,
+    party: null,
+    messages: [],
+    new_messages_buffer: [],
+    text: ""
+  }),
+  computed: {
+    ...mapGetters(["user"])
   },
   methods: {
-    fetch() {
-      this.isLoading = true;
-      chatAPI
-        .getMessages(this.partner.id, { markAsRead: true })
-        .then(res => {
-          if (res.items.length) {
-            this.oldestId = res.items[res.items.length - 1].id;
-            this.$store.dispatch("chat/updateMessages", res.items);
-            this.$store.dispatch(
-              "chat/updateUnreadMessagesCount",
-              this.unread_messages - this.conversation.unread
-            );
-            this.$store.dispatch(
-              "chat/markConversationAsRead",
-              this.conversation.id
-            );
-            this.scrollToBottom();
-          }
-          this.lastPage = res.last_page;
-        })
-        .catch(err => {
-          this.$router.push("/chat");
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
+    async init() {
+      this.messages = [];
+      this.party = null;
+      await this.get_party();
+      await this.load_messages();
     },
-    loadMore() {
-      this.isLoadingMore = true;
-      chatAPI
-        .getMessages(this.partner.id, {
-          before: this.oldestId,
-          markAsRead: true
-        })
-        .then(res => {
-          if (res.items.length) {
-            this.oldestId = res.items[res.items.length - 1].id;
-            this.$store.dispatch("chat/pushMessages", res.items);
-            this.$store.dispatch(
-              "chat/updateUnreadMessagesCount",
-              this.unread_messages - this.conversation.unread
-            );
-            this.$store.dispatch(
-              "chat/markConversationAsRead",
-              this.conversation.id
-            );
-          }
-          this.lastPage = res.last_page;
-        })
-        .finally(() => {
-          this.isLoadingMore = false;
-        });
-    },
-    getMessageUser(id) {
-      /**
-       * As messages only contain the user's id (to prevent eager loading of the user for each message, or
-       * delivering unconventional responses in order to provide user's data, decreasing the API's performance)
-       * we need to determine wich user is the id from
-       */
-      if (id === this.$store.getters.user.id) {
-        return this.$store.getters.user;
-      } else {
-        return this.partner;
+    async get_party() {
+      if (this.party_id) {
+        this.loading_party = true;
+        try {
+          const { data: party } = await axios.get(
+            `/api/v1/users/${this.party_id}`
+          );
+          this.party = party.data;
+        } catch (e) {
+          console.error(e);
+        }
+        this.loading_party = false;
       }
     },
-    formatMessage(content) {
-      return formatter.format(content, true);
+    async load_messages() {
+      this.loading_messages = true;
+      const party_id = this.party.id;
+      let { data: results } = await axios.get(
+        `/api/v1/chat/conversations/${party_id}`
+      );
+      let messages = results.items.reverse();
+
+      messages.push(...this.new_messages_buffer);
+      this.empty_buffer();
+
+      this.messages = messages;
+      this.read_conversation();
+      this.scroll_to_bottom();
+      this.loading_messages = false;
     },
-    scrollToBottom() {
-      this.$refs.conversationDiv.scrollTop = this.$refs.conversationDiv.scrollHeight;
+    empty_buffer() {
+      this.new_messages_buffer = [];
+    },
+    new_message_callback(message) {
+      if (
+        message.receiver_id == this.party.id ||
+        message.sender_id == this.party.id
+      ) {
+        if (this.loading_messages) {
+          this.new_messages_buffer.push(message);
+        } else {
+          this.messages.push(message);
+        }
+        if (
+          this.$refs.content.scrollTop >=
+          this.$refs.content.scrollHeight - this.$refs.content.offsetHeight
+        )
+          this.scroll_to_bottom();
+        this.read_conversation();
+      }
+    },
+    async read_conversation() {
+      await axios.put(`/api/v1/chat/conversations/${this.party.id}`);
+    },
+    scroll_to_bottom() {
+      this.$nextTick(() => {
+        this.$refs.content.scrollTop = this.$refs.content.scrollHeight;
+      });
+    },
+    send_message() {
+      const text = this.text;
+      if (!text.length) return;
+      this.messages.push({
+        sender_id: this.user.id,
+        sender: this.user,
+        receiver_id: this.party.id,
+        text: text,
+        optimistic: true,
+        temp_id: +new Date()
+      });
+      this.text = "";
+      this.scroll_to_bottom();
+    },
+    message_sent(index) {
+      this.messages.splice(index, 1);
+    },
+    toggle_navigation(value) {
+      if (this.$mq != "sm") return;
+      EventBus.$emit("toggle_navigation", value);
     }
   },
-  created() {
-    this.$store.dispatch("chat/newMessage", false);
-    this.partner = this.conversation.user;
-    if (!this.conversation.draft) {
-      this.fetch();
-    }
-    this.$root.$on("chat/scrollToBottom", () => {
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
-    });
+  async created() {
+    EventBus.$on("new_chat_message", this.new_message_callback);
+    this.init();
   },
   beforeDestroy() {
-    this.$store.dispatch("chat/updateConversation", null);
-    this.$store.dispatch("chat/updateMessages", null);
+    EventBus.$off("new_chat_message", this.new_message_callback);
   },
   watch: {
-    conversation() {
-      this.partner = this.conversation.user;
-      this.fetch();
-    },
-    messageBlocks() {
-      this.$nextTick(() => {
-        this.scrollToBottom();
-      });
+    party_id(val) {
+      this.init(val);
     }
   }
 };
 </script>
+
+<style lang="scss">
+.chat-conversation {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.chat-header {
+  flex-shrink: 0;
+  padding: 5px 10px;
+}
+
+.chat-content {
+  flex-grow: 1;
+  max-height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.chat-editor {
+  flex-shrink: 0;
+  padding: 5px 0;
+
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    color: #ffffffcc;
+    background: transparent;
+    border: 1px solid #00000050;
+    border-radius: 2px;
+    padding: 5px 10px;
+  }
+}
+</style>

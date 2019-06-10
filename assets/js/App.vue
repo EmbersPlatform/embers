@@ -60,7 +60,7 @@
 import Navigation from "./layout/Navigation";
 import Main from "./layout/Main";
 import Sticky from "./layout/Sticky";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import userResource from "./api/user";
 import _ from "lodash";
 import Hammer from "hammerjs";
@@ -114,7 +114,8 @@ export default {
       newActivity: "newActivity"
     }),
     ...mapGetters("title", ["title"]),
-    ...mapGetters("chat", ["new_message", "online_friends"]),
+    ...mapGetters("chat", ["unread_conversations_count"]),
+    ...mapState("chat", ["online_friends"]),
     isApp: function() {
       switch (this.$route.name) {
         case "rules":
@@ -183,23 +184,23 @@ export default {
       this.fixed = !this.fixed;
     });
 
-    window.addEventListener("storage", e => {
-      const key = e.key;
-      if (key === "newMessages") {
-        this.$store.dispatch("chat/newMessage", e.newValue, false);
-      }
-      if (key === "unreadMessagesCount") {
+    EventBus.$on("new_activity", post => {
+      this.$store.dispatch("add_new_post", post);
+      this.$store.dispatch("newActivity");
+    });
+
+    EventBus.$on("new_chat_message", message => {
+      if (this.$store.getters.user.id != message.sender_id) {
         this.$store.dispatch(
-          "chat/updateUnreadMessagesCount",
-          e.newValue,
-          false
+          "chat/add_unread_conversation_with",
+          message.sender_id
         );
       }
     });
 
-    EventBus.$on("new_activity", post => {
-      this.$store.dispatch("add_new_post", post);
-      this.$store.dispatch("newActivity");
+    EventBus.$on("conversation_read", payload => {
+      console.log(payload);
+      this.$store.dispatch("chat/read_conversation_with", payload.id);
     });
 
     EventBus.$on("show_new_post_modal", props => {
@@ -243,8 +244,8 @@ export default {
     title(val) {
       document.title = val;
     },
-    new_message() {
-      if (this.new_message) {
+    unread_conversations_count() {
+      if (this.unread_conversations_count > 0) {
         this.newMessageTitleInterval = setInterval(() => {
           const title =
             this.title === document.title

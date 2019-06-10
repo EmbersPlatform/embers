@@ -3,6 +3,12 @@ import EventBus from '@/lib/event_bus';
 const callbacks = {
   notification(payload) {
     EventBus.$emit("new_notification", payload);
+  },
+  new_chat_message(payload) {
+    EventBus.$emit("new_chat_message", payload);
+  },
+  conversation_read(payload) {
+    EventBus.$emit("conversation_read", payload);
   }
 }
 
@@ -12,6 +18,10 @@ export default {
     channel.join();
 
     channel.on("notification", callbacks.notification);
+
+    channel.on("new_chat_message", callbacks.new_chat_message);
+
+    channel.on("conversation_read", callbacks.conversation_read);
 
     return channel;
   }

@@ -168,6 +168,13 @@ defmodule EmbersWeb.Router do
         put("/notifications/:id", NotificationController, :read)
 
         get("/search/:query", SearchController, :search)
+        get("/search_typeahead/user/:username", SearchController, :user_typeahead)
+
+        get("/chat/conversations", ChatController, :list_conversations)
+        post("/chat/conversations", ChatController, :create)
+        get("/chat/conversations/:id", ChatController, :list_messages)
+        put("/chat/conversations/:id", ChatController, :read)
+        get("/chat/unread", ChatController, :list_unread_conversations)
       end
     end
 

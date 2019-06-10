@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import _ from "lodash";
 
 import formatter from "@/lib/formatter";
@@ -39,7 +39,7 @@ export default {
    * Computed data
    */
   computed: {
-    ...mapGetters("chat", ["online_friends"]),
+    ...mapState("chat", ["online_friends"]),
 
     /**
      * Text to display when the user's no mutuals

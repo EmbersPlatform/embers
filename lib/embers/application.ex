@@ -24,6 +24,7 @@ defmodule Embers.Application do
     Embers.Notifications.Manager.register()
     EmbersWeb.NotificationSubscriber.register()
     EmbersWeb.ActivitySubscriber.register()
+    EmbersWeb.ChatSubscriber.register()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

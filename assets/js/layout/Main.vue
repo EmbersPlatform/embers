@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import Avatar from "@/components/Avatar";
 
 export default {
@@ -68,7 +68,7 @@ export default {
     ...mapGetters({
       user: "user"
     }),
-    ...mapGetters("chat", ["online_friends"]),
+    ...mapState("chat", ["online_friends"]),
     noSidebar() {
       switch (this.$route.matched[0].name) {
         case "search":

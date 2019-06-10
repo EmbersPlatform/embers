@@ -19,7 +19,8 @@ export default new Vuex.Store({
   state: {
     appData: {},
     userProfile: {},
-    newActivity: 0
+    newActivity: 0,
+    show_navigation: true
   },
 
   modules: {
@@ -45,6 +46,9 @@ export default new Vuex.Store({
     },
     RESET_ACTIVITY(state) {
       state.newActivity = 0;
+    },
+    TOGGLE_NAVIGATION(state, value) {
+      state.show_navigation = value;
     }
   },
 
@@ -69,6 +73,11 @@ export default new Vuex.Store({
       commit
     }) {
       commit('RESET_ACTIVITY');
+    },
+    toggle_navigation({
+      commit
+    }, value) {
+      commit("TOGGLE_NAVIGATION", value)
     }
   },
 
