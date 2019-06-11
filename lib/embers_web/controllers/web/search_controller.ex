@@ -20,7 +20,7 @@ defmodule EmbersWeb.SearchController do
   end
 
   def user_typeahead(conn, %{"username" => username}) do
-    results = UserSearch.search(username, except: conn.assigns.current_user.canonical)
+    results = UserSearch.search(username)
 
     conn
     |> render("user_results.json", %{results: results})

@@ -43,8 +43,8 @@ defmodule Embers.Chat do
   def list_messages_for(party1, party2, opts \\ []) do
     query =
       from(m in Message,
-        where: m.sender_id == ^party1 or m.receiver_id == ^party1,
-        where: m.sender_id == ^party2 or m.receiver_id == ^party2,
+        where: m.sender_id == ^party1 and m.receiver_id == ^party2,
+        or_where: m.sender_id == ^party2 and m.receiver_id == ^party1,
         order_by: [desc: m.inserted_at],
         preload: [sender: :meta]
       )

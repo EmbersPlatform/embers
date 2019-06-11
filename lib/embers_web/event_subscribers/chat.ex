@@ -8,7 +8,7 @@ defmodule EmbersWeb.ChatSubscriber do
 
   def handle_event(:chat_message_created, %{data: %{message: message} = data}) do
     %{sender_id: sender, receiver_id: receiver} = message
-    temp_id = Map.get(data, :temp_id) |> IO.inspect(label: "Temp id")
+    temp_id = Map.get(data, :temp_id)
 
     EmbersWeb.Endpoint.broadcast!(
       "user:#{encode(sender)}",
@@ -16,10 +16,12 @@ defmodule EmbersWeb.ChatSubscriber do
       ChatView.render("ws_message.json", message: message, temp_id: temp_id)
     )
 
-    EmbersWeb.Endpoint.broadcast!(
-      "user:#{encode(receiver)}",
-      "new_chat_message",
-      ChatView.render("ws_message.json", message: message, temp_id: nil)
-    )
+    if sender != receiver do
+      EmbersWeb.Endpoint.broadcast!(
+        "user:#{encode(receiver)}",
+        "new_chat_message",
+        ChatView.render("ws_message.json", message: message, temp_id: nil)
+      )
+    end
   end
 end

@@ -28,7 +28,7 @@ defmodule EmbersWeb.ChatController do
     params =
       if !is_nil(params["receiver_id"]) do
         Map.put(params, "receiver_id", decode(params["receiver_id"]))
-      end
+      end || params
 
     with {:ok, message} <- Chat.create(params, temp_id: temp_id) do
       render(conn, "message.json", message: message)

@@ -34,7 +34,7 @@
             </div>
           </div>
         </template>
-        <h3 v-else>Cargando mensajes...</h3>
+        <h3 v-else class="loading-title">Cargando mensajes...</h3>
         <intersector @intersect="read_conversation" style="height: 1px;"/>
       </div>
       <div class="chat-editor">
@@ -51,7 +51,7 @@
         ></textarea>
       </div>
     </template>
-    <h3 v-else>Cargando conversacion...</h3>
+    <h3 v-else class="loading-title">Cargando conversacion...</h3>
   </div>
 </template>
 <script>
@@ -156,7 +156,7 @@ export default {
           );
           this.party_user = party.data;
         } catch (e) {
-          console.error(e);
+          this.$router.replace("/chat");
         }
         this.loading_party = false;
       }
@@ -195,8 +195,12 @@ export default {
     },
     new_message_callback({ message, temp_id }) {
       if (
-        message.receiver_id == this.party.id ||
-        message.sender_id == this.party.id
+        (message.receiver_id == this.party.id &&
+          message.sender_id == this.user.id) ||
+        (message.sender_id == this.party.id &&
+          message.receiver_id == this.user.id) ||
+        (message.sender_id == this.user.id &&
+          message.receiver_id == this.user.id)
       ) {
         if (this.loading_messages) {
           this.new_messages_buffer.push(message);
@@ -355,10 +359,11 @@ export default {
       text-align: right;
 
       flex-direction: row-reverse;
-    }
-    *:not(:last-child) {
-      margin-right: 0;
-      margin-left: 5px;
+
+      *:not(:last-child) {
+        margin-right: 0;
+        margin-left: 5px;
+      }
     }
   }
 
@@ -375,5 +380,9 @@ export default {
 .message-block__messages {
   padding-top: 5px;
   flex-grow: 1;
+}
+
+.loading-title {
+  color: #ffffff99;
 }
 </style>
