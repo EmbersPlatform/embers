@@ -28,6 +28,16 @@ defmodule EmbersWeb.UserChannel do
     {:noreply, socket}
   end
 
+  def handle_in("chat_typing", %{"party" => party_id} = payload, socket) do
+    dest_id = IdHasher.encode(socket.assigns.user.id)
+
+    EmbersWeb.Endpoint.broadcast!("user:#{party_id}", "chat_typing", %{
+      "party" => dest_id
+    })
+
+    {:noreply, socket}
+  end
+
   defp check_user(id, socket) do
     %Phoenix.Socket{assigns: %{user: user}} = socket
     IdHasher.decode(id) == user.id

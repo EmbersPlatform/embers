@@ -68,8 +68,7 @@ export default {
       );
       this.conversations = conversations;
     },
-    add_conversation(message) {
-      console.log("okasd", message);
+    add_conversation({ message }) {
       const sender = message.sender;
       const receiver = message.receiver;
       let user = null;

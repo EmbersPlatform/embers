@@ -21,12 +21,18 @@ defmodule Embers.Chat.Message do
     |> cast(attrs, [:sender_id, :receiver_id, :text, :read_at])
     |> foreign_key_constraint(:sender_id)
     |> foreign_key_constraint(:receiver_id)
-    |> validate_length(:text, max: 1600)
+    |> trim_text(attrs)
+    |> validate_length(:text, min: 1, max: 1600)
     |> validate_required([:text])
   end
 
   def read_changeset(message) do
     message
     |> change(read_at: DateTime.utc_now())
+  end
+
+  defp trim_text(changeset, %{"text" => text} = _attrs) do
+    changeset
+    |> change(text: String.trim(text))
   end
 end

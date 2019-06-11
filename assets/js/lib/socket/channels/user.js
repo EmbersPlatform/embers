@@ -9,6 +9,9 @@ const callbacks = {
   },
   conversation_read(payload) {
     EventBus.$emit("conversation_read", payload);
+  },
+  chat_typing(payload) {
+    EventBus.$emit("chat_typing", payload);
   }
 }
 
@@ -22,6 +25,8 @@ export default {
     channel.on("new_chat_message", callbacks.new_chat_message);
 
     channel.on("conversation_read", callbacks.conversation_read);
+
+    channel.on("chat_typing", callbacks.chat_typing);
 
     return channel;
   }

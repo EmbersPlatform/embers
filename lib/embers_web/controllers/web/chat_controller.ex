@@ -23,13 +23,14 @@ defmodule EmbersWeb.ChatController do
   def create(conn, params) do
     sender = conn.assigns.current_user.id
     params = Map.put(params, "sender_id", sender)
+    temp_id = Map.get(params, "temp_id")
 
     params =
       if !is_nil(params["receiver_id"]) do
         Map.put(params, "receiver_id", decode(params["receiver_id"]))
       end
 
-    with {:ok, message} <- Chat.create(params) do
+    with {:ok, message} <- Chat.create(params, temp_id: temp_id) do
       render(conn, "message.json", message: message)
     else
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -46,7 +47,7 @@ defmodule EmbersWeb.ChatController do
     end
   end
 
-  def read(conn, %{"id" => id}) do
+  def read(conn, %{"id" => id} = params) do
     reader = conn.assigns.current_user.id
     party = decode(id)
 

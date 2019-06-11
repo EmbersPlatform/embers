@@ -13,6 +13,13 @@ defmodule EmbersWeb.ChatView do
     |> handle_users(message)
   end
 
+  def render("ws_message.json", %{message: message, temp_id: temp_id}) do
+    %{
+      message: render("message.json", %{message: message}),
+      temp_id: temp_id
+    }
+  end
+
   def render("conversations.json", %{conversations: conversations}) do
     render_many(conversations, EmbersWeb.UserView, "user.json")
   end

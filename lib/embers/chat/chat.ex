@@ -8,15 +8,17 @@ defmodule Embers.Chat do
   alias Embers.Paginator
   alias Embers.Repo
 
-  def create(attrs) when is_map(attrs) do
+  def create(attrs, opts \\ []) when is_map(attrs) do
     message =
       %Message{}
       |> Message.changeset(attrs)
 
+    temp_id = Keyword.get(opts, :temp_id, nil)
+
     case Repo.insert(message) do
       {:ok, message} ->
         message = message |> Repo.preload(sender: :meta, receiver: :meta)
-        Embers.Event.emit(:chat_message_created, %{message: message})
+        Embers.Event.emit(:chat_message_created, %{message: message, temp_id: temp_id})
         {:ok, message}
 
       error ->

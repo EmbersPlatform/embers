@@ -1,8 +1,5 @@
 <template>
   <div id="board">
-    <div id="heading">
-      <Top></Top>
-    </div>
     <div id="wrapper">
       <template v-if="party_id">
         <ChatConversation :party_id="party_id" :key="$route.fullPath"/>

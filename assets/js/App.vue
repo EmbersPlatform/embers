@@ -189,7 +189,7 @@ export default {
       this.$store.dispatch("newActivity");
     });
 
-    EventBus.$on("new_chat_message", message => {
+    EventBus.$on("new_chat_message", ({ message }) => {
       if (this.$store.getters.user.id != message.sender_id) {
         this.$store.dispatch(
           "chat/add_unread_conversation_with",
@@ -199,7 +199,6 @@ export default {
     });
 
     EventBus.$on("conversation_read", payload => {
-      console.log(payload);
       this.$store.dispatch("chat/read_conversation_with", payload.id);
     });
 

@@ -1,7 +1,7 @@
 <template>
   <div class="chat-message" :class="{mine: mine, sending: sending, failed: failed}" @click="retry">
     <div class="chat-message__content">
-      <div class="chat-message__bubble">{{ message.text }}</div>
+      <div class="chat-message__bubble" v-html="formatted_text"></div>
       <div
         v-if="failed"
         class="chat-message__error"
@@ -13,9 +13,12 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+import Avatar from "@/components/Avatar";
+import formatter from "@/lib/formatter";
 
 export default {
   name: "ChatMessage",
+  components: { Avatar },
   props: {
     message: {
       type: Object,
@@ -29,6 +32,9 @@ export default {
     },
     optimistic() {
       return this.message.optimistic;
+    },
+    formatted_text() {
+      return formatter.format(this.message.text);
     }
   },
   data: () => ({
@@ -43,7 +49,8 @@ export default {
           `/api/v1/chat/conversations`,
           {
             receiver_id: this.message.receiver_id,
-            text: this.message.text
+            text: this.message.text,
+            temp_id: this.message.temp_id
           }
         );
         this.sending = false;
@@ -77,13 +84,16 @@ export default {
   .chat-message__content {
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+    flex: 1;
     .chat-message__bubble {
       background: $blue_dark;
       color: #ffffffdd;
       padding: 5px 10px;
-      border-radius: 2em;
+      border-radius: 14px;
       width: fit-content;
-      float: right;
+      word-break: break-word;
+      max-width: 80%;
     }
 
     .chat-message__error {
@@ -94,6 +104,9 @@ export default {
   &.mine {
     @media #{$query-mobile} {
       justify-content: flex-end;
+      .chat-message__content {
+        align-items: flex-end;
+      }
     }
     .chat-message__content {
       .chat-message__bubble {
