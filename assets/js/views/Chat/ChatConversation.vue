@@ -48,13 +48,15 @@
           data-autoresize
           v-model="text"
           @keydown.enter.exact.prevent
-          @keyup.enter.exact="send_message"
+          @keyup.enter.exact="send_message(true)"
           @keydown.exact="send_typing"
           @keydown.enter.shift.exact="newline"
           placeholder="Escribe un mensaje..."
           @focus="input_focus"
           @blur="toggle_navigation(true)"
+          ref="textarea"
         ></textarea>
+        <i v-if="$mq == 'sm'" class="send-button fas fa-paper-plane" @click="send_message(false)"></i>
       </div>
     </template>
     <h3 v-else class="loading-title">Cargando conversacion...</h3>
@@ -109,8 +111,7 @@ export default {
       return party;
     },
     status_text() {
-      if (this.is_typing) return "Escribiendo...";
-      if (this.party.status == "online") return "Conectado";
+      if (this.party.status == "online") return "Activo";
       return "Desconectado";
     },
     reduced_messages() {
@@ -192,6 +193,13 @@ export default {
     track_typing(payload) {
       if (payload.party != this.party.id) return;
       this.is_typing = true;
+      if (
+        this.$refs.content.scrollTop >=
+        (this.$refs.content.scrollHeight - this.$refs.content.offsetHeight) *
+          0.8
+      ) {
+        this.scroll_to_bottom();
+      }
       clearTimeout(this.is_typing_timeout);
 
       this.is_typing_timeout = setTimeout(() => (this.is_typing = false), 900);
@@ -226,6 +234,8 @@ export default {
           this.scroll_to_bottom();
           this.read_conversation();
         }
+        this.is_typing = false;
+        clearTimeout(this.is_typing_timeout);
       }
     },
     async read_conversation() {
@@ -237,7 +247,11 @@ export default {
         this.$refs.content.scrollTop = this.$refs.content.scrollHeight;
       });
     },
-    send_message() {
+    send_message(check_mq = false) {
+      if (check_mq && this.$mq == "sm") {
+        this.newline();
+        return;
+      }
       const text = this.text.trim();
       if (!text.length) return;
       this.messages.push({
@@ -283,6 +297,7 @@ export default {
 
 <style lang="scss">
 @import "~@/../sass/base/_variables.scss";
+@import "~@/../sass/base/_mixins.scss";
 
 .chat-conversation {
   display: flex;
@@ -325,16 +340,31 @@ export default {
 
 .chat-editor {
   flex-shrink: 0;
-  padding: 5px 0;
+  margin: 5px 0;
+  position: relative;
+  display: flex;
+
+  border: 1px solid #00000050;
+  border-radius: 2px;
 
   textarea {
     box-sizing: border-box;
     width: 100%;
     color: #ffffffcc;
     background: transparent;
-    border: 1px solid #00000050;
-    border-radius: 2px;
     padding: 5px 10px;
+    flex-grow: 1;
+    max-height: 30vh;
+    overflow-y: auto !important;
+    padding: 5px;
+  }
+  .send-button {
+    flex-shrink: 0;
+    display: block;
+    padding: 10px;
+    color: #fff;
+    font-size: 1.4em;
+    cursor: pointer;
   }
 }
 

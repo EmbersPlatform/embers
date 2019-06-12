@@ -35,8 +35,7 @@ export default {
   components: { Avatar },
   props: {
     message: {
-      type: Object,
-      required: true
+      type: Object
     },
     typing: {
       type: Boolean,
@@ -46,12 +45,15 @@ export default {
   computed: {
     ...mapGetters(["user"]),
     mine() {
+      if (!this.message) return false;
       return this.message.sender.id == this.user.id;
     },
     optimistic() {
+      if (!this.message) return false;
       return this.message.optimistic;
     },
     formatted_text() {
+      if (!this.message) return null;
       return formatter.format(this.message.text);
     }
   },
@@ -85,7 +87,7 @@ export default {
     }
   },
   created() {
-    if (this.message.optimistic) {
+    if (this.optimistic) {
       this.send();
     }
   }
