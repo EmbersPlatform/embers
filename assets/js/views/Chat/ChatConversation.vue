@@ -33,6 +33,12 @@
               ></chat-message>
             </div>
           </div>
+          <div class="message-block" v-if="is_typing">
+            <avatar :avatar="party.avatar.small"/>
+            <div class="message-block__messages">
+              <chat-message typing :user="this.party"></chat-message>
+            </div>
+          </div>
         </template>
         <h3 v-else class="loading-title">Cargando mensajes...</h3>
         <intersector @intersect="read_conversation" style="height: 1px;"/>
@@ -97,7 +103,7 @@ export default {
       let party = this.party_user;
       party.status =
         _.find(this.online_friends, friend => friend.id == party.id) !=
-        undefined
+          undefined || party.id == this.user.id
           ? "online"
           : "";
       return party;
@@ -188,7 +194,7 @@ export default {
       this.is_typing = true;
       clearTimeout(this.is_typing_timeout);
 
-      this.is_typing_timeout = setTimeout(() => (this.is_typing = false), 1500);
+      this.is_typing_timeout = setTimeout(() => (this.is_typing = false), 900);
     },
     empty_buffer() {
       this.new_messages_buffer = [];
