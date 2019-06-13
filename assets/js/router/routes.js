@@ -23,7 +23,6 @@ import Profile from "../views/UserProfile/Profile.vue";
 import SB_Default from "../views/Sidebar/Default";
 import SB_Home from "../views/Sidebar/Home";
 import SB_Discover from "../views/Sidebar/Discover";
-import SB_Profile from "../views/Sidebar/UserProfile";
 import SB_Settings from "../views/Sidebar/Settings";
 import SB_Chat from "../views/Sidebar/Chat";
 import SB_Subscriptions from "../views/Sidebar/Subscriptions";

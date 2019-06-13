@@ -6,8 +6,9 @@
       </template>
       <div v-else id="content" data-layout-type="middle">
         <div id="feed">
-          <h3>
-            <p>Hmm. Esto está muy vacío</p>
+          <ConversationList v-if="$mq == 'sm'"/>
+          <h3 v-else>
+            <p>Hmm. Esto esta muy vacio.</p>
           </h3>
         </div>
       </div>
@@ -21,6 +22,7 @@ import axios from "axios";
 import Top from "../components/Top";
 import ChatConversation from "./Chat/ChatConversation";
 import NewChatModal from "./Chat/NewChatModal";
+import ConversationList from "@/components/Chat/ConversationList";
 
 import { mapGetters, mapState } from "vuex";
 
@@ -29,7 +31,8 @@ export default {
   components: {
     Top,
     ChatConversation,
-    NewChatModal
+    NewChatModal,
+    ConversationList
   },
   computed: {
     ...mapState("chat", ["show_new_chat_modal"]),
@@ -43,6 +46,19 @@ export default {
 <style lang="scss" scoped>
 #wrapper {
   padding-bottom: 0 !important;
+}
+</style>
+
+<style lang="scss">
+#feed {
+  width: 100%;
+  #column {
+    width: 100%;
+    padding: 10px;
+  }
+  .nav_ h2 {
+    display: none !important;
+  }
 }
 </style>
 
