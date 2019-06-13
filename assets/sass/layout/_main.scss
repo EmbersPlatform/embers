@@ -12,11 +12,13 @@
     min-height: auto;
     overflow: hidden;
 
-    &[data-vh-issue] {
-      height: calc(100vh - 55px);
-
-      #board {
+    @media #{$query-mobile} {
+      &[data-vh-issue] {
         height: calc(100vh - 55px);
+
+        #board {
+          height: calc(100vh - 55px);
+        }
       }
     }
 

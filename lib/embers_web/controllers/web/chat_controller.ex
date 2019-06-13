@@ -15,7 +15,9 @@ defmodule EmbersWeb.ChatController do
     party_id = decode(party_id)
 
     messages =
-      Chat.list_messages_for(conn.assigns.current_user.id, party_id, before: params["before"])
+      Chat.list_messages_for(conn.assigns.current_user.id, party_id,
+        before: decode(params["before"])
+      )
 
     render(conn, "messages.json", messages)
   end

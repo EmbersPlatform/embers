@@ -55,6 +55,7 @@ export default {
   #column {
     width: 100%;
     padding: 10px;
+    height: 100%;
   }
   .nav_ h2 {
     display: none !important;

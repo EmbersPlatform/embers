@@ -7,6 +7,7 @@
   >
     <template v-if="!loading_party">
       <div class="chat-header">
+        <router-link tag="i" v-if="$mq == 'sm'" to="/chat" class="back-button fas fa-arrow-left"></router-link>
         <avatar :avatar="party.avatar.small" :status="party.status == 'online'"/>
         <div class="chat-header__content">
           <p>
@@ -16,6 +17,14 @@
         </div>
       </div>
       <div class="chat-content" ref="content">
+        <intersector @intersect="load_older_messages" style="height: 1px;"/>
+        <div v-if="messages_last_page" class="chat-conversation-start">
+          <p>
+            Inicio de la conversación con
+            <strong>{{party.username}}</strong>
+          </p>
+        </div>
+        <h3 v-if="loading_older_messages" class="loading-title">Cargando mas mensajes</h3>
         <template v-if="!loading_messages">
           <div class="message-block" v-for="(block, index) in reduced_messages" :key="index">
             <avatar
@@ -58,8 +67,6 @@
           @keydown.enter.shift.exact="newline"
           placeholder="Escribe un mensaje..."
           ref="textarea"
-          @focus="input_focus"
-          @blur="input_blur"
         ></textarea>
         <i
           v-if="is_mobile()"
@@ -102,6 +109,8 @@ export default {
     loading_party: false,
     loading_messages: false,
     loading_older_messages: false,
+    messages_last_page: false,
+    messages_next: null,
     party_user: null,
     messages: [],
     new_messages_buffer: [],
@@ -195,9 +204,38 @@ export default {
       this.empty_buffer();
 
       this.messages = messages;
+      this.messages_next = results.next;
+      this.messages_last_page = results.last_page;
       this.read_conversation();
       this.scroll_to_bottom();
       this.loading_messages = false;
+    },
+    async load_older_messages() {
+      console.log("load_more");
+      if (this.messages_last_page || this.loading_older_messages) return;
+      this.loading_older_messages = true;
+      const party_id = this.party.id;
+      let { data: results } = await axios.get(
+        `/api/v1/chat/conversations/${party_id}`,
+        { params: { before: this.messages_next } }
+      );
+      let messages = results.items.reverse();
+
+      const old_height = this.$refs.content.scrollHeight;
+      const old_scroll = this.$refs.content.scrollTop;
+
+      this.messages = [...messages, ...this.messages];
+      this.messages_next = results.next;
+      this.messages_last_page = results.last_page;
+
+      this.$nextTick(() => {
+        const new_height = this.$refs.content.scrollHeight;
+        const height_diff = new_height - old_height;
+        this.$refs.content.scrollTop = old_scroll + height_diff;
+        this.$refs.content.focus();
+      });
+
+      this.loading_older_messages = false;
     },
     send_typing({ key }) {
       if (key == "Enter") return;
@@ -283,18 +321,6 @@ export default {
     newline() {
       this.text = `${this.text}\n`;
     },
-    input_focus() {
-      if (is_mobile()) {
-        this.toggle_navigation(false);
-      }
-      this.read_conversation();
-    },
-    input_blur() {
-      if (!is_mobile()) return;
-      setTimeout(() => {
-        if (!this.send_button_clicked) this.toggle_navigation(true);
-      }, 200);
-    },
     send_button_click() {
       this.$refs.textarea.focus();
       this.send_button_clicked = true;
@@ -302,19 +328,18 @@ export default {
         this.send_button_clicked = false;
       }, 300);
       this.send_message(false);
-    },
-    toggle_navigation(value) {
-      if (this.$mq != "sm") return;
-      EventBus.$emit("toggle_navigation", value);
-      this.hide_navbar = !value;
     }
   },
-  async created() {
+  created() {
     EventBus.$on("new_chat_message", this.new_message_callback);
     EventBus.$on("chat_typing", this.track_typing);
     this.init();
   },
+  mounted() {
+    EventBus.$emit("toggle_navigation", false);
+  },
   beforeDestroy() {
+    EventBus.$emit("toggle_navigation", true);
     EventBus.$off("new_chat_message", this.new_message_callback);
     EventBus.$off("chat_typing", this.track_typing);
     clearTimeout(this.is_typing_timeout);
@@ -336,10 +361,21 @@ export default {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  padding: 0 !important;
 
   &.hide-navbar {
     margin-bottom: 0;
   }
+}
+
+.chat-conversation-start {
+  padding: 20px 10px;
+  background: linear-gradient(
+    to bottom,
+    transparentize(#ffffffff, 0.95) 0%,
+    #00000000
+  );
+  color: #ffffff77;
 }
 
 .chat-header {
@@ -354,6 +390,16 @@ export default {
     width: 40px;
     height: 40px;
   }
+
+  .back-button {
+    cursor: pointer;
+    align-self: center;
+    font-size: 1.5em;
+    margin-right: 5px;
+    padding: 5px;
+    display: block;
+    box-sizing: border-box;
+  }
 }
 
 .chat-header__content {
@@ -367,7 +413,6 @@ export default {
 }
 
 .chat-content {
-  padding-top: 10px;
   flex: 1 0;
   max-height: 100%;
   overflow-y: auto;
@@ -376,7 +421,7 @@ export default {
 
 .chat-editor {
   flex-shrink: 0;
-  margin: 5px 0;
+  margin: 5px 10px;
   position: relative;
   display: flex;
 
@@ -405,6 +450,7 @@ export default {
 }
 
 .message-block {
+  padding: 10px;
   display: flex;
   align-items: flex-start;
   flex-grow: 1;
@@ -455,6 +501,7 @@ export default {
 }
 
 .loading-title {
+  padding: 10px 20px;
   color: #ffffff99;
 }
 </style>
