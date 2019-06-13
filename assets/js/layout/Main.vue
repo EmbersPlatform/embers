@@ -1,7 +1,7 @@
 <template>
   <div id="main" :data-layout-type="isChat" :data-vh-issue="isChromeMobile && isChat">
-    <aside v-if="user && isSidebar" id="sidebar" ref="trg_sidebar" @click="sidebarClick">
-      <router-view name="sidebar"></router-view>
+    <aside v-if="user" id="sidebar" ref="trg_sidebar" @click="sidebarClick">
+      <router-view name="sidebar" v-if="isSidebar"></router-view>
     </aside>
     <router-view></router-view>
   </div>

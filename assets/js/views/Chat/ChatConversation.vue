@@ -414,8 +414,10 @@ export default {
 
 .chat-content {
   flex: 1 0;
+  width: 100%;
   max-height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
   box-sizing: border-box;
 }
 
