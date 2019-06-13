@@ -211,8 +211,12 @@ export default {
       this.loading_messages = false;
     },
     async load_older_messages() {
-      console.log("load_more");
-      if (this.messages_last_page || this.loading_older_messages) return;
+      if (
+        this.loading_messages ||
+        this.messages_last_page ||
+        this.loading_older_messages
+      )
+        return;
       this.loading_older_messages = true;
       const party_id = this.party.id;
       let { data: results } = await axios.get(
@@ -359,7 +363,7 @@ export default {
 .chat-conversation {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
   padding: 0 !important;
 
@@ -392,11 +396,13 @@ export default {
   }
 
   .back-button {
+    display: block;
     cursor: pointer;
     align-self: center;
     font-size: 1.5em;
     margin-right: 5px;
     padding: 5px;
+    padding-left: 10px;
     display: block;
     box-sizing: border-box;
   }

@@ -2,8 +2,9 @@
 @import url("https://fonts.googleapis.com/css?family=Work+Sans:300,400,500");
 
 html {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden; // probably causing the infinite scroll issue on chrome android
   // overflow-x: visible; // posible fix
