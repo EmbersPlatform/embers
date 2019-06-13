@@ -101,6 +101,15 @@ export default {
   display: flex;
   flex-direction: row;
   margin-bottom: 5px;
+
+  a {
+    color: #fff;
+    font-weight: 400;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .chat-message__content {
     display: flex;
     flex-direction: column;
