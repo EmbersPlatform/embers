@@ -90,13 +90,13 @@
 
     ~ #board {
       margin-left: 10px;
-      max-width: calc(100vh - 10px);
+      max-width: calc(100% - 10px);
     }
   }
 
   ~ #board {
     margin-left: 230px;
-    max-width: calc(100vh - 230px);
+    max-width: calc(100% - 230px);
   }
 }
 
