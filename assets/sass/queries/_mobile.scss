@@ -799,7 +799,8 @@
     &[data-layout-type="wide"] {
       .profile-stats {
         @include flex-flow(column, nowrap);
-        @include align-items(stretch) ul {
+        @include align-items(stretch);
+        ul {
           @include flex(1 1 auto);
           @include justify-content(center);
           &:not(:last-child) {

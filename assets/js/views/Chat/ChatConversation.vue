@@ -1,5 +1,10 @@
 <template>
-  <div id="content" class="chat-conversation" data-layout-type="chat">
+  <div
+    id="content"
+    class="chat-conversation"
+    data-layout-type="chat"
+    :class="{'hide-navbar': hide_navbar}"
+  >
     <template v-if="!loading_party">
       <div class="chat-header">
         <avatar :avatar="party.avatar.small" :status="party.status == 'online'"/>
@@ -52,11 +57,16 @@
           @keydown.exact="send_typing"
           @keydown.enter.shift.exact="newline"
           placeholder="Escribe un mensaje..."
-          @focus="input_focus"
-          @blur="toggle_navigation(true)"
           ref="textarea"
+          @focus="input_focus"
+          @blur="input_blur"
         ></textarea>
-        <i v-if="$mq == 'sm'" class="send-button fas fa-paper-plane" @click="send_message(false)"></i>
+        <i
+          v-if="is_mobile()"
+          class="send-button fas fa-paper-plane"
+          tabindex="-1"
+          @focus="send_button_click"
+        ></i>
       </div>
     </template>
     <h3 v-else class="loading-title">Cargando conversacion...</h3>
@@ -67,6 +77,7 @@ import axios from "axios";
 import avatar from "@/components/Avatar";
 
 import formatter from "@/lib/formatter";
+import is_mobile from "@/lib/is_mobile";
 
 import EventBus from "@/lib/event_bus";
 
@@ -96,7 +107,10 @@ export default {
     new_messages_buffer: [],
     text: "",
     is_typing: false,
-    is_typing_timeout: null
+    is_typing_timeout: null,
+    send_button_clicked: false,
+    send_button_timeout: null,
+    hide_navbar: false
   }),
   computed: {
     ...mapGetters(["user"]),
@@ -148,6 +162,7 @@ export default {
     }
   },
   methods: {
+    is_mobile: is_mobile,
     async init() {
       this.messages = [];
       this.party_user = null;
@@ -247,8 +262,8 @@ export default {
         this.$refs.content.scrollTop = this.$refs.content.scrollHeight;
       });
     },
-    send_message(check_mq = false) {
-      if (check_mq && this.$mq == "sm") {
+    send_message(check_mobile = false) {
+      if (check_mobile && is_mobile()) {
         this.newline();
         return;
       }
@@ -269,12 +284,29 @@ export default {
       this.text = `${this.text}\n`;
     },
     input_focus() {
-      this.toggle_navigation(false);
+      if (is_mobile()) {
+        this.toggle_navigation(false);
+      }
       this.read_conversation();
+    },
+    input_blur() {
+      if (!is_mobile()) return;
+      setTimeout(() => {
+        if (!this.send_button_clicked) this.toggle_navigation(true);
+      }, 200);
+    },
+    send_button_click() {
+      this.$refs.textarea.focus();
+      this.send_button_clicked = true;
+      setTimeout(() => {
+        this.send_button_clicked = false;
+      }, 300);
+      this.send_message(false);
     },
     toggle_navigation(value) {
       if (this.$mq != "sm") return;
       EventBus.$emit("toggle_navigation", value);
+      this.hide_navbar = !value;
     }
   },
   async created() {
@@ -304,6 +336,10 @@ export default {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+
+  &.hide-navbar {
+    margin-bottom: 0;
+  }
 }
 
 .chat-header {
@@ -332,7 +368,7 @@ export default {
 
 .chat-content {
   padding-top: 10px;
-  flex: 1;
+  flex: 1 0;
   max-height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
@@ -345,14 +381,14 @@ export default {
   display: flex;
 
   border: 1px solid #00000050;
-  border-radius: 2px;
+  border-radius: 1em;
 
   textarea {
     box-sizing: border-box;
     width: 100%;
     color: #ffffffcc;
     background: transparent;
-    padding: 5px 10px;
+    padding: 0.5em 1em !important;
     flex-grow: 1;
     max-height: 30vh;
     overflow-y: auto !important;

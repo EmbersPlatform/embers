@@ -1,7 +1,7 @@
 <template>
   <div
     id="appex"
-    :class="{'in-app': isApp, 'blur': (blurToolBox || blurSidebar), 'fixed': fixed}"
+    :class="{'in-app': isApp, 'blur': (blurToolBox || blurSidebar), 'fixed': fixed, 'no-navigation': !with_navigation}"
     :dark-side="openSidebar"
     ref="main"
   >
@@ -95,7 +95,8 @@ export default {
       openSidebar: false,
       fixed: false,
       show_new_post_modal: false,
-      new_post_modal_related: null
+      new_post_modal_related: null,
+      with_navigation: true
     };
   },
   methods: {
@@ -161,7 +162,7 @@ export default {
     window.addEventListener(
       "scroll",
       _.throttle(() => {
-        this.toHeaven = $(window).scrollTop() >= 300;
+        this.toHeaven = $(window).scrollTop() >= 300 && this.$mq != "sm";
       }),
       1000
     );
@@ -222,6 +223,10 @@ export default {
         }
       });
     });
+
+    EventBus.$on("toggle_navigation", value => {
+      this.with_navigation = value;
+    });
   },
   mounted() {
     /**
@@ -263,3 +268,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+#appex.no-navigation {
+  #main,
+  #board {
+    height: 100vh !important;
+  }
+}
+</style>

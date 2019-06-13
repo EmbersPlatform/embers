@@ -39,3 +39,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+#wrapper {
+  padding-bottom: 0 !important;
+}
+</style>
+
