@@ -1,6 +1,6 @@
 <template>
   <div id="board">
-    <template v-if="!loading">
+    <template v-if="!loading && post">
       <div id="heading" class="user">
         <template>
           <hr v-if="post.user.cover" :style="'background-image: url('+post.user.cover+');'">
@@ -26,7 +26,7 @@
             <div class="new-comment">
               <div class="comment">
                 <header class="header">
-                  <avatar :avatar="$store.getters.user.avatar.small"></avatar>
+                  <avatar :avatar="user.avatar.small"></avatar>
                   <Toolbox
                     v-if="user"
                     flat
@@ -189,7 +189,7 @@ export default {
   /**
    * Initializes the view
    */
-  created() {
+  mounted() {
     this.getPost();
     this.loadComments();
   },
