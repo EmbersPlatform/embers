@@ -10,7 +10,7 @@ import settings from './modules/settings';
 import chat from './modules/chat';
 import tag from './modules/tag';
 import title from './modules/title'
-
+import media_slides from './modules/media_slides';
 import * as getters from './getters';
 
 Vue.use(Vuex);
@@ -31,7 +31,8 @@ export default new Vuex.Store({
     settings,
     chat,
     tag,
-    title
+    title,
+    media_slides
   },
   mutations: {
     SET_APP_DATA(state, data) {

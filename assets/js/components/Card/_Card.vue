@@ -7,12 +7,6 @@
     focusable
     tabindex="-1"
   >
-    <media-slides
-      v-if="show_media_slides"
-      :medias="post.media"
-      :index="clicked_media_index"
-      @closed="show_media_slides = false"
-    ></media-slides>
     <div class="card-flags" v-if="post.nsfw">
       <div v-if="post.nsfw" class="flag nsfw" :class="{'isLocked' : locked}">
         <p>
@@ -286,7 +280,6 @@ import VideoEmbed from "./VideoEmbed";
 import LinkEmbed from "./LinkEmbed";
 import AudioPlayer from "./AudioPlayer";
 import MediaZone from "@/components/Media/MediaZone";
-import MediaSlides from "@/components/Media/MediaSlides";
 import Tag from "@/components/Tag/Tag";
 import LinkItem from "@/components/Link/Link";
 
@@ -340,7 +333,6 @@ export default {
     LinkEmbed,
     AudioPlayer,
     MediaZone,
-    MediaSlides,
     avatar,
     Tag,
     LinkItem
@@ -706,8 +698,11 @@ export default {
         this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
     },
     media_clicked(id) {
-      this.clicked_media_index = this.post.media.findIndex(m => m.id == id);
-      this.show_media_slides = true;
+      const index = this.post.media.findIndex(m => m.id == id);
+      this.$store.dispatch("media_slides/open", {
+        medias: this.post.media,
+        index: index
+      });
     },
     report_post() {
       this.$modal.show(

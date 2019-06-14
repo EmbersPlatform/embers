@@ -53,6 +53,7 @@
     </notifications>
     <rules-modal/>
     <new-post-modal v-show="show_new_post_modal" :related="new_post_modal_related"/>
+    <media-slides v-if="show_media_slides"></media-slides>
   </div>
 </template>
 
@@ -67,6 +68,7 @@ import Hammer from "hammerjs";
 
 import RulesModal from "./components/Modals/RulesModal";
 import NewPostModal from "./components/Modals/NewPostModal";
+import MediaSlides from "@/components/Media/MediaSlides";
 
 import Notification from "./components/Toasts/Notification";
 
@@ -81,7 +83,8 @@ export default {
     Sticky,
     Notification,
     RulesModal,
-    NewPostModal
+    NewPostModal,
+    MediaSlides
   },
   data() {
     return {
@@ -117,6 +120,7 @@ export default {
     ...mapGetters("title", ["title"]),
     ...mapGetters("chat", ["unread_conversations_count"]),
     ...mapState("chat", ["online_friends"]),
+    ...mapState("media_slides", ["show_media_slides"]),
     isApp: function() {
       switch (this.$route.name) {
         case "rules":
