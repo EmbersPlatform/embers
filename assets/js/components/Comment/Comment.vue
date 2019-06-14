@@ -132,12 +132,6 @@
         </div>
       </div>
     </header>
-    <media-slides
-      v-if="show_media_slides"
-      :medias="comment.media"
-      :index="clicked_media_index"
-      @closed="show_media_slides = false"
-    ></media-slides>
   </div>
 </template>
 
@@ -396,8 +390,11 @@ export default {
       }
     },
     media_clicked(id) {
-      this.clicked_media_index = this.comment.media.findIndex(m => m.id == id);
-      this.show_media_slides = true;
+      const index = this.comment.media.findIndex(m => m.id == id);
+      this.$store.dispatch("media_slides/open", {
+        medias: this.comment.media,
+        index: index
+      });
     },
     /**
      * Marks the post as Not Safe For Work
@@ -441,10 +438,6 @@ export default {
       this.locked =
         this.comment.nsfw &&
         this.$store.getters.settings.content_nsfw === "ask";
-    },
-    media_clicked(id) {
-      this.clicked_media_index = this.comment.media.findIndex(m => m.id == id);
-      this.show_media_slides = true;
     },
     report_post() {
       this.$modal.show(
