@@ -2,11 +2,20 @@ import _ from "lodash";
 
 const mutations = {
   READ_CONVERSATION_WITH(state, party) {
-    state.unread_conversations = state.unread_conversations.filter(c => c != party)
+    state.unread_conversations = state.unread_conversations.filter(c => c.party != party)
   },
   ADD_UNREAD_CONVERSATION_WITH(state, party) {
-    state.unread_conversations.push(party)
-    state.unread_conversations = _.uniq(state.unread_conversations)
+    const index = _.findIndex(state.unread_conversations, x => x.party == party)
+    if (index >= 0) {
+      let conv = state.unread_conversations[index];
+      conv.unread++;
+      state.unread_conversations[index] = conv;
+    } else {
+      state.unread_conversations.push({
+        party: party,
+        unread: 1
+      })
+    }
   },
   SET_UNREAD_CONVERSATIONS(state, conversations) {
     state.unread_conversations = conversations;

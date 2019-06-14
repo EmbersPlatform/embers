@@ -7,12 +7,21 @@
   >
     <template v-if="!loading_party">
       <div class="chat-header">
-        <router-link tag="i" v-if="$mq == 'sm'" to="/chat" class="back-button fas fa-arrow-left"></router-link>
-        <avatar :avatar="party.avatar.small" :status="party.status == 'online'"/>
+        <router-link
+          tag="i"
+          v-if="['sm', 'md'].includes($mq)"
+          to="/chat"
+          class="back-button fas fa-chevron-left"
+        ></router-link>
+        <router-link :to="`/@${party.username}`">
+          <avatar :avatar="party.avatar.small" :status="party.status == 'online'"/>
+        </router-link>
         <div class="chat-header__content">
-          <p>
-            <strong>{{party.username}}</strong>
-          </p>
+          <router-link :to="`/@${party.username}`">
+            <p>
+              <strong>{{party.username}}</strong>
+            </p>
+          </router-link>
           <p class="chat-header__status" v-text="status_text"></p>
         </div>
       </div>
@@ -385,7 +394,7 @@ export default {
 .chat-header {
   color: #ffffffcc;
   flex-shrink: 0;
-  padding: 10px 0 5px 0;
+  padding: 10px 0 5px 10px;
   display: flex;
   flex-direction: row;
   border-bottom: 1px solid #00000020;
@@ -410,6 +419,11 @@ export default {
 
 .chat-header__content {
   padding: 0 10px;
+
+  a {
+    color: #fff;
+    font-weight: 400;
+  }
 }
 
 .chat-header__status {
@@ -510,6 +524,6 @@ export default {
 
 .loading-title {
   padding: 10px 20px;
-  color: #ffffff99;
+  color: #ffffffcc;
 }
 </style>

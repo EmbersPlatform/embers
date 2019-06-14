@@ -255,9 +255,15 @@ export default {
     unread_conversations_count() {
       if (this.unread_conversations_count > 0) {
         this.newMessageTitleInterval = setInterval(() => {
+          const title_msg =
+            this.unread_conversations_count > 1
+              ? "conversaciones"
+              : "conversación";
           const title =
             this.title === document.title
-              ? "Tienes mensajes sin leer"
+              ? `Tienes ${
+                  this.unread_conversations_count
+                } ${title_msg} sin leer`
               : this.title;
           document.title = title;
         }, 1500);

@@ -6,7 +6,7 @@
       </template>
       <div v-else id="content" data-layout-type="middle">
         <div id="feed">
-          <ConversationList v-if="$mq == 'sm'"/>
+          <ConversationList v-if="['sm', 'md'].includes($mq)"/>
           <h3 v-else>
             <p>Hmm. Esto esta muy vacio.</p>
           </h3>

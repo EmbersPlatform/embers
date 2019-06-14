@@ -9,7 +9,7 @@ export default {
   components: { ConversationList, HomeSidebar },
   computed: {
     component() {
-      if (this.$mq == "sm") return HomeSidebar;
+      if (["sm", "md"].includes(this.$mq)) return HomeSidebar;
       return ConversationList;
     }
   }

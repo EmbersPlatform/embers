@@ -50,7 +50,9 @@ defmodule EmbersWeb.PageController do
 
     unread_conversations =
       Embers.Chat.list_unread_conversations(user.id)
-      |> Enum.map(&Embers.Helpers.IdHasher.encode/1)
+      |> Enum.map(fn x ->
+        %{x | party: Embers.Helpers.IdHasher.encode(x.party)}
+      end)
 
     render(conn, "index.html",
       user: user,

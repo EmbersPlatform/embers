@@ -60,8 +60,8 @@ defmodule Embers.Chat do
     from(m in Message,
       where: m.receiver_id == ^user_id,
       where: is_nil(m.read_at),
-      distinct: m.sender_id,
-      select: m.sender_id
+      group_by: m.sender_id,
+      select: %{party: m.sender_id, unread: count(m.sender_id)}
     )
     |> Repo.all()
   end

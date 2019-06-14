@@ -18,7 +18,7 @@
             active-class="active"
             :to="`/chat/${conversation.canonical}`"
             class="n_i_wrap"
-            :data-count="unread_conversations.includes(conversation.id) ? '•' : false"
+            :data-count="conversation.unread_messages"
           >
             <avatar :avatar="conversation.avatar.small" :status="conversation.status"></avatar>
             <span class="n_i_w_content u_name">{{conversation.username}}</span>
@@ -57,6 +57,16 @@ export default {
           undefined
             ? "online"
             : "";
+        const unread_messages_entity = _.find(
+          this.unread_conversations,
+          x => x.party == user.id
+        );
+        console.log(unread_messages_entity);
+        if (unread_messages_entity != undefined) {
+          user.unread_messages = unread_messages_entity.unread;
+        } else {
+          user.unread_messages = false;
+        }
         return user;
       });
     }
