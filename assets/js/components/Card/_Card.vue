@@ -111,8 +111,8 @@
             data-tip-position="bottom"
             data-tip-text
           >
-            <i v-if="!post.faved" class="far fa-bookmark"/>
-            <i v-else class="fas fa-bookmark"/>
+            <i v-if="!post.faved" class="far fa-star"/>
+            <i v-else class="fas fa-star"/>
           </span>
         </div>
         <div v-if="tools && loggedUser" class="header-options" focusable tabindex="-1">

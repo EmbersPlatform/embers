@@ -16,7 +16,7 @@
         <li class="n_item">
           <router-link class="n_i_wrap" to="/favorites">
             <span class="n_i_w_clip">
-              <i class="far fa-bookmark"/>
+              <i class="far fa-star"/>
             </span>
             <span class="n_i_w_content">Favoritos</span>
           </router-link>
