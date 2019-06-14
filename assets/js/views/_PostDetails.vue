@@ -201,6 +201,7 @@ export default {
       this.lastPage = this.loadingComments = this.loading = false;
 
       this.getPost();
+      this.loadComments();
     }
   }
 };
