@@ -37,7 +37,7 @@
     <li class="nav_ sub_">
       <ul>
         <li class="n_item tag-item" v-for="tag in tags" :key="tag.id">
-          <router-link class="n_i_wrap" :to="`/search/in:${tag.name}`" exact>
+          <router-link class="n_i_wrap" :to="`/tag/${tag.name}`" exact>
             <span class="n_i_w_clip">
               <i class="fas fa-hashtag"/>
             </span>
