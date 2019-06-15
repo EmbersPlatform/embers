@@ -163,7 +163,7 @@ export default {
      * All supported reactions
      */
     reactions() {
-      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire".split(
+      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire thinking cookie point_up".split(
         " "
       );
     },

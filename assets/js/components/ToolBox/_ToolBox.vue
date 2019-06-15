@@ -17,11 +17,7 @@
           data-editor-style="toolbox"
           rel="editor"
         ></Editor>
-        <div
-          v-if="with_tags"
-          class="tags-wrapper tool"
-          :class="{'compact':!canPublish || !canShowEditor}"
-        >
+        <div v-if="with_tags" class="tags-wrapper tool" :class="{'compact': !canShowEditor}">
           <input type="text" placeholder="Tags separados por espacios" v-model="post.tags">
         </div>
 
