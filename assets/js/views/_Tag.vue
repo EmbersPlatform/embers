@@ -142,6 +142,16 @@ export default {
   },
   mounted() {
     this.load_tag();
+  },
+  watch: {
+    $route: function() {
+      this.tag = null;
+      this.posts = [];
+      this.next = null;
+      this.last_page = false;
+
+      this.load_tag();
+    }
   }
 };
 </script>

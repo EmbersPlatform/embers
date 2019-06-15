@@ -533,7 +533,8 @@
 
 //inicia .CARD-WRAPPER-CONTENT CHILDS
 .card-wrapper-content-tags {
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
   margin-top: 10px !important;
 
   .tag {
