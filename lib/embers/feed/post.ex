@@ -104,7 +104,7 @@ defmodule Embers.Feed.Post do
     if Ecto.assoc_loaded?(post.tags) do
       %{
         post
-        | nsfw: Enum.any?(post.tags, fn tag -> tag.name == "nsfw" end)
+        | nsfw: Enum.any?(post.tags, fn tag -> String.downcase(tag.name) == "nsfw" end)
       }
     else
       post

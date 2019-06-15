@@ -27,6 +27,10 @@ defmodule Embers.Tags do
     Repo.get_by(Tag, clauses, opts)
   end
 
+  def get_by_name(name) when is_binary(name) do
+    Repo.one(from(tag in Tag, where: ilike(tag.name, ^name), limit: 1))
+  end
+
   def create_tag(%{"name" => name}) do
     case Repo.get_by(Tag, name: name) do
       nil -> insert_tag(name)
@@ -188,5 +192,13 @@ defmodule Embers.Tags do
       ]
     )
     |> Paginator.paginate(params)
+    |> fill_nsfw()
+  end
+
+  defp fill_nsfw(page) do
+    %{
+      page
+      | entries: Enum.map(page.entries, fn post -> Post.fill_nsfw(post) end)
+    }
   end
 end

@@ -11,7 +11,7 @@ defmodule EmbersWeb.TagController do
   plug(:user_check when action in ~w(list list_ids create create_by_name destroy)a)
 
   def show_tag(conn, %{"name" => name}) do
-    case Tags.get_by(name: name) do
+    case Tags.get_by_name(name) do
       nil ->
         conn |> put_status(:not_found) |> json(nil)
 
