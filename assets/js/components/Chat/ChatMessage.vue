@@ -76,7 +76,21 @@ export default {
         this.sending = false;
         this.$emit("sent", this.message.temp_id);
       } catch (e) {
-        console.error(e);
+        if (e.response && e.response.status == 422) {
+          if (e.response.data.errors.blocked) {
+            this.$notify({
+              group: "top",
+              text: `La conversacion se encuentra bloqueada`,
+              type: "danger"
+            });
+          } else {
+            this.$notify({
+              group: "top",
+              text: e.response.data.errors.text[0],
+              type: "danger"
+            });
+          }
+        }
         this.failed = true;
       }
     },

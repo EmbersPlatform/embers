@@ -41,20 +41,21 @@ defmodule Embers.Chat.Message do
   end
 
   defp check_blocked(changeset, attrs) do
-    user_id = get_change(changeset, :user_id)
+    user_id = get_change(changeset, :sender_id)
+    receiver_id = get_change(changeset, :receiver_id)
 
     is_blocked? =
       Repo.exists?(
         from(
           b in Embers.Feed.Subscriptions.UserBlock,
-          where: b.source_id == ^user_id,
-          where: b.user_id == ^attrs.receiver_id
+          where: b.source_id == ^user_id and b.user_id == ^receiver_id,
+          or_where: b.source_id == ^receiver_id and b.user_id == ^user_id
         )
       )
 
     if is_blocked? do
       changeset
-      |> Ecto.Changeset.add_error(:blocked, "receiver has blocked sender")
+      |> Ecto.Changeset.add_error(:blocked, "conversation blocked")
     else
       changeset
     end
