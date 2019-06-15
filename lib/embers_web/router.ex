@@ -82,6 +82,10 @@ defmodule EmbersWeb.Router do
 
     get("/audit", EmbersWeb.Admin.AuditController, :index)
 
+    get("/tags", EmbersWeb.Admin.TagController, :index)
+    get("/tags/:name", EmbersWeb.Admin.TagController, :edit)
+    put("/tags/:name", EmbersWeb.Admin.TagController, :update)
+
     resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 
     match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
@@ -137,10 +141,18 @@ defmodule EmbersWeb.Router do
         post("/blocks", BlockController, :create)
         delete("/blocks/:id", BlockController, :destroy)
 
+        get("/tag_blocks/ids", TagBlockController, :list_ids)
+        get("/tag_blocks/list", TagBlockController, :list)
+        post("/tag_blocks", TagBlockController, :create)
+        delete("/tag_blocks/:id", TagBlockController, :destroy)
+
         get("/subscriptions/tags/ids", TagController, :list_ids)
         get("/subscriptions/tags/list", TagController, :list)
         post("/subscriptions/tags", TagController, :create)
         delete("/subscriptions/tags/:id", TagController, :destroy)
+
+        get("/tags/:name", TagController, :show_tag)
+        get("/tags/:name/posts", TagController, :show_tag_posts)
 
         get("/followers/:id/ids", FriendController, :list_ids)
         get("/followers/:id/list", FriendController, :list)

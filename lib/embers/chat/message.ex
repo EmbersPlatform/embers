@@ -5,6 +5,9 @@ defmodule Embers.Chat.Message do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Ecto.Query
+
+  alias Embers.Repo
 
   schema "chat_messages" do
     belongs_to(:sender, Embers.Accounts.User)
@@ -21,6 +24,7 @@ defmodule Embers.Chat.Message do
     |> cast(attrs, [:sender_id, :receiver_id, :text, :read_at])
     |> foreign_key_constraint(:sender_id)
     |> foreign_key_constraint(:receiver_id)
+    |> check_blocked(attrs)
     |> trim_text(attrs)
     |> validate_length(:text, min: 1, max: 1600)
     |> validate_required([:text])
@@ -34,5 +38,25 @@ defmodule Embers.Chat.Message do
   defp trim_text(changeset, %{"text" => text} = _attrs) do
     changeset
     |> change(text: String.trim(text))
+  end
+
+  defp check_blocked(changeset, attrs) do
+    user_id = get_change(changeset, :user_id)
+
+    is_blocked? =
+      Repo.exists?(
+        from(
+          b in Embers.Feed.Subscriptions.UserBlock,
+          where: b.source_id == ^user_id,
+          where: b.user_id == ^attrs.receiver_id
+        )
+      )
+
+    if is_blocked? do
+      changeset
+      |> Ecto.Changeset.add_error(:blocked, "receiver has blocked sender")
+    else
+      changeset
+    end
   end
 end

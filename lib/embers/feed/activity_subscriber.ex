@@ -23,6 +23,7 @@ defmodule Embers.Feed.ActivitySubscriber do
     tags_subscriptors =
       from(
         sub in Feed.Subscriptions.TagSubscription,
+        where: sub.level == 1,
         where: sub.source_id in ^tags,
         select: sub.user_id
       )

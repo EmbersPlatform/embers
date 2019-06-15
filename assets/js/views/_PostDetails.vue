@@ -26,7 +26,7 @@
             <div class="new-comment">
               <div class="comment">
                 <header class="header">
-                  <avatar :avatar="user.avatar.small"></avatar>
+                  <avatar v-if="$mq != 'sm'" :avatar="user.avatar.small"></avatar>
                   <Toolbox
                     v-if="user"
                     flat

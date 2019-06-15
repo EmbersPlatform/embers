@@ -68,7 +68,7 @@ md.linkify
     },
 
     normalize: match => {
-      match.url = "/search/in:" + match.url.substr(1);
+      match.url = "/tag/" + match.url.substr(1);
     }
   });
 

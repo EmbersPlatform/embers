@@ -172,7 +172,6 @@
 
         .card-wrapper-content-tags {
           margin: 0 15px;
-
           .tag {
             @include font-size();
           }
@@ -459,7 +458,6 @@
 .card-wrapper {
   background: $dark_n1;
   border: 1px solid blanco("05");
-  z-index: 2;
   @include box-sizing(border-box);
   @include border-radius(3px);
   @include box-shadow(0 0 15px negro(25));
@@ -536,6 +534,7 @@
 //inicia .CARD-WRAPPER-CONTENT CHILDS
 .card-wrapper-content-tags {
   display: block;
+  margin-top: 10px !important;
 
   .tag {
     color: $secondary;

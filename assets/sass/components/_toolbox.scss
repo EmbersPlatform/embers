@@ -41,8 +41,6 @@
 
     .tool {
       opacity: 1;
-      overflow: hidden;
-      z-index: 0;
       padding: 15px 15px 0 15px;
       @include transition(0.3s height linear, 0.3s opacity ease-out);
 
@@ -94,7 +92,7 @@
     flex-direction: row;
     margin: 0;
 
-    &>* {
+    & > * {
       margin-left: 15px;
     }
   }

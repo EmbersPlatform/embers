@@ -1,7 +1,20 @@
 <template>
   <div id="wrapper" data-layout-type="column">
     <div class="block" data-layout-type="column">
-      <h2>Mis Tags</h2>
+      <h2>Tags bloqueados</h2>
+    </div>
+    <div class="new-block">
+      <form @submit.prevent="add_tag">
+        <input type="text" v-model="new_block_name">
+        <input
+          type="submit"
+          class="button"
+          data-button-important
+          @click.prevent="add_block"
+          value="Bloquear"
+          placeholder="Tag a bloquear, sin el #"
+        >
+      </form>
     </div>
     <div class="block" data-layout-type="column" v-if="!loading && tags.length">
       <div class="tag-item" v-for="tag in tags" :key="tag.id">
@@ -11,26 +24,7 @@
             {{tag.name}}
           </router-link>
           <div class="tag-actions">
-            <button
-              v-if="tag.sub_level >= 0"
-              data-button-size="medium"
-              class="button"
-              @click="remove_tag(tag)"
-            >Desuscribirse</button>
-            <button
-              class="button"
-              data-button-size="medium"
-              :data-button-important="tag.sub_level >= 0"
-              v-text="tag.sub_level >= 0 ? 'Pineado' : 'Pinear'"
-              @click="pin_tag(tag)"
-            >Pineado</button>
-            <button
-              class="button"
-              data-button-size="medium"
-              :data-button-important="tag.sub_level == 1"
-              v-text="tag.sub_level == 1 ? 'Suscripto' : 'Suscribirse'"
-              @click="sub_tag(tag)"
-            ></button>
+            <button class="button" data-button-size="medium" @click="unblock_tag(tag)">Desbloquear</button>
           </div>
         </div>
         <p class="tag-desc" v-if="tag.description">{{tag.description}}</p>
@@ -42,7 +36,7 @@
     </div>
     <div v-else>
       <h3>
-        <p>No estas suscripto a ningun tag</p>
+        <p>No bloqueaste a ningun tag</p>
       </h3>
     </div>
   </div>
@@ -59,12 +53,13 @@ export default {
   components: { Intersector },
   data() {
     return {
-      tags: null,
+      tags: [],
       loading: false,
       loading_more: false,
       last_page: false,
       next: null,
-      error: null
+      error: null,
+      new_block_name: ""
     };
   },
 
@@ -72,9 +67,7 @@ export default {
     async load_tags() {
       this.loading = true;
       try {
-        const { data: res } = await axios.get(
-          `/api/v1/subscriptions/tags/list`
-        );
+        const { data: res } = await axios.get(`/api/v1/tag_blocks/list`);
         this.tags = res.items;
         this.last_page = res.last_page;
         this.next = res.next;
@@ -87,10 +80,9 @@ export default {
       if (this.last_page || this.loading || this.loading_more) return;
       this.loading_more = true;
       try {
-        const { data: res } = await axios.get(
-          `/api/v1/subscriptions/tags/list`,
-          { params: { after: this.next } }
-        );
+        const { data: res } = await axios.get(`/api/v1/tag_blocks/list`, {
+          params: { after: this.next }
+        });
         this.tags.push(res.items);
         this.last_page = res.last_page;
         this.next = res.next;
@@ -99,20 +91,19 @@ export default {
       }
       this.loading_more = false;
     },
-    async remove_tag(tag) {
-      await axios.delete(`/api/v1/subscriptions/tags/${tag.id}`);
-      const index = this.tags.indexOf(tag);
-      this.tags[index].sub_level = -1;
+    async add_block() {
+      const tag_name = this.new_block_name;
+      await axios.post(`/api/v1/tag_blocks`, { name: tag_name });
+      const { data: tag } = await axios.get(`/api/v1/tags/${tag_name}`);
+      const existing_tag = _.find(this.tags, x => x.name == tag.name);
+      if (undefined == existing_tag) {
+        this.tags.push(tag);
+      }
+      this.new_block_name == null;
     },
-    async pin_tag(tag) {
-      await axios.post(`/api/v1/subscriptions/tags/`, { id: tag.id, level: 0 });
-      const index = this.tags.indexOf(tag);
-      this.tags[index].sub_level = 0;
-    },
-    async sub_tag(tag) {
-      await axios.post(`/api/v1/subscriptions/tags/`, { id: tag.id });
-      const index = this.tags.indexOf(tag);
-      this.tags[index].sub_level = 1;
+    async unblock_tag(tag) {
+      await axios.delete(`/api/v1/tag_blocks/${tag.id}`);
+      this.tags = this.tags.filter(x => x.id != tag.id);
     }
   },
 

@@ -9,6 +9,7 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
   schema "user_blocks" do
     belongs_to(:user, Embers.Accounts.User)
     belongs_to(:source, Embers.Accounts.User)
+    field(:level, :integer, null: false, default: 1)
 
     timestamps()
   end
@@ -16,7 +17,7 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
   @doc false
   def changeset(block, attrs) do
     block
-    |> cast(attrs, [:user_id, :source_id])
+    |> cast(attrs, [:user_id, :source_id, :level])
     |> validate_required([:user_id, :source_id])
     |> validate_fields(attrs)
     |> unique_constraint(:unique_user_blocks)

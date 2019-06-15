@@ -14,9 +14,18 @@ defmodule Embers.Tags do
   alias Embers.Feed.Post
   alias Embers.Feed.Subscriptions.TagSubscription
   alias Embers.Repo
+  alias Embers.Paginator
   alias Embers.Tags.{Tag, TagPost}
 
   import Ecto.Query
+
+  def get(id) do
+    Repo.get(Tag, id)
+  end
+
+  def get_by(clauses, opts \\ []) do
+    Repo.get_by(Tag, clauses, opts)
+  end
 
   def create_tag(%{"name" => name}) do
     case Repo.get_by(Tag, name: name) do
@@ -152,5 +161,32 @@ defmodule Embers.Tags do
     old_tags = tags_loaded(post)
     Enum.each(new_tags -- old_tags, &add_tag(post, &1))
     Enum.each(old_tags -- new_tags, &remove_tag(post, &1))
+  end
+
+  def update_tag(tag, attrs) do
+    tag
+    |> Tag.create_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def list_tag_posts(tag, params) do
+    from(
+      post in Post,
+      where: is_nil(post.deleted_at),
+      where: post.nesting_level == 0,
+      where: is_nil(post.related_to_id),
+      order_by: [desc: post.id],
+      left_join: user in assoc(post, :user),
+      left_join: meta in assoc(user, :meta),
+      left_join: tags in assoc(post, :tags),
+      where: tags.name == ^tag,
+      preload: [
+        [:media, :links, :reactions, :tags]
+      ],
+      preload: [
+        user: {user, meta: meta}
+      ]
+    )
+    |> Paginator.paginate(params)
   end
 end

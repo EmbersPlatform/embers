@@ -1,88 +1,33 @@
 <template>
-  <popper trigger="hover" :options="{placement: 'top'}">
-    <div class="popper tag-popup">
-      <div class="tag-top">
-        <div class="tag-name" v-text="tag.name"></div>
-        <button
-          @click="sub_tag"
-          data-button-size="small"
-          data-button-font="small"
-          class="button"
-          v-text="sub_text"
-          :data-button-important="!subbed"
-        ></button>
-      </div>
-      <div class="tag-description" v-if="tag.description" v-text="tag.description"/>
-    </div>
-    <router-link
-      slot="reference"
-      :to="`/search/in:${tag.name}`"
-      class="tag"
-      :class="{active: subbed}"
-    >
-      <span>#{{tag.name}}</span>
-    </router-link>
-  </popper>
+  <router-link :to="`/tag/${tag.name}`" class="tag" :class="{active: subbed}">
+    <span>#{{tag.name}}</span>
+  </router-link>
 </template>
 
 <script>
-import Popper from "vue-popperjs";
-import "vue-popperjs/dist/vue-popper.css";
 import { mapGetters } from "vuex";
 
 import axios from "axios";
 
 export default {
   name: "tag",
-  data() {
-    return {
-      subbed: false
-    };
-  },
   props: {
     tag: {
       type: Object,
       required: true
     }
   },
-  components: { Popper },
   computed: {
     ...mapGetters("tag", ["tags"]),
-    sub_text() {
-      return this.subbed ? "desuscribirme" : "suscribirme";
+    subbed() {
+      const tag_names = this.tags.map(o => o.name);
+      return tag_names.includes(this.tag.name);
     }
-  },
-  methods: {
-    async sub_tag() {
-      try {
-        if (!this.subbed) {
-          let tag = (await axios.post(`/api/v1/subscriptions/tags`, {
-            id: this.tag.id
-          })).data;
-          this.subbed = true;
-          this.$store.dispatch("tag/add", tag);
-        } else {
-          await axios.delete(`/api/v1/subscriptions/tags/${this.tag.id}`);
-          this.subbed = false;
-          this.$store.dispatch("tag/delete", this.tag.name);
-        }
-      } catch (e) {
-        this.$notify({
-          group: "top",
-          text: "Hubo un problema al suscribirse al tag.",
-          type: "error"
-        });
-      }
-    }
-  },
-  created() {
-    let tag_names = this.tags.map(o => o.name);
-    this.subbed = tag_names.includes(this.tag.name);
   }
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "~@/../sass/base/_variables.scss";
 @import "~@/../sass/base/_mixins.scss";
 

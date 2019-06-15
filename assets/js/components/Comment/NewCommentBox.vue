@@ -2,7 +2,7 @@
   <div class="new-comment">
     <div class="comment">
       <header class="header">
-        <avatar :avatar="$store.getters.user.avatar.small"></avatar>
+        <avatar v-if="$mq != 'sm'" :avatar="$store.getters.user.avatar.small"></avatar>
         <Editor
           :show="canShowEditor"
           type="comment"

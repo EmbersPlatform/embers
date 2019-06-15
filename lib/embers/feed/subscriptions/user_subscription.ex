@@ -10,6 +10,7 @@ defmodule Embers.Feed.Subscriptions.UserSubscription do
   schema "user_subscriptions" do
     belongs_to(:user, Embers.Accounts.User)
     belongs_to(:source, Embers.Accounts.User)
+    field(:level, :integer, null: false, default: 1)
 
     timestamps()
   end
@@ -17,7 +18,7 @@ defmodule Embers.Feed.Subscriptions.UserSubscription do
   @doc false
   def changeset(subscription, attrs) do
     subscription
-    |> cast(attrs, [:user_id, :source_id])
+    |> cast(attrs, [:user_id, :source_id, :level])
     |> validate_required([:user_id, :source_id])
     |> validate_fields(attrs)
     |> validate_unique_entry(attrs)
