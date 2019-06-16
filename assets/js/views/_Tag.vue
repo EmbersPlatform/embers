@@ -11,17 +11,15 @@
         <div class="tag-info" v-if="tag">
           <div class="tag-title">
             <p class="tag-name">{{tag.name}}</p>
-            <div class="tag-actions">
-              <button
-                class="button"
-                data-button-size="medium"
-                data-button-text="medium"
-                :data-button-important="subbed"
-                @click="sub_tag"
-              >
-                <i class="fas fa-thumbtack"></i>
-              </button>
-            </div>
+            <button
+              class="button"
+              data-button-size="medium"
+              data-button-text="medium"
+              :data-button-important="subbed"
+              @click="sub_tag"
+            >
+              <i class="fas fa-thumbtack"></i>
+            </button>
           </div>
           <div class="tag-desc" v-if="tag.desc">{{tag.description}}</div>
         </div>
@@ -171,10 +169,7 @@ export default {
     font-weight: 400;
     font-size: 2em;
     color: #fff;
-    flex-grow: 1;
-  }
-  .tag-actions {
-    display: flex;
+    margin-right: 10px;
   }
 }
 </style>
