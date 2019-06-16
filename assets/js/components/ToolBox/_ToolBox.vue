@@ -353,12 +353,14 @@ export default {
           throw "Debes eliminar una foto antes de añadir otra.";
         this.post.medias.push(media);
       } catch (error) {
-        this.status.error = error;
-        this.$notify({
-          group: "top",
-          text: error,
-          type: "error"
-        });
+        switch (error.response.status) {
+          case 413:
+            this.status.error = "el archivo que intentas subir supera los 5Mb.";
+            break;
+          default:
+            this.status.error =
+              "hubo un problema al subir el archivo, por favor intenta en otro momento.";
+        }
       }
       this.status.uploading_media = false;
     },
