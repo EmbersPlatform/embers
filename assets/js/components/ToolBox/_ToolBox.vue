@@ -388,14 +388,6 @@ export default {
   },
   created() {
     if (this.related_to) this.post.related_to_id = this.related_to;
-    window.addEventListener("beforeunload", e => {
-      if (this.post.body !== null || this.hasMedias) {
-        var confirmationMessage =
-          "El post que estabas editando se perderá para siempre. ¡Eso es mucho tiempo!";
-        e.returnValue = confirmationMessage;
-        return confirmationMessage;
-      }
-    });
   },
   beforeDestroy() {
     this.$root.$emit("blurToolBox", false);
