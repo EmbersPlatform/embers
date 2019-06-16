@@ -15,6 +15,7 @@
       ></textarea>
       <div class="markup preview" v-if="preview" v-html="formattedBody"></div>
     </div>
+    <twitter-counter v-if="body && !preview" :current-length="body.length" :dangerAt="1600"/>
     <ul class="toolbar">
       <li @click="format('bold')">
         <i class="fas fa-bold"></i>
@@ -45,6 +46,7 @@ import textSelectionEdit from "@/lib/textSelectionEdit";
 import EmojiPicker from "./EmojiPicker";
 import attachment from "../api/attachment";
 import InsertImageModal from "./Modals/InsertImageModal";
+import TwitterCounter from "@/components/Counter/TwitterCounter";
 
 function initialData() {
   return {
@@ -54,7 +56,7 @@ function initialData() {
 }
 export default {
   props: ["attachment", "show", "type"],
-  components: { "emoji-picker": EmojiPicker },
+  components: { "emoji-picker": EmojiPicker, TwitterCounter },
   data: initialData,
   computed: {
     canvasTitle() {
@@ -219,3 +221,19 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.editor {
+  .TwitterCounter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+
+    span {
+      margin-top: 5px;
+      margin-right: 5px;
+    }
+  }
+}
+</style>
