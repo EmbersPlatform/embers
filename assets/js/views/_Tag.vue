@@ -4,7 +4,7 @@
       <Top></Top>
     </div>
     <div id="wrapper">
-      <div id="content" data-layout-type="single-column">
+      <div id="content" data-layout-type="masonry">
         <h3 v-if="loading_tag">
           <p>Cargando tag...</p>
         </h3>

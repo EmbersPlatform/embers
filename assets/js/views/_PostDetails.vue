@@ -117,6 +117,7 @@ export default {
             name: "post",
             params: { username: this.post.user.username, id: this.post.id }
           });
+          return;
         }
         if (res.body) {
           this.$store.dispatch(
@@ -191,7 +192,6 @@ export default {
    */
   mounted() {
     this.getPost();
-    this.loadComments();
   },
 
   watch: {
