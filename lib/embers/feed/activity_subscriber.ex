@@ -33,7 +33,7 @@ defmodule Embers.Feed.ActivitySubscriber do
       from(
         block in Feed.Subscriptions.TagBlock,
         where: block.tag_id in ^tags,
-        where: block.user_id in ^tags_subscriptors,
+        or_where: block.user_id in ^tags_subscriptors,
         select: block.user_id
       )
       |> Embers.Repo.all()
