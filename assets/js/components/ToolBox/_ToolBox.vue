@@ -398,6 +398,10 @@ export default {
 <style lang="scss">
 @import "~@/../sass/base/_variables.scss";
 
+.toolbox:not(.tool-box-open) {
+  overflow: hidden;
+}
+
 .tool {
   .status-text {
     text-align: center;
