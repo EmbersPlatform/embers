@@ -130,10 +130,7 @@ export default {
             `Post de @${res.user.username} en Embers`
           );
         }
-
-        if (res.stats.comments > 0) {
-          this.loadComments();
-        }
+        this.loadComments();
       } catch (e) {
         this.$router.push("/404");
       }
