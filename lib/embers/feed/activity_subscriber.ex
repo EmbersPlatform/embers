@@ -18,7 +18,15 @@ defmodule Embers.Feed.ActivitySubscriber do
   defp create_activity_and_push(post) do
     followers = Feed.Subscriptions.list_followers_ids(post.user_id)
     blocked = Feed.Subscriptions.Blocks.list_users_ids_that_blocked(post.user_id)
-    tags = Embers.Tags.list_post_tags_ids(post.id)
+    tag_names = Embers.Tags.list_post_tag_names(post.id) |> Enum.map(&String.upcase/1)
+
+    tags =
+      from(
+        tag in Embers.Tags.Tag,
+        where: fragment("upper(?)", tag.name) in ^tag_names,
+        select: tag.id
+      )
+      |> Embers.Repo.all()
 
     tags_subscriptors =
       from(

@@ -119,6 +119,18 @@ defmodule Embers.Tags do
     Repo.all(query)
   end
 
+  def list_post_tag_names(post_id) do
+    query =
+      from(
+        tp in TagPost,
+        where: tp.post_id == ^post_id,
+        left_join: tag in assoc(tp, :tag),
+        select: tag.name
+      )
+
+    Repo.all(query)
+  end
+
   defp insert_tag(name) do
     tag = Tag.create_changeset(%Tag{}, %{"name" => name})
     Repo.insert!(tag)
