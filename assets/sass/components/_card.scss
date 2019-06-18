@@ -546,6 +546,22 @@
   }
 }
 
+.card.related {
+  .header {
+    padding: 0 15px !important;
+  }
+  .avatar {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .header-content {
+    h4 {
+      padding: 0;
+    }
+  }
+}
+
 //termina .CARD-WRAPPER-CONTENT CHILDS
 //termina :CARD-WRAPPER CHILDS
 // termina .CARD CHILDS
