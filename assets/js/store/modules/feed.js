@@ -39,6 +39,9 @@ export default {
       posts = _.orderBy(posts, ["created_at"], ["desc"]);
       state.posts = posts;
       state.new_posts = [];
+    },
+    RESET_NEW_POSTS(state) {
+      state.new_posts = [];
     }
   },
 
@@ -90,6 +93,11 @@ export default {
       commit
     }) {
       commit("PREPEND_NEW_POSTS");
+    },
+    reset_new_posts({
+      commit
+    }) {
+      commit("RESET_NEW_POSTS");
     }
   }
 };

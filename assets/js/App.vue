@@ -139,8 +139,8 @@ export default {
     },
     newActivityText() {
       let posts = this.newActivity;
-      if (posts > 9) {
-        return "+9";
+      if (posts > 99) {
+        return "+99";
       }
       return posts;
     },

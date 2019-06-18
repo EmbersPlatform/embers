@@ -225,6 +225,7 @@ export default {
         return p;
       });
       this.posts = [...new_posts, ...old_posts];
+      this.$store.dispatch("reset_new_posts");
     });
     this.noMasonry(); //check if can show masonry at page load
     window.addEventListener("resize", this.noMasonry);
