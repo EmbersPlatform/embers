@@ -67,7 +67,7 @@ defmodule EmbersWeb.ChatController do
   end
 
   def list_unread_conversations(conn, _params) do
-    conversations = Chat.list_unread_conversations_ids(conn.assigns.current_user.id)
+    conversations = Chat.list_unread_conversations(conn.assigns.current_user.id)
     conversations = Enum.map(conversations, &encode/1)
 
     conn
