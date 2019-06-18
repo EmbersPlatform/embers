@@ -156,6 +156,8 @@ export default {
       width: 100%;
       height: 100%;
       display: block;
+      padding: 3px;
+      box-sizing: border-box;
     }
   }
 }

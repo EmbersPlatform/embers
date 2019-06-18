@@ -14,7 +14,17 @@ defmodule Embers.Feed.Reactions do
   def create_reaction(attrs) do
     reaction_changeset = Reaction.create_changeset(%Reaction{}, attrs)
 
-    Repo.insert(reaction_changeset)
+    with {:ok, reaction} <- Repo.insert(reaction_changeset) do
+      reaction = reaction |> Repo.preload(:post)
+
+      case reaction.post.nesting_level do
+        0 -> Embers.Event.emit(:post_reacted, %{reaction: reaction})
+        1 -> Embers.Event.emit(:comment_reacted, %{reaction: reaction})
+        2 -> Embers.Event.emit(:comment_reacted, %{reaction: reaction})
+      end
+
+      {:ok, reaction}
+    end
   end
 
   def create_reaction!(attrs) do

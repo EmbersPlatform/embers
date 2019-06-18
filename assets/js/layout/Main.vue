@@ -3,7 +3,7 @@
     <aside v-if="user" id="sidebar" ref="trg_sidebar" @click="sidebarClick">
       <router-view name="sidebar" v-if="isSidebar"></router-view>
     </aside>
-    <router-view></router-view>
+    <router-view :key="$route.fullPath"></router-view>
   </div>
 </template>
 <script>

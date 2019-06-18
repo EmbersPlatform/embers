@@ -70,7 +70,7 @@ import RulesModal from "./components/Modals/RulesModal";
 import NewPostModal from "./components/Modals/NewPostModal";
 import MediaSlides from "@/components/Media/MediaSlides";
 
-import Notification from "./components/Toasts/Notification";
+import Notification from "./components/ToastNotifications/Notification";
 
 import { Presence } from "phoenix";
 
@@ -216,15 +216,12 @@ export default {
       this.new_post_modal_related = null;
     });
     EventBus.$on("new_notification", notification => {
-      this.$store.dispatch("notifications/add", notification);
+      if (!notification.ephemeral) {
+        this.$store.dispatch("notifications/add", notification);
+      }
       this.$notify({
         group: this.$mq == "sm" ? "top" : "activity",
-        text: notification.text,
-        data: {
-          image: notification.image,
-          type: notification.type,
-          notification: notification
-        }
+        data: notification
       });
     });
 
