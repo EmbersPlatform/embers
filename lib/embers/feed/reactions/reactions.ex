@@ -6,6 +6,7 @@ defmodule Embers.Feed.Reactions do
   """
   alias Embers.Feed.Reactions.Reaction
   alias Embers.Paginator
+  alias Embers.Profile.Settings
   alias Embers.Profile.Settings.Setting
   alias Embers.Repo
 
@@ -17,10 +18,14 @@ defmodule Embers.Feed.Reactions do
     with {:ok, reaction} <- Repo.insert(reaction_changeset) do
       reaction = reaction |> Repo.preload(:post)
 
-      case reaction.post.nesting_level do
-        0 -> Embers.Event.emit(:post_reacted, %{reaction: reaction})
-        1 -> Embers.Event.emit(:comment_reacted, %{reaction: reaction})
-        2 -> Embers.Event.emit(:comment_reacted, %{reaction: reaction})
+      setting = Settings.get_setting!(reaction.user_id)
+
+      if setting.privacy_show_reactions do
+        case reaction.post.nesting_level do
+          0 -> Embers.Event.emit(:post_reacted, %{reaction: reaction})
+          1 -> Embers.Event.emit(:comment_reacted, %{reaction: reaction})
+          2 -> Embers.Event.emit(:comment_reacted, %{reaction: reaction})
+        end
       end
 
       {:ok, reaction}
