@@ -3,6 +3,7 @@ defmodule EmbersWeb.TagController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
+  import Embers.Helpers.IdHasher
   alias Embers.Feed.Subscriptions.Tags, as: Subscriptions
   alias Embers.Helpers.IdHasher
   alias Embers.Tags
@@ -21,7 +22,7 @@ defmodule EmbersWeb.TagController do
   end
 
   def show_tag_posts(conn, %{"name" => name} = params) do
-    results = Tags.list_tag_posts(name, before: params["before"])
+    results = Tags.list_tag_posts(name, before: decode(params["before"]))
     render(conn, EmbersWeb.FeedView, "timeline.json", results)
   end
 

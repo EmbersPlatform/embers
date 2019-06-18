@@ -45,11 +45,11 @@
               class="little"
               size="little"
             ></card>
-            <intersector @intersect="load_more_posts"></intersector>
-            <h3 v-if="loading_more_posts">
-              <p>Cargando mas posts...</p>
-            </h3>
           </div>
+          <h3 v-if="loading_more_posts">
+            <p>Cargando mas posts...</p>
+          </h3>
+          <intersector @intersect="load_more_posts"></intersector>
         </div>
       </div>
     </div>
@@ -120,14 +120,15 @@ export default {
         this.loading_more_posts
       )
         return;
-      this.loading_posts = true;
+      this.loading_more_posts = true;
       const { data: res } = await axios.get(
-        `/api/v1/tags/${this.tag_name}/posts`
+        `/api/v1/tags/${this.tag_name}/posts`,
+        { params: { before: this.next } }
       );
-      this.posts.push(res.items);
+      this.posts.push(...res.items);
       this.last_page = res.last_page;
       this.next = res.next;
-      this.loading_posts = false;
+      this.loading_more_posts = false;
     },
     async sub_tag() {
       try {
