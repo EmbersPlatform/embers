@@ -24,7 +24,7 @@ defmodule EmbersWeb.UserChannel do
   def handle_info(:after_join, socket = %{assigns: %{user: user}}) do
     presence_state = get_and_subscribe_presence_multi(socket, friend_list(user.id))
     push(socket, "presence_state", presence_state)
-    track_user_presence(user)
+    maybe_track_user_presence(user)
     {:noreply, socket}
   end
 
@@ -50,16 +50,20 @@ defmodule EmbersWeb.UserChannel do
   end
 
   # Track the current process as a presence for the given user on it's designated presence topic
-  defp track_user_presence(user) do
-    encoded_id = IdHasher.encode(user.id)
+  defp maybe_track_user_presence(user) do
+    setting = Embers.Profile.Settings.get_setting!(user.id)
 
-    {:ok, _} =
-      Presence.track(self(), presence_topic(user.id), user.username, %{
-        id: encoded_id,
-        username: user.username,
-        avatar: user.meta.avatar,
-        online_at: inspect(System.system_time(:second))
-      })
+    if not is_nil(setting) and setting.privacy_show_status do
+      encoded_id = IdHasher.encode(user.id)
+
+      {:ok, _} =
+        Presence.track(self(), presence_topic(user.id), user.username, %{
+          id: encoded_id,
+          username: user.username,
+          avatar: user.meta.avatar,
+          online_at: inspect(System.system_time(:second))
+        })
+    end
   end
 
   # Find the presence topics of all given users. Get their presence state and subscribe the current
