@@ -148,7 +148,6 @@ export default {
     height: 20px;
     display: block;
     box-sizing: border-box;
-    padding: 3px;
     border-radius: 50%;
     background: #1b1c1f;
     overflow: hidden;
