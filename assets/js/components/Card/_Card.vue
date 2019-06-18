@@ -120,7 +120,7 @@
             <svgicon name="n_left-sign"></svgicon>
           </span>
           <ul>
-            <li v-if="hasReactions">
+            <li>
               <span @click.prevent="reactionsDetails">
                 <i class="far fa-smile"></i>
                 Reacciones
@@ -542,16 +542,14 @@ export default {
      * Show the detailed reactions
      */
     reactionsDetails() {
-      post.getReactionsDetails(this.post.id).then(res => {
-        this.$modal.show(
-          ReactionsModal,
-          { reactions: res },
-          {
-            adaptive: true,
-            height: "auto"
-          }
-        );
-      });
+      this.$modal.show(
+        ReactionsModal,
+        { post_id: this.post.id },
+        {
+          adaptive: true,
+          height: "auto"
+        }
+      );
     },
 
     toggleFav() {

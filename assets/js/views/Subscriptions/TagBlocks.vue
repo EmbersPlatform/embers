@@ -3,16 +3,17 @@
     <div class="block" data-layout-type="column">
       <h2>Tags bloqueados</h2>
     </div>
-    <div class="new-block">
+    <div class="block new-block" data-layout-type="column">
       <form @submit.prevent="add_tag">
-        <input type="text" v-model="new_block_name">
+        <input type="text" v-model="new_block_name" placeholder="Tag a bloquear, sin el #">
         <input
           type="submit"
           class="button"
           data-button-important
+          data-button-size="medium"
+          data-button-text="medium"
           @click.prevent="add_block"
           value="Bloquear"
-          placeholder="Tag a bloquear, sin el #"
         >
       </form>
     </div>
@@ -140,6 +141,24 @@ export default {
 
   .tag-desc {
     margin: 0;
+  }
+}
+
+.new-block {
+  margin-bottom: 20px;
+  form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    input[type="text"] {
+      flex: 1 auto;
+      &::placeholder {
+        color: #ffffff99;
+      }
+    }
+    input[type="submit"] {
+      width: fit-content;
+    }
   }
 }
 </style>

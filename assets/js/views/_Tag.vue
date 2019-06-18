@@ -17,6 +17,9 @@
               data-button-text="medium"
               :data-button-important="subbed"
               @click="sub_tag"
+              :data-tip="(subbed) ? `Desuscribirse de #${tag.name}` : `Pinear #${tag.name}`"
+              data-tip-position="top"
+              data-tip-text
             >
               <i class="fas fa-thumbtack"></i>
             </button>
@@ -76,8 +79,8 @@ export default {
   computed: {
     ...mapGetters("tag", ["tags"]),
     subbed() {
-      const tag_names = this.tags.map(o => o.name);
-      return tag_names.includes(this.tag.name);
+      const tag_names = this.tags.map(o => o.name.toLowerCase());
+      return tag_names.includes(this.tag.name.toLowerCase());
     },
     tag_name() {
       return this.$route.params.name;
@@ -86,10 +89,18 @@ export default {
   methods: {
     async load_tag() {
       this.loading_tag = true;
-      const { data: tag } = await axios.get(`/api/v1/tags/${this.tag_name}`);
-      this.tag = tag;
+      try {
+        const { data: tag } = await axios.get(`/api/v1/tags/${this.tag_name}`);
+        this.tag = tag;
+        this.load_posts();
+      } catch (e) {
+        if (e.response && e.response.status == 404) {
+          this.$router.replace(`/search/tag:${this.tag_name}`);
+        } else {
+          throw e;
+        }
+      }
       this.loading_tag = false;
-      this.load_posts();
     },
     async load_posts() {
       this.loading_posts = true;

@@ -32,7 +32,7 @@
       </ul>
     </li>
     <li class="nav_">
-      <h2>tags seguidos</h2>
+      <h2>tags pineados</h2>
     </li>
     <li class="nav_ sub_">
       <ul>

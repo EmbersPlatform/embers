@@ -2,6 +2,7 @@ defmodule EmbersWeb.ReactionController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
+  import Embers.Helpers.IdHasher
   alias Embers.Helpers.IdHasher
   alias Embers.{Feed, Feed.Reactions}
 
@@ -44,8 +45,31 @@ defmodule EmbersWeb.ReactionController do
   end
 
   def list_valid_reactions(conn, _parms) do
-    reactions = Reactions.Reaction.valid_reactions
+    reactions = Reactions.Reaction.valid_reactions()
+
     conn
     |> json(reactions)
+  end
+
+  def reactions_overview(conn, %{"post_id" => post_id}) do
+    post_id = decode(post_id)
+    stats = Reactions.overview(post_id)
+
+    conn
+    |> render("stats.json", stats: stats)
+  end
+
+  def reactions_by_name(conn, %{"post_id" => post_id, "reaction_name" => reaction_name} = params) do
+    post_id = decode(post_id)
+
+    reaction_name =
+      unless reaction_name == "all" do
+        reaction_name
+      end
+
+    reactions = Reactions.who_reacted(post_id, reaction: reaction_name, after: params["after"])
+
+    conn
+    |> render("reactions.json", reactions)
   end
 end

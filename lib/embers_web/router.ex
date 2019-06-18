@@ -162,6 +162,8 @@ defmodule EmbersWeb.Router do
         post("/posts/:post_id/reaction/:name", ReactionController, :create)
         delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
         post("/posts/:post_id/report", PostReportController, :create)
+        get("posts/:post_id/reactions/overview", ReactionController, :reactions_overview)
+        get("posts/:post_id/reactions/:reaction_name", ReactionController, :reactions_by_name)
 
         get("/reactions/valid", ReactionController, :list_valid_reactions)
 
