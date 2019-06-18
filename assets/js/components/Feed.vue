@@ -124,7 +124,6 @@ export default {
     // Concatena shared post que se siguen el uno al otro
     // TODO concatenar post entre peticiones loadmore y vista actual
     concat_post(items) {
-      items = _.uniqBy(items, x => x.id);
       outer: for (var i = 0; i < items.length; i++) {
         if (items[i].related_to != null && items[i].body == null) {
           var sharers = [items[i].user];
