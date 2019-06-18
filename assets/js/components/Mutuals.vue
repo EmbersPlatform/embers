@@ -46,7 +46,7 @@ export default {
      * Text to display when the user's no mutuals
      */
     formatted_no_friends() {
-      return formatter.format("¡Hora de hacer amigos! :metal:");
+      return formatter.format("No tienes amigos conectados.");
     },
     ordered_friends() {
       return _.orderBy(this.online_friends, ["online_at"], ["desc"]);
