@@ -92,12 +92,6 @@
           </div>
         </div>
       </template>
-      <media-slides
-        v-if="show_media_slides"
-        :medias="post.medias"
-        :index="clicked_media_index"
-        @closed="show_media_slides = false"
-      ></media-slides>
     </div>
   </div>
 </template>
@@ -121,8 +115,6 @@ import Editor from "../Editor";
 import AttachmentsZone from "./AttachmentsZone";
 
 import LinkItem from "@/components/Link/Link";
-
-import MediaSlides from "@/components/Media/MediaSlides";
 
 /**
  * Import additional components
@@ -156,8 +148,6 @@ const initialData = function() {
       uploading_media: false
     },
     show_overlay: false,
-    show_media_slides: false,
-    clicked_media_index: 0
   };
 };
 
@@ -168,7 +158,6 @@ export default {
     VideoEmbed,
     LinkEmbed,
     AttachmentsZone,
-    MediaSlides,
     "input-switch": Switch,
     LinkItem
   },
@@ -383,10 +372,13 @@ export default {
 
       return true;
     },
-    media_clicked(index) {
-      this.clicked_media_index = index;
-      this.show_media_slides = true;
-    }
+    media_clicked(id) {
+      const index = this.post.medias.findIndex(m => m.id == id);
+      this.$store.dispatch("media_slides/open", {
+        medias: this.post.medias,
+        index: index
+      });
+    },
   },
   created() {
     if (this.related_to) this.post.related_to_id = this.related_to;

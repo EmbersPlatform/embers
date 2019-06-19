@@ -2,10 +2,10 @@
   <div class="attachments-zone">
     <attachments-item
       v-for="(attachment, index) in ordered_attachments"
-      :key="attachment.id"
+      :key="index"
       :attachment="attachment"
       @removed="remove"
-      @clicked="clicked(index)"
+      @clicked="clicked(attachment.id)"
     ></attachments-item>
     <attachments-item v-if="uploading" :placeholder="true"/>
   </div>
@@ -37,8 +37,8 @@ export default {
     remove(id) {
       this.$emit("attachment-removed", id);
     },
-    clicked(index) {
-      this.$emit("clicked", index);
+    clicked(id) {
+      this.$emit("clicked", id);
     }
   }
 };
