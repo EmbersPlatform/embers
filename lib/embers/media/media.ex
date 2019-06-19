@@ -68,7 +68,8 @@ defmodule Embers.Media do
            Uploads.upload(
              processed_file.path,
              get_bucket(),
-             dest_path <> ".#{ext}"
+             dest_path <> ".#{ext}",
+             content_type: processed_file.content_type
            ),
          {:ok, preview} <-
            make_preview(processed_file, dest_path, max_width: 800, max_height: 800) do
@@ -157,7 +158,8 @@ defmodule Embers.Media do
       {:ok,
        %{
          type: "gif",
-         path: file.path <> ".gif"
+         path: file.path <> ".gif",
+         content_type: "image/gif"
        }}
     else
       {:error, reason} -> {:error, reason}
@@ -179,7 +181,8 @@ defmodule Embers.Media do
     {:ok,
      %{
        type: "image",
-       path: processed_file.path
+       path: processed_file.path,
+       content_type: "image/#{format}"
      }}
   end
 
@@ -191,7 +194,8 @@ defmodule Embers.Media do
       {:ok,
        %{
          type: "video",
-         path: file.path <> ".mp4"
+         path: file.path <> ".mp4",
+         content_type: "video/mp4"
        }}
     else
       {:error, reason} -> {:error, reason}
@@ -208,7 +212,9 @@ defmodule Embers.Media do
     preview_path = file.path <> ".preview.jpg"
     Thumbnex.create_thumbnail(file.path, preview_path, opts)
 
-    Uploads.upload(preview_path, get_bucket(), dest_path <> "_preview.jpg")
+    Uploads.upload(preview_path, get_bucket(), dest_path <> "_preview.jpg",
+      content_type: "image/jpg"
+    )
   end
 
   defp get_file_ext(file) do
