@@ -25,8 +25,8 @@ export default {
   components: { UserRow },
   data() {
     return {
-      followingUsers: null,
-      oldestId: null,
+      followingUsers: [],
+      next: null,
       last_page: false,
       loading: true,
       previousScrollPosition: 0
@@ -55,10 +55,7 @@ export default {
             user.following = true;
             return user;
           });
-
-          if (res.items.length) {
-            this.oldestId = res.items[res.items.length - 1].id;
-          }
+          this.next = res.next;
           this.last_page = res.last_page;
         })
         .finally(() => {
@@ -73,15 +70,17 @@ export default {
       this.loading = true;
       this.getPreviousScrollPosition();
       userAPI
-        .getFollowed({ after: this.oldestId })
+        .getFollowed({ after: this.next })
         .then(res => {
           if (this._inactive) {
             return;
           }
-          if (res.items.length) {
-            this.followingUsers.push(...res.items);
-            this.oldestId = res.items[res.items.length - 1].id;
-          }
+          res.items = res.items.map(x => {
+            x.following = true;
+            return x;
+          });
+          this.followingUsers.push(...res.items);
+          this.next = res.next;
           this.last_page = res.last_page;
         })
         .finally(() => {
