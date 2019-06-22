@@ -6,13 +6,13 @@ export default {
   /**
    * Lists notifications
    */
-  get(after = null, mark_as_read = false) {
+  get(before = null, mark_as_read = false) {
     let params = {
       mark_as_read: mark_as_read
     };
 
-    if (!isNaN(after))
-      params.after = after;
+    if (before)
+      params.before = before;
 
     return wrap(() => axios.get(`${config.prefix}/notifications`, {
       params

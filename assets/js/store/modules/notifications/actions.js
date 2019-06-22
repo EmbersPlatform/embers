@@ -11,6 +11,11 @@ export default {
   }, notification) {
     commit("ADD", notification);
   },
+  append({
+    commit
+  }, notifications) {
+    commit("APPEND", notifications);
+  },
   remove({
     commit
   }, id) {
