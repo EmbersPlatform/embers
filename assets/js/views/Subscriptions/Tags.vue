@@ -41,7 +41,7 @@ export default {
   components: { Intersector, TagOptions },
   data() {
     return {
-      tags: null,
+      tags: [],
       loading: false,
       loading_more: false,
       last_page: false,
