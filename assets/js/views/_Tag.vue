@@ -11,18 +11,7 @@
         <div class="tag-info" v-if="tag">
           <div class="tag-title">
             <p class="tag-name">{{tag.name}}</p>
-            <button
-              class="button"
-              data-button-size="medium"
-              data-button-text="medium"
-              :data-button-important="subbed"
-              @click="sub_tag"
-              :data-tip="(subbed) ? `Desuscribirse de #${tag.name}` : `Pinear #${tag.name}`"
-              data-tip-position="top"
-              data-tip-text
-            >
-              <i class="fas fa-thumbtack"></i>
-            </button>
+            <tag-options :tag="tag"/>
           </div>
           <div class="tag-desc" v-if="tag.desc">{{tag.description}}</div>
         </div>
@@ -63,10 +52,11 @@ import { mapGetters } from "vuex";
 import Top from "@/components/Top";
 import Card from "@/components/Card/_Card";
 import Intersector from "@/components/Intersector";
+import TagOptions from "@/components/Tag/TagOptions";
 
 export default {
   name: "TagInfo",
-  components: { Top, Card, Intersector },
+  components: { Top, Card, Intersector, TagOptions },
   data: () => ({
     tag: null,
     posts: [],
@@ -91,6 +81,10 @@ export default {
       this.loading_tag = true;
       try {
         const { data: tag } = await axios.get(`/api/v1/tags/${this.tag_name}`);
+        const e_tag = _.find(this.tags, x => x.id == tag.id);
+        if (e_tag != undefined) {
+          tag.sub_level = e_tag.sub_level;
+        }
         this.tag = tag;
         this.load_posts();
       } catch (e) {
@@ -129,25 +123,6 @@ export default {
       this.last_page = res.last_page;
       this.next = res.next;
       this.loading_more_posts = false;
-    },
-    async sub_tag() {
-      try {
-        if (!this.subbed) {
-          let tag = (await axios.post(`/api/v1/subscriptions/tags`, {
-            id: this.tag.id
-          })).data;
-          this.$store.dispatch("tag/add", tag);
-        } else {
-          await axios.delete(`/api/v1/subscriptions/tags/${this.tag.id}`);
-          this.$store.dispatch("tag/delete", this.tag.name);
-        }
-      } catch (e) {
-        this.$notify({
-          group: "top",
-          text: "Hubo un problema al suscribirse al tag.",
-          type: "error"
-        });
-      }
     }
   },
   mounted() {

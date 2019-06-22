@@ -11,26 +11,7 @@
             {{tag.name}}
           </router-link>
           <div class="tag-actions">
-            <button
-              v-if="tag.sub_level >= 0"
-              data-button-size="medium"
-              class="button"
-              @click="remove_tag(tag)"
-            >Desuscribirse</button>
-            <button
-              class="button"
-              data-button-size="medium"
-              :data-button-important="tag.sub_level >= 0"
-              v-text="tag.sub_level >= 0 ? 'Pineado' : 'Pinear'"
-              @click="pin_tag(tag)"
-            >Pineado</button>
-            <button
-              class="button"
-              data-button-size="medium"
-              :data-button-important="tag.sub_level == 1"
-              v-text="tag.sub_level == 1 ? 'Suscripto' : 'Suscribirse'"
-              @click="sub_tag(tag)"
-            ></button>
+            <tag-options :tag="tag"/>
           </div>
         </div>
         <p class="tag-desc" v-if="tag.description">{{tag.description}}</p>
@@ -53,10 +34,11 @@ import axios from "axios";
 import _ from "lodash";
 
 import Intersector from "@/components/Intersector";
+import TagOptions from "@/components/Tag/TagOptions";
 
 export default {
   name: "Tags",
-  components: { Intersector },
+  components: { Intersector, TagOptions },
   data() {
     return {
       tags: null,

@@ -40,7 +40,8 @@ defmodule EmbersWeb.TagView do
     %{
       id: IdHasher.encode(tag.id),
       name: tag.name,
-      description: tag.description
+      description: tag.description,
+      sub_level: nil
     }
   end
 end
