@@ -2,7 +2,7 @@
   <div class="hot-tags">
     <h3 v-if="tags.length">Tags populares</h3>
     <h4 v-if="loading_hot_tags">Cargando...</h4>
-    <router-link :to="`/tag/${tag.name}`" v-for="tag in tags" :key="tag.tag.id">
+    <router-link :to="`/tag/${tag.tag.name}`" v-for="tag in tags" :key="tag.tag.id">
       <p class="tag-name">
         #{{tag.tag.name}}
         <span>
