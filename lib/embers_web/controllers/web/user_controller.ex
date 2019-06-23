@@ -37,4 +37,15 @@ defmodule EmbersWeb.UserController do
     |> delete_session(:phauxth_session_id)
     |> success("User deleted successfully", session_path(conn, :new))
   end
+
+  def reset_pass(conn, _params) do
+    email = conn.assigns.current_user.email
+
+    if Accounts.create_password_reset(%{"email" => email}) do
+      key = EmbersWeb.Auth.Token.sign(%{"email" => email})
+      EmbersWeb.Email.reset_request(email, key)
+    end
+
+    conn |> put_status(:no_content) |> json(nil)
+  end
 end

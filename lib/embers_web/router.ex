@@ -125,6 +125,7 @@ defmodule EmbersWeb.Router do
         post("/account/avatar", MetaController, :upload_avatar)
         post("/account/cover", MetaController, :upload_cover)
         put("/account/settings", SettingController, :update)
+        post("/account/reset_pass", UserController, :reset_pass)
 
         post("/moderation/ban", ModerationController, :ban_user)
         post("/moderation/post/update_tags", ModerationController, :update_tags)
