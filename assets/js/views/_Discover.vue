@@ -1,72 +1,97 @@
 <template>
-	<div id="board">
-		<div id="heading">
-			<Top></Top>
-		</div>
-		<div id="wrapper">
-			<div id="content" data-layout-type="masonry">
-				<Feed name="public" :filters="filters" size="little"></Feed>
-			</div>
-		</div>
-	</div>
+  <div id="board">
+    <div id="heading">
+      <Top></Top>
+    </div>
+    <div id="wrapper">
+      <div id="content" data-layout-type="masonry">
+        <div
+          class="masonry"
+          v-masonry
+          transition-duration=".3s"
+          item-selector=".item"
+          fit-width="true"
+        >
+          <popular-tags class="item"/>
+          <card
+            class="item"
+            v-for="post in posts"
+            :key="post.id"
+            :post="post"
+            size="little"
+            v-masonry-tile
+          ></card>
+        </div>
+        <h3 v-if="loading_more">
+          <p>Cargando mas...</p>
+        </h3>
+        <intersector @intersect="load_more"/>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import auth from "../auth";
-import Feed from "../components/Feed";
-import Top from "../components/Top";
+import axios from "axios";
+
+import Card from "@/components/Card/_Card";
+import Top from "@/components/Top";
+import Intersector from "@/components/Intersector";
+import PopularTags from "@/components/Tag/Popular";
+
 export default {
   name: "Discover",
   components: {
-    Feed,
-    Top
+    Top,
+    Card,
+    Intersector,
+    PopularTags
   },
-  /**
-   * Component data
-   * @returns object
-   */
-  data() {
-    return {
-      auth
-    };
-  },
-  computed: {
-    hash: function() {
-      return this.$route.hash.replace("#", "");
+  data: () => ({
+    loading_posts: false,
+    loading_more: false,
+    posts: [],
+    next: null,
+    last_page: false
+  }),
+  computed: {},
+  methods: {
+    async fetch_public() {
+      this.loading_posts = true;
+      const { data: res } = await axios.get(`/api/v1/feed/public`);
+      this.posts = res.items;
+      this.last_page = res.last_page;
+      this.next = res.next;
+      this.loading_posts = false;
     },
-    filters: function() {
-      if (this.$route.hash && this.hash != "" && this.hash != "recent") {
-        return [this.hash];
-      }
-      return [];
-    },
-    feed: function() {
-      switch (this.hash) {
-        case "":
-        case "text":
-        case "image":
-        case "video":
-        case "audio":
-        case "link":
-          return "recent";
-          break;
-        case "recent":
-          return "public";
-          break;
-        default:
-          //force 404
-          this.$router.push({ name: "404" });
-          break;
-      }
+    async load_more() {
+      if (this.loading_posts || this.loading_more || this.last_page) return;
+      this.loading_more = true;
+      const { data: res } = await axios.get(`/api/v1/feed/public`, {
+        params: { before: this.next }
+      });
+      this.posts = res.items;
+      this.last_page = res.last_page;
+      this.next = res.next;
+      this.loading_more = false;
     }
   },
-  methods: {},
-
-  /**
-   * Triggered before this component instance is destroyed
-   */
-  destroyed() {
+  mounted() {
+    this.fetch_public();
+  },
+  beforeDestroy() {
     this.$store.dispatch("cleanFeedPosts");
   }
 };
 </script>
+
+<style lang="scss" scoped>
+#content {
+  justify-content: flex-start;
+  align-items: center;
+}
+.hot-tags {
+  width: 230px;
+  margin: 0 15px 30px 15px;
+}
+</style>

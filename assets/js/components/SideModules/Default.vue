@@ -11,6 +11,7 @@
         <img class="emoji" src="/img/external/ko-fi.svg" alt="Buy Me a Coffee at ko-fi.com">
         Buy me a ko-fi
       </a>
+      <popular-tags/>
       <div class="made-with">
         <p class="centered" v-html="madeWithText"></p>
       </div>
@@ -28,7 +29,10 @@
 import auth from "../../auth";
 import formatter from "@/lib/formatter";
 
+import PopularTags from "@/components/Tag/Popular";
+
 export default {
+  components: { PopularTags },
   computed: {
     madeWithText() {
       return formatter.format("Hecho con :w_coffeecup: y mucho :w_heart:");

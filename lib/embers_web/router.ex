@@ -146,6 +146,9 @@ defmodule EmbersWeb.Router do
         post("/tag_blocks", TagBlockController, :create)
         delete("/tag_blocks/:id", TagBlockController, :destroy)
 
+        get("/tags/popular", TagController, :popular)
+        get("/tags/hot", TagController, :hot)
+
         get("/subscriptions/tags/ids", TagController, :list_ids)
         get("/subscriptions/tags/list", TagController, :list)
         post("/subscriptions/tags", TagController, :create)

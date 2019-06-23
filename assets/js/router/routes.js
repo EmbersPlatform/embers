@@ -184,7 +184,7 @@ const routes = [
     path: "/discover",
     components: {
       default: _Discover,
-      sidebar: SB_Discover
+      sidebar: SB_Home
     },
     beforeEnter: requireAuth,
     meta: {

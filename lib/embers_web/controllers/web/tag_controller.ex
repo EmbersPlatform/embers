@@ -4,6 +4,7 @@ defmodule EmbersWeb.TagController do
 
   import EmbersWeb.Authorize
   import Embers.Helpers.IdHasher
+
   alias Embers.Feed.Subscriptions.Tags, as: Subscriptions
   alias Embers.Helpers.IdHasher
   alias Embers.Tags
@@ -22,7 +23,7 @@ defmodule EmbersWeb.TagController do
   end
 
   def show_tag_posts(conn, %{"name" => name} = params) do
-    results = Tags.list_tag_posts(name, before: decode(params["before"]))
+    results = Tags.list_tag_posts(name, before: decode(params["before"]), limit: params["limit"])
     render(conn, EmbersWeb.FeedView, "timeline.json", results)
   end
 
@@ -105,6 +106,20 @@ defmodule EmbersWeb.TagController do
     }
 
     do_create_block(conn, block_params)
+  end
+
+  def popular(conn, _params) do
+    popular = Tags.get_popular_tags(limit: 10)
+
+    conn
+    |> render("popular.json", popular: popular)
+  end
+
+  def hot(conn, _params) do
+    hot = Tags.get_hot_tags(limit: 10)
+
+    conn
+    |> render("hot.json", hot: hot)
   end
 
   defp do_create_subscription(conn, sub_params) do
