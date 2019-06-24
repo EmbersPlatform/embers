@@ -72,6 +72,11 @@
             </li>
           </ul>
         </footer>
+        <router-link
+          v-if="!no_reply_link && comment.stats.replies > 0"
+          :to="`/post/${comment.id}`"
+          class="reply-link"
+        >Ver {{comment.stats.replies}} respuestas</router-link>
       </div>
       <div class="header-options-wrapper">
         <div
@@ -159,7 +164,8 @@ export default {
   props: {
     comment: { type: Object, required: true },
     postId: { type: String },
-    no_controls: { type: Boolean, default: false }
+    no_controls: { type: Boolean, default: false },
+    no_reply_link: { type: Boolean, default: false }
   },
   computed: {
     ...mapGetters(["can"]),

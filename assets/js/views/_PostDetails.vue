@@ -13,8 +13,15 @@
         <div id="content" data-layout-type="single-column">
           <div id="post" v-if="post" :class="{container: !user}">
             <p class="loading-comments" v-if="loading_context">Cargando..</p>
-            <Comment v-if="context" class="post-context" :comment="this.context" no_controls/>
-            <Card :post="post" @deleted="postDeleted"></Card>
+            <Card v-if="post_context" :post="post_context" @deleted="postDeleted"/>
+            <Card v-if="is_post" :post="post" @deleted="postDeleted"></Card>
+            <Comment v-if="is_comment" :comment="post" @deleted="postDeleted" no_reply_link></Comment>
+            <Comment
+              v-if="comment_context"
+              :comment="comment_context"
+              @deleted="postDeleted"
+              no_reply_link
+            ></Comment>
             <p class="loading-comments" v-if="loadingComments">Cargando comentarios...</p>
             <CommentList
               :comments="comments"
@@ -22,10 +29,11 @@
               :bottomComments="bottomComments"
               :lastPage="lastPage"
               :postId="id"
+              :class="{replies: is_comment || is_reply}"
               @loadMore="loadComments"
               @comment_deleted="comment_deleted"
             ></CommentList>
-            <div class="new-comment">
+            <div class="new-comment" :class="{reply_box: is_comment || is_reply}">
               <div class="comment">
                 <header class="header">
                   <avatar v-if="$mq != 'sm'" :avatar="user.avatar.small"></avatar>
@@ -33,7 +41,7 @@
                     v-if="user"
                     flat
                     :with_tags="false"
-                    :parent_id="id"
+                    :parent_id="reply_to_id"
                     :has_overlay="false"
                     always_open
                     type="comment"
@@ -86,7 +94,8 @@ export default {
       loading: false,
       loadingComments: false,
       lastPage: true,
-      context: null,
+      post_context: null,
+      comment_context: null,
       loading_context: false
     };
   },
@@ -106,6 +115,22 @@ export default {
     }),
     has_context() {
       return this.post.nesting_level > 0;
+    },
+    is_post() {
+      return this.post.nesting_level == 0;
+    },
+    is_comment() {
+      return this.post.nesting_level == 1;
+    },
+    is_reply() {
+      return this.post.nesting_level == 2;
+    },
+    reply_to_id() {
+      if (this.post.nesting_level == 2) {
+        return this.post.in_reply_to;
+      } else {
+        return this.post.id;
+      }
     }
   },
 
@@ -153,9 +178,12 @@ export default {
     loadComments() {
       this.loadingComments = true;
 
+      let id = this.post.id;
+      if (this.is_reply) id = this.post.in_reply_to;
+
       comment
         .get(
-          this.id,
+          id,
           this.bottomComments.length ? this.bottomComments[0].id : null,
           this.comments.length
             ? this.comments[this.comments.length - 1].id
@@ -196,7 +224,13 @@ export default {
       if (!this.has_context) return;
       this.loading_context = true;
       const res = await post.get(this.post.in_reply_to);
-      this.context = res;
+      if (this.is_comment) {
+        this.post_context = res;
+      } else {
+        this.comment_context = res;
+        const root = await post.get(res.in_reply_to);
+        this.post_context = root;
+      }
       this.loading_context = false;
     }
   },
@@ -225,9 +259,20 @@ export default {
   text-align: center;
   color: #ffffff70;
 }
-.post-context {
-  border-left: 3px solid #eb3d2d;
+.comment {
   margin-bottom: 0 !important;
+}
+.replies {
+  border-left: 3px solid #eb3d2d44;
+  margin-left: 50px;
+
+  .comment {
+    padding-top: 20px;
+  }
+}
+
+.reply_box {
+  margin-left: 50px;
 }
 </style>
 
