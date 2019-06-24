@@ -430,6 +430,9 @@
   margin: 0 0 0 30px;
   @include font-size();
   @include box-sizing(border-box);
+  position: sticky;
+  top: 20px;
+  height: fit-content;
 
   > *,
   #secondary-sticky > * {
@@ -535,7 +538,6 @@
 
 // inicia #SECONDARY CHILDS
 #secondary-sticky {
-  position: fixed;
   // top: 20px;
   display: inline;
   width: 230px;
