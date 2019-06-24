@@ -12,6 +12,8 @@
       <div id="wrapper">
         <div id="content" data-layout-type="single-column">
           <div id="post" v-if="post" :class="{container: !user}">
+            <p class="loading-comments" v-if="loading_context">Cargando..</p>
+            <Comment v-if="context" class="post-context" :comment="this.context" no_controls/>
             <Card :post="post" @deleted="postDeleted"></Card>
             <p class="loading-comments" v-if="loadingComments">Cargando comentarios...</p>
             <CommentList
@@ -58,12 +60,14 @@ import { mapGetters } from "vuex";
 
 import Card from "@/components/Card/_Card";
 import CommentList from "@/components/Comment/CommentList";
+import Comment from "@/components/Comment/Comment";
 import Toolbox from "@/components/ToolBox/_ToolBox";
 import Avatar from "@/components/Avatar";
 
 export default {
   components: {
     Card,
+    Comment,
     CommentList,
     Toolbox,
     Top,
@@ -81,7 +85,9 @@ export default {
       bottomComments: [],
       loading: false,
       loadingComments: false,
-      lastPage: true
+      lastPage: true,
+      context: null,
+      loading_context: false
     };
   },
 
@@ -97,7 +103,10 @@ export default {
     },
     ...mapGetters({
       user: "user"
-    })
+    }),
+    has_context() {
+      return this.post.nesting_level > 0;
+    }
   },
 
   methods: {
@@ -131,6 +140,7 @@ export default {
           );
         }
         this.loadComments();
+        this.load_context();
       } catch (e) {
         this.$router.push("/404");
       }
@@ -181,6 +191,13 @@ export default {
     comment_deleted(comment) {
       this.comments = this.comments.filter(x => x.id != comment.id);
       this.bottomComments = this.bottomComments.filter(x => x.id != comment.id);
+    },
+    async load_context() {
+      if (!this.has_context) return;
+      this.loading_context = true;
+      const res = await post.get(this.post.in_reply_to);
+      this.context = res;
+      this.loading_context = false;
     }
   },
 
@@ -207,6 +224,10 @@ export default {
 .loading-comments {
   text-align: center;
   color: #ffffff70;
+}
+.post-context {
+  border-left: 3px solid #eb3d2d;
+  margin-bottom: 0 !important;
 }
 </style>
 

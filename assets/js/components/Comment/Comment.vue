@@ -9,7 +9,10 @@
             :to="`/@${comment.user.username}`"
             :data-badge="`${comment.user.badges[0]}`"
           >{{comment.user.username}}</router-link>
-          <p>comento {{ $moment.utc(comment.created_at).local().from() }}:</p>
+          <router-link
+            class="comment-time"
+            :to="`/post/${comment.id}`"
+          >{{ $moment.utc(comment.created_at).local().from() }}:</router-link>
         </h4>
         <p v-if="comment.body" v-html="formattedBody"></p>
         <div v-if="comment.links && comment.links.length && !comment.media.length" class="links">
@@ -31,7 +34,7 @@
               {{ meta.total }}
             </li>
           </ul>
-          <ul v-if="loggedUser" class="actions-panel">
+          <ul v-if="!no_controls" class="actions-panel">
             <li v-if="comment.nsfw">
               <span @click.prevent="toggleLock">
                 <i class="fas fa-pepper-hot emoji"></i>
@@ -153,7 +156,11 @@ import formatter from "@/lib/formatter";
 
 export default {
   components: { avatar, MediaZone, MediaSlides, LinkItem },
-  props: ["comment", "postId"],
+  props: {
+    comment: { type: Object, required: true },
+    postId: { type: String },
+    no_controls: { type: Boolean, default: false }
+  },
   computed: {
     ...mapGetters(["can"]),
     loggedUser() {
@@ -503,6 +510,10 @@ export default {
     .link-item__details {
       display: none;
     }
+  }
+  .comment-time {
+    font-weight: 300 !important;
+    color: #ffffff50 !important;
   }
 }
 </style>
