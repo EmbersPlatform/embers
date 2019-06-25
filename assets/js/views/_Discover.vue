@@ -5,7 +5,19 @@
     </div>
     <div id="wrapper">
       <div id="content" data-layout-type="masonry">
+        <template v-if="$mq == 'sm'">
+          <popular-tags class="item"/>
+          <card
+            class="item"
+            v-for="post in posts"
+            :key="post.id"
+            :post="post"
+            size="little"
+            v-masonry-tile
+          ></card>
+        </template>
         <div
+          v-else
           class="masonry"
           v-masonry
           transition-duration=".3s"
@@ -70,9 +82,16 @@ export default {
       const { data: res } = await axios.get(`/api/v1/feed/public`, {
         params: { before: this.next }
       });
-      this.posts = res.items;
+      const body = document.getElementsByTagName("html")[0];
+      const old_scroll = body.scrollTop;
+
+      this.posts.push(...res.items);
       this.last_page = res.last_page;
       this.next = res.next;
+
+      this.$nextTick(() => {
+        body.scrollTop = old_scroll;
+      });
       this.loading_more = false;
     }
   },
