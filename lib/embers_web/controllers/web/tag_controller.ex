@@ -109,14 +109,14 @@ defmodule EmbersWeb.TagController do
   end
 
   def popular(conn, _params) do
-    popular = Tags.get_popular_tags(limit: 10)
+    popular = Tags.get_popular_tags(limit: 5)
 
     conn
     |> render("popular.json", popular: popular)
   end
 
   def hot(conn, _params) do
-    hot = Tags.get_hot_tags(limit: 10)
+    hot = Tags.get_hot_tags(limit: 5)
 
     conn
     |> render("hot.json", hot: hot)
