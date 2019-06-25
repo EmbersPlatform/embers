@@ -1,6 +1,7 @@
 <template>
   <div id="secondary" v-if="auth.loggedIn()">
     <div id="secondary-sticky">
+      <popular-tags/>
       <h3>anuncio</h3>
       <p>Embers se encuentra en su etapa de desarrollo alpha, algunas características del sitio podrían no funcionar correctamente. Si tienes dudas, sugerencias, o encontraste un bug, contáctanos en nuestro servidor de Discord o si te gusta lo que hacemos apoyanos en Ko-fi:</p>
       <a class="external" data-service="discord" href="https://discord.gg/uADqWPs" target="_blank">
@@ -11,7 +12,6 @@
         <img class="emoji" src="/img/external/ko-fi.svg" alt="Buy Me a Coffee at ko-fi.com">
         Buy me a ko-fi
       </a>
-      <popular-tags/>
       <div class="made-with">
         <p class="centered" v-html="madeWithText"></p>
       </div>
