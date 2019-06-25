@@ -148,6 +148,7 @@ const initialData = function() {
       uploading_media: false
     },
     show_overlay: false,
+    request_data: null
   };
 };
 
@@ -244,70 +245,18 @@ export default {
       this.post.body = body;
     },
     addPost() {
-      this.status.loading = true;
+      this.prepare_request_data();
 
-      let requestData = {
-        body: this.post.body,
-        tags: this.post.tags.split(" ")
-      };
-      if (this.post.nsfw) {
-        if (this.post.tags.length) {
-          requestData.tags.push("nsfw");
-        } else {
-          requestData.tags = ["nsfw"];
-        }
+      const tags = this.request_data.tags;
+      const invalid_tags = tags.filter(x => {
+        return !/^[\w+]{0,100}$/m.test(x);
+      });
+      if (invalid_tags.length > 0) {
+        this.warn_invalid_tags(invalid_tags);
+        return;
       }
 
-      if (this.parent_id) {
-        requestData.parent_id = this.parent_id;
-      }
-
-      if (this.post.medias !== null) {
-        requestData.medias = this.post.medias;
-      }
-      if (this.post.links !== null) {
-        requestData.links = this.post.links;
-      }
-      post
-        .create(requestData)
-        .then(res => {
-          this.$emit("created", res);
-          if (!this.parent_id) this.$store.dispatch("addFeedPost", res);
-
-          if (
-            res.nsfw &&
-            this.$store.getters.settings.content_nsfw === "hide"
-          ) {
-            this.$notify({
-              group: "top",
-              text:
-                "Tu post ha sido publicado, pero tus opciones de contenido no te permiten verlo. Haz click aquí para cambiarlas.",
-              type: "warning",
-              data: {
-                close: () => {
-                  this.$router.push("/settings/content");
-                }
-              }
-            });
-          }
-          this.reset();
-          this.close();
-        })
-        .catch(error => {
-          switch (error.status) {
-            case 422:
-              this.status.error = error.res.errors.body[0];
-              break;
-            case 500:
-              this.status.error =
-                "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.";
-            default:
-              throw error;
-          }
-        })
-        .finally(() => {
-          this.status.loading = false;
-        });
+      this.attemp_post_upload();
     },
     async handlePaste(e) {
       let files = e.clipboardData.files;
@@ -379,6 +328,100 @@ export default {
         index: index
       });
     },
+    prepare_request_data() {
+      let requestData = {
+        body: this.post.body,
+        tags: this.post.tags.split(" ")
+      };
+      if (this.post.nsfw) {
+        if (this.post.tags.length) {
+          requestData.tags.push("nsfw");
+        } else {
+          requestData.tags = ["nsfw"];
+        }
+      }
+
+      if (this.parent_id) {
+        requestData.parent_id = this.parent_id;
+      }
+
+      if (this.post.medias !== null) {
+        requestData.medias = this.post.medias;
+      }
+      if (this.post.links !== null) {
+        requestData.links = this.post.links;
+      }
+
+      this.request_data = requestData;
+    },
+    attemp_post_upload() {
+      this.status.loading = true;
+      post
+        .create(this.request_data)
+        .then(res => {
+          this.$emit("created", res);
+          if (!this.parent_id) this.$store.dispatch("addFeedPost", res);
+
+          if (
+            res.nsfw &&
+            this.$store.getters.settings.content_nsfw === "hide"
+          ) {
+            this.$notify({
+              group: "top",
+              text:
+                "Tu post ha sido publicado, pero tus opciones de contenido no te permiten verlo. Haz click aquí para cambiarlas.",
+              type: "warning",
+              data: {
+                close: () => {
+                  this.$router.push("/settings/content");
+                }
+              }
+            });
+          }
+          this.reset();
+          this.close();
+        })
+        .catch(error => {
+          switch (error.status) {
+            case 422:
+              this.status.error = error.res.errors.body[0];
+              break;
+            case 500:
+              this.status.error =
+                "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.";
+            default:
+              throw error;
+          }
+        })
+        .finally(() => {
+          this.status.loading = false;
+        });
+    },
+    warn_invalid_tags(invalid_tags) {
+      const tags = invalid_tags.join(", ");
+      this.$modal.show("dialog", {
+        title:
+          "El post contiene tags invalidos. ¿Deseas publicarlo de todas formas? Los tags inválidos serán omitidos.",
+        text: `Los tags deben estar formados por letras(sin tilde), números, guión bajo(_) y tener entre 2 y 100 caracteres.
+          Los siguientes tags son inválidos: ${tags}`,
+        buttons: [
+          {
+            title: "Corregir",
+            class: "button"
+          },
+          {
+            title: "Publicar",
+            default: true,
+            class: "button danger",
+            handler: () => {
+              this.attemp_post_upload();
+              this.$modal.hide("dialog");
+            }
+          }
+        ],
+        adaptive: true
+      });
+    }
   },
   created() {
     if (this.related_to) this.post.related_to_id = this.related_to;
