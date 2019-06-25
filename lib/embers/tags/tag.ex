@@ -6,7 +6,7 @@ defmodule Embers.Tags.Tag do
 
   import Ecto.Changeset
 
-  @max_length 20
+  @max_length 100
 
   schema "tags" do
     field(:name, :string, null: false)
