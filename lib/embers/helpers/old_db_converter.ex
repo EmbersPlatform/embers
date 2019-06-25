@@ -29,18 +29,17 @@ defmodule Embers.Helpers.OldDbConverter do
 
     posts
     |> Stream.map(&handle_post/1)
-    |> Stream.chunk_every(1000)
-    |> Enum.each(fn chunk ->
-      chunk =
-        Enum.reduce(chunk, [], fn post, acc ->
-          if not is_integer(post.related_to_id) do
-            [post] ++ acc
-          else
-            acc
-          end
-        end)
+    |> Enum.each(fn
+      %{nsfw: nsfw, post: %{related_to_id: nil} = post} ->
+        post = struct(Embers.Feed.Post, post)
+        {:ok, post} = Repo.insert(post, on_conflict: :nothing)
 
-      Repo.insert_all(Embers.Feed.Post, chunk, on_conflict: :nothing)
+        if nsfw == 1 do
+          Embers.Tags.add_tag(post, "nsfw")
+        end
+
+      _ ->
+        nil
     end)
 
     update_auto_increment("posts")
@@ -138,7 +137,7 @@ defmodule Embers.Helpers.OldDbConverter do
     end)
     |> Enum.chunk_every(1000)
     |> Enum.each(fn chunk ->
-      Repo.insert_all(Embers.Tags.Tag, chunk)
+      Repo.insert_all(Embers.Tags.Tag, chunk, on_conflict: :nothing)
     end)
 
     update_auto_increment("tags")
@@ -315,12 +314,22 @@ defmodule Embers.Helpers.OldDbConverter do
   end
 
   defp handle_user_meta(%{"user_id" => user_id} = meta) do
-    %{"bio" => bio} = meta
+    %{"bio" => bio, "avatar" => avatar, "cover" => cover} = meta
+
+    avatar =
+      unless is_nil(avatar) do
+        "legacy:#{avatar}"
+      end
+
+    cover =
+      unless is_nil(cover) do
+        "legacy:#{cover}"
+      end
 
     from(
       m in Meta,
       where: m.user_id == ^user_id,
-      update: [set: [bio: ^bio]]
+      update: [set: [bio: ^bio, avatar_version: ^avatar, cover_version: ^cover]]
     )
     |> Repo.update_all([])
   end
@@ -352,7 +361,7 @@ defmodule Embers.Helpers.OldDbConverter do
       }
     }
 
-    post_attrs
+    %{nsfw: post["nsfw"], post: post_attrs}
   end
 
   defp string_to_naive_dt(date) when is_nil(date), do: nil

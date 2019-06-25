@@ -36,6 +36,14 @@ defmodule Embers.Profile.Meta do
     }
   end
 
+  def avatar_map(%Meta{avatar_version: "legacy:" <> version} = meta) do
+    %{
+      small: "/legacy/avatar/#{version}",
+      medium: "/legacy/avatar/#{version}",
+      big: "/legacy/avatar/#{version}"
+    }
+  end
+
   def avatar_map(%Meta{avatar_version: version} = meta) do
     id_hash = IdHasher.encode(meta.user_id)
 
@@ -53,6 +61,10 @@ defmodule Embers.Profile.Meta do
 
   def cover(%Meta{cover_version: nil} = _meta) do
     "/images/default_cover.jpg"
+  end
+
+  def cover(%Meta{cover_version: "legacy:" <> version} = _meta) do
+    "/legacy/cover/#{version}"
   end
 
   def cover(%Meta{cover_version: version} = meta) do

@@ -6,7 +6,6 @@ defmodule Embers.Repo.Migrations.CreateIndexes do
     create(index(:link_post, [:link_id, :post_id]))
     create(index(:tags_posts, [:tag_id, :post_id]))
     create(index(:reactions, [:post_id]))
-    create(index(:posts, :user_id))
     create(index(:posts, :parent_id))
     create(index(:posts, :deleted_at))
     create(index(:posts, :nesting_level))

@@ -26,6 +26,13 @@ defmodule EmbersWeb.Endpoint do
     gzip: true
   )
 
+  plug(
+    Plug.Static,
+    at: "/legacy",
+    from: Path.expand('./legacy'),
+    gzip: true
+  )
+
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do

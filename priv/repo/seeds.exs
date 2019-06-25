@@ -4,38 +4,68 @@
 #
 # It is also run when you use the command `mix ecto.setup`
 #
+defmodule Seed do
+  import Ecto.Query
+  alias Embers.Repo
 
-admin_permissions = ["any"]
-member_permissions = ~w(create_post create_media)
+  def roles() do
+    admin_permissions = ["any"]
+    member_permissions = ~w(create_post create_media)
 
-moderator_permissions =
-  ~w(access_backoffice access_mod_tools access_reports_queue ban_request warn_request ban_user update_user delete_post update_post delete_media update_media)
+    moderator_permissions =
+      ~w(access_backoffice access_mod_tools access_reports_queue ban_request warn_request ban_user update_user delete_post update_post delete_media update_media)
 
-roles = [
-  %{name: "admin", permissions: admin_permissions},
-  %{name: "member", permissions: member_permissions},
-  %{name: "moderator", permissions: moderator_permissions}
-]
+    roles = [
+      %{name: "admin", permissions: admin_permissions},
+      %{name: "member", permissions: member_permissions},
+      %{name: "moderator", permissions: moderator_permissions}
+    ]
 
-roles
-|> Enum.each(fn role ->
-  Embers.Authorization.Roles.create(role.name, role.permissions)
-end)
+    rolenames = Enum.map(roles, & &1.name)
 
-{:ok, user} =
-  Embers.Accounts.create_user(%{
-    username: "admin",
-    email: "admin@example.org",
-    password: "yayapapaya"
-  })
+    unless Repo.exists?(
+             from(r in Embers.Authorization.Role, where: r.name in ^rolenames, select: r.id)
+           ) do
+      roles
+      |> Enum.each(fn role ->
+        Embers.Authorization.Roles.create(role.name, role.permissions)
+      end)
+    end
+  end
 
-Embers.Accounts.confirm_user(user)
-Embers.Authorization.Roles.attach_role(1, 1)
+  def admin_account() do
+    unless Repo.exists?(
+             from(u in Embers.Accounts.User, where: u.canonical == ^"admin", select: u.id)
+           ) do
+      {:ok, user} =
+        Embers.Accounts.create_user(%{
+          username: "admin",
+          email: "admin@example.org",
+          password: "yayapapaya"
+        })
 
-settings = [
-  %{name: "rules", string_value: "Reglas del sitio"},
-  %{name: "faq", string_value: "FAQ"},
-  %{name: "acknowledgments", string_value: "Agradecimientos"}
-]
+      Embers.Accounts.confirm_user(user)
+      Embers.Authorization.Roles.attach_role(1, 1)
+    end
+  end
 
-Enum.each(settings, fn attrs -> Embers.Settings.create(attrs) end)
+  def settings() do
+    settings = [
+      %{name: "rules", string_value: "Reglas del sitio"},
+      %{name: "faq", string_value: "FAQ"},
+      %{name: "acknowledgments", string_value: "Agradecimientos"}
+    ]
+
+    setting_names = Enum.map(settings, & &1.name)
+
+    unless Repo.exists?(
+             from(s in Embers.Settings.Setting, where: s.name in ^setting_names, select: s.id)
+           ) do
+      Enum.each(settings, fn attrs -> Embers.Settings.create(attrs) end)
+    end
+  end
+end
+
+Seed.roles()
+Seed.admin_account()
+Seed.settings()

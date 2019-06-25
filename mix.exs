@@ -36,7 +36,6 @@ defmodule Embers.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.4.0"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
@@ -47,7 +46,6 @@ defmodule Embers.Mixfile do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:distillery, "~> 2.0"},
       {:phauxth, "~> 2.1"},
       {:bamboo, "~> 0.8"},
       {:not_qwerty123, "~> 2.3"},
