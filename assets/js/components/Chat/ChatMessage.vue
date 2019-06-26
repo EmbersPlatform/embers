@@ -28,7 +28,7 @@
 import axios from "axios";
 import { mapGetters } from "vuex";
 import Avatar from "@/components/Avatar";
-import formatter from "@/lib/formatter";
+import markdown from "@/lib/markdown/formatter";
 
 export default {
   name: "ChatMessage",
@@ -54,7 +54,7 @@ export default {
     },
     formatted_text() {
       if (!this.message) return null;
-      return formatter.format(this.message.text);
+      return markdown(this.message.text);
     }
   },
   data: () => ({
