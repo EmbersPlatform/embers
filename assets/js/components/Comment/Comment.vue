@@ -158,6 +158,7 @@ import MediaSlides from "@/components/Media/MediaSlides";
 import LinkItem from "@/components/Link/Link";
 
 import formatter from "@/lib/formatter";
+import markdown from "@/lib/markdown/formatter";
 
 export default {
   components: { avatar, MediaZone, MediaSlides, LinkItem },
@@ -193,7 +194,7 @@ export default {
      * Formats the comment body
      */
     formattedBody() {
-      return formatter.format(this.comment.body, true);
+      return markdown(this.comment.body, true);
     },
     hasReactions() {
       if (jQuery.isEmptyObject(this.comment.stats.reactions)) {
