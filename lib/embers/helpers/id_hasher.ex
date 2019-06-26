@@ -29,7 +29,9 @@ defmodule Embers.Helpers.IdHasher do
 
   def decode(data) do
     # Hashids returns decoded id as a list
-    [decoded] = Hashids.decode!(@coder, data)
-    decoded
+    case Hashids.decode!(@coder, data) do
+      [decoded] -> decoded
+      [_h | _t] -> nil
+    end
   end
 end
