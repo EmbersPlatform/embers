@@ -23,7 +23,14 @@ defmodule Embers.Mixfile do
   def application do
     [
       mod: {Embers.Application, []},
-      extra_applications: [:logger, :runtime_tools, :recaptcha, :scrivener_ecto, :scrivener_html]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :recaptcha,
+        :scrivener_ecto,
+        :scrivener_html,
+        :ex_rated
+      ]
     ]
   end
 
@@ -74,7 +81,8 @@ defmodule Embers.Mixfile do
       {:benchee, "~> 1.0", only: :dev},
       {:benchee_html, "~> 1.0", only: :dev},
       {:scrivener_ecto, "~> 2.0"},
-      {:scrivener_html, "~> 1.8"}
+      {:scrivener_html, "~> 1.8"},
+      {:ex_rated, "~> 1.2"}
     ]
   end
 
