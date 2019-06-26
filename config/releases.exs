@@ -1,25 +1,25 @@
 import Config
 
-config :embers, Embers.Media, bucket: "local"
-config :embers, Embers.Profile, bucket: "local"
+config :embers, Embers.Media, bucket: System.fetch_env!("EMBERS_MEDIA_BUCKET")
+config :embers, Embers.Profile, bucket: System.fetch_env!("EMBERS_PROFILE_BUCKET")
 
 # Configure your database
 config :embers, Embers.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "embers_prod",
-  hostname: "localhost",
+  username: System.fetch_env!("DB_USER"),
+  password: System.fetch_env!("DB_PWD"),
+  database: System.fetch_env!("DB_NAME"),
+  hostname: System.fetch_env!("DB_HOST"),
   pool_size: 10
 
 # Configure Recaptcha
 config :recaptcha,
-  public_key: "6Lde6G4UAAAAAN2QJXkcOnuwzJY4na6SH5vs5ZGl",
-  secret: "6Lde6G4UAAAAADV7-DChxeSgFINYadmBHNxkFI2C"
+  public_key: System.fetch_env!("RECAPTCHA_PUBLIC_KEY"),
+  secret: System.fetch_env!("RECAPTCHA_SECRET")
 
 config :ex_aws, :s3, %{
-  access_key_id: "URPQ2UQTQQ5DQENPNSLS",
-  secret_access_key: "r/SJdSjfx4ow9TIlDsYb42wYHTYGnDDcRIT5cw7fOxU",
+  access_key_id: System.fetch_env!("S3_ACCESS_KEY"),
+  secret_access_key: System.fetch_env!("S3_SECRET"),
   scheme: "https://",
-  host: %{"nyc3" => "embers-host.nyc3.digitaloceanspaces.com"},
-  region: "nyc3"
+  host: %{System.fetch_env!("S3_REGION") => System.fetch_env!("DB_HOST")},
+  region: System.fetch_env!("S3_REGION")
 }
