@@ -269,22 +269,9 @@ form {
     }
   }
 }
-
-blockquote {
+.greentext {
   color: $greentext;
-  -webkit-margin-after: 0;
-  -webkit-margin-before: 0;
-  margin: 0;
-  padding: 0;
-
-  &:before {
-    content: ">";
-  }
-
-  & > p {
-    display: inline-block;
-    color: inherit !important;
-  }
+  font-size: 1em;
 }
 
 //inicia EMOJI-MART

@@ -492,6 +492,7 @@
     a {
       color: $narrojo;
       font-weight: 400;
+      font-size: 1em;
 
       &:hover {
         text-decoration: underline;
@@ -513,13 +514,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       height: 1.4em;
-    }
-
-    *:not(img):not(blockquote):not(p) {
-      line-height: 1.6em;
-      display: inline;
-      margin: 0;
-      font-size: inherit;
     }
 
     ul,

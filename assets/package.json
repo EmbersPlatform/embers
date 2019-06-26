@@ -57,6 +57,16 @@
     "vuex": "^2.5.0",
     "vuex-router-sync": "^3.0.0",
     "xregexp": "^3.2.0",
-    "xss-escape": "0.0.6"
+    "xss-escape": "0.0.6",
+    "emoji-regex": "^8.0.0",
+    "rehype-highlight": "^2.2.1",
+    "rehype-prism": "^0.1.1",
+    "rehype-stringify": "^5.0.0",
+    "remark-disable-tokenizers": "^1.0.20",
+    "remark-gemoji-to-emoji": "^1.1.0",
+    "remark-parse": "^6.0.3",
+    "remark-rehype": "^4.0.0",
+    "remark-stringify": "^6.0.4",
+    "unified": "^7.1.0"
   }
 }

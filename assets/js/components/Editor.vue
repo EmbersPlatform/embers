@@ -42,6 +42,7 @@
 
 <script>
 import formatter from "@/lib/formatter";
+import markdown from "@/lib/markdown/formatter";
 import textSelectionEdit from "@/lib/textSelectionEdit";
 import EmojiPicker from "./EmojiPicker";
 import attachment from "../api/attachment";
@@ -93,7 +94,7 @@ export default {
         : "Si quieres, puedes añadir una descripción...";
     },
     formattedBody() {
-      return formatter.format(this.body, true);
+      return markdown(this.body, true);
     }
   },
   methods: {

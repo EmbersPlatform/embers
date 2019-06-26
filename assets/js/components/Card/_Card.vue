@@ -285,6 +285,7 @@ import LinkItem from "@/components/Link/Link";
 
 import formatter from "@/lib/formatter";
 import avatar from "@/components/Avatar";
+import markdown from "@/lib/markdown/formatter";
 
 import ReactionsModal from "../ReactionsModal/ReactionsModal";
 import ReportPostModal from "@/components/Modals/ReportPostModal";
@@ -372,7 +373,7 @@ export default {
      * Formats post body
      */
     formattedBody() {
-      return formatter.format(this.post.body);
+      return markdown(this.post.body);
     },
 
     /**

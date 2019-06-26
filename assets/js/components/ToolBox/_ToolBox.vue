@@ -248,9 +248,12 @@ export default {
       this.prepare_request_data();
 
       const tags = this.request_data.tags;
-      const invalid_tags = tags.filter(x => {
-        return !/^[\w+]{0,100}$/m.test(x);
-      });
+      const invalid_tags = tags
+        .filter(x => {
+          return !/^[\w+]{2,100}$/m.test(x);
+        })
+        .filter(x => x != "");
+      console.log(invalid_tags);
       if (invalid_tags.length > 0) {
         this.warn_invalid_tags(invalid_tags);
         return;
