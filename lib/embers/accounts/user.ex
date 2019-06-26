@@ -149,6 +149,8 @@ defmodule Embers.Accounts.User do
     |> load_stats_map
   end
 
+  def populate(nil), do: nil
+
   def load_stats_map(%User{} = user) do
     stats = %{
       followers: get_followers_count(user),

@@ -9,22 +9,28 @@ defmodule EmbersWeb.UserController do
 
   def show(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"id" => id})
       when not is_nil(current_user) do
-    user =
-      id
-      |> Accounts.get_populated()
-      |> Accounts.User.load_following_status(current_user.id)
-      |> Accounts.User.load_follows_me_status(current_user.id)
-      |> Accounts.User.load_blocked_status(current_user.id)
+    case Accounts.get_populated(id) do
+      nil ->
+        conn |> put_status(:not_found) |> json(:not_found)
 
-    render(conn, "show.json", user: user)
+      user ->
+        user
+        |> Accounts.User.load_following_status(current_user.id)
+        |> Accounts.User.load_follows_me_status(current_user.id)
+        |> Accounts.User.load_blocked_status(current_user.id)
+
+        render(conn, "show.json", user: user)
+    end
   end
 
   def show(conn, %{"id" => id}) do
-    user =
-      id
-      |> Accounts.get_populated()
+    case Accounts.get_populated(id) do
+      nil ->
+        conn |> put_status(:not_found) |> json(:not_found)
 
-    render(conn, "show.json", user: %{user | email: nil})
+      user ->
+        render(conn, "show.json", user: user)
+    end
   end
 
   def update(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"user" => user_params}) do
