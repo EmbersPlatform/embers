@@ -20,6 +20,7 @@ export default {
   computed: {
     ...mapGetters("tag", ["tags"]),
     subbed() {
+      if (!this.tags) return false;
       const tag_names = this.tags.map(o => o.name);
       return tag_names.includes(this.tag.name);
     }

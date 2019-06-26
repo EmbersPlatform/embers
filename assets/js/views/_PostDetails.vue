@@ -33,12 +33,11 @@
               @loadMore="loadComments"
               @comment_deleted="comment_deleted"
             ></CommentList>
-            <div class="new-comment" :class="{reply_box: is_comment || is_reply}">
+            <div v-if="user" class="new-comment" :class="{reply_box: is_comment || is_reply}">
               <div class="comment">
                 <header class="header">
                   <avatar v-if="$mq != 'sm'" :avatar="user.avatar.small"></avatar>
                   <Toolbox
-                    v-if="user"
                     flat
                     :with_tags="false"
                     :parent_id="reply_to_id"

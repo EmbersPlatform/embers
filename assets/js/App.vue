@@ -145,6 +145,7 @@ export default {
       return posts;
     },
     isNewActivity() {
+      if (!this.$route.matched[0]) return false;
       switch (this.$route.matched[0].name) {
         case "home":
           return this.newActivity > 0;
@@ -155,7 +156,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     // Handle search dynamic title
     document.title = this.title;
     this.searchParams = this.$route.params.searchParams;
@@ -228,8 +229,6 @@ export default {
     EventBus.$on("toggle_navigation", value => {
       this.with_navigation = value;
     });
-  },
-  mounted() {
     /**
      * Hammer.js gestures
      *

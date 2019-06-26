@@ -5,11 +5,10 @@ defmodule EmbersWeb.UserController do
   import EmbersWeb.Helpers
   alias Embers.Accounts
 
-  # the following plugs are defined in the controllers/authorize.ex file
-  plug(:user_check when action in [:index, :show])
   plug(:id_check when action in [:edit, :update, :delete])
 
-  def show(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"id" => id}) do
+  def show(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"id" => id})
+      when not is_nil(current_user) do
     user =
       id
       |> Accounts.get_populated()
@@ -18,6 +17,14 @@ defmodule EmbersWeb.UserController do
       |> Accounts.User.load_blocked_status(current_user.id)
 
     render(conn, "show.json", user: user)
+  end
+
+  def show(conn, %{"id" => id}) do
+    user =
+      id
+      |> Accounts.get_populated()
+
+    render(conn, "show.json", user: %{user | email: nil})
   end
 
   def update(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"user" => user_params}) do

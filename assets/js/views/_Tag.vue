@@ -11,7 +11,7 @@
         <div class="tag-info" v-if="tag">
           <div class="tag-title">
             <p class="tag-name">{{tag.name}}</p>
-            <tag-options :tag="tag"/>
+            <tag-options v-if="user" :tag="tag"/>
           </div>
           <div class="tag-desc" v-if="tag.desc">{{tag.description}}</div>
         </div>
@@ -68,6 +68,7 @@ export default {
   }),
   computed: {
     ...mapGetters("tag", ["tags"]),
+    ...mapGetters(["user"]),
     subbed() {
       const tag_names = this.tags.map(o => o.name.toLowerCase());
       return tag_names.includes(this.tag.name.toLowerCase());

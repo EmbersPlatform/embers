@@ -70,6 +70,7 @@ export default {
     }),
     ...mapState("chat", ["online_friends"]),
     noSidebar() {
+      if (!this.$route.matched[0]) return false;
       switch (this.$route.matched[0].name) {
         case "search":
           return true;
@@ -80,6 +81,7 @@ export default {
       }
     },
     isChat() {
+      if (!this.$route.matched[0]) return false;
       switch (this.$route.matched[0].name) {
         case "chat":
           return "chat";

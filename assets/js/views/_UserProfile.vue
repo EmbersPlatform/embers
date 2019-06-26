@@ -71,8 +71,8 @@ export default {
           );
           this.$store.dispatch("setUserProfile", res.data);
         })
-        .catch(() => {
-          this.$router.push("/404");
+        .catch(e => {
+          console.log(e);
         })
         .finally(() => (this.loading = false));
     }
