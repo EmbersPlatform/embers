@@ -14,19 +14,11 @@ import tag from './tag'
 import post from './post'
 import greentext from './greentext';
 
-function strip_html(str) {
-  if ((str === null) || (str === ''))
-    return false;
-  else
-    str = str.toString();
-  return str.replace(/<[^>]*>/g, '');
-}
-
-function escapeHtml(html) {
-  var text = document.createTextNode(html);
-  var p = document.createElement('p');
-  p.appendChild(text);
-  return p.innerHTML;
+function htmlDecode(input) {
+  var e = document.createElement('textarea');
+  e.innerHTML = input;
+  // handle case of empty input
+  return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
 export default input => {
@@ -40,7 +32,6 @@ export default input => {
         'blockquote',
         'atxHeading',
         'list',
-        'html',
         'table',
       ],
     })
@@ -48,8 +39,7 @@ export default input => {
     .use(mdString)
     .processSync(input)
 
-  res = res.toString()
-  res = res.split("\n").map(line => {
+  res.contents = res.contents.split("\n").map(line => {
     if (line[0] == '\\' && (line[1] == '#' || line[1] == '>')) {
       return line.slice(1, line.length)
     } else {
@@ -57,7 +47,9 @@ export default input => {
     }
   }).join("\n")
 
-  console.log(res)
+  res.contents = htmlDecode(res.contents)
+
+  console.log(res.contents)
 
   res = unified()
     .use(mdParse)
