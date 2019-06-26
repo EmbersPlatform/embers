@@ -68,11 +68,12 @@ defmodule Embers.Uploads do
 
   def upload(source, bucket, path, opts) do
     acl = Keyword.get(opts, :acl, :public_read)
+    opts = Keyword.put(opts, :acl, acl)
 
     res =
       source
       |> S3.Upload.stream_file()
-      |> S3.upload(bucket, path, acl: acl)
+      |> S3.upload(bucket, path, opts)
       |> ExAws.request()
 
     case res do

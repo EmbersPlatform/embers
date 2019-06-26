@@ -96,7 +96,6 @@ export default {
     },
 
     onAvatarProgress(progress) {
-      console.log(progress);
       this.avatarProgress = progress;
     }
   },

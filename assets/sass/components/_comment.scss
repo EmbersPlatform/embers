@@ -96,6 +96,11 @@
         }
       }
     }
+    .reply-link {
+      color: $narrojo;
+      display: block;
+      text-align: center;
+    }
   }
 
   &.locked {

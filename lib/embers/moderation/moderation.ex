@@ -53,6 +53,20 @@ defmodule Embers.Moderation do
   def ban_user(user_id, opts) when is_integer(user_id) do
     if is_nil(get_active_ban(user_id)) do
       duration = Keyword.get(opts, :duration, 7)
+
+      duration =
+        cond do
+          is_integer(duration) ->
+            duration
+
+          is_binary(duration) ->
+            {duration, _} = Integer.parse(duration)
+            duration
+
+          true ->
+            nil
+        end
+
       indefinite? = duration <= 0
 
       expires =
@@ -60,13 +74,21 @@ defmodule Embers.Moderation do
           Timex.shift(DateTime.utc_now(), days: duration)
         end
 
-      Repo.insert(
-        Ban.changeset(%Ban{}, %{
-          user_id: user_id,
-          reason: Keyword.get(opts, :reason),
-          expires_at: expires
-        })
-      )
+      case Repo.insert(
+             Ban.changeset(%Ban{}, %{
+               user_id: user_id,
+               reason: Keyword.get(opts, :reason),
+               expires_at: expires
+             })
+           ) do
+        {:ok, ban} ->
+          actor = Keyword.get(opts, :actor, nil)
+          Embers.Event.emit(:user_banned, %{ban: ban, actor: actor})
+          {:ok, ban}
+
+        error ->
+          error
+      end
     else
       {:error, :already_banned}
     end

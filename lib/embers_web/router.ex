@@ -72,7 +72,19 @@ defmodule EmbersWeb.Router do
     put("/settings/edit/:name", EmbersWeb.Admin.SettingController, :update)
 
     get("/reports", EmbersWeb.Admin.ReportController, :overview)
+    get("/reports/post/:id", EmbersWeb.Admin.ReportController, :post_report)
+    delete("/reports/post/:id", EmbersWeb.Admin.ReportController, :delete_post)
+    put("/reports/post/:id", EmbersWeb.Admin.ReportController, :resolve_post_reports)
+
     get("/bans", EmbersWeb.Admin.BanController, :index)
+    get("/bans/:user_id", EmbersWeb.Admin.BanController, :show)
+    delete("/bans/:user_id", EmbersWeb.Admin.BanController, :delete)
+
+    get("/audit", EmbersWeb.Admin.AuditController, :index)
+
+    get("/tags", EmbersWeb.Admin.TagController, :index)
+    get("/tags/:name", EmbersWeb.Admin.TagController, :edit)
+    put("/tags/:name", EmbersWeb.Admin.TagController, :update)
 
     resources("/loading", EmbersWeb.Admin.LoadingMsgController)
 
@@ -113,6 +125,7 @@ defmodule EmbersWeb.Router do
         post("/account/avatar", MetaController, :upload_avatar)
         post("/account/cover", MetaController, :upload_cover)
         put("/account/settings", SettingController, :update)
+        post("/account/reset_pass", UserController, :reset_pass)
 
         post("/moderation/ban", ModerationController, :ban_user)
         post("/moderation/post/update_tags", ModerationController, :update_tags)
@@ -129,10 +142,21 @@ defmodule EmbersWeb.Router do
         post("/blocks", BlockController, :create)
         delete("/blocks/:id", BlockController, :destroy)
 
+        get("/tag_blocks/ids", TagBlockController, :list_ids)
+        get("/tag_blocks/list", TagBlockController, :list)
+        post("/tag_blocks", TagBlockController, :create)
+        delete("/tag_blocks/:id", TagBlockController, :destroy)
+
+        get("/tags/popular", TagController, :popular)
+        get("/tags/hot", TagController, :hot)
+
         get("/subscriptions/tags/ids", TagController, :list_ids)
         get("/subscriptions/tags/list", TagController, :list)
         post("/subscriptions/tags", TagController, :create)
         delete("/subscriptions/tags/:id", TagController, :destroy)
+
+        get("/tags/:name", TagController, :show_tag)
+        get("/tags/:name/posts", TagController, :show_tag_posts)
 
         get("/followers/:id/ids", FriendController, :list_ids)
         get("/followers/:id/list", FriendController, :list)
@@ -142,6 +166,8 @@ defmodule EmbersWeb.Router do
         post("/posts/:post_id/reaction/:name", ReactionController, :create)
         delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
         post("/posts/:post_id/report", PostReportController, :create)
+        get("posts/:post_id/reactions/overview", ReactionController, :reactions_overview)
+        get("posts/:post_id/reactions/:reaction_name", ReactionController, :reactions_by_name)
 
         get("/reactions/valid", ReactionController, :list_valid_reactions)
 
@@ -160,6 +186,13 @@ defmodule EmbersWeb.Router do
         put("/notifications/:id", NotificationController, :read)
 
         get("/search/:query", SearchController, :search)
+        get("/search_typeahead/user/:username", SearchController, :user_typeahead)
+
+        get("/chat/conversations", ChatController, :list_conversations)
+        post("/chat/conversations", ChatController, :create)
+        get("/chat/conversations/:id", ChatController, :list_messages)
+        put("/chat/conversations/:id", ChatController, :read)
+        get("/chat/unread", ChatController, :list_unread_conversations)
       end
     end
 

@@ -14,9 +14,22 @@ defmodule Embers.Tags do
   alias Embers.Feed.Post
   alias Embers.Feed.Subscriptions.TagSubscription
   alias Embers.Repo
+  alias Embers.Paginator
   alias Embers.Tags.{Tag, TagPost}
 
   import Ecto.Query
+
+  def get(id) do
+    Repo.get(Tag, id)
+  end
+
+  def get_by(clauses, opts \\ []) do
+    Repo.get_by(Tag, clauses, opts)
+  end
+
+  def get_by_name(name) when is_binary(name) do
+    Repo.one(from(tag in Tag, where: ilike(tag.name, ^name), limit: 1))
+  end
 
   def create_tag(%{"name" => name}) do
     case Repo.get_by(Tag, name: name) do
@@ -106,6 +119,18 @@ defmodule Embers.Tags do
     Repo.all(query)
   end
 
+  def list_post_tag_names(post_id) do
+    query =
+      from(
+        tp in TagPost,
+        where: tp.post_id == ^post_id,
+        left_join: tag in assoc(tp, :tag),
+        select: tag.name
+      )
+
+    Repo.all(query)
+  end
+
   defp insert_tag(name) do
     tag = Tag.create_changeset(%Tag{}, %{"name" => name})
     Repo.insert!(tag)
@@ -152,5 +177,40 @@ defmodule Embers.Tags do
     old_tags = tags_loaded(post)
     Enum.each(new_tags -- old_tags, &add_tag(post, &1))
     Enum.each(old_tags -- new_tags, &remove_tag(post, &1))
+  end
+
+  def update_tag(tag, attrs) do
+    tag
+    |> Tag.create_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def list_tag_posts(tag, params) do
+    from(
+      post in Post,
+      where: is_nil(post.deleted_at),
+      where: post.nesting_level == 0,
+      where: is_nil(post.related_to_id),
+      order_by: [desc: post.id],
+      left_join: user in assoc(post, :user),
+      left_join: meta in assoc(user, :meta),
+      left_join: tags in assoc(post, :tags),
+      where: tags.name == ^tag,
+      preload: [
+        [:media, :links, :reactions, :tags]
+      ],
+      preload: [
+        user: {user, meta: meta}
+      ]
+    )
+    |> Paginator.paginate(params)
+    |> fill_nsfw()
+  end
+
+  defp fill_nsfw(page) do
+    %{
+      page
+      | entries: Enum.map(page.entries, fn post -> Post.fill_nsfw(post) end)
+    }
   end
 end

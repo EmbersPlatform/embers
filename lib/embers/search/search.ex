@@ -31,7 +31,7 @@ defmodule Embers.Search do
   import Ecto.Query
 
   @operators %{
-    tag: ~r/(?<!["])(?:in:|#)(\pL(?:(?:[\pL\pN][\.\-_])?[\pL\pN]){1,30})(?!["])/,
+    tag: ~r/(?<!["])(?:tag:|\#)(\pL(?:(?:[\pL\pN][\.\-_])?[\pL\pN]){1,30})(?!["])/,
     author: ~r/(?<!["])@(\pL(?:(?:[\pL\pN][\.\-_])?[\pL\pN]){0,19})(?!["])/,
     nsfw: ~r/(?<!["])-nsfw(?!["])/,
     sfw: ~r/(?<!["])-sfw(?!["])/,
@@ -186,10 +186,12 @@ defmodule Embers.Search do
   defp maybe_search_by_authors(query, _params), do: query
 
   defp maybe_search_by_tags(query, %Params{tags: tags}) when is_list(tags) do
+    tags = Enum.map(tags, &String.upcase/1)
+
     from(
       post in query,
       left_join: tags in assoc(post, :tags),
-      where: tags.name in ^tags
+      where: fragment("upper(?)", tags.name) in ^tags
     )
   end
 

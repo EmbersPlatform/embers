@@ -43,6 +43,9 @@ export default {
       )
         return this.props.item.data.close();
     }
+  },
+  created() {
+    console.log(this.props);
   }
 };
 </script>

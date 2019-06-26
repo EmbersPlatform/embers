@@ -2,7 +2,7 @@ import Socket from './socket';
 import Feed from './channels/feed';
 import User from './channels/user';
 
-let user_id = window.appData.user.id;
+let user_id = (window.appData.user) ? window.appData.user.id : null;
 
 const socket = Socket();
 const feed_channel = Feed.init(socket, user_id);

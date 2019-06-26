@@ -1,7 +1,7 @@
 <template>
   <div
     id="appex"
-    :class="{'in-app': isApp, 'blur': (blurToolBox || blurSidebar), 'fixed': fixed}"
+    :class="{'in-app': isApp, 'blur': (blurToolBox || blurSidebar), 'fixed': fixed, 'no-navigation': !with_navigation}"
     :dark-side="openSidebar"
     ref="main"
   >
@@ -53,6 +53,7 @@
     </notifications>
     <rules-modal/>
     <new-post-modal v-show="show_new_post_modal" :related="new_post_modal_related"/>
+    <media-slides v-if="show_media_slides"></media-slides>
   </div>
 </template>
 
@@ -60,15 +61,16 @@
 import Navigation from "./layout/Navigation";
 import Main from "./layout/Main";
 import Sticky from "./layout/Sticky";
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import userResource from "./api/user";
 import _ from "lodash";
 import Hammer from "hammerjs";
 
 import RulesModal from "./components/Modals/RulesModal";
 import NewPostModal from "./components/Modals/NewPostModal";
+import MediaSlides from "@/components/Media/MediaSlides";
 
-import Notification from "./components/Toasts/Notification";
+import Notification from "./components/ToastNotifications/Notification";
 
 import { Presence } from "phoenix";
 
@@ -81,7 +83,8 @@ export default {
     Sticky,
     Notification,
     RulesModal,
-    NewPostModal
+    NewPostModal,
+    MediaSlides
   },
   data() {
     return {
@@ -95,7 +98,8 @@ export default {
       openSidebar: false,
       fixed: false,
       show_new_post_modal: false,
-      new_post_modal_related: null
+      new_post_modal_related: null,
+      with_navigation: true
     };
   },
   methods: {
@@ -114,7 +118,9 @@ export default {
       newActivity: "newActivity"
     }),
     ...mapGetters("title", ["title"]),
-    ...mapGetters("chat", ["new_message", "online_friends"]),
+    ...mapGetters("chat", ["unread_conversations_count"]),
+    ...mapState("chat", ["online_friends"]),
+    ...mapState("media_slides", ["show_media_slides"]),
     isApp: function() {
       switch (this.$route.name) {
         case "rules":
@@ -133,12 +139,13 @@ export default {
     },
     newActivityText() {
       let posts = this.newActivity;
-      if (posts > 9) {
-        return "+9";
+      if (posts > 99) {
+        return "+99";
       }
       return posts;
     },
     isNewActivity() {
+      if (!this.$route.matched[0]) return false;
       switch (this.$route.matched[0].name) {
         case "home":
           return this.newActivity > 0;
@@ -149,7 +156,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     // Handle search dynamic title
     document.title = this.title;
     this.searchParams = this.$route.params.searchParams;
@@ -160,7 +167,7 @@ export default {
     window.addEventListener(
       "scroll",
       _.throttle(() => {
-        this.toHeaven = $(window).scrollTop() >= 300;
+        this.toHeaven = $(window).scrollTop() >= 300 && this.$mq != "sm";
       }),
       1000
     );
@@ -183,23 +190,22 @@ export default {
       this.fixed = !this.fixed;
     });
 
-    window.addEventListener("storage", e => {
-      const key = e.key;
-      if (key === "newMessages") {
-        this.$store.dispatch("chat/newMessage", e.newValue, false);
-      }
-      if (key === "unreadMessagesCount") {
+    EventBus.$on("new_activity", post => {
+      this.$store.dispatch("add_new_post", post);
+      this.$store.dispatch("newActivity");
+    });
+
+    EventBus.$on("new_chat_message", ({ message }) => {
+      if (this.$store.getters.user.id != message.sender_id) {
         this.$store.dispatch(
-          "chat/updateUnreadMessagesCount",
-          e.newValue,
-          false
+          "chat/add_unread_conversation_with",
+          message.sender_id
         );
       }
     });
 
-    EventBus.$on("new_activity", post => {
-      this.$store.dispatch("add_new_post", post);
-      this.$store.dispatch("newActivity");
+    EventBus.$on("conversation_read", payload => {
+      this.$store.dispatch("chat/read_conversation_with", payload.id);
     });
 
     EventBus.$on("show_new_post_modal", props => {
@@ -211,19 +217,18 @@ export default {
       this.new_post_modal_related = null;
     });
     EventBus.$on("new_notification", notification => {
-      this.$store.dispatch("notifications/add", notification);
+      if (!notification.ephemeral) {
+        this.$store.dispatch("notifications/add", notification);
+      }
       this.$notify({
         group: this.$mq == "sm" ? "top" : "activity",
-        text: notification.text,
-        data: {
-          image: notification.image,
-          type: notification.type,
-          notification: notification
-        }
+        data: notification
       });
     });
-  },
-  mounted() {
+
+    EventBus.$on("toggle_navigation", value => {
+      this.with_navigation = value;
+    });
     /**
      * Hammer.js gestures
      *
@@ -243,12 +248,18 @@ export default {
     title(val) {
       document.title = val;
     },
-    new_message() {
-      if (this.new_message) {
+    unread_conversations_count() {
+      if (this.unread_conversations_count > 0) {
         this.newMessageTitleInterval = setInterval(() => {
+          const title_msg =
+            this.unread_conversations_count > 1
+              ? "conversaciones"
+              : "conversación";
           const title =
             this.title === document.title
-              ? "Tienes mensajes sin leer"
+              ? `Tienes ${
+                  this.unread_conversations_count
+                } ${title_msg} sin leer`
               : this.title;
           document.title = title;
         }, 1500);
@@ -263,3 +274,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+#appex.no-navigation {
+  #main,
+  #board {
+    height: 100vh !important;
+  }
+}
+</style>

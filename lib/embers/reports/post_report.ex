@@ -4,8 +4,11 @@ defmodule Embers.Reports.PostReport do
 
   alias Embers.Accounts.User
   alias Embers.Feed.Post
+  alias Embers.Paginator
+  alias Embers.Repo
 
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "post_reports" do
     belongs_to(:post, Post)
@@ -24,6 +27,22 @@ defmodule Embers.Reports.PostReport do
     |> foreign_key_constraint(:post_id)
     |> foreign_key_constraint(:reporter_id)
     |> validate_length(:comments, min: 4, max: 255)
+  end
+
+  def list_paginated(opts \\ []) do
+    from(r in __MODULE__,
+      where: r.resolved == false,
+      left_join: post in assoc(r, :post),
+      left_join: author in assoc(post, :user),
+      group_by: [post.id, author.username],
+      select: %{
+        post: post,
+        author: author.username,
+        count: fragment("count(?) as count", r.id)
+      },
+      order_by: [desc: fragment("count")]
+    )
+    |> Repo.paginate(opts)
   end
 end
 

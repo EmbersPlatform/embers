@@ -8,7 +8,7 @@
   >
     <template v-if="isMasonry">
       <div
-        v-if="firstLoad"
+        v-if="first_load"
         id="masonry"
         ref="masonry"
         v-masonry
@@ -52,7 +52,7 @@
       ></Card>
       <Card v-else :post="post" :key="post.id" :showThumbnail="showThumbnail" :size="size"></Card>
     </template>
-    <intersector @intersect="loadMore"/>
+    <intersector @intersect="loadMore" style="height: 10px;"/>
     <template v-if="reachedBottom && !loading && !refreshing">
       <h3 v-html="formattedNoResults" v-if="posts.length === 0"></h3>
       <h3 v-html="formattedReachedBottom" v-else></h3>
@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import _ from "lodash";
+
 import feed from "../api/feed";
 
 import formatter from "@/lib/formatter";
@@ -82,12 +84,12 @@ export default {
    */
   data() {
     return {
-      loading: true,
+      loading: false,
       next_activity: null,
       reachedBottom: false,
       previousScrollPosition: 0,
       refreshing: false,
-      firstLoad: false,
+      first_load: false,
       isMasonry: true,
       posts: []
     };
@@ -123,25 +125,26 @@ export default {
     // TODO concatenar post entre peticiones loadmore y vista actual
     concat_post(items) {
       outer: for (var i = 0; i < items.length; i++) {
-        if (items[i].isShared) {
+        if (items[i].related_to != null && items[i].body == null) {
           var sharers = [items[i].user];
           inner: for (var o = i + 1; o < items.length; o++) {
-            if (items[o].isShared) {
-              if (items[o].source.id == items[i].source.id) {
+            if (items[o].related_to != null && items[o].body == null) {
+              if (items[o].related_to.id == items[i].related_to.id) {
                 //is another shared from same post, save and delete
                 sharers.push(items[o].user);
                 items.splice(o, 1);
                 o -= 1;
               }
             } else {
-              if (items[o].id == items[i].source.id) {
+              if (items[o].id == items[i].related_to.id) {
                 //is original post
                 items.splice(o, 1);
                 break inner;
               }
             }
           }
-          items[i]["sharers"] = sharers;
+          items[i] = items[i]["related_to"];
+          items[i]["sharers"] = _.uniqBy(sharers, x => x.username);
         }
       }
       return items;
@@ -151,7 +154,7 @@ export default {
     },
     reload() {
       this.refreshing = true;
-      this.firstLoad = false;
+      this.first_load = false;
       feed
         .get(this.name, { filters: this.filters })
         .then(res => {
@@ -168,7 +171,7 @@ export default {
         })
         .finally(() => {
           this.refreshing = false;
-          this.firstLoad = true;
+          this.first_load = true;
         });
     },
 
@@ -179,7 +182,7 @@ export default {
       this.do_load_more();
     },
     do_load_more() {
-      if (this.infiniteScrollStill) {
+      if (this.infiniteScrollStill || !this.first_load) {
         return;
       }
       this.loading = true;
@@ -216,7 +219,12 @@ export default {
     this.$root.$on("addFeedPost", new_post => this.posts.unshift(new_post));
     this.$root.$on("prepend_new_posts", () => {
       const new_posts = this.$store.state.feed.new_posts;
-      this.posts = [...new_posts, ...this.posts];
+      const old_posts = this.posts.map(p => {
+        p.new = false;
+        return p;
+      });
+      this.posts = [...new_posts, ...old_posts];
+      this.$store.dispatch("reset_new_posts");
     });
     this.noMasonry(); //check if can show masonry at page load
     window.addEventListener("resize", this.noMasonry);

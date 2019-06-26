@@ -13,16 +13,23 @@ defmodule EmbersWeb.Endpoint do
     from: :embers,
     gzip: true,
     only:
-      ~w(css fonts uploads img images js favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
+      ~w(css fonts uploads img images emoji js favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
   )
 
-  plug(Plug.Static, at: "/avatar", from: Path.expand('./uploads/user/avatar'), gzip: true)
-  plug(Plug.Static, at: "/cover", from: Path.expand('./uploads/user/cover'), gzip: true)
+  plug(Plug.Static, at: "/user/avatar", from: Path.expand('./uploads/user/avatar'), gzip: true)
+  plug(Plug.Static, at: "/user/cover", from: Path.expand('./uploads/user/cover'), gzip: true)
 
   plug(
     Plug.Static,
     at: "/media",
     from: Path.expand('./uploads/media'),
+    gzip: true
+  )
+
+  plug(
+    Plug.Static,
+    at: "/legacy",
+    from: Path.expand('./legacy'),
     gzip: true
   )
 

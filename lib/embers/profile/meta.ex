@@ -36,13 +36,26 @@ defmodule Embers.Profile.Meta do
     }
   end
 
+  def avatar_map(%Meta{avatar_version: "legacy:" <> version} = meta) do
+    %{
+      small: "/legacy/avatar/#{version}",
+      medium: "/legacy/avatar/#{version}",
+      big: "/legacy/avatar/#{version}"
+    }
+  end
+
   def avatar_map(%Meta{avatar_version: version} = meta) do
     id_hash = IdHasher.encode(meta.user_id)
 
+    path =
+      Application.get_env(:embers, Embers.Profile) |> Keyword.get(:avatar_path, "/user/avatar")
+
+    base = get_base()
+
     %{
-      small: "/avatar/#{id_hash}_small.png?#{version}",
-      medium: "/avatar/#{id_hash}_medium.png?#{version}",
-      big: "/avatar/#{id_hash}_large.png?#{version}"
+      small: "#{base}#{path}/#{id_hash}_small.png?#{version}",
+      medium: "#{base}#{path}/#{id_hash}_medium.png?#{version}",
+      big: "#{base}#{path}/#{id_hash}_large.png?#{version}"
     }
   end
 
@@ -50,9 +63,19 @@ defmodule Embers.Profile.Meta do
     "/images/default_cover.jpg"
   end
 
+  def cover(%Meta{cover_version: "legacy:" <> version} = _meta) do
+    "/legacy/cover/#{version}"
+  end
+
   def cover(%Meta{cover_version: version} = meta) do
     id_hash = IdHasher.encode(meta.user_id)
-    "/cover/#{id_hash}.jpg?#{version}"
+
+    path =
+      Application.get_env(:embers, Embers.Profile) |> Keyword.get(:cover_path, "/user/avatar")
+
+    base = get_base()
+
+    "#{base}#{path}/#{id_hash}.jpg?#{version}"
   end
 
   def load_avatar_map(%Meta{} = meta) do
@@ -67,5 +90,25 @@ defmodule Embers.Profile.Meta do
     meta
     |> load_cover()
     |> load_avatar_map()
+  end
+
+  defp get_bucket() do
+    Keyword.get(Application.get_env(:embers, Embers.Profile), :bucket, "local")
+  end
+
+  defp get_base() do
+    case get_bucket() do
+      "local" ->
+        ""
+
+      bucket ->
+        %{
+          scheme: scheme,
+          region: region
+        } = s3_config = Application.get_env(:ex_aws, :s3)
+
+        host = s3_config.host[region]
+        scheme <> host <> "/" <> bucket
+    end
   end
 end

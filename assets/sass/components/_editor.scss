@@ -1,6 +1,5 @@
 .editor {
   opacity: 1;
-  z-index: 1;
   max-height: 100vh;
 
   &.compressed {
@@ -14,7 +13,6 @@
   }
 
   &.big-text .canvas {
-
     .markup,
     .markup.preview * {
       @include font-size(12);
@@ -22,8 +20,6 @@
   }
 
   &[data-editor-style="toolbox"] {
-    overflow: hidden;
-
     .toolbar {
       padding-top: 10px;
       @include flexbox(row, nowrap, flex-start, center);
@@ -52,7 +48,6 @@
 
     .toolbar {
       width: auto;
-      height: 45px;
       padding: 0;
       margin-right: 0;
       @include flexbox(row, nowrap, flex-start, center);
@@ -86,12 +81,10 @@
   }
 
   &[data-editor-style="normal"] {
-    overflow: hidden;
     @include flex(1 1 auto);
 
     .toolbar {
       width: auto;
-      height: 45px;
       padding: 0;
       margin-right: 0;
       @include flexbox(row, nowrap, flex-start, center);
@@ -138,7 +131,7 @@
       touch-action: manipulation; // disables tap zoom
       @include border-radius(3px);
       @include font-size(4);
-      @include flexbox(row, nowrap, center, center);
+      @include flexbox(row, wrap, center, center);
 
       &:hover {
         color: $primary;
@@ -171,7 +164,7 @@
         width: inherit;
         height: inherit;
         background: transparent;
-        @include transition(.3s all ease-out);
+        @include transition(0.3s all ease-out);
 
         span {
           width: 100%;
@@ -235,7 +228,7 @@
 
       &,
       p {
-        transition: font-size .25s ease;
+        transition: font-size 0.25s ease;
       }
     }
   }

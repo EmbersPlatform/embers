@@ -3,11 +3,29 @@ defmodule EmbersWeb.TagController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
+  import Embers.Helpers.IdHasher
+
   alias Embers.Feed.Subscriptions.Tags, as: Subscriptions
   alias Embers.Helpers.IdHasher
+  alias Embers.Tags
 
   action_fallback(EmbersWeb.FallbackController)
   plug(:user_check when action in ~w(list list_ids create create_by_name destroy)a)
+
+  def show_tag(conn, %{"name" => name}) do
+    case Tags.get_by_name(name) do
+      nil ->
+        conn |> put_status(:not_found) |> json(nil)
+
+      tag ->
+        render(conn, "tag.json", tag: tag)
+    end
+  end
+
+  def show_tag_posts(conn, %{"name" => name} = params) do
+    results = Tags.list_tag_posts(name, before: decode(params["before"]), limit: params["limit"])
+    render(conn, EmbersWeb.FeedView, "timeline.json", results)
+  end
 
   @doc false
   def list(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
@@ -36,13 +54,15 @@ defmodule EmbersWeb.TagController do
   @doc false
   def create(
         %Plug.Conn{assigns: %{current_user: user}} = conn,
-        %{"id" => source_id} = _params
+        %{"id" => source_id} = params
       ) do
     source_id = IdHasher.decode(source_id)
+    level = Map.get(params, "level", 1)
 
     sub_params = %{
       user_id: user.id,
-      source_id: source_id
+      source_id: source_id,
+      level: level
     }
 
     do_create_subscription(conn, sub_params)
@@ -51,13 +71,15 @@ defmodule EmbersWeb.TagController do
   @doc false
   def create_by_name(
         %Plug.Conn{assigns: %{current_user: user}} = conn,
-        %{"name" => name} = _params
+        %{"name" => name} = params
       ) do
     source = Embers.Accounts.get_by_identifier(name)
+    level = Map.get(params, "level", 1)
 
     sub_params = %{
       user_id: user.id,
-      source_id: source.id
+      source_id: source.id,
+      level: level
     }
 
     do_create_subscription(conn, sub_params)
@@ -86,8 +108,22 @@ defmodule EmbersWeb.TagController do
     do_create_block(conn, block_params)
   end
 
+  def popular(conn, _params) do
+    popular = Tags.get_popular_tags(limit: 5)
+
+    conn
+    |> render("popular.json", popular: popular)
+  end
+
+  def hot(conn, _params) do
+    hot = Tags.get_hot_tags(limit: 5)
+
+    conn
+    |> render("hot.json", hot: hot)
+  end
+
   defp do_create_subscription(conn, sub_params) do
-    case Subscriptions.create_subscription(sub_params) do
+    case Subscriptions.create_or_update_subscription(sub_params) do
       {:ok, sub} ->
         sub = sub |> Embers.Repo.preload([:source])
 

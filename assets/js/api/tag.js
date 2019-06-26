@@ -4,10 +4,10 @@ import wrap from './wrap';
 
 export default {
   getTags() {
-    return wrap(() => axios.get(`${config.prefix}/tag/`));
+    return wrap(() => axios.get(`${config.prefix}/subscriptions/tags/list`));
   },
   getBlockedTags() {
-    return wrap(() => axios.get(`${config.prefix}/tag/block`));
+    return wrap(() => axios.get(`${config.prefix}/subscriptions/tags/blocked`));
   },
   subscribe(tag) {
     return wrap(() => axios.post(`${config.prefix}/subscriptions/tags/${tag}`));

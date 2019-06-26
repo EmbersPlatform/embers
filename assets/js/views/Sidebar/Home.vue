@@ -16,7 +16,7 @@
         <li class="n_item">
           <router-link class="n_i_wrap" to="/favorites">
             <span class="n_i_w_clip">
-              <i class="far fa-bookmark"/>
+              <i class="far fa-star"/>
             </span>
             <span class="n_i_w_content">Favoritos</span>
           </router-link>
@@ -32,12 +32,12 @@
       </ul>
     </li>
     <li class="nav_">
-      <h2>tags seguidos</h2>
+      <h2>tags pineados</h2>
     </li>
     <li class="nav_ sub_">
       <ul>
         <li class="n_item tag-item" v-for="tag in tags" :key="tag.id">
-          <router-link class="n_i_wrap" :to="`/search/in:${tag.name}`" exact>
+          <router-link class="n_i_wrap" :to="`/tag/${tag.name}`" exact>
             <span class="n_i_w_clip">
               <i class="fas fa-hashtag"/>
             </span>
@@ -66,9 +66,6 @@ import { mapGetters } from "vuex";
 
 export default {
   components: { Mutuals },
-  data() {
-    return {};
-  },
   computed: {
     ...mapGetters("tag", ["tags"])
   },
@@ -80,7 +77,7 @@ export default {
   },
   created() {
     axios.get(`/api/v1/subscriptions/tags/list`).then(res => {
-      this.tags = res.data.tags;
+      this.$store.dispatch("tag/update", res.items.map(x => x.name));
     });
   }
 };

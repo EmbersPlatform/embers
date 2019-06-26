@@ -10,7 +10,7 @@ import settings from './modules/settings';
 import chat from './modules/chat';
 import tag from './modules/tag';
 import title from './modules/title'
-
+import media_slides from './modules/media_slides';
 import * as getters from './getters';
 
 Vue.use(Vuex);
@@ -19,7 +19,8 @@ export default new Vuex.Store({
   state: {
     appData: {},
     userProfile: {},
-    newActivity: 0
+    newActivity: 0,
+    show_navigation: true
   },
 
   modules: {
@@ -30,7 +31,8 @@ export default new Vuex.Store({
     settings,
     chat,
     tag,
-    title
+    title,
+    media_slides
   },
   mutations: {
     SET_APP_DATA(state, data) {
@@ -45,6 +47,9 @@ export default new Vuex.Store({
     },
     RESET_ACTIVITY(state) {
       state.newActivity = 0;
+    },
+    TOGGLE_NAVIGATION(state, value) {
+      state.show_navigation = value;
     }
   },
 
@@ -69,6 +74,11 @@ export default new Vuex.Store({
       commit
     }) {
       commit('RESET_ACTIVITY');
+    },
+    toggle_navigation({
+      commit
+    }, value) {
+      commit("TOGGLE_NAVIGATION", value)
     }
   },
 

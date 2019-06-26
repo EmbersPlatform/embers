@@ -43,7 +43,9 @@ defmodule Embers.Feed do
       ** (Ecto.NoResultsError)
 
   """
-  def get_post!(id) do
+  def get_post(nil), do: {:error, :not_found}
+
+  def get_post(id) do
     query =
       from(
         post in Post,
@@ -69,9 +71,21 @@ defmodule Embers.Feed do
         ]
       )
 
-    query
-    |> Repo.one()
-    |> Post.fill_nsfw()
+    res = Repo.one(query)
+
+    case res do
+      nil -> {:error, :not_found}
+      post -> {:ok, post |> Post.fill_nsfw()}
+    end
+  end
+
+  def get_post!(nil), do: nil
+
+  def get_post!(id) do
+    case get_post(id) do
+      {:error, reason} -> nil
+      {:ok, post} -> post
+    end
   end
 
   @doc """
@@ -119,6 +133,7 @@ defmodule Embers.Feed do
             :media,
             :links,
             :tags,
+            :reactions,
             [related_to: [:media, :links, user: :meta]]
           ])
           |> Post.fill_nsfw()
@@ -250,7 +265,7 @@ defmodule Embers.Feed do
     |> Repo.update()
   end
 
-  def delete_post(%Post{} = post) do
+  def delete_post(%Post{} = post, actor \\ nil) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -275,14 +290,14 @@ defmodule Embers.Feed do
     end
 
     with {:ok, post} <- Repo.soft_delete(post) do
-      Embers.Event.emit(:post_deleted, post)
+      Embers.Event.emit(:post_disabled, %{post: post, actor: actor})
       {:ok, post}
     else
       error -> error
     end
   end
 
-  def restore_post(%Post{} = post) do
+  def restore_post(%Post{} = post, actor \\ nil) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -307,7 +322,7 @@ defmodule Embers.Feed do
     end
 
     with {:ok, post} <- Repo.restore_entry(post) do
-      Embers.Event.emit(:post_restored, post)
+      Embers.Event.emit(:post_restored, %{post: post, actor: actor})
       {:ok, post}
     else
       error -> error
@@ -326,7 +341,7 @@ defmodule Embers.Feed do
       {:error, %Ecto.Changeset{}}
 
   """
-  def hard_delete_post(%Post{} = post) do
+  def hard_delete_post(%Post{} = post, actor \\ nil) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -351,7 +366,7 @@ defmodule Embers.Feed do
     end
 
     with {:ok, deleted_post} <- Repo.delete(post) do
-      Embers.Event.emit(:post_deleted, deleted_post)
+      Embers.Event.emit(:post_deleted, %{post: deleted_post, actor: actor})
       {:ok, deleted_post}
     else
       error -> error
@@ -380,10 +395,7 @@ defmodule Embers.Feed do
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        preload: [:tags, :media, :links, :reactions],
-        preload: [
-          user: {user, meta: meta}
-        ]
+        preload: [:tags, :reactions, :links, :media, user: {user, meta: meta}]
       )
 
     query
@@ -401,32 +413,14 @@ defmodule Embers.Feed do
         order_by: [desc: activity.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        left_join: related in assoc(post, :related_to),
-        left_join: related_user in assoc(related, :user),
-        left_join: related_user_meta in assoc(related_user, :meta),
-        preload: [
-          [
-            post: [
-              :media,
-              :links,
-              :reactions,
-              :tags,
-              related_to: [:media, :links, :tags, :reactions]
-            ]
-          ]
-        ],
         preload: [
           post: {
             post,
-            user: {user, meta: meta},
-            related_to: {
-              related,
-              user: {
-                related_user,
-                meta: related_user_meta
-              }
-            }
+            user: {user, meta: meta}
           }
+        ],
+        preload: [
+          post: [:media, :links, :tags, :reactions, related_to: [:media, :links, user: :meta]]
         ]
       )
 

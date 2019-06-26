@@ -8,6 +8,14 @@
 </article>
 <% end %>
 
+<%= if error = get_flash(@conn, :error) do %>
+<article class="message is-danger">
+  <div class="message-header">
+    <p><%= error %></p>
+  </div>
+</article>
+<% end %>
+
 <%= form_for @conn, ban_path(@conn, :index), [method: :get], fn f-> %>
 <div class="field has-addons">
   <div class="control">
@@ -34,6 +42,7 @@
       </td>
       <td><%= ban.expires_at %></td>
       <td>
+        <%= link "Detalles", to: "/admin/bans/#{ Embers.Helpers.IdHasher.encode(ban.user_id) }", class: "button is-small" %>
       </td>
     </tr>
     <% end %>

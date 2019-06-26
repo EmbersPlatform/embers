@@ -13,7 +13,7 @@ defmodule EmbersWeb.AccountController do
 
   def new(conn, _) do
     changeset = Accounts.change_user(%Accounts.User{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", page_title: "Registrarse", changeset: changeset)
   end
 
   def create(
@@ -40,7 +40,7 @@ defmodule EmbersWeb.AccountController do
             |> redirect(to: Routes.session_path(conn, :new))
 
           {:error, %Ecto.Changeset{} = changeset} ->
-            render(conn, "new.html", changeset: changeset)
+            render(conn, "new.html", page_title: "Registrarse", changeset: changeset)
         end
 
       {:error, errors} ->

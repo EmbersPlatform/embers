@@ -1,16 +1,41 @@
 <h1 class="title">Reportes</h1>
 
-<div class="columns">
-  <div class="column">
-    <div class="box">
-      <div class="title is-4">Usuarios</div>
-      <div class="title is-3"><%= @counts.user %></div>
-    </div>
+<%= if info = get_flash(@conn, :info) do %>
+<article class="message is-info">
+  <div class="message-header">
+    <p><%= info %></p>
   </div>
-  <div class="column">
-    <div class="box">
-      <div class="title is-4">Posts</div>
-      <div class="title is-3"><%= @counts.post %></div>
-    </div>
+</article>
+<% end %>
+
+<%= if error = get_flash(@conn, :error) do %>
+<article class="message is-danger">
+  <div class="message-header">
+    <p><%= error %></p>
   </div>
-</div>
+</article>
+<% end %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Post</th>
+      <th>Autor</th>
+      <th>Reportes</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for post_report <- @posts_reports do %>
+      <tr>
+        <td><%= link(post_report.post.id, to: "/post/#{post_report.post.id}", target: "_blank") %></td>
+        <td><%= link post_report.author, to: "/@#{post_report.author}", target: "_blank" %></td>
+        <td><%= post_report.count %></td>
+        <td><%= link("Detalles", to: "/admin/reports/post/#{post_report.post.id}", class: "button is-small") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+<%= pagination_links @posts_reports %>

@@ -24,6 +24,7 @@
 	<meta name="msapplication-navbutton-color" content="#26272b">
 	<!-- iOS Safari -->
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title><%= assigns[:page_title] |> IO.inspect(label: "Page_title") || "Embers" %></title>
 	<link rel="icon" href="/favicon.ico?v=3" />
 	<link href="<%= static_path(@conn, "/css/landing.css") %>" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous">

@@ -9,7 +9,9 @@ const app = new Vue({
   router,
   store,
 
-  components: { App },
+  components: {
+    App
+  },
 
   data() {
     return {

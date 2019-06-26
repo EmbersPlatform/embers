@@ -17,11 +17,7 @@
           data-editor-style="toolbox"
           rel="editor"
         ></Editor>
-        <div
-          v-if="with_tags"
-          class="tags-wrapper tool"
-          :class="{'compact':!canPublish || !canShowEditor}"
-        >
+        <div v-if="with_tags" class="tags-wrapper tool" :class="{'compact': !canShowEditor}">
           <input type="text" placeholder="Tags separados por espacios" v-model="post.tags">
         </div>
 
@@ -96,12 +92,6 @@
           </div>
         </div>
       </template>
-      <media-slides
-        v-if="show_media_slides"
-        :medias="post.medias"
-        :index="clicked_media_index"
-        @closed="show_media_slides = false"
-      ></media-slides>
     </div>
   </div>
 </template>
@@ -125,8 +115,6 @@ import Editor from "../Editor";
 import AttachmentsZone from "./AttachmentsZone";
 
 import LinkItem from "@/components/Link/Link";
-
-import MediaSlides from "@/components/Media/MediaSlides";
 
 /**
  * Import additional components
@@ -160,8 +148,7 @@ const initialData = function() {
       uploading_media: false
     },
     show_overlay: false,
-    show_media_slides: false,
-    clicked_media_index: 0
+    request_data: null
   };
 };
 
@@ -172,7 +159,6 @@ export default {
     VideoEmbed,
     LinkEmbed,
     AttachmentsZone,
-    MediaSlides,
     "input-switch": Switch,
     LinkItem
   },
@@ -259,71 +245,21 @@ export default {
       this.post.body = body;
     },
     addPost() {
-      this.status.loading = true;
+      this.prepare_request_data();
 
-      let requestData = {
-        body: this.post.body,
-        tags: this.post.tags.split(" ")
-      };
-      if (this.post.nsfw) {
-        if (this.post.tags.length) {
-          requestData.tags.push("nsfw");
-        } else {
-          requestData.tags = ["nsfw"];
-        }
-      }
-
-      if (this.parent_id) {
-        requestData.parent_id = this.parent_id;
-      }
-
-      if (this.post.medias !== null) {
-        requestData.medias = this.post.medias;
-      }
-      if (this.post.links !== null) {
-        requestData.links = this.post.links;
-      }
-      post
-        .create(requestData)
-        .then(res => {
-          this.$emit("created", res);
-          if (!this.parent_id) this.$store.dispatch("addFeedPost", res);
-
-          if (
-            res.nsfw &&
-            this.$store.getters.settings.content_nsfw === "hide"
-          ) {
-            this.$notify({
-              group: "top",
-              text:
-                "Tu post ha sido publicado, pero tus opciones de contenido no te permiten verlo. Haz click aquí para cambiarlas.",
-              type: "warning",
-              data: {
-                close: () => {
-                  this.$router.push("/settings/content");
-                }
-              }
-            });
-          }
-          this.reset();
-          this.close();
+      const tags = this.request_data.tags;
+      const invalid_tags = tags
+        .filter(x => {
+          return !/^[\w+]{2,100}$/m.test(x);
         })
-        .catch(error => {
-          console.log(JSON.parse(JSON.stringify(error)));
-          switch (error.status) {
-            case 422:
-              this.status.error = error.res.errors.body[0];
-              break;
-            case 500:
-              this.status.error =
-                "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.";
-            default:
-              throw error;
-          }
-        })
-        .finally(() => {
-          this.status.loading = false;
-        });
+        .filter(x => x != "");
+      console.log(invalid_tags);
+      if (invalid_tags.length > 0) {
+        this.warn_invalid_tags(invalid_tags);
+        return;
+      }
+
+      this.attemp_post_upload();
     },
     async handlePaste(e) {
       let files = e.clipboardData.files;
@@ -358,11 +294,14 @@ export default {
           throw "Debes eliminar una foto antes de añadir otra.";
         this.post.medias.push(media);
       } catch (error) {
-        this.$notify({
-          group: "top",
-          text: error,
-          type: "error"
-        });
+        switch (error.response.status) {
+          case 413:
+            this.status.error = "el archivo que intentas subir supera los 5Mb.";
+            break;
+          default:
+            this.status.error =
+              "hubo un problema al subir el archivo, por favor intenta en otro momento.";
+        }
       }
       this.status.uploading_media = false;
     },
@@ -385,21 +324,110 @@ export default {
 
       return true;
     },
-    media_clicked(index) {
-      this.clicked_media_index = index;
-      this.show_media_slides = true;
+    media_clicked(id) {
+      const index = this.post.medias.findIndex(m => m.id == id);
+      this.$store.dispatch("media_slides/open", {
+        medias: this.post.medias,
+        index: index
+      });
+    },
+    prepare_request_data() {
+      let requestData = {
+        body: this.post.body,
+        tags: this.post.tags.split(" ")
+      };
+      if (this.post.nsfw) {
+        if (this.post.tags.length) {
+          requestData.tags.push("nsfw");
+        } else {
+          requestData.tags = ["nsfw"];
+        }
+      }
+
+      if (this.parent_id) {
+        requestData.parent_id = this.parent_id;
+      }
+
+      if (this.post.medias !== null) {
+        requestData.medias = this.post.medias;
+      }
+      if (this.post.links !== null) {
+        requestData.links = this.post.links;
+      }
+
+      this.request_data = requestData;
+    },
+    attemp_post_upload() {
+      this.status.loading = true;
+      post
+        .create(this.request_data)
+        .then(res => {
+          this.$emit("created", res);
+          if (!this.parent_id) this.$store.dispatch("addFeedPost", res);
+
+          if (
+            res.nsfw &&
+            this.$store.getters.settings.content_nsfw === "hide"
+          ) {
+            this.$notify({
+              group: "top",
+              text:
+                "Tu post ha sido publicado, pero tus opciones de contenido no te permiten verlo. Haz click aquí para cambiarlas.",
+              type: "warning",
+              data: {
+                close: () => {
+                  this.$router.push("/settings/content");
+                }
+              }
+            });
+          }
+          this.reset();
+          this.close();
+        })
+        .catch(error => {
+          switch (error.status) {
+            case 422:
+              this.status.error = error.res.errors.body[0];
+              break;
+            case 500:
+              this.status.error =
+                "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.";
+            default:
+              throw error;
+          }
+        })
+        .finally(() => {
+          this.status.loading = false;
+        });
+    },
+    warn_invalid_tags(invalid_tags) {
+      const tags = invalid_tags.join(", ");
+      this.$modal.show("dialog", {
+        title:
+          "El post contiene tags invalidos. ¿Deseas publicarlo de todas formas? Los tags inválidos serán omitidos.",
+        text: `Los tags deben estar formados por letras(sin tilde), números, guión bajo(_) y tener entre 2 y 100 caracteres.
+          Los siguientes tags son inválidos: ${tags}`,
+        buttons: [
+          {
+            title: "Corregir",
+            class: "button"
+          },
+          {
+            title: "Publicar",
+            default: true,
+            class: "button danger",
+            handler: () => {
+              this.attemp_post_upload();
+              this.$modal.hide("dialog");
+            }
+          }
+        ],
+        adaptive: true
+      });
     }
   },
   created() {
     if (this.related_to) this.post.related_to_id = this.related_to;
-    window.addEventListener("beforeunload", e => {
-      if (this.post.body !== null || this.hasMedias) {
-        var confirmationMessage =
-          "El post que estabas editando se perderá para siempre. ¡Eso es mucho tiempo!";
-        e.returnValue = confirmationMessage;
-        return confirmationMessage;
-      }
-    });
   },
   beforeDestroy() {
     this.$root.$emit("blurToolBox", false);
@@ -409,6 +437,10 @@ export default {
 
 <style lang="scss">
 @import "~@/../sass/base/_variables.scss";
+
+.toolbox:not(.tool-box-open) {
+  overflow: hidden;
+}
 
 .tool {
   .status-text {

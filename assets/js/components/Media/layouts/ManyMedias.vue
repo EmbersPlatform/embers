@@ -1,7 +1,27 @@
 <template>
   <div class="media-zone many-medias">
-    <media-preview :media="first_media" @clicked="clicked(first_media)"/>
-    <div class="row">
+    <media-item
+      v-if="first_media.type == 'image'"
+      :media="first_media"
+      :style="`max-height: ${preview_height};`"
+      @clicked="clicked(first_media)"
+    />
+    <template v-else>
+      <media-preview
+        v-if="little"
+        :media="first_media"
+        @clicked="clicked(first_media)"
+        class="media-zone__first-media"
+      />
+      <media-preview
+        v-else
+        :media="first_media"
+        @clicked="clicked(first_media)"
+        :style="`height: ${preview_height};`"
+      />
+    </template>
+
+    <div class="row" ref="minis">
       <media-preview
         v-for="media in remaining"
         :key="media.id"
@@ -14,13 +34,18 @@
 
 <script>
 import MediaPreview from "../MediaPreview";
+import MediaItem from "../MediaItem";
 
 export default {
-  components: { MediaPreview },
+  components: { MediaPreview, MediaItem },
   props: {
     medias: {
       type: Array,
       required: true
+    },
+    little: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -29,6 +54,24 @@ export default {
     },
     remaining() {
       return this.medias.slice(1);
+    },
+    preview_height() {
+      if (this.little) {
+        const media = this.medias[0];
+        const vh = Math.max(
+          document.documentElement.clientHeight,
+          window.innerHeight || 0
+        );
+        if (media.metadata.height > 0.25 * vh) return "25vh";
+        return media.metadata.height + "px";
+      }
+      const media = this.medias[0];
+      const vw = Math.max(
+        document.documentElement.clientWidth,
+        window.innerWidth || 0
+      );
+      if (media.metadata.height > 0.75 * vw) return "75vh";
+      return media.metadata.height + "px";
     }
   },
   methods: {
@@ -43,8 +86,16 @@ export default {
 .media-zone.many-medias {
   & > .media-preview {
     width: 100%;
-    height: 300px;
+    height: 75vw;
     margin-bottom: 5px;
+  }
+  & > .media {
+    justify-content: flex-start;
+    margin-bottom: 5px;
+    overflow: hidden;
+    img {
+      width: 100%;
+    }
   }
   .row {
     display: flex;
@@ -52,11 +103,21 @@ export default {
     .media-preview {
       flex-grow: 1;
       width: auto;
-      height: 160px;
+      height: fit-content;
       justify-content: space-between;
-      &:nth-child(2) {
-        margin: 0 5px;
+      &:not(:last-child) {
+        margin-right: 5px;
       }
+      .media-preview__image {
+        padding-top: 75%;
+      }
+    }
+  }
+  .media-zone__first-media {
+    height: auto;
+    .media-preview__image {
+      padding-top: 100%;
+      height: fit-content;
     }
   }
 }

@@ -7,6 +7,7 @@ import _Subscriptions from "../views/_Subscriptions";
 import _Search from "../views/_Search";
 import _Chat from "../views/_Chat";
 import _Favorites from "../views/_Favorites";
+import _Tag from "../views/_Tag.vue";
 
 import _Settings from "../views/_Settings";
 import AppsSettings from "../views/Settings/Apps";
@@ -23,7 +24,6 @@ import Profile from "../views/UserProfile/Profile.vue";
 import SB_Default from "../views/Sidebar/Default";
 import SB_Home from "../views/Sidebar/Home";
 import SB_Discover from "../views/Sidebar/Discover";
-import SB_Profile from "../views/Sidebar/UserProfile";
 import SB_Settings from "../views/Sidebar/Settings";
 import SB_Chat from "../views/Sidebar/Chat";
 import SB_Subscriptions from "../views/Sidebar/Subscriptions";
@@ -31,6 +31,7 @@ import SB_Subscriptions from "../views/Sidebar/Subscriptions";
 import SUBS_FollowingUsers from "../views/Subscriptions/FollowingUsers";
 import SUBS_Tags from "../views/Subscriptions/Tags";
 import SUBS_Blocks from "../views/Subscriptions/Blocks";
+import SUBS_TagBlocks from "../views/Subscriptions/TagBlocks";
 //termina import INSIDE APP
 
 //inicia import OUTSIDE APP
@@ -183,7 +184,7 @@ const routes = [
     path: "/discover",
     components: {
       default: _Discover,
-      sidebar: SB_Discover
+      sidebar: SB_Home
     },
     beforeEnter: requireAuth,
     meta: {
@@ -225,21 +226,28 @@ const routes = [
         path: "users",
         component: SUBS_FollowingUsers,
         meta: {
-          title: "Subscripciones"
+          title: "Usuarios seguidos"
         }
       },
       {
         path: "tags",
         component: SUBS_Tags,
         meta: {
-          title: "Subscripciones"
+          title: "Mis tags"
         }
       },
       {
         path: "blocks",
         component: SUBS_Blocks,
         meta: {
-          title: "Subscripciones"
+          title: "Usuarios bloqueados"
+        }
+      },
+      {
+        path: "blocked_tags",
+        component: SUBS_TagBlocks,
+        meta: {
+          title: "Tags bloqueados"
         }
       }
     ]
@@ -362,6 +370,22 @@ const routes = [
     path: "/post/:id",
     components: {
       default: _PostDetails,
+      sidebar: SB_Home
+    },
+    meta: {
+      title: "Embers",
+      noSuffix: true
+    }
+  },
+
+  /**
+   * Tag
+   */
+  {
+    name: 'tag',
+    path: "/tag/:name",
+    components: {
+      default: _Tag,
       sidebar: SB_Home
     },
     meta: {

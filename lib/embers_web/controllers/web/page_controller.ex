@@ -48,11 +48,18 @@ defmodule EmbersWeb.PageController do
           |> Meta.load_cover()
     }
 
+    unread_conversations =
+      Embers.Chat.list_unread_conversations(user.id)
+      |> Enum.map(fn x ->
+        %{x | party: Embers.Helpers.IdHasher.encode(x.party)}
+      end)
+
     render(conn, "index.html",
       user: user,
       tags: tags,
       notifications: notifications.items,
-      loading_msg: LoadingMsg.get_random()
+      loading_msg: LoadingMsg.get_random(),
+      unread_conversations: unread_conversations
     )
   end
 

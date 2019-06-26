@@ -118,10 +118,16 @@ defmodule Embers.Accounts do
       |> preload([user, meta], meta: meta)
       |> Repo.one()
 
-    user = user |> User.populate()
-    user = %{user | meta: user.meta |> Meta.populate()}
+    case user do
+      nil ->
+        nil
 
-    user
+      user ->
+        user = user |> User.populate()
+        user = %{user | meta: user.meta |> Meta.populate()}
+
+        user
+    end
   end
 
   @doc """

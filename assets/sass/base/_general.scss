@@ -2,8 +2,9 @@
 @import url("https://fonts.googleapis.com/css?family=Work+Sans:300,400,500");
 
 html {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
   overflow-y: auto;
   overflow-x: hidden; // probably causing the infinite scroll issue on chrome android
   // overflow-x: visible; // posible fix
@@ -22,7 +23,6 @@ i {
 
 img:not(.emoji) {
   height: auto;
-  position: relative;
   text-align: center;
   overflow: hidden;
 
@@ -34,6 +34,9 @@ img:not(.emoji) {
     font-weight: 400;
     color: $secondary;
     z-index: 1;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    height: 100%;
   }
 
   &:after {
@@ -266,22 +269,9 @@ form {
     }
   }
 }
-
-blockquote {
+.greentext {
   color: $greentext;
-  -webkit-margin-after: 0;
-  -webkit-margin-before: 0;
-  margin: 0;
-  padding: 0;
-
-  &:before {
-    content: ">";
-  }
-
-  & > p {
-    display: inline-block;
-    color: inherit !important;
-  }
+  font-size: 1em;
 }
 
 //inicia EMOJI-MART
@@ -315,13 +305,13 @@ blockquote {
 }
 
 .--danger {
-  color: $t-error!important;
+  color: $t-error !important;
   svg {
     * {
-      fill: $t-error!important;
+      fill: $t-error !important;
     }
   }
   i {
-    color: $t-error!important;
+    color: $t-error !important;
   }
 }

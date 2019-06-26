@@ -20,8 +20,6 @@ defmodule EmbersWeb.Admin.RoleController do
   end
 
   def create(conn, %{"role" => %{"permissions" => permissions, "name" => name}} = _params) do
-    IO.inspect(permissions)
-
     case Roles.create(name, permissions) do
       {:ok, _role} ->
         success(conn, "Rol creado!", role_path(conn, :index))

@@ -5,6 +5,9 @@ export default {
   ADD(state, notification) {
     state.notifications = [notification, ...state.notifications];
   },
+  APPEND(state, notifications) {
+    state.notifications.push(...notifications);
+  },
   REMOVE(state, id) {
     state.notifications = state.notifications.filter(o => o.id != id);
   },

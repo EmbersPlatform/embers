@@ -3,10 +3,10 @@ import XRegExp from "xregexp";
 import emotes_defs from "@/lib/emotes/emotes_defs";
 
 const md = require("markdown-it")({
-  linkify: true,
-  typographer: true,
-  breaks: false
-})
+    linkify: true,
+    typographer: true,
+    breaks: false
+  })
   .use(require("markdown-it-emoji"), {
     shortcuts: {},
     defs: emotes_defs
@@ -23,7 +23,10 @@ md.renderer.rules.emoji = (token, idx) => {
 md.linkify
   .tlds(require("tlds"))
   .tlds("onion", true)
-  .set({ fuzzyLinks: true, fuzzyEmail: true })
+  .set({
+    fuzzyLinks: true,
+    fuzzyEmail: true
+  })
   .add("@", {
     validate: (text, pos, self) => {
       const tail = text.slice(pos);
@@ -65,7 +68,7 @@ md.linkify
     },
 
     normalize: match => {
-      match.url = "/search/in:" + match.url.substr(1);
+      match.url = "/tag/" + match.url.substr(1);
     }
   });
 
@@ -77,19 +80,8 @@ const defaultRender =
   });
 
 // custom hyperlinks
-md.renderer.rules.link_open = function(tokens, idx, options, env, self) {
-  const attrIdx = tokens[idx].attrIndex("href"),
-    href = tokens[idx].attrs[attrIdx][1];
-  let matches;
-  matches = /^(https?:\/\/(?:www\.|dev\.)?embers\.(?:pw|app))?(\/.*)?/.exec(
-    href
-  );
-  if (matches[0]) {
-    tokens[idx].attrPush(["data-internal-route", matches[2]]);
-  } else {
-    tokens[idx].attrs[attrIdx][1] = "/out?url=" + href;
-    tokens[idx].attrPush(["target", "_blank"]);
-  }
+md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+  tokens[idx].attrPush(["target", "_blank"]);
 
   return defaultRender(tokens, idx, options, env, self);
 };

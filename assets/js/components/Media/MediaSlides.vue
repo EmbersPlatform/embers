@@ -12,19 +12,23 @@
       </button>
       <button
         @click="previous"
-        v-visible="current_index > 0"
+        v-visible="index > 0"
         v-shortkey="['arrowleft']"
         @shortkey="previous"
         class="slides-control"
       >
         <i class="fa fa-chevron-left"></i>
       </button>
-      <template v-for="(media, index) in medias">
-        <media-item :key="index" :media="media" v-show="index == current_index" :autoplay="true"></media-item>
-      </template>
+      <media-item
+        v-for="(media, m_index) in ordered_medias"
+        :key="m_index"
+        :media="media"
+        v-show="m_index == index"
+        :autoplay="true"
+      ></media-item>
       <button
         @click="next"
-        v-visible="medias_count - 1 != current_index"
+        v-visible="medias_count - 1 != index"
         v-shortkey="['arrowright']"
         @shortkey="next"
         class="slides-control"
@@ -36,54 +40,43 @@
 </template>
 
 <script>
+import _ from "lodash";
+import { mapState } from "vuex";
 import MediaItem from "./MediaItem";
 
 export default {
   name: "media-slides",
-  data() {
-    return {
-      current_index: 0
-    };
-  },
-  props: {
-    medias: {
-      type: Array,
-      required: true
-    },
-    index: {
-      type: Number,
-      default: 0
-    }
-  },
   components: {
     MediaItem
   },
   computed: {
+    ...mapState("media_slides", ["medias", "index"]),
     medias_count() {
       return this.medias.length;
     },
     current_media() {
-      return this.medias[this.current_index];
+      return this.ordered_medias[this.current_index];
+    },
+    ordered_medias() {
+      const ordered = _.orderBy(this.medias, "timestamp", "asc");
+      return ordered;
     }
   },
   methods: {
     previous() {
-      if (this.current_index == 0) return;
-      this.current_index -= 1;
+      if (this.index == 0) return;
+      this.$store.dispatch("media_slides/set_index", this.index - 1);
     },
     next() {
-      if (this.current_index >= this.medias.length - 1) return;
-      this.current_index += 1;
+      if (this.index >= this.medias.length - 1) return;
+      this.$store.dispatch("media_slides/set_index", this.index + 1);
     },
     close() {
-      this.$emit("closed");
+      this.$store.dispatch("media_slides/close");
     },
     click_outside(e) {
       if (e.target == this.$refs.root) this.close();
     }
-  },
-  created() {
-    this.current_index = this.index;
   }
 };
 </script>

@@ -15,4 +15,8 @@ defmodule EmbersWeb.SearchView do
       last_page: metadata.last_page
     }
   end
+
+  def render("user_results.json", %{results: results}) do
+    render_many(results, EmbersWeb.UserView, "user.json")
+  end
 end

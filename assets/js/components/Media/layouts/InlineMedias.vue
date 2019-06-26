@@ -45,8 +45,9 @@ export default {
 
     .media-preview {
       width: 85vw;
-      height: 60vh;
+      height: 75vh;
       flex-shrink: 0;
+      margin-right: 5px;
     }
   }
 }

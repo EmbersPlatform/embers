@@ -98,11 +98,13 @@ defmodule Embers.Feed.Post do
     |> cast_embed(:old_attachment)
   end
 
+  def fill_nsfw(nil), do: nil
+
   def fill_nsfw(%Post{} = post) do
     if Ecto.assoc_loaded?(post.tags) do
       %{
         post
-        | nsfw: Enum.any?(post.tags, fn tag -> tag.name == "nsfw" end)
+        | nsfw: Enum.any?(post.tags, fn tag -> String.downcase(tag.name) == "nsfw" end)
       }
     else
       post

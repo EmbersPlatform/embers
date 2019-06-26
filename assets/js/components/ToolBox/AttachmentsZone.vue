@@ -1,18 +1,20 @@
 <template>
   <div class="attachments-zone">
     <attachments-item
-      v-for="(attachment, index) in attachments"
-      :key="attachment.id"
+      v-for="(attachment, index) in ordered_attachments"
+      :key="index"
       :attachment="attachment"
       @removed="remove"
-      @clicked="clicked(index)"
+      @clicked="clicked(attachment.id)"
     ></attachments-item>
     <attachments-item v-if="uploading" :placeholder="true"/>
   </div>
 </template>
 
 <script>
+import _ from "lodash";
 import AttachmentsItem from "./AttachmentsItem";
+
 export default {
   name: "attachments-zone",
   components: { AttachmentsItem },
@@ -26,12 +28,17 @@ export default {
       default: false
     }
   },
+  computed: {
+    ordered_attachments() {
+      return _.orderBy(this.attachments, "timestamp", "asc");
+    }
+  },
   methods: {
     remove(id) {
       this.$emit("attachment-removed", id);
     },
-    clicked(index) {
-      this.$emit("clicked", index);
+    clicked(id) {
+      this.$emit("clicked", id);
     }
   }
 };

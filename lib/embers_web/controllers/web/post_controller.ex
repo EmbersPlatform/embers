@@ -88,7 +88,7 @@ defmodule EmbersWeb.PostController do
 
     case can_delete?(user, post) do
       true ->
-        {:ok, _post} = Feed.delete_post(post)
+        {:ok, _post} = Feed.delete_post(post, actor: user.id)
 
       false ->
         conn |> put_status(:forbidden) |> json(nil)

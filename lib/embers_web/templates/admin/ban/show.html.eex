@@ -1,0 +1,40 @@
+<div class="title is-3">Suspensiones: @<%= @user.username %></div>
+
+<p><strong>Estado:</strong> <%= if is_nil(@active_ban), do: "Activo", else: "Suspendido" %></p>
+<%= unless is_nil(@active_ban) do %>
+  <p><strong>Motivo:</strong> <%= @active_ban.reason %></p>
+  <p><strong>Duracion:</strong> <%= if is_nil(@active_ban.expires_at), do: "Indefinida", else: "Hasta el #{Timex.format!(@active_ban.expires_at, "{D}/{0M}/{YYYY}")}" %></p>
+<% end %>
+
+<%= link "Concluir", to: "/admin/bans/#{@user.id}", method: "delete", class: "button is-success is-small", data: [confirm: "Concluir la suspension del usuario?"] %>
+
+<hr>
+
+<p><strong>Historial de suspensiones</strong></p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Motivo</th>
+      <th>Duracion</th>
+      <th>Fecha</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+  <%= for ban <- @bans do %>
+    <tr>
+      <td><%= ban.reason %></td>
+      <td><%= if is_nil(ban.expires_at), do: "Indefinida", else: "#{Timex.diff(ban.expires_at, ban.inserted_at, :days)} dias" %></td>
+      <td><%= Timex.format!(ban.inserted_at, "{D}/{0M}/{YYYY}") %></td>
+      <td>
+        <%= cond do
+            !is_nil(ban.deleted_at) -> "Concluido"
+            is_nil(ban.expires_at) || is_nil(ban.deleted_at) -> "Activo"
+          end
+        %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

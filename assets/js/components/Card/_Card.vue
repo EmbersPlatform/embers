@@ -25,29 +25,30 @@
       </div>
     </div>
     <div class="card-wrapper" :class="{'locked' : locked, 'is-picker': isPicker}">
-      <header class="header">
+      <header class="header" v-if="!no_header">
         <avatar
+          v-if="isShared"
           :avatar="post.user.avatar.small"
           :user="post.user.username"
           :isShared="isShared"
-          :sharers="sharers"
+          :sharers="post.sharers"
         ></avatar>
+        <avatar v-else :avatar="post.user.avatar.small" :user="post.user.username"></avatar>
         <div class="header-content">
           <h4>
             <template v-if="isShared">
-              <template v-if="sharers.length == 2">
+              <template v-if="post.sharers.length == 2">
                 <router-link
                   class="username"
-                  :to="`/@${sharers[sharers.length-1].username}`"
-                  :data-badge="`${sharers[sharers.length-1].badges[0]}`"
-                >{{ sharers[sharers.length-1].username }}</router-link>
+                  :to="`/@${post.sharers[post.sharers.length-1].username}`"
+                >{{ post.sharers[post.sharers.length-1].username }}</router-link>
                 <p>&nbsp;y&nbsp;</p>
               </template>
               <router-link
                 class="username"
-                :to="`/@${sharers[0].username}`"
-                :data-badge="`${sharers[0].badges[0]}`"
-              >{{ sharers[0].username }}</router-link>
+                :to="`/@${post.sharers[0].username}`"
+                :data-badge="`${post.sharers[0].badges[0]}`"
+              >{{ post.sharers[0].username }}</router-link>
               <p v-html="s_message"></p>
               <router-link
                 class="username"
@@ -110,8 +111,8 @@
             data-tip-position="bottom"
             data-tip-text
           >
-            <i v-if="!post.faved" class="far fa-bookmark"/>
-            <i v-else class="fas fa-bookmark"/>
+            <i v-if="!post.faved" class="far fa-star"/>
+            <i v-else class="fas fa-star"/>
           </span>
         </div>
         <div v-if="tools && loggedUser" class="header-options" focusable tabindex="-1">
@@ -119,7 +120,7 @@
             <svgicon name="n_left-sign"></svgicon>
           </span>
           <ul>
-            <li v-if="hasReactions">
+            <li>
               <span @click.prevent="reactionsDetails">
                 <i class="far fa-smile"></i>
                 Reacciones
@@ -164,10 +165,21 @@
           <link-item :link="post.links[0]"/>
         </div>
         <div class="multimedia" v-if="post.media.length">
-          <media-zone :medias="post.media" :previews="true" @clicked="media_clicked"/>
+          <media-zone
+            :medias="post.media"
+            :previews="true"
+            @clicked="media_clicked"
+            :little="size == 'little'"
+          />
         </div>
         <template v-if="with_related && post.related_to">
-          <card :post="post.related_to" :tools="false" :footer="false" class="related"/>
+          <card
+            :no_header="isShared"
+            :post="post.related_to"
+            :tools="false"
+            :footer="false"
+            class="related"
+          />
         </template>
         <template v-if="post.attachment">
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>
@@ -255,12 +267,6 @@
         </li>
       </ul>
     </footer>
-    <media-slides
-      v-if="show_media_slides"
-      :medias="post.media"
-      :index="clicked_media_index"
-      @closed="show_media_slides = false"
-    ></media-slides>
   </article>
 </template>
 
@@ -274,12 +280,12 @@ import VideoEmbed from "./VideoEmbed";
 import LinkEmbed from "./LinkEmbed";
 import AudioPlayer from "./AudioPlayer";
 import MediaZone from "@/components/Media/MediaZone";
-import MediaSlides from "@/components/Media/MediaSlides";
 import Tag from "@/components/Tag/Tag";
 import LinkItem from "@/components/Link/Link";
 
 import formatter from "@/lib/formatter";
 import avatar from "@/components/Avatar";
+import markdown from "@/lib/markdown/formatter";
 
 import ReactionsModal from "../ReactionsModal/ReactionsModal";
 import ReportPostModal from "@/components/Modals/ReportPostModal";
@@ -295,15 +301,6 @@ export default {
     post: {
       type: Object,
       required: true
-    },
-    isShared: {
-      type: Boolean,
-      default: false,
-      required: false
-    },
-    sharers: {
-      type: Array,
-      required: false
     },
     showThumbnail: {
       type: Boolean,
@@ -326,6 +323,10 @@ export default {
     with_related: {
       type: Boolean,
       default: true
+    },
+    no_header: {
+      type: Boolean,
+      default: false
     }
   },
   components: {
@@ -333,7 +334,6 @@ export default {
     LinkEmbed,
     AudioPlayer,
     MediaZone,
-    MediaSlides,
     avatar,
     Tag,
     LinkItem
@@ -350,7 +350,7 @@ export default {
      * All supported reactions
      */
     reactions() {
-      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire".split(
+      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire thinking cookie point_up".split(
         " "
       );
     },
@@ -365,11 +365,15 @@ export default {
       return this.post.user.id === this.$store.getters.user.id;
     },
 
+    isShared() {
+      return !!this.post.sharers;
+    },
+
     /**
      * Formats post body
      */
     formattedBody() {
-      return formatter.format(this.post.body);
+      return markdown(this.post.body);
     },
 
     /**
@@ -408,14 +412,14 @@ export default {
     },
     //shared message
     s_message() {
-      if (this.sharers.length > 1) {
-        if (this.sharers.length > 2) {
-          var usuarios = "@" + this.sharers[0].username;
-          for (var i = 1; i < this.sharers.length; i++) {
-            if (i == this.sharers.length - 1) {
-              usuarios += " y @" + this.sharers[i].username;
+      if (this.post.sharers.length > 1) {
+        if (this.post.sharers.length > 2) {
+          var usuarios = "@" + this.post.sharers[0].username;
+          for (var i = 1; i < this.post.sharers.length; i++) {
+            if (i == this.post.sharers.length - 1) {
+              usuarios += " y @" + this.post.sharers[i].username;
             } else {
-              usuarios += ", @" + this.sharers[i].username;
+              usuarios += ", @" + this.post.sharers[i].username;
             }
           }
           return (
@@ -539,16 +543,14 @@ export default {
      * Show the detailed reactions
      */
     reactionsDetails() {
-      post.getReactionsDetails(this.post.id).then(res => {
-        this.$modal.show(
-          ReactionsModal,
-          { reactions: res },
-          {
-            adaptive: true,
-            height: "auto"
-          }
-        );
-      });
+      this.$modal.show(
+        ReactionsModal,
+        { post_id: this.post.id },
+        {
+          adaptive: true,
+          height: "auto"
+        }
+      );
     },
 
     toggleFav() {
@@ -695,8 +697,11 @@ export default {
         this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
     },
     media_clicked(id) {
-      this.clicked_media_index = this.post.media.findIndex(m => m.id == id);
-      this.show_media_slides = true;
+      const index = this.post.media.findIndex(m => m.id == id);
+      this.$store.dispatch("media_slides/open", {
+        medias: this.post.media,
+        index: index
+      });
     },
     report_post() {
       this.$modal.show(

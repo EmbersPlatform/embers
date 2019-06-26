@@ -1,13 +1,15 @@
 <template>
   <div class="media-zone" :class="{small: small}">
-    <small-medias v-if="small" :medias="medias" @clicked="clicked"/>
+    <small-medias v-if="small" :medias="ordered_medias" @clicked="clicked"/>
     <template v-else>
-      <inline-medias v-if="$mq == 'sm' && !small" :medias="medias" @clicked="clicked"/>
-      <template v-else>
-        <single-media v-if="medias_length === 1" @clicked="clicked" :medias="medias"/>
-        <two-medias v-if="medias_length === 2" @clicked="clicked" :medias="medias"/>
-        <many-medias v-if="medias_length > 2" @clicked="clicked" :medias="medias"/>
-      </template>
+        <single-media v-if="medias_length === 1" @clicked="clicked" :medias="ordered_medias"/>
+        <two-medias v-if="medias_length === 2" @clicked="clicked" :medias="ordered_medias"/>
+        <many-medias
+          v-if="medias_length > 2"
+          @clicked="clicked"
+          :medias="ordered_medias"
+          :little="little"
+        />
     </template>
   </div>
 </template>
@@ -19,6 +21,7 @@ import TwoMedias from "./layouts/TwoMedias";
 import ManyMedias from "./layouts/ManyMedias";
 import InlineMedias from "./layouts/InlineMedias";
 import SmallMedias from "./layouts/SmallMedias";
+
 export default {
   name: "media-zone",
   props: {
@@ -33,12 +36,20 @@ export default {
     small: {
       type: Boolean,
       default: false
+    },
+    little: {
+      type: Boolean,
+      default: false
     }
   },
   components: { SingleMedia, TwoMedias, ManyMedias, InlineMedias, SmallMedias },
   computed: {
     medias_length() {
       return this.medias.length;
+    },
+    ordered_medias() {
+      const ordered = _.orderBy(this.medias, "timestamp", "asc");
+      return ordered;
     }
   },
   methods: {
@@ -53,6 +64,15 @@ export default {
 .media-zone {
   border-radius: 10px;
   overflow: hidden;
+
+  .media {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    &:hover {
+      box-shadow: 0 5px 5px #00000050;
+      filter: brightness(80%);
+    }
+  }
 }
 </style>
 

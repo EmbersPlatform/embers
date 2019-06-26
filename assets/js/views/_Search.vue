@@ -9,8 +9,6 @@
           id="feed"
           :class="{renderbox : (loading || loadingMore), 'showing' : !loading && (hasPost)}"
           :data-renderbox-message="[loadingMore ? 'Cargando más resultados...' : 'Buscando...']"
-          v-infinite-scroll="loadMore"
-          :infinite-scroll-disabled="infiniteScrollStill"
         >
           <h3>
             <p>Posts:</p>
@@ -33,7 +31,18 @@
             ></Card>
           </div>
           <Card v-else v-for="post in results" :key="post.id" :post="post" size="medium"></Card>
-          <h3 v-if="(!hasPost) || last_page" :class="{'bottom': last_page && (hasPost)}">
+          <intersector @intersect="loadMore"/>
+          <h3 v-if="!searchParams">
+            <p>Escribe lo que quieras buscar en la barra de búsqueda de arriba.</p>
+            <small>
+              <p>Puedes usar búsquedas especiales con -t, -i, -v, -a para los tipos de post, -sfw y -nsfw para el contenido nsfw, from:usuario para buscar por usuario y in:tag para buscar posts que contengan ese tag.</p>
+              <p>Estos parámetros especiales se pueden combinar en cualquier orden.</p>
+            </small>
+          </h3>
+          <h3
+            v-if="searchParams && ((!hasPost && first_load) || last_page)"
+            :class="{'bottom': last_page && (hasPost)}"
+          >
             <p v-html="formatted"></p>
           </h3>
         </div>
@@ -47,6 +56,7 @@ import Card from "../components/Card/_Card";
 import UserCard from "../components/UserCard";
 import Top from "../components/Top";
 import formatter from "@/lib/formatter";
+import Intersector from "@/components/Intersector";
 
 import _ from "lodash";
 
@@ -54,23 +64,25 @@ export default {
   components: {
     Card,
     UserCard,
-    Top
+    Top,
+    Intersector
   },
   data() {
     return {
-      loading: true,
+      loading: false,
       loadingMore: false,
       searchParams: null,
       results: [],
       next_cursor: null,
       last_page: false,
       previousScrollPosition: 0,
-      isMasonry: true
+      isMasonry: true,
+      first_load: false
     };
   },
   computed: {
     infiniteScrollStill() {
-      return this.loading || this.last_page;
+      return this.loading || this.last_page || !this.first_load;
     },
     hasPost() {
       if (this.results.length < 1) {
@@ -108,31 +120,32 @@ export default {
           this.results = res.items;
           this.next_cursor = res.next;
           this.last_page = res.last_page;
+          this.first_load = true;
         })
         .finally(() => (this.loading = false));
     },
-    loadMore: _.debounce(function() {
+    loadMore() {
       // Debounce the function so it is not called multiple times
       if (this.infiniteScrollStill) {
         return;
       }
       this.loadingMore = true;
-      this.getPreviousScrollPosition();
       searchApi
         .search(this.searchParams, { before: this.next_cursor })
         .then(res => {
           if (this._inactive) {
             return;
           }
-          this.results = [...this.results.items, ...res.items];
+          this.getPreviousScrollPosition();
+          this.results = [...this.results, ...res.items];
+          this.$nextTick(() => window.scrollTo(0, this.previousScrollPosition));
           this.next_cursor = res.next;
           this.last_page = res.last_page;
         })
         .finally(() => {
-          window.scrollTo(0, this.previousScrollPosition);
           this.loadingMore = false;
         });
-    }, 1000)
+    }
   },
   watch: {
     $route: function(to, from) {
@@ -143,7 +156,9 @@ export default {
   },
   created() {
     this.searchParams = this.$route.params.searchParams;
-    this.search();
+    if (this.searchParams) {
+      this.search();
+    }
 
     this.$root.$on("search", params => {
       this.searchParams = params;

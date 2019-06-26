@@ -7,18 +7,21 @@
           type="text"
           class="new-chat-search"
           placeholder="¿Con quién quieres hablar?"
-          @keydown.enter="startConversation"
+          @keydown.enter.prevent="startConversation"
+          @keyup="fetch_reccomendations"
+          ref="input"
         >
       </form>
-      <div v-if="matchingMutuals" class="nav_">
+      <div v-if="reccomendations" class="nav_">
         <ul>
-          <li v-for="mutual in matchingMutuals" class="n_item" :key="mutual.id">
-            <span active-class="active" class="n_i_wrap" @click.prevent="userSelected(mutual.name)">
-              <avatar :avatar="mutual.avatar.small"></avatar>
-              <span
-                class="n_i_w_content u_name"
-                :data-badge="`${mutual.badges[0]}`"
-              >{{ mutual.name }}</span>
+          <li v-for="reco in reccomendations" class="n_item" :key="reco.id">
+            <span
+              active-class="active"
+              class="n_i_wrap"
+              @click.prevent="userSelected(reco.canonical)"
+            >
+              <avatar :avatar="reco.avatar.small"></avatar>
+              <span class="n_i_w_content u_name">{{ reco.username }}</span>
             </span>
           </li>
         </ul>
@@ -27,10 +30,9 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 import { mapGetters } from "vuex";
 import avatar from "@/components/Avatar";
-
-import userAPI from "../../api/user";
 
 import _ from "lodash";
 
@@ -39,64 +41,37 @@ export default {
   components: { avatar },
   data() {
     return {
-      search: ""
+      search: "",
+      reccomendations: []
     };
   },
-  computed: {
-    ...mapGetters(["userMutuals"]),
-    ...mapGetters("chat", ["conversations"]),
-    matchingMutuals() {
-      return this.userMutuals.filter(o => {
-        return o.name.indexOf(this.search) > -1;
-      });
-    }
-  },
   methods: {
-    fetchMutuals() {
-      this.$store.dispatch("updateMutuals");
+    async fetch_reccomendations() {
+      const { data: reccomendations } = await axios.get(
+        `/api/v1/search_typeahead/user/${this.search}`
+      );
+      this.reccomendations = reccomendations;
     },
-    userSelected(user) {
-      this.search = user;
+    userSelected(username) {
+      this.search = username;
       this.startConversation();
     },
     startConversation() {
-      this.$store.dispatch("chat/updateConversation", null);
-
-      let conversation = _.find(this.conversations, o => {
-        return o.user.name == this.search;
-      });
-
-      if (conversation) {
-        // If the conversation already exists, load it
-        this.$store.dispatch("chat/updateConversation", conversation);
-        this.$store.dispatch("chat/toggleNewChatModal", false);
-        this.$root.$emit("blurSidebar", false);
-      } else {
-        // Otherwise, create it only if the user exists
-        userAPI.get(this.search).then(user => {
-          conversation = {
-            draft: true,
-            id: null,
-            user: user
-          };
-
-          this.$store.dispatch("chat/updateConversation", conversation);
-          this.$store.dispatch("chat/toggleNewChatModal", false);
-          this.$root.$emit("blurSidebar", false);
-        });
-      }
+      this.$router.push(`/chat/${this.search}`);
+      this.close();
+    },
+    close() {
+      this.$store.dispatch("chat/toggleNewChatModal", false);
+      this.$root.$emit("blurSidebar", false);
     }
   },
-  created() {
-    this.fetchMutuals();
-  },
   mounted() {
+    this.$refs.input.focus();
     $(this.$refs.modalParent).on("click tap", e => {
       let isChild = !!$(e.target).parents("div#new-chat-modal").length;
       if (!isChild) {
         // If click is issued outside user menu and outside menu's trigger
-        this.$store.dispatch("chat/toggleNewChatModal", false);
-        this.$root.$emit("blurSidebar", false);
+        this.close();
       }
     });
   }

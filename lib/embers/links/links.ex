@@ -79,8 +79,8 @@ defmodule Embers.Links do
 
       {:ok, og} ->
         %EmbedSchema{
-          url: og.url,
-          type: og.type,
+          url: og.url || url,
+          type: og.type || "link",
           title: og.title,
           description: og.description,
           thumbnail_url: og.image

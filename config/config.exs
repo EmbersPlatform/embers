@@ -17,6 +17,11 @@ config :embers, EmbersWeb.Endpoint,
   render_errors: [view: EmbersWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Embers.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :embers, Embers.Profile,
+  bucket: "profile",
+  avatar_path: "/user/avatar",
+  cover_path: "/user/cover"
+
 # Phauxth authentication configuration
 config :phauxth,
   token_salt: "geDDVmqL",
@@ -54,14 +59,27 @@ config :event_bus,
     :post_disabled,
     :post_deleted,
     :post_shared,
+    :post_updated,
+    :post_restored,
+    :post_reacted,
     :comment_reply,
+    :comment_reacted,
     :notification_created,
     :created_notificaion_failed,
     :user_created,
     :user_followed,
     :user_mentioned,
-    :activity_created
+    :user_updated,
+    :user_banned,
+    :new_activity,
+    :chat_message_created,
+    :chat_message_deleted,
+    :chat_message_updated
   ]
+
+config :scrivener_html,
+  routes_helper: Embers.Router.Helpers,
+  view_style: :bulma
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

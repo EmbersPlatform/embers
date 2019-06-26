@@ -102,7 +102,8 @@ defmodule EmbersWeb.PostView do
 
   defp handle_media(view, post) do
     if Ecto.assoc_loaded?(post.media) do
-      Map.put(view, "media", render_many(post.media, MediaView, "media.json", as: :media))
+      ordered_medias = post.media |> Enum.sort_by(& &1.inserted_at)
+      Map.put(view, "media", render_many(ordered_medias, MediaView, "media.json", as: :media))
     end || view
   end
 

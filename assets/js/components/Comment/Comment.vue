@@ -9,7 +9,10 @@
             :to="`/@${comment.user.username}`"
             :data-badge="`${comment.user.badges[0]}`"
           >{{comment.user.username}}</router-link>
-          <p>comento {{ $moment.utc(comment.created_at).local().from() }}:</p>
+          <router-link
+            class="comment-time"
+            :to="`/post/${comment.id}`"
+          >{{ $moment.utc(comment.created_at).local().from() }}:</router-link>
         </h4>
         <p v-if="comment.body" v-html="formattedBody"></p>
         <div v-if="comment.links && comment.links.length && !comment.media.length" class="links">
@@ -21,17 +24,17 @@
         <footer class="actions">
           <ul class="actions-reactions">
             <li
-              v-for="(meta, reaction) in comment.stats.reactions"
-              @click="react(reaction)"
+              v-for="(meta, reaction) in comment.reactions"
+              @click="react(meta.name)"
               class="reaction"
               :key="reaction.id"
               :reacted="meta.reacted"
             >
-              <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji">
+              <img :src="`/img/emoji/${meta.name}.svg`" :alt="reaction" class="emoji">
               {{ meta.total }}
             </li>
           </ul>
-          <ul v-if="loggedUser" class="actions-panel">
+          <ul v-if="!no_controls" class="actions-panel">
             <li v-if="comment.nsfw">
               <span @click.prevent="toggleLock">
                 <i class="fas fa-pepper-hot emoji"></i>
@@ -69,6 +72,11 @@
             </li>
           </ul>
         </footer>
+        <router-link
+          v-if="!no_reply_link && comment.stats.replies > 0"
+          :to="`/post/${comment.id}`"
+          class="reply-link"
+        >Ver {{comment.stats.replies}} respuestas</router-link>
       </div>
       <div class="header-options-wrapper">
         <div
@@ -132,12 +140,6 @@
         </div>
       </div>
     </header>
-    <media-slides
-      v-if="show_media_slides"
-      :medias="comment.media"
-      :index="clicked_media_index"
-      @closed="show_media_slides = false"
-    ></media-slides>
   </div>
 </template>
 
@@ -147,19 +149,25 @@ import post from "../../api/post";
 import avatar from "@/components/Avatar";
 import user from "../../api/user";
 import { mapGetters } from "vuex";
-import ReactionsModal from "../ReactionsModal/ReactionsModal";
-import ReportPostModal from "../modals/ReportPostModal";
-import BanUserModal from "../modals/BanUserModal";
+import ReactionsModal from "@/components/ReactionsModal/ReactionsModal";
+import ReportPostModal from "@/components/Modals/ReportPostModal";
+import BanUserModal from "@/components/Modals/BanUserModal";
 
 import MediaZone from "@/components/Media/MediaZone";
 import MediaSlides from "@/components/Media/MediaSlides";
 import LinkItem from "@/components/Link/Link";
 
 import formatter from "@/lib/formatter";
+import markdown from "@/lib/markdown/formatter";
 
 export default {
   components: { avatar, MediaZone, MediaSlides, LinkItem },
-  props: ["comment", "postId"],
+  props: {
+    comment: { type: Object, required: true },
+    postId: { type: String },
+    no_controls: { type: Boolean, default: false },
+    no_reply_link: { type: Boolean, default: false }
+  },
   computed: {
     ...mapGetters(["can"]),
     loggedUser() {
@@ -169,7 +177,7 @@ export default {
      * All supported reactions
      */
     reactions() {
-      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire".split(
+      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire thinking cookie point_up".split(
         " "
       );
     },
@@ -186,7 +194,7 @@ export default {
      * Formats the comment body
      */
     formattedBody() {
-      return formatter.format(this.comment.body, true);
+      return markdown(this.comment.body, true);
     },
     hasReactions() {
       if (jQuery.isEmptyObject(this.comment.stats.reactions)) {
@@ -381,23 +389,26 @@ export default {
         return;
       }
       if (
-        this.comment.stats.reactions[reaction] &&
-        this.comment.stats.reactions[reaction].reacted
+        this.comment.reactions[reaction] &&
+        this.comment.reactions[reaction].reacted
       ) {
-        comment.deleteReaction(this.comment.id, reaction).then(res => {
+        post.deleteReaction(this.comment.id, reaction).then(res => {
           this.comment.reacted = false;
-          this.comment.stats = res;
+          this.comment.reactions = res.reactions;
         });
       } else {
-        comment.addReaction(this.comment.id, reaction).then(res => {
+        post.addReaction(this.comment.id, reaction).then(res => {
           this.comment.reacted = true;
-          this.comment.stats = res;
+          this.comment.reactions = res.reactions;
         });
       }
     },
     media_clicked(id) {
-      this.clicked_media_index = this.comment.media.findIndex(m => m.id == id);
-      this.show_media_slides = true;
+      const index = this.comment.media.findIndex(m => m.id == id);
+      this.$store.dispatch("media_slides/open", {
+        medias: this.comment.media,
+        index: index
+      });
     },
     /**
      * Marks the post as Not Safe For Work
@@ -441,10 +452,6 @@ export default {
       this.locked =
         this.comment.nsfw &&
         this.$store.getters.settings.content_nsfw === "ask";
-    },
-    media_clicked(id) {
-      this.clicked_media_index = this.comment.media.findIndex(m => m.id == id);
-      this.show_media_slides = true;
     },
     report_post() {
       this.$modal.show(
@@ -510,6 +517,10 @@ export default {
     .link-item__details {
       display: none;
     }
+  }
+  .comment-time {
+    font-weight: 300 !important;
+    color: #ffffff50 !important;
   }
 }
 </style>

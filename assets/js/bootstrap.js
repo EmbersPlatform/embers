@@ -1,4 +1,4 @@
-console.log(
+console.info(
   "%c Embers %c Red social basada en la comunidad ",
   "padding: 2px; color: #fff; background-color: #eb3d2d; border-radius: 2px 0 0 2px;",
   "padding: 2px; color: #fff; background-color: #333; border-radius: 0 2px 2px 0;"
@@ -77,6 +77,7 @@ store.dispatch("setAppData", window.appData);
 store.dispatch("updateUser", window.appData.user);
 store.dispatch("tag/update", window.appData.tags);
 store.dispatch("notifications/update", window.appData.notifications);
+store.dispatch("chat/set_unread_conversations", window.appData.unread_conversations);
 
 if (window.appData.user !== null) {
   store.dispatch("initNotifications", window.appData.user.unreadNotifications);

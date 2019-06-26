@@ -107,7 +107,7 @@
         height: 45px;
         padding: 10px 10px 0 10px;
         margin-right: 0;
-        @include flex-flow(row, nowrap);
+        @include flex-flow(row, wrap);
         li {
           margin-bottom: 0;
           margin-right: 10px;
@@ -799,7 +799,8 @@
     &[data-layout-type="wide"] {
       .profile-stats {
         @include flex-flow(column, nowrap);
-        @include align-items(stretch) ul {
+        @include align-items(stretch);
+        ul {
           @include flex(1 1 auto);
           @include justify-content(center);
           &:not(:last-child) {

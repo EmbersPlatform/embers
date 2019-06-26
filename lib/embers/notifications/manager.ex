@@ -77,7 +77,7 @@ defmodule Embers.Notifications.Manager do
   end
 
   defp handle_mentions(%Embers.Feed.Post{body: body} = post) when not is_nil(body) do
-    mentions = extract_mentions(body)
+    mentions = extract_mentions(body) |> Enum.map(&String.downcase/1)
 
     recipients =
       Repo.all(

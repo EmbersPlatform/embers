@@ -1,6 +1,6 @@
 <template>
   <div class="media-zone single-media">
-    <media-item v-if="media.legacy" :media="media"/>
+    <media-item v-if="media.legacy || media.type == 'gif'" :media="media"/>
     <media-preview v-else :media="media" @clicked="clicked(media)" big/>
   </div>
 </template>

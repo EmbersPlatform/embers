@@ -3,6 +3,7 @@ defmodule EmbersWeb.SearchController do
 
   alias Embers.Helpers.IdHasher
   alias Embers.Search
+  alias Embers.UserSearch
 
   def search(conn, params) do
     query = Map.get(params, "query", "")
@@ -16,5 +17,12 @@ defmodule EmbersWeb.SearchController do
 
     conn
     |> render("results.json", results)
+  end
+
+  def user_typeahead(conn, %{"username" => username}) do
+    results = UserSearch.search(username)
+
+    conn
+    |> render("user_results.json", %{results: results})
   end
 end

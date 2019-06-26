@@ -1,0 +1,36 @@
+<div class="title is-3">Registro de auditoria</div>
+
+<%= if info = get_flash(@conn, :info) do %>
+<article class="message is-info">
+  <div class="message-header">
+    <p><%= info %></p>
+  </div>
+</article>
+<% end %>
+
+<%= if error = get_flash(@conn, :error) do %>
+<article class="message is-danger">
+  <div class="message-header">
+    <p><%= error %></p>
+  </div>
+</article>
+<% end %>
+
+<ul class="list">
+    <%= for audit <- @audits do %>
+    <li class="list-item">
+      <%= raw format_audit(audit) %>
+      <%= if !Enum.empty?(audit.details) do %>
+        <div class="content">
+          <ul>
+            <%= for detail <- audit.details do %>
+              <li><%= detail.description %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    </li>
+    <% end %>
+</ul>
+
+<%= pagination_links @audits %>

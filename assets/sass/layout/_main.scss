@@ -12,11 +12,13 @@
     min-height: auto;
     overflow: hidden;
 
-    &[data-vh-issue] {
-      height: calc(100vh - 55px);
-
-      #board {
+    @media #{$query-mobile} {
+      &[data-vh-issue] {
         height: calc(100vh - 55px);
+
+        #board {
+          height: calc(100vh - 55px);
+        }
       }
     }
 
@@ -33,7 +35,7 @@
           padding: 0 30px;
           @include flex(1 1 auto);
 
-          >* {
+          > * {
             z-index: 1;
           }
 
@@ -86,13 +88,13 @@
     width: 10px;
     padding: 0;
 
-    ~#board {
+    ~ #board {
       margin-left: 10px;
       max-width: calc(100% - 10px);
     }
   }
 
-  ~#board {
+  ~ #board {
     margin-left: 230px;
     max-width: calc(100% - 230px);
   }
@@ -111,10 +113,9 @@
 
 // inicia #COLUMN CHILDS
 .nav_ {
-
   h2,
   h3,
-  >span {
+  > span {
     display: block;
     text-transform: uppercase;
     color: $secondary;
@@ -223,7 +224,8 @@
           }
         }
 
-        .u_name {}
+        .u_name {
+        }
       }
 
       .active {
@@ -292,12 +294,12 @@
   &[class*="user"] {
     background: #000;
 
-    ~#wrapper {
+    ~ #wrapper {
       margin-top: -60px;
       padding-top: 0;
     }
 
-    >hr {
+    > hr {
       display: block;
     }
 
@@ -317,7 +319,7 @@
     }
   }
 
-  >hr {
+  > hr {
     display: none;
     z-index: 0;
     width: 100%;
@@ -350,7 +352,7 @@
   @include flexbox(row, nowrap, flex-start, center);
   @include box-sizing(border-box);
 
-  >*:not(:last-child) {
+  > *:not(:last-child) {
     margin-right: 15px;
   }
 }
@@ -428,9 +430,12 @@
   margin: 0 0 0 30px;
   @include font-size();
   @include box-sizing(border-box);
+  position: sticky;
+  top: 20px;
+  height: fit-content;
 
-  >*,
-  #secondary-sticky>* {
+  > *,
+  #secondary-sticky > * {
     &:not(:last-child) {
       margin-bottom: 15px;
     }
@@ -533,7 +538,6 @@
 
 // inicia #SECONDARY CHILDS
 #secondary-sticky {
-  position: fixed;
   // top: 20px;
   display: inline;
   width: 230px;
@@ -589,7 +593,7 @@
     margin-bottom: 30px;
   }
 
-  >.button {
+  > .button {
     margin: 30px auto;
   }
 }
@@ -610,7 +614,7 @@
     }
   }
 
-  &~.renderbox {
+  & ~ .renderbox {
     &:before {
       margin-top: 0;
     }
@@ -716,14 +720,14 @@
   margin: 0 auto;
   @include flexbox(column, nowrap, flex-end, center);
 
-  ~h3 {
+  ~ h3 {
     margin-top: 15px;
   }
 
   &:empty {
     display: none;
 
-    ~h3 {
+    ~ h3 {
       margin-top: 0;
     }
   }
@@ -733,13 +737,15 @@
 #post {
   z-index: 0;
 
-  >*:not(:last-child) {
+  > *:not(:last-child) {
     margin-bottom: 30px;
   }
 
-  .comments-list {}
+  .comments-list {
+  }
 
-  .new-comment {}
+  .new-comment {
+  }
 }
 
 // termina #CONTENT CHILDS
@@ -751,7 +757,8 @@
   top: 0;
   left: 0;
   z-index: 1000;
-  @include flexbox(column, nowrap, center, center);
+  padding-top: 10%;
+  @include flexbox(column, nowrap, flex-start, center);
 
   .body {
     z-index: 1;
@@ -764,11 +771,11 @@
     @include border-radius(3px);
     @include box-shadow(0 5px 15px negro(25));
 
-    >*:not(:last-child) {
+    > *:not(:last-child) {
       margin-bottom: 15px;
     }
 
-    >.nav_ {
+    > .nav_ {
       flex-grow: 1;
       overflow-y: auto;
     }

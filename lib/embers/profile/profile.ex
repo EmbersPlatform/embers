@@ -51,6 +51,7 @@ defmodule Embers.Profile do
 
   """
   def get_meta!(id), do: Repo.get!(Meta, id)
+  def get_meta_for!(user_id), do: Repo.get_by!(Meta, %{user_id: user_id})
 
   @doc """
   Creates a meta.

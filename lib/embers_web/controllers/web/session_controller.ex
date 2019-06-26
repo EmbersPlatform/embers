@@ -2,16 +2,27 @@ defmodule EmbersWeb.SessionController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
+
   alias Embers.Sessions
   alias EmbersWeb.Auth.Login
   alias EmbersWeb.Router.Helpers, as: Routes
   alias Phauxth.Remember
 
-  plug(:guest_check when action in [:new, :create])
+  plug(:guest_check when action in [:new, :create, :create_api])
   plug(:put_layout, "app_no_js.html")
 
+  plug(
+    :rate_limit_authentication,
+    [max_requests: 5, interval_seconds: 60] when action in [:create, :create_api]
+  )
+
+  def rate_limit_authentication(conn, options \\ []) do
+    options = Keyword.merge(options, bucket_name: "authorization:" <> conn.params["id"])
+    EmbersWeb.RateLimit.rate_limit(conn, options)
+  end
+
   def new(conn, _) do
-    render(conn, "new.html")
+    render(conn, "new.html", page_title: "Iniciar sesión")
   end
 
   # If you are using Argon2 or Pbkdf2, add crypto: Argon2

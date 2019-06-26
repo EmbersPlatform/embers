@@ -30,6 +30,8 @@ defmodule Embers.Media do
   La manipulacion de imagenes se realiza mediante la libreria `Mogrify`,
   que es una interfaz para utilizar la herramienta de ImageMagick.
   """
+  use FFmpex.Options
+
   alias Embers.Media.MediaItem
   alias Embers.Repo
   alias Embers.Thumbnex
@@ -66,10 +68,11 @@ defmodule Embers.Media do
            Uploads.upload(
              processed_file.path,
              get_bucket(),
-             dest_path <> ".#{ext}"
+             dest_path <> ".#{ext}",
+             content_type: processed_file.content_type
            ),
          {:ok, preview} <-
-           make_preview(processed_file, dest_path, max_width: 500, max_height: 500) do
+           make_preview(processed_file, dest_path, max_width: 800, max_height: 800) do
       media_data = %{
         user_id: owner,
         url: res.url,
@@ -80,19 +83,21 @@ defmodule Embers.Media do
       }
 
       media_data =
-        case Fastimage.size(processed_file.path) do
-          %{height: height, width: width} ->
-            metadata =
-              media_data.metadata
-              |> put_in([:height], height)
-              |> put_in([:width], width)
+        if media_data.type == "image" do
+          case Fastimage.size(processed_file.path) do
+            %{height: height, width: width} ->
+              metadata =
+                media_data.metadata
+                |> put_in([:height], height)
+                |> put_in([:width], width)
 
-            %{media_data | metadata: metadata}
+              %{media_data | metadata: metadata}
 
-          error ->
-            Logger.error("Couldn't get image dimentions: #{inspect(error)}")
-            media_data
-        end
+            error ->
+              Logger.error("Couldn't get image dimentions: #{inspect(error)}")
+              media_data
+          end
+        end || media_data
 
       media = Repo.insert!(MediaItem.changeset(%MediaItem{}, media_data))
 
@@ -149,11 +154,12 @@ defmodule Embers.Media do
   end
 
   defp process_file(%{content_type: "image/gif"} = file) do
-    with :ok <- file.path |> SilentVideo.convert_mobile(file.path <> ".mp4") do
+    with :ok <- file.path |> File.rename(file.path <> ".gif") do
       {:ok,
        %{
          type: "gif",
-         path: file.path <> ".mp4"
+         path: file.path <> ".gif",
+         content_type: "image/gif"
        }}
     else
       {:error, reason} -> {:error, reason}
@@ -169,15 +175,14 @@ defmodule Embers.Media do
       file.path
       |> Mogrify.open()
       |> Mogrify.custom("strip")
-      |> Mogrify.resize_to_limit("1500x1500")
-      |> Mogrify.custom("background", "#1a1b1d")
       |> Mogrify.format(format)
       |> Mogrify.save()
 
     {:ok,
      %{
        type: "image",
-       path: processed_file.path
+       path: processed_file.path,
+       content_type: "image/#{format}"
      }}
   end
 
@@ -185,11 +190,12 @@ defmodule Embers.Media do
   # pero si es otro tipo de video habria que procesarlo de otra manera.
   defp process_file(%{content_type: "video/" <> format} = file)
        when format in @supported_formats do
-    with :ok <- file.path |> SilentVideo.convert_mobile(file.path <> ".mp4") do
+    with :ok <- file.path |> process_video(file.path <> ".mp4") do
       {:ok,
        %{
          type: "video",
-         path: file.path <> ".mp4"
+         path: file.path <> ".mp4",
+         content_type: "video/mp4"
        }}
     else
       {:error, reason} -> {:error, reason}
@@ -206,7 +212,9 @@ defmodule Embers.Media do
     preview_path = file.path <> ".preview.jpg"
     Thumbnex.create_thumbnail(file.path, preview_path, opts)
 
-    Uploads.upload(preview_path, get_bucket(), dest_path <> "_preview.jpg")
+    Uploads.upload(preview_path, get_bucket(), dest_path <> "_preview.jpg",
+      content_type: "image/jpg"
+    )
   end
 
   defp get_file_ext(file) do
@@ -217,5 +225,21 @@ defmodule Embers.Media do
 
   defp get_bucket do
     Keyword.get(Application.get_env(:embers, Embers.Media), :bucket, "local")
+  end
+
+  defp process_video(video_path, output_path) do
+    FFmpex.new_command()
+    |> FFmpex.add_global_option(option_y())
+    |> FFmpex.add_input_file(video_path)
+    |> FFmpex.add_output_file(output_path)
+    |> FFmpex.add_stream_specifier(stream_type: :video)
+    |> FFmpex.add_stream_option(option_codec("libx264"))
+    |> FFmpex.add_stream_option(option_b(400_000))
+    |> FFmpex.add_stream_option(option_maxrate(400_000))
+    |> FFmpex.add_stream_option(option_bufsize(800_000))
+    |> FFmpex.add_file_option(option_profile("main"))
+    |> FFmpex.add_file_option(option_r(30))
+    |> FFmpex.add_file_option(option_movflags("faststart"))
+    |> FFmpex.execute()
   end
 end

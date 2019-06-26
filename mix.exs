@@ -23,7 +23,14 @@ defmodule Embers.Mixfile do
   def application do
     [
       mod: {Embers.Application, []},
-      extra_applications: [:logger, :runtime_tools, :recaptcha]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :recaptcha,
+        :scrivener_ecto,
+        :scrivener_html,
+        :ex_rated
+      ]
     ]
   end
 
@@ -36,7 +43,6 @@ defmodule Embers.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:phoenix, "~> 1.4.0"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
@@ -47,7 +53,6 @@ defmodule Embers.Mixfile do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:distillery, "~> 2.0"},
       {:phauxth, "~> 2.1"},
       {:bamboo, "~> 0.8"},
       {:not_qwerty123, "~> 2.3"},
@@ -72,7 +77,12 @@ defmodule Embers.Mixfile do
       {:fun_with_flags, "~> 1.2.1"},
       {:fun_with_flags_ui, "~> 0.7.1"},
       {:oembed, "~> 0.3.0"},
-      {:fastimage, "~> 0.0.7"}
+      {:fastimage, "~> 0.0.7"},
+      {:benchee, "~> 1.0", only: :dev},
+      {:benchee_html, "~> 1.0", only: :dev},
+      {:scrivener_ecto, "~> 2.0"},
+      {:scrivener_html, "~> 1.8"},
+      {:ex_rated, "~> 1.2"}
     ]
   end
 

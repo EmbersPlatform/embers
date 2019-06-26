@@ -3,8 +3,7 @@ defmodule Embers.Profile.Uploads.Avatar do
   alias Embers.Helpers.IdHasher
   alias Embers.Uploads
 
-  @bucket "local"
-  @path "/user/avatar"
+  @path Keyword.get(Application.get_env(:embers, Embers.Profile), :avatar_path, "/user/avatar")
 
   def upload(avatar, %Embers.Accounts.User{} = user) do
     upload(avatar, user.id)
@@ -18,9 +17,9 @@ defmodule Embers.Profile.Uploads.Avatar do
 
       id = IdHasher.encode(user_id)
 
-      with {:ok, _} <- Uploads.upload(small.path, @bucket, "#{@path}/#{id}_small.png"),
-           {:ok, _} <- Uploads.upload(medium.path, @bucket, "#{@path}/#{id}_medium.png"),
-           {:ok, _} <- Uploads.upload(large.path, @bucket, "#{@path}/#{id}_large.png") do
+      with {:ok, _} <- Uploads.upload(small.path, get_bucket(), "#{@path}/#{id}_small.png"),
+           {:ok, _} <- Uploads.upload(medium.path, get_bucket(), "#{@path}/#{id}_medium.png"),
+           {:ok, _} <- Uploads.upload(large.path, get_bucket(), "#{@path}/#{id}_large.png") do
         :ok
       else
         error -> error
@@ -37,9 +36,9 @@ defmodule Embers.Profile.Uploads.Avatar do
   def delete(user_id) when is_integer(user_id) do
     id = IdHasher.encode(user_id)
 
-    with :ok <- Uploads.delete(@bucket, "#{@path}/#{id}_small.png"),
-         :ok <- Uploads.delete(@bucket, "#{@path}/#{id}_medium.png"),
-         :ok <- Uploads.delete(@bucket, "#{@path}/#{id}_large.png") do
+    with :ok <- Uploads.delete(get_bucket(), "#{@path}/#{id}_small.png"),
+         :ok <- Uploads.delete(get_bucket(), "#{@path}/#{id}_medium.png"),
+         :ok <- Uploads.delete(get_bucket(), "#{@path}/#{id}_large.png") do
       :ok
     else
       error -> error
@@ -84,5 +83,9 @@ defmodule Embers.Profile.Uploads.Avatar do
     |> Mogrify.extent("256x256")
     |> Mogrify.format("png")
     |> Mogrify.save()
+  end
+
+  defp get_bucket do
+    Keyword.get(Application.get_env(:embers, Embers.Profile), :bucket, "local")
   end
 end

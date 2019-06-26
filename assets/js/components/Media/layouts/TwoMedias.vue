@@ -34,9 +34,12 @@ export default {
   flex-direction: row;
   .media-preview {
     width: 50%;
-    height: 300px;
     &:last-child {
       margin-left: 5px;
+    }
+    .media-preview__image {
+      padding-top: 100%;
+      height: fit-content;
     }
   }
 }

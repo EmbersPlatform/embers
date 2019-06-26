@@ -46,6 +46,7 @@ export default {
   },
   methods: {
     search() {
+      if (this.searchParams == undefined) return;
       var searchParams = encodeURIComponent(this.searchParams);
       this.$router.push("/search/" + searchParams);
       this.$root.$emit("search", searchParams);
