@@ -173,7 +173,7 @@ export default {
     }
     .chat-message__content {
       .chat-message__bubble {
-        background: $narrojo;
+        background: transparentize($narrojo, 0.7);
       }
     }
   }
