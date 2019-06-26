@@ -11,7 +11,7 @@ defmodule EmbersWeb.SessionController do
   plug(:put_layout, "app_no_js.html")
 
   def new(conn, _) do
-    render(conn, "new.html")
+    render(conn, "new.html", page_title: "Iniciar sesión")
   end
 
   # If you are using Argon2 or Pbkdf2, add crypto: Argon2

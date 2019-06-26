@@ -27,40 +27,43 @@ msgstr ""
 
 #, elixir-format
 #: lib/embers_web/views/web/notification_view.ex:46
+#: lib/embers_web/views/web/notification_view.ex:46
 msgid "mentioned you in a"
 msgstr ""
 
 #, elixir-format
+#: lib/embers_web/views/web/notification_view.ex:43
 #: lib/embers_web/views/web/notification_view.ex:43
 msgid "commented in your"
 msgstr ""
 
 #, elixir-format
 #: lib/embers_web/views/web/notification_view.ex:49
+#: lib/embers_web/views/web/notification_view.ex:49
 msgid "is following you"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/controllers/web/link_controller.ex:16
+#: lib/embers_web/controllers/web/link_controller.ex:19
 msgid "Couldn't process link"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/controllers/web/link_controller.ex:24
+#: lib/embers_web/controllers/web/link_controller.ex:25
 msgid "Internal error"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/controllers/web/session_controller.ex:33
+#: lib/embers_web/controllers/web/session_controller.ex:34
 msgid "User successfully logged in."
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/auth/login.ex:19
+#: lib/embers_web/auth/login.ex:22
 msgid "account unconfirmed"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/auth/login.ex:18
-msgid "no user found"
+#: lib/embers_web/auth/login.ex:19
+msgid "invalid credentials"
 msgstr ""
