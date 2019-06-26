@@ -5,7 +5,7 @@ defmodule Embers.Mixfile do
   def project do
     [
       app: :embers,
-      version: app_version(),
+      version: "0.1.0",
       elixir: "~> 1.4",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -98,19 +98,6 @@ defmodule Embers.Mixfile do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
-  end
-
-  defp app_version do
-    with {out, 0} <- System.cmd("git", ~w[describe], stderr_to_stdout: true) do
-      out
-      |> String.trim()
-      |> String.split("-")
-      |> Enum.take(2)
-      |> Enum.join(".")
-      |> String.trim_leading("v")
-    else
-      _ -> "0.1.0"
-    end
   end
 
   defp docs do
