@@ -1,0 +1,22 @@
+image: trenpixster/elixir:latest
+
+services:
+  - postgres:latest
+
+variables:
+  POSTGRES_DB: embers_test
+  POSTGRES_HOST: postgres
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: "postgres"
+  MIX_ENV: "test"
+
+before_script:
+  - apt-get update && apt-get -y install postgresql-client
+  - mix local.hex --force
+  - mix deps.get --only test
+  - mix ecto.create
+  - mix ecto.migrate
+
+mix:
+  script:
+    - mix test
