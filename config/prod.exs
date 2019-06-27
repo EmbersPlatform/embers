@@ -18,7 +18,7 @@ config :embers, EmbersWeb.Endpoint,
   url: [host: "localhost", port: {:system, "PORT"}],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
-  root: ".",
+  root: "."
 
 # Do not print debug messages in production
 config :logger, level: :info
