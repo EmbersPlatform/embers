@@ -14,10 +14,11 @@ defmodule EmbersWeb.UserController do
         conn |> put_status(:not_found) |> json(:not_found)
 
       user ->
-        user
-        |> Accounts.User.load_following_status(current_user.id)
-        |> Accounts.User.load_follows_me_status(current_user.id)
-        |> Accounts.User.load_blocked_status(current_user.id)
+        user =
+          user
+          |> Accounts.User.load_following_status(current_user.id)
+          |> Accounts.User.load_follows_me_status(current_user.id)
+          |> Accounts.User.load_blocked_status(current_user.id)
 
         render(conn, "show.json", user: user)
     end
