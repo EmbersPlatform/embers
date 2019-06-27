@@ -11,8 +11,8 @@ config :logger, level: :warn
 
 # Configure your database
 config :embers, Embers.Repo,
-  username: "dorgan",
-  password: "dorgan",
+  username: "postgres",
+  password: "postgres",
   database: "embers_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
@@ -26,5 +26,3 @@ config :pbkdf2_elixir, rounds: 1
 
 # Mailer test configuration
 config :embers, Embers.Mailer, adapter: Bamboo.TestAdapter
-
-import_config "test.secret.exs"
