@@ -20,6 +20,6 @@ config :ex_aws, :s3, %{
   access_key_id: System.fetch_env!("S3_ACCESS_KEY"),
   secret_access_key: System.fetch_env!("S3_SECRET"),
   scheme: "https://",
-  host: %{System.fetch_env!("S3_REGION") => System.fetch_env!("DB_HOST")},
+  host: %{System.fetch_env!("S3_REGION") => System.fetch_env!("S3_HOST")},
   region: System.fetch_env!("S3_REGION")
 }
