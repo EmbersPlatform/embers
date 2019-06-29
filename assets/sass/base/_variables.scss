@@ -1,40 +1,42 @@
 // _variables.scss
 //queries
 // verticalFix: sumar/restar 55px al height si se agrega/quita otro icono
-$query_verticalFix: 'all and (max-height: 420px) and (min-width: 645px)';
-$query_detachSidebar: 'all and (max-width: 1164px) and (min-width: 645px)';
-$query_relocateSecondary: 'all and (max-width: 944px)';
-$query_mobile:'all and (max-width: 644px)';
+$query_verticalFix: "all and (max-height: 420px) and (min-width: 645px)";
+$query_detachSidebar: "all and (max-width: 1164px) and (min-width: 645px)";
+$query_relocateSecondary: "all and (max-width: 944px)";
+$query_mobile: "all and (max-width: 644px)";
 
 //sizes
 $min_column_width: 560px;
 $column_width: 60%;
 
 //white based
-$primary:blanco(7);
-$secondary:blanco(3);
+$primary: blanco(7);
+$secondary: blanco(3);
 
 $dark: #26272b; //embers #1
-$dark_n1:#222327;
+$dark_n1: #222327;
 $blue_dark: #2c2d32;
 //$darker:#1b1b1e;
 $darker: darken($dark, 5);
 $narrojo: #eb3d2d; //embers #2
 
-$verde:#38d52f;
-$amarillo:#ffc107;
-$offline:#4b4b4e; //gris
-$peterRiver:#3498db; //light blue
+$verde: #6ab04c;
+$amarillo: #ffc107;
+$offline: #4b4b4e; //gris
+$peterRiver: #3498db; //light blue
 $discord: #7289da;
 $ko-fi: #ff5f5f;
-$greentext:#66cc7a; //verde
+$greentext: #66cc7a; //verde
 // $b_doted:unquote('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAGklEQVQYV2NkQAOMUP5/BgYGMBsmAFeHIQAAK+oBBROgPJEAAAAASUVORK5CYII=');
 // $w_doted:unquote('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHUlEQVQYV2NkQAOMIP7/////MzIygtlgAhlgCAAAst4EBcZjUBYAAAAASUVORK5CYII=');
 // $n_doted:unquote('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHUlEQVQYV2NkQAOMIP5rW93/oocvg9lgAhlgCAAArD4EBb456PcAAAAASUVORK5CYII=');
-$d_doted:unquote('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHUlEQVQYV2NkQAOMIL6auvb/WzevgtlgAhlgCAAAqMoEBbLo91sAAAAASUVORK5CYII=');
-$fontsize:12; //minimal font size in px
+$d_doted: unquote(
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHUlEQVQYV2NkQAOMIL6auvb/WzevgtlgAhlgCAAAqMoEBbLo91sAAAAASUVORK5CYII="
+);
+$fontsize: 12; //minimal font size in px
 
 //toastr colors
-$t-success:#3c763d;
-$t-error:#ff5c5c;
-$t-warning:#8a6d3b;
+$t-success: #3c763d;
+$t-error: #ff5c5c;
+$t-warning: #8a6d3b;

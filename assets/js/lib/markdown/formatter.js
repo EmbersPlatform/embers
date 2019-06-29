@@ -49,8 +49,6 @@ export default input => {
 
   res.contents = htmlDecode(res.contents)
 
-  console.log(res.contents)
-
   res = unified()
     .use(mdParse)
     .use(disableTokens, {

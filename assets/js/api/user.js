@@ -83,15 +83,13 @@ export default {
     let query = {};
     let id = null;
 
-    if (!isNaN(params.before))
-      query.before = params.before;
+    query.before = params.before;
 
-    if (!isNaN(params.after))
-      query.after = params.after;
+    query.after = params.after;
 
     query.limit = params.limit;
 
-    if (isNaN(params.id)) id = window.appData.user.id;
+    if (!params.id) id = window.appData.user.id;
     else id = params.id;
 
     return wrap(() =>

@@ -154,7 +154,7 @@ defmodule Embers.Accounts.User do
   def load_stats_map(%User{} = user) do
     stats = %{
       followers: get_followers_count(user),
-      friends: get_followers_count(user),
+      friends: get_friends_count(user),
       posts: get_posts_count(user)
     }
 

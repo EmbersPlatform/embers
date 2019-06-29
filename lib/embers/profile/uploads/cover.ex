@@ -47,10 +47,10 @@ defmodule Embers.Profile.Uploads.Cover do
     image.path
     |> Mogrify.open()
     |> Mogrify.custom("strip")
-    |> Mogrify.resize("800x500")
+    |> Mogrify.resize("960x320")
     |> Mogrify.custom("background", "#1a1b1d")
     |> Mogrify.gravity("center")
-    |> Mogrify.extent("800x500")
+    |> Mogrify.extent("960x320")
     |> Mogrify.format("png")
     |> Mogrify.save()
   end

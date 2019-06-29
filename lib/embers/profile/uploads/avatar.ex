@@ -53,8 +53,8 @@ defmodule Embers.Profile.Uploads.Avatar do
     image.path
     |> Mogrify.open()
     |> Mogrify.custom("strip")
+    |> Mogrify.custom("background", "none")
     |> Mogrify.resize("64x64")
-    |> Mogrify.custom("background", "#1a1b1d")
     |> Mogrify.gravity("center")
     |> Mogrify.extent("64x64")
     |> Mogrify.format("png")
@@ -65,8 +65,8 @@ defmodule Embers.Profile.Uploads.Avatar do
     image.path
     |> Mogrify.open()
     |> Mogrify.custom("strip")
+    |> Mogrify.custom("background", "none")
     |> Mogrify.resize("128x128")
-    |> Mogrify.custom("background", "#1a1b1d")
     |> Mogrify.gravity("center")
     |> Mogrify.extent("128x128")
     |> Mogrify.format("png")
@@ -77,8 +77,8 @@ defmodule Embers.Profile.Uploads.Avatar do
     image.path
     |> Mogrify.open()
     |> Mogrify.custom("strip")
+    |> Mogrify.custom("background", "none")
     |> Mogrify.resize("256x256")
-    |> Mogrify.custom("background", "#1a1b1d")
     |> Mogrify.gravity("center")
     |> Mogrify.extent("256x256")
     |> Mogrify.format("png")
