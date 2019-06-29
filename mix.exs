@@ -13,7 +13,8 @@ defmodule Embers.Mixfile do
       aliases: aliases(),
       deps: deps(),
       source_url: "https://gitlab.com/embers-project/embers/embers",
-      docs: docs()
+      docs: docs(),
+      releases: releases()
     ]
   end
 
@@ -104,6 +105,15 @@ defmodule Embers.Mixfile do
     [
       main: "readme",
       extras: ["README.md", "docs/deletes.md"]
+    ]
+  end
+
+  defp releases do
+    [
+      unix: [
+        include_executables_for: [:unix],
+        path: "artifacts/RELEASE_NAME"
+      ]
     ]
   end
 end

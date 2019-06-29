@@ -4,9 +4,11 @@
 /deps
 /*.ez
 /benchs
-
+/.vagrant
+/artifacts
 # Generated on crash by the VM
 erl_crash.dump
+*.log
 
 # Generated on crash by NPM
 npm-debug.log
