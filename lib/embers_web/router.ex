@@ -160,6 +160,7 @@ defmodule EmbersWeb.Router do
 
         get("/followers/:id/ids", FriendController, :list_ids)
         get("/followers/:id/list", FriendController, :list)
+        get("/following/:id/list", FriendController, :following)
 
         resources("/posts", PostController, only: [:show, :create, :delete])
         get("/posts/:id/replies", PostController, :show_replies)

@@ -19,6 +19,17 @@ defmodule EmbersWeb.FriendController do
         limit: params["limit"]
       )
 
+    users =
+      if not is_nil(conn.assigns.current_user) do
+        friends.entries
+        |> Enum.map(fn x ->
+          user = Embers.Accounts.User.load_following_status(x.user, conn.assigns.current_user.id)
+          %{x | user: user}
+        end)
+      end || friends.entries
+
+    friends = %{friends | entries: users}
+
     render(conn, "friends.json", friends)
   end
 

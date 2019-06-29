@@ -67,7 +67,7 @@
           </h4>
           <router-link
             class="card-date"
-            :to="`/@${post.user.username}/${post.id}`"
+            :to="`/post/${post.id}`"
           >{{ $moment.utc(post.created_at).local().from() }}</router-link>
         </div>
         <div
@@ -77,7 +77,7 @@
           tabindex="-1"
         >
           <span>
-            <i class="fas fa-gavel"/>
+            <i class="fas fa-gavel" />
           </span>
           <ul>
             <li v-if="can('update_post')">
@@ -111,8 +111,8 @@
             data-tip-position="bottom"
             data-tip-text
           >
-            <i v-if="!post.faved" class="far fa-star"/>
-            <i v-else class="fas fa-star"/>
+            <i v-if="!post.faved" class="far fa-star" />
+            <i v-else class="fas fa-star" />
           </span>
         </div>
         <div v-if="tools && loggedUser" class="header-options" focusable tabindex="-1">
@@ -162,7 +162,7 @@
           >Ir al post</router-link>
         </div>
         <div v-if="post.links && post.links.length && !post.media.length" class="links">
-          <link-item :link="post.links[0]"/>
+          <link-item :link="post.links[0]" />
         </div>
         <div class="multimedia" v-if="post.media.length">
           <media-zone
@@ -192,7 +192,7 @@
           <p v-if="attachmentError">Hubo un error al cargar el archivo adjunto :c</p>
         </template>
         <div class="card-wrapper-content-tags" v-if="post.tags && post.tags.length">
-          <Tag v-for="(tag, index) in post.tags" :key="index" :tag="tag"/>
+          <Tag v-for="(tag, index) in post.tags" :key="index" :tag="tag" />
         </div>
       </section>
     </div>
@@ -208,7 +208,7 @@
           :key="reaction.id"
           :reacted="meta.reacted"
         >
-          <img :src="`/img/emoji/${meta.name}.svg`" :alt="meta.name" class="emoji">
+          <img :src="`/img/emoji/${meta.name}.svg`" :alt="meta.name" class="emoji" />
           {{ meta.total }}
         </li>
       </ul>
@@ -231,13 +231,13 @@
               @click="react(reaction)"
               :key="reaction.id"
             >
-              <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji">
+              <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji" />
             </li>
           </ul>
         </li>
         <li v-if="!isPostView">
           <router-link
-            :to="`/@${post.user.username}/${post.id}`"
+            :to="`/post/${post.id}`"
             data-tip="Ver comentarios"
             data-tip-position="bottom"
             data-tip-text

@@ -292,13 +292,6 @@
   z-index: 0;
 
   &[class*="user"] {
-    background: #000;
-
-    ~ #wrapper {
-      margin-top: -60px;
-      padding-top: 0;
-    }
-
     > hr {
       display: block;
     }

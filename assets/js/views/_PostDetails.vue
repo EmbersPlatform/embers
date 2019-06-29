@@ -2,18 +2,13 @@
   <div id="board">
     <template v-if="!loading && post">
       <div id="heading" class="user">
-        <template>
-          <hr v-if="post.user.cover" :style="'background-image: url('+post.user.cover+');'">
-          <hr v-else style="background-image: url(/cover/default.jpg);">
-        </template>
         <Top></Top>
-        <UserCard :user="post.user" type="wide"></UserCard>
       </div>
       <div id="wrapper">
         <div id="content" data-layout-type="single-column">
           <div id="post" v-if="post" :class="{container: !user}">
             <p class="loading-comments" v-if="loading_context">Cargando..</p>
-            <Card v-if="post_context" :post="post_context" @deleted="postDeleted"/>
+            <Card v-if="post_context" :post="post_context" @deleted="postDeleted" />
             <Card v-if="is_post" :post="post" @deleted="postDeleted"></Card>
             <Comment v-if="is_comment" :comment="post" @deleted="postDeleted" no_reply_link></Comment>
             <Comment
@@ -70,6 +65,7 @@ import CommentList from "@/components/Comment/CommentList";
 import Comment from "@/components/Comment/Comment";
 import Toolbox from "@/components/ToolBox/_ToolBox";
 import Avatar from "@/components/Avatar";
+import ProfileHeader from "@/components/ProfileHeader";
 
 export default {
   components: {
@@ -79,7 +75,8 @@ export default {
     Toolbox,
     Top,
     UserCard,
-    Avatar
+    Avatar,
+    ProfileHeader
   },
 
   /**
@@ -142,16 +139,6 @@ export default {
       try {
         let res = await post.get(this.id);
         this.post = res;
-        if (
-          this.$route.name == "post_no_user" ||
-          this.$route.params.username !== this.post.user.username
-        ) {
-          this.$router.replace({
-            name: "post",
-            params: { username: this.post.user.username, id: this.post.id }
-          });
-          return;
-        }
         if (res.body) {
           this.$store.dispatch(
             "title/update",
