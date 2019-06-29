@@ -6,7 +6,7 @@
         :key="notification.id"
         :notification="notification"
       />
-      <intersector @intersect="load_more"/>
+      <intersector @intersect="load_more" />
       <center v-if="loading_more">Cargando notificaciones...</center>
     </template>
   </ul>
@@ -55,10 +55,12 @@ export default {
     last_page: false
   }),
   async mounted() {
+    this.loading = true;
     const res = await notification.get(null, true);
     this.last_page = res.last_page;
     this.next = res.next;
     this.$store.dispatch("notifications/mark_as_seen");
+    this.loading = false;
   }
 };
 </script>

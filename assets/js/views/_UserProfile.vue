@@ -1,10 +1,10 @@
 <template>
-  <div id="board" :style="`background: linear-gradient(${bg_color}, transparent 320px);`">
+  <div id="board">
     <template v-if="!loading">
       <div id="heading" class="user">
         <Top></Top>
         <div class="profile-cover">
-          <img :src="user.cover" class="profile-cover-image" @load="get_bg_color" ref="cover_img">
+          <img :src="user.cover" class="profile-cover-image" ref="cover_img" />
           <div class="profile-user">
             <avatar :avatar="user.avatar.medium"></avatar>
             <div class="profile-username">
@@ -110,10 +110,10 @@
             </button>
           </template>
         </div>
-        <div class="profile-bio">{{user.bio}}</div>
+        <div class="profile-bio" v-html="formattedBio"></div>
         <div class="profile-followers">
           <router-link :to="`/@${user.username}`" v-for="(user, index) in followers" :key="index">
-            <avatar :avatar="user.avatar.small"/>
+            <avatar :avatar="user.avatar.small" />
           </router-link>
           <router-link
             to="/"
@@ -140,7 +140,7 @@ import BanUserModal from "@/components/Modals/BanUserModal";
 
 import Avatar from "@/components/Avatar";
 
-import formatter from "@/lib/formatter";
+import markdown from "@/lib/markdown/formatter";
 
 export default {
   components: {
@@ -155,7 +155,8 @@ export default {
       loading: false,
       followers: [],
       mouseInUnfollow: false,
-      bg_color: "transparent"
+      bg_color: "transparent",
+      bg_color_retrieved: false
     };
   },
   computed: {
@@ -177,7 +178,7 @@ export default {
       return false;
     },
     formattedBio() {
-      return formatter.format(this.user.meta.bio);
+      return markdown(this.user.bio);
     }
   },
   methods: {
@@ -237,12 +238,6 @@ export default {
         .then(res => {
           this.followers = res.items.slice(0, 10);
         });
-    },
-    get_bg_color() {
-      const fac = new avg_color();
-      const color = fac.getColor(this.$refs.cover_img);
-      this.bg_color = color.hex;
-      fac.destroy();
     }
   },
   watch: { $route: "fetchUser" },
@@ -297,7 +292,7 @@ export default {
   .profile-username {
     span {
       font-size: 3em;
-      text-shadow: 0 2px 1px #000;
+      text-shadow: 0 1px 2px #000, 0 1px 3px #000;
     }
     .at {
       color: #999;
@@ -317,7 +312,7 @@ export default {
     display: flex;
     flex-direction: column;
     span {
-      text-shadow: 0 2px 1px #000;
+      text-shadow: 0 1px 2px #000, 0 1px 3px #000;
     }
     .stat-value {
       font-size: 2em;
@@ -332,11 +327,6 @@ export default {
   flex-direction: row;
   justify-content: center;
   padding: 10px;
-}
-.profile-bio {
-  text-align: center;
-  padding: 10px;
-  font-size: 1.25em;
 }
 .profile-followers {
   display: flex;
@@ -365,5 +355,21 @@ export default {
   display: block;
   height: auto !important;
   border: 3px solid rgba(0, 0, 0, 0.14);
+}
+</style>
+
+<style lang="scss">
+.profile-bio {
+  text-align: center;
+  padding: 10px;
+
+  p,
+  p > * {
+    font-size: 1.25rem;
+  }
+  a {
+    color: #fff;
+    font-weight: 400;
+  }
 }
 </style>

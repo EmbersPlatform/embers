@@ -17,9 +17,18 @@ defmodule Embers.Profile.Uploads.Avatar do
 
       id = IdHasher.encode(user_id)
 
-      with {:ok, _} <- Uploads.upload(small.path, get_bucket(), "#{@path}/#{id}_small.png"),
-           {:ok, _} <- Uploads.upload(medium.path, get_bucket(), "#{@path}/#{id}_medium.png"),
-           {:ok, _} <- Uploads.upload(large.path, get_bucket(), "#{@path}/#{id}_large.png") do
+      with {:ok, _} <-
+             Uploads.upload(small.path, get_bucket(), "#{@path}/#{id}_small.png",
+               content_type: "image/png"
+             ),
+           {:ok, _} <-
+             Uploads.upload(medium.path, get_bucket(), "#{@path}/#{id}_medium.png",
+               content_type: "image/png"
+             ),
+           {:ok, _} <-
+             Uploads.upload(large.path, get_bucket(), "#{@path}/#{id}_large.png",
+               content_type: "image/png"
+             ) do
         :ok
       else
         error -> error

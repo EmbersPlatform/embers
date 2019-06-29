@@ -15,7 +15,10 @@ defmodule Embers.Profile.Uploads.Cover do
 
       id = IdHasher.encode(user_id)
 
-      with {:ok, _} <- Uploads.upload(processed.path, get_bucket(), "#{@path}/#{id}.jpg") do
+      with {:ok, _} <-
+             Uploads.upload(processed.path, get_bucket(), "#{@path}/#{id}.jpg",
+               content_type: "image/png"
+             ) do
         :ok
       else
         error -> error
