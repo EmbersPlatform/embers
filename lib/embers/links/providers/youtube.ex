@@ -8,7 +8,7 @@ defmodule Embers.Links.YouTubeProvider do
   @spec provides?(binary()) :: boolean()
   def provides?(url) do
     Regex.match?(
-      ~r/https?:\/\/(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com\S*[^\\w\-\s])([\w\-]{11})(?=[^\w\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\/a>))[?=&+%\w]*/i,
+      ~r/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|(?:embed|v)\/))([^\?&"'>]+)/i,
       url
     )
   end
@@ -41,7 +41,7 @@ defmodule Embers.Links.YouTubeProvider do
   defp get_id(url) do
     [_, id] =
       Regex.run(
-        ~r/https?:\/\/(?:[0-9A-Z-]+\.)?(?:youtu\.be\/|youtube\.com\S*[^\\w\-\s])([\w\-]{11})(?=[^\w\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\/a>))[?=&+%\w]*/i,
+        ~r/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|(?:embed|v)\/))([^\?&"'>]+)/i,
         url
       )
 
