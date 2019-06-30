@@ -6,7 +6,6 @@ import highlight from 'rehype-highlight'
 import html from 'rehype-stringify'
 import emojiToShortcode from 'remark-gemoji-to-emoji'
 import disableTokens from 'remark-disable-tokenizers'
-import breaks from 'remark-breaks';
 
 import emoji from './emoji'
 import emote from './emote'
@@ -52,7 +51,6 @@ function format(input) {
 
   res = unified()
     .use(mdParse)
-    .use(breaks)
     .use(disableTokens, {
       block: [
         'list', 'indentedCode', 'html', 'atxHeading', 'setextHeading', 'table', 'blockquote'
