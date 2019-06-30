@@ -43,8 +43,15 @@ defmodule Embers.Sessions do
   @doc """
   Deletes all a user's sessions.
   """
+  def delete_user_sessions(user_id) when is_integer(user_id) do
+    IO.inspect(user_id, label: "USER ID")
+
+    Repo.delete_all(from(s in Session, where: s.user_id == ^user_id), returning: true)
+    |> IO.inspect(label: "DELETED SESSIONS")
+  end
+
   def delete_user_sessions(%User{} = user) do
-    Repo.delete_all(from(s in Session, where: s.user_id == ^user.id))
+    delete_user_sessions(user.id)
   end
 
   @doc """

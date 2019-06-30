@@ -2,6 +2,7 @@ defmodule Embers.Moderation do
   # TODO documentar
   alias Embers.Accounts.User
   alias Embers.Moderation.Ban
+  alias Embers.Sessions
 
   alias Embers.Paginator
   alias Embers.Repo
@@ -82,6 +83,7 @@ defmodule Embers.Moderation do
              })
            ) do
         {:ok, ban} ->
+          Sessions.delete_user_sessions(user_id)
           actor = Keyword.get(opts, :actor, nil)
           Embers.Event.emit(:user_banned, %{ban: ban, actor: actor})
           {:ok, ban}
