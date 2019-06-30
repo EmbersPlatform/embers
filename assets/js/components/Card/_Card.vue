@@ -350,7 +350,7 @@ export default {
      * All supported reactions
      */
     reactions() {
-      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire thinking cookie point_up".split(
+      return "thumbsup thumbsdown grin cry thinking point_up angry tada heart eggplant hot_pepper cookie".split(
         " "
       );
     },
@@ -777,5 +777,9 @@ export default {
     }
   }
 }
+.emoji-pick-list {
+  .ul {
+    z-index: 1;
+  }
+}
 </style>
-

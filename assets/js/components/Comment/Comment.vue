@@ -16,10 +16,10 @@
         </h4>
         <p v-if="comment.body" v-html="formattedBody"></p>
         <div v-if="comment.links && comment.links.length && !comment.media.length" class="links">
-          <link-item :link="comment.links[0]"/>
+          <link-item :link="comment.links[0]" />
         </div>
         <div class="multimedia" v-if="comment.media.length">
-          <media-zone small :medias="comment.media" :previews="true" @clicked="media_clicked"/>
+          <media-zone small :medias="comment.media" :previews="true" @clicked="media_clicked" />
         </div>
         <footer class="actions">
           <ul class="actions-reactions">
@@ -30,7 +30,7 @@
               :key="reaction.id"
               :reacted="meta.reacted"
             >
-              <img :src="`/img/emoji/${meta.name}.svg`" :alt="reaction" class="emoji">
+              <img :src="`/img/emoji/${meta.name}.svg`" :alt="reaction" class="emoji" />
               {{ meta.total }}
             </li>
           </ul>
@@ -66,7 +66,7 @@
                   @click="react(reaction)"
                   :key="reaction.id"
                 >
-                  <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji">
+                  <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji" />
                 </li>
               </ul>
             </li>
@@ -86,7 +86,7 @@
           tabindex="-1"
         >
           <span>
-            <i class="fas fa-gavel"/>
+            <i class="fas fa-gavel" />
           </span>
           <ul>
             <li v-if="can('update_post')">
@@ -177,7 +177,7 @@ export default {
      * All supported reactions
      */
     reactions() {
-      return "thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire thinking cookie point_up".split(
+      return "thumbsup thumbsdown grin cry thinking point_up angry tada heart eggplant hot_pepper cookie".split(
         " "
       );
     },

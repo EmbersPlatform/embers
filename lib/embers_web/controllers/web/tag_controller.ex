@@ -5,6 +5,7 @@ defmodule EmbersWeb.TagController do
   import EmbersWeb.Authorize
   import Embers.Helpers.IdHasher
 
+  alias Embers.Accounts
   alias Embers.Feed.Subscriptions.Tags, as: Subscriptions
   alias Embers.Helpers.IdHasher
   alias Embers.Tags
@@ -73,7 +74,7 @@ defmodule EmbersWeb.TagController do
         %Plug.Conn{assigns: %{current_user: user}} = conn,
         %{"name" => name} = params
       ) do
-    source = Embers.Accounts.get_by_identifier(name)
+    source = Accounts.get_by_identifier(name)
     level = Map.get(params, "level", 1)
 
     sub_params = %{
@@ -137,8 +138,8 @@ defmodule EmbersWeb.TagController do
     end
   end
 
-  defp do_create_block(conn, block_params) do
-    case Subscriptions.create_block(block_params) do
+  defp do_create_block(conn, %{user_id: user_id, tag_id: tag_id}) do
+    case Subscriptions.create_block(user_id, tag_id) do
       {:ok, _} ->
         conn
         |> put_status(:no_content)

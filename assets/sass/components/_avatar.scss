@@ -34,10 +34,19 @@
       height: 40%;
       z-index: 1;
       position: absolute;
-      right: 0;
-      bottom: 0;
+      right: -5px;
+      bottom: -2px;
       @include flexbox(row, nowrap, center, center);
       @include border-radius(50%);
+      &:before {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        border: 3px solid $darker;
+        @include box-sizing(border-box);
+        @include border-radius(inherit);
+      }
     }
     &[data-status="online"] {
       hr {

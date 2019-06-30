@@ -1,7 +1,7 @@
 <template>
   <div id="content">
     <div class="users-list">
-      <user-card v-for="user in followers" :key="user.id" :user="user" type="compact" no_stats />
+      <user-card v-for="user in following" :key="user.id" :user="user" type="compact" no_stats />
     </div>
     <h3 v-if="loading_more">
       <p>Cargando mas...</p>
@@ -17,10 +17,10 @@ import Intersector from "@/components/Intersector";
 import UserCard from "@/components/UserCard";
 
 export default {
-  name: "ProfileFollowers",
+  name: "ProfileFollowing",
   components: { Intersector, UserCard },
   data: () => ({
-    followers: [],
+    following: [],
     last_page: false,
     next: null,
     loading: false,
@@ -32,13 +32,13 @@ export default {
     }
   },
   methods: {
-    async get_followers() {
-      console.log("load followers", this.user);
+    async get_following() {
+      console.log("load following", this.user);
       this.loading = true;
       const { data: res } = await axios.get(
         `/api/v1/friends/${this.user.id}/list`
       );
-      this.followers = res.items;
+      this.following = res.items;
       this.last_page = res.last_page;
       this.next = res.next;
       this.loading = false;
@@ -53,7 +53,7 @@ export default {
       const body = document.getElementsByTagName("html")[0];
       const old_scroll = body.scrollTop;
 
-      this.followers.push(...res.items);
+      this.following.push(...res.items);
       this.last_page = res.last_page;
       this.next = res.next;
 
@@ -64,20 +64,26 @@ export default {
     }
   },
   mounted() {
-    this.get_followers();
+    this.get_following();
   }
 };
 </script>
 
 <style lang="scss" scoped>
+@import "~@/../sass/base/_variables.scss";
 .users-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
 
   .profile {
     width: 33%;
     max-width: 315px;
     box-sizing: border-box;
+    @media #{$query-mobile} {
+      width: 100%;
+      max-width: 100%;
+    }
   }
 }
 </style>

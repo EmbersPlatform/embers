@@ -20,8 +20,17 @@ defmodule Embers.Tags.Tag do
     |> cast(attrs, [:name, :description])
     |> validate_required(:name)
     |> validate_length(:name, min: 2, max: @max_length)
+    |> validate_name()
     |> validate_format(:name, ~r/^\w+$/)
     |> trim_desc(attrs)
+  end
+
+  defp validate_name(changeset) do
+    if String.valid?(get_change(changeset, :name)) do
+      changeset
+    else
+      add_error(changeset, :name, "invalid tag name")
+    end
   end
 
   defp trim_desc(changeset, %{"description" => body} = _attrs) when not is_nil(body) do

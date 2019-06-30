@@ -387,6 +387,9 @@ defmodule Embers.Feed do
   end
 
   def get_public(opts \\ []) do
+    blocked_users = Keyword.get(opts, :blocked_users, [])
+    blocked_tags = Keyword.get(opts, :blocked_tags, [])
+
     query =
       from(
         post in Post,
@@ -395,6 +398,9 @@ defmodule Embers.Feed do
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
+        left_join: tags in assoc(post, :tags),
+        where: user.id not in ^blocked_users,
+        where: tags.id not in ^blocked_tags or is_nil(tags),
         preload: [:tags, :reactions, :links, :media, user: {user, meta: meta}]
       )
 

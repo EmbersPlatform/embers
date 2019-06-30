@@ -3,7 +3,7 @@
     <template v-if="!loading">
       <div id="heading" class="user">
         <Top></Top>
-        <profile-header :user="user" />
+        <profile-header v-if="user" :user="user" :key="$route.params.username" />
       </div>
       <div id="wrapper">
         <router-view></router-view>

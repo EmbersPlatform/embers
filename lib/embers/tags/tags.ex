@@ -50,7 +50,7 @@ defmodule Embers.Tags do
         changeset = Tag.create_changeset(%Tag{}, attrs)
 
         if changeset.valid? do
-          attrs
+          changeset.changes
         end
       end)
       |> Enum.reject(&is_nil/1)

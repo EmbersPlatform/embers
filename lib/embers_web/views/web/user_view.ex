@@ -15,7 +15,6 @@ defmodule EmbersWeb.UserView do
     view = %{
       id: IdHasher.encode(user.id),
       username: user.username,
-      email: user.email,
       badges: [],
       canonical: user.canonical,
       stats: %{
@@ -43,5 +42,10 @@ defmodule EmbersWeb.UserView do
       end
 
     view
+  end
+
+  def render("user_with_email.json", %{user: user}) do
+    view = render_one(user, __MODULE__, "user.json")
+    Map.put(view, :email, user.email)
   end
 end

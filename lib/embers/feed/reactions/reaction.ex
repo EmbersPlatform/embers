@@ -7,7 +7,7 @@ defmodule Embers.Feed.Reactions.Reaction do
   alias Embers.Feed.Subscriptions.Blocks
   alias Embers.Repo
 
-  @valid_reactions ~w(thumbsup thumbsdown grin cry open_mouth angry heart eggplant fire thinking cookie point_up)
+  @valid_reactions ~w(thumbsup thumbsdown grin cry thinking point_up angry tada heart eggplant hot_pepper cookie fire)
 
   schema "reactions" do
     field(:name, :string, null: false)

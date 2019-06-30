@@ -15,7 +15,7 @@
           <span class="stat-name">Posts</span>
         </div>
         <div class="stat">
-          <span class="stat-value">{{user.stats.followers}}</span>
+          <span class="stat-value">{{user.stats.following}}</span>
           <span class="stat-name">Seguidores</span>
         </div>
         <div class="stat">
@@ -107,15 +107,15 @@
         </template>
       </div>
       <div class="profile-bio" v-html="formattedBio"></div>
-      <div class="profile-followers" v-if="!no_followers">
-        <router-link :to="`/@${user.username}`" v-for="(user, index) in followers" :key="index">
+      <div class="profile-following" v-if="!no_following">
+        <router-link :to="`/@${user.username}`" v-for="(user, index) in following" :key="index">
           <avatar :avatar="user.avatar.small" />
         </router-link>
         <router-link
-          :to="`/@${user.username}/followers`"
-          v-if="user.stats.friends > followers.length"
+          :to="`/@${user.username}/following`"
+          v-if="user.stats.friends > following.length"
           class="more-friends"
-        >Y {{ user.stats.friends - followers.length }} más le siguen</router-link>
+        >Y {{ user.stats.friends - following.length }} seguidos más</router-link>
       </div>
     </div>
   </div>
@@ -136,13 +136,13 @@ export default {
       type: Object,
       required: true
     },
-    no_followers: {
+    no_following: {
       type: Boolean,
       default: false
     }
   },
   data: () => ({
-    followers: [],
+    following: [],
     mouseInUnfollow: false
   }),
   computed: {
@@ -194,16 +194,14 @@ export default {
         { height: "auto", adaptive: true, maxWidth: 400, scrollable: true }
       );
     },
-    fetch_followers() {
-      user
-        .getFollowing({ id: this.$store.state.userProfile.id, limit: 10 })
-        .then(res => {
-          this.followers = res.items.slice(0, 10);
-        });
+    fetch_following() {
+      user.getFollowing({ id: this.user.id, limit: 10 }).then(res => {
+        this.following = res.items.slice(0, 10);
+      });
     }
   },
   mounted() {
-    if (!this.no_followers) this.fetch_followers();
+    if (!this.no_following) this.fetch_following();
   }
 };
 </script>
@@ -279,7 +277,7 @@ export default {
   justify-content: center;
   padding: 10px;
 }
-.profile-followers {
+.profile-following {
   display: flex;
   flex-direction: row;
   justify-content: center;

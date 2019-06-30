@@ -378,7 +378,6 @@ defmodule Embers.Helpers.OldDbConverter do
 
   defp translate_reaction(name) do
     case name do
-      "hot_pepper" -> "fire"
       "angry_sock" -> "angry"
       same -> same
     end
