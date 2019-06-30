@@ -6,6 +6,7 @@ import highlight from 'rehype-highlight'
 import html from 'rehype-stringify'
 import emojiToShortcode from 'remark-gemoji-to-emoji'
 import disableTokens from 'remark-disable-tokenizers'
+import breaks from 'remark-breaks';
 
 import emoji from './emoji'
 import emote from './emote'
@@ -21,7 +22,7 @@ function htmlDecode(input) {
   return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
 }
 
-export default input => {
+function format(input) {
   let res = unified()
     .use(mdParse, {
       gfm: true
@@ -32,7 +33,7 @@ export default input => {
         'blockquote',
         'atxHeading',
         'list',
-        'table',
+        'table'
       ],
     })
     .use(emojiToShortcode)
@@ -51,6 +52,7 @@ export default input => {
 
   res = unified()
     .use(mdParse)
+    .use(breaks)
     .use(disableTokens, {
       block: [
         'list', 'indentedCode', 'html', 'atxHeading', 'setextHeading', 'table', 'blockquote'
@@ -76,4 +78,8 @@ export default input => {
     .processSync(res)
 
   return res.toString()
+}
+
+export default input => {
+  return format(input).replace("\n", "</br>")
 }
