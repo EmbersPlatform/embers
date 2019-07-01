@@ -1,25 +1,12 @@
 <template>
   <div class="media-zone many-medias">
-    <media-item
-      v-if="first_media.type == 'image'"
+    <media-preview
+      v-if="little"
       :media="first_media"
-      :style="`max-height: ${preview_height};`"
       @clicked="clicked(first_media)"
+      class="media-zone__first-media"
     />
-    <template v-else>
-      <media-preview
-        v-if="little"
-        :media="first_media"
-        @clicked="clicked(first_media)"
-        class="media-zone__first-media"
-      />
-      <media-preview
-        v-else
-        :media="first_media"
-        @clicked="clicked(first_media)"
-        :style="`height: ${preview_height};`"
-      />
-    </template>
+    <media-preview v-else :media="first_media" @clicked="clicked(first_media)" />
 
     <div class="row" ref="minis">
       <media-preview
@@ -84,32 +71,29 @@ export default {
 
 <style lang="scss">
 .media-zone.many-medias {
+  display: flex;
+  flex-direction: row;
   & > .media-preview {
-    width: 100%;
-    height: 75vw;
-    margin-bottom: 5px;
-  }
-  & > .media {
-    justify-content: flex-start;
-    margin-bottom: 5px;
-    overflow: hidden;
-    img {
-      width: 100%;
+    flex-grow: 1;
+    border-right: 2px solid transparent;
+    height: auto;
+    .media-preview__image {
+      padding-top: 100%;
+      height: fit-content;
     }
   }
   .row {
+    flex-basis: 33%;
+    flex-shrink: 0;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     .media-preview {
       flex-grow: 1;
       width: auto;
       height: fit-content;
       justify-content: space-between;
-      &:not(:last-child) {
-        margin-right: 5px;
-      }
-      .media-preview__image {
-        padding-top: 75%;
+      &:not(:first-child) {
+        border-top: 2px solid transparent;
       }
     }
   }
