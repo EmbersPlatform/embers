@@ -1,19 +1,19 @@
 <template>
   <div class="media-preview big" @click="clicked">
     <div v-if="big" class="media-preview__image--big">
-      <img v-if="media.type == 'image'" :src="media.url">
-      <img v-else :src="media.metadata.preview_url">
+      <img v-if="media.type == 'image'" :src="media.url" />
+      <img v-else :src="media.metadata.preview_url" />
       <div v-if="overflowed" class="media-preview__overflowed-button">
-        <i class="fas fa-caret-down"/>
+        <i class="fas fa-caret-down" />
       </div>
     </div>
     <div
       v-else
       class="media-preview__image"
-      :style="{'background-image': `url(${media.metadata.preview_url})`}"
+      :style="{'background-image': `url(${(high_res && media.type == 'image') ? media.url : media.metadata.preview_url})`}"
     />
     <div v-if="media.type == 'video'" class="media-preview__play-button">
-      <i class="fas fa-play"/>
+      <i class="fas fa-play" />
     </div>
     <div v-if="media.type == 'gif'" class="media-preview__gif-button">
       <span>GIF</span>
@@ -30,6 +30,10 @@ export default {
       required: true
     },
     big: {
+      type: Boolean,
+      default: false
+    },
+    high_res: {
       type: Boolean,
       default: false
     }

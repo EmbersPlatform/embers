@@ -5,8 +5,9 @@
       :media="first_media"
       @clicked="clicked(first_media)"
       class="media-zone__first-media"
+      high_res
     />
-    <media-preview v-else :media="first_media" @clicked="clicked(first_media)" />
+    <media-preview v-else :media="first_media" @clicked="clicked(first_media)" high_res />
 
     <div class="row" ref="minis">
       <media-preview
