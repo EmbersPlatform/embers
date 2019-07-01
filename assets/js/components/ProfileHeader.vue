@@ -15,7 +15,7 @@
           <span class="stat-name">Posts</span>
         </div>
         <div class="stat">
-          <span class="stat-value">{{user.stats.following}}</span>
+          <span class="stat-value">{{user.stats.followers}}</span>
           <span class="stat-name">Seguidores</span>
         </div>
         <div class="stat">
