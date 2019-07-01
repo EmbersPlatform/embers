@@ -267,8 +267,6 @@ export default {
       font-size: 2em;
       font-weight: 400;
     }
-    .stat-name {
-    }
   }
 }
 .profile-actions {

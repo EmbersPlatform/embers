@@ -18,7 +18,7 @@
           rel="editor"
         ></Editor>
         <div v-if="with_tags" class="tags-wrapper tool" :class="{'compact': !canShowEditor}">
-          <input type="text" placeholder="Tags separados por espacios" v-model="post.tags">
+          <input type="text" placeholder="Tags separados por espacios" v-model="post.tags" />
         </div>
 
         <div class="tool" v-if="status.loading_link">
@@ -36,7 +36,7 @@
           <span class="remove-link" @click="remove_link">
             <i class="fa fa-times"></i>
           </span>
-          <link-item :link="post.links[0]"/>
+          <link-item :link="post.links[0]" @clicked="media_clicked" />
         </div>
 
         <attachments-zone
@@ -70,7 +70,7 @@
                 multiple
                 ref="imageUploadInput"
                 @change="uploadFiles"
-              >
+              />
             </form>
           </div>
           <div class="m_block">
@@ -325,9 +325,25 @@ export default {
       return true;
     },
     media_clicked(id) {
-      const index = this.post.medias.findIndex(m => m.id == id);
+      let medias = this.post.medias;
+      let index = this.post.medias.findIndex(m => m.id == id);
+      if (!medias.length) {
+        const link = this.post.links[0];
+        medias = [
+          {
+            id: link.id,
+            url: link.url,
+            type: "image",
+            metadata: {
+              preview_url: link.url
+            },
+            timestamp: 1
+          }
+        ];
+        index = 0;
+      }
       this.$store.dispatch("media_slides/open", {
-        medias: this.post.medias,
+        medias: medias,
         index: index
       });
     },

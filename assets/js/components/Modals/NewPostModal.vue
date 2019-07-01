@@ -54,27 +54,31 @@ export default {
       default: null
     }
   },
+  data: () => ({
+    body: null
+  }),
   components: { Editor, Card },
   computed: {
     can_publish() {
       return true;
-    },
-    post_data() {
-      return data.post;
     }
   },
   methods: {
     update_body(body) {
-      data.post.body = body;
+      this.body = body;
     },
     close() {
+      this.$emit("reset");
       EventBus.$emit("close_new_post_modal");
     },
     click_outside(event) {
       if (event.target == this.$refs.root) this.close();
     },
     async add_post() {
-      let requestData = { ...data.post, related_to_id: this.related.id };
+      let requestData = {
+        body: this.body,
+        related_to_id: this.related.id
+      };
 
       try {
         let res = await post.create(requestData);

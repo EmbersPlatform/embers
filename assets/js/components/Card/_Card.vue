@@ -162,7 +162,7 @@
           >Ir al post</router-link>
         </div>
         <div v-if="post.links && post.links.length && !post.media.length" class="links">
-          <link-item :link="post.links[0]" />
+          <link-item :link="post.links[0]" @clicked="media_clicked" />
         </div>
         <div class="multimedia" v-if="post.media.length">
           <media-zone
@@ -691,9 +691,25 @@ export default {
         this.post.nsfw && this.$store.getters.settings.content_nsfw === "ask";
     },
     media_clicked(id) {
-      const index = this.post.media.findIndex(m => m.id == id);
+      let medias = this.post.media;
+      let index = this.post.media.findIndex(m => m.id == id);
+      if (!medias.length) {
+        const link = this.post.links[0];
+        medias = [
+          {
+            id: link.id,
+            url: link.url,
+            type: "image",
+            metadata: {
+              preview_url: link.url
+            },
+            timestamp: 1
+          }
+        ];
+        index = 0;
+      }
       this.$store.dispatch("media_slides/open", {
-        medias: this.post.media,
+        medias: medias,
         index: index
       });
     },

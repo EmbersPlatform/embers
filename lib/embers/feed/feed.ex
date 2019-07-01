@@ -134,7 +134,7 @@ defmodule Embers.Feed do
             :links,
             :tags,
             :reactions,
-            [related_to: [:media, :links, user: :meta]]
+            [related_to: [:media, :links, :tags, :reactions, user: :meta]]
           ])
           |> Post.fill_nsfw()
 

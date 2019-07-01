@@ -14,7 +14,7 @@
         :key="reaction"
         :active="reaction == current_reaction"
       >
-        <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji">
+        <img :src="`/img/emoji/${reaction}.svg`" :alt="reaction" class="emoji" />
         {{ count }}
       </div>
       <button
@@ -38,11 +38,12 @@
         >
           <avatar :avatar="reaction.user.avatar.small"></avatar>
           <div class="reaction-icon">
-            <img :src="`/img/emoji/${reaction.name}.svg`" class="emoji">
+            <img :src="`/img/emoji/${reaction.name}.svg`" class="emoji" />
           </div>
           <strong>{{ reaction.user.username }}</strong>
         </router-link>
-        <intersector @intersect="load_more_reactions"/>
+        <div class="loading-text" v-if="no_reactions">No hay reacciones para mostrar.</div>
+        <intersector @intersect="load_more_reactions" />
         <div class="loading-text" v-if="loading_more_reactions">Cargando mas reacciones...</div>
       </div>
     </div>
@@ -74,6 +75,11 @@ export default {
       next: null,
       current_reaction: "all"
     };
+  },
+  computed: {
+    no_reactions() {
+      return !this.loading_more_reactions && !this.reactions.length;
+    }
   },
   methods: {
     selectReaction(reaction) {
@@ -164,5 +170,6 @@ export default {
   width: 100%;
   text-align: center;
   padding: 5px 10px;
+  box-sizing: border-box;
 }
 </style>

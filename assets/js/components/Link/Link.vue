@@ -1,16 +1,17 @@
 <template>
-  <a class="link-item" :href="link.url" target="_blank">
+  <div v-if="link.embed.type == 'image'" class="multimedia">
+    <div class="media-zone">
+      <media-item :medias="[image_media]" @clicked="image_clicked" />
+    </div>
+  </div>
+  <a v-else class="link-item" :href="link.url" target="_blank">
     <div v-if="link.embed.html" class="link-item__oembed" v-html="link.embed.html"></div>
     <div v-else class="link-item__thumbnail">
-      <img :src="link.embed.thumbnail_url">
+      <img :src="link.embed.thumbnail_url" />
     </div>
     <div class="link-item__details">
-      <p class="link-item__title" v-if="link.embed.title" v-text="title"/>
-      <p
-        class="link-item__description"
-        v-if="link.embed.description"
-        v-text="description"
-      />
+      <p class="link-item__title" v-if="link.embed.title" v-text="title" />
+      <p class="link-item__description" v-if="link.embed.description" v-text="description" />
       <p v-if="link.embed.price" class="link-item__price" v-text="link.embed.price"></p>
       <p class="link-item__url" v-text="url"></p>
     </div>
@@ -18,10 +19,12 @@
 </template>
 
 <script>
-import ellipsize from 'ellipsize';
+import ellipsize from "ellipsize";
+import MediaItem from "@/components/Media/MediaZone";
 
 export default {
   name: "Link",
+  components: { MediaItem },
   props: {
     link: {
       type: Object,
@@ -36,7 +39,25 @@ export default {
       return ellipsize(this.link.embed.description, 200);
     },
     url() {
-      return ellipsize(this.link.url, 60)
+      return ellipsize(this.link.url, 60);
+    },
+    image_media() {
+      if (this.link.embed.type == "image") {
+        const link = this.link;
+        return {
+          id: link.id,
+          url: link.url,
+          type: "image",
+          metadata: {
+            preview_url: link.url
+          }
+        };
+      }
+    }
+  },
+  methods: {
+    image_clicked(id) {
+      this.$emit("clicked", id);
     }
   }
 };
@@ -59,7 +80,6 @@ export default {
 
   img {
     border-radius: 2px;
-    transform: translateY(15px);
     max-width: 100%;
     max-height: 400px;
   }
@@ -68,9 +88,7 @@ export default {
 
 .link-item__oembed {
   text-align: center;
-  transform: translateY(15px);
   z-index: 2;
-  padding: 0 20px;
 
   @media #{$query-mobile} {
     padding: 0;
@@ -92,9 +110,7 @@ export default {
 }
 
 .link-item__details {
-  background: lighten($dark, 5%);
-  padding: 20px;
-  padding-top: 35px;
+  padding: 10px 20px;
   border-radius: 2px;
 }
 
