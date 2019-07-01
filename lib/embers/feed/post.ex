@@ -102,10 +102,17 @@ defmodule Embers.Feed.Post do
 
   def fill_nsfw(%Post{} = post) do
     if Ecto.assoc_loaded?(post.tags) do
-      %{
+      post = %{
         post
         | nsfw: Enum.any?(post.tags, fn tag -> String.downcase(tag.name) == "nsfw" end)
       }
+
+      post =
+        if Ecto.assoc_loaded?(post.related_to) do
+          %{post | related_to: fill_nsfw(post.related_to)}
+        end || post
+
+      post
     else
       post
     end

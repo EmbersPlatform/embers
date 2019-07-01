@@ -28,11 +28,14 @@ defmodule Embers.Tags do
   end
 
   def get_by_name(name) when is_binary(name) do
-    Repo.one(from(tag in Tag, where: ilike(tag.name, ^name), limit: 1))
+    name = String.downcase(name)
+
+    Repo.one(from(tag in Tag, where: fragment("LOWER(?) = ?", tag.name, ^name), limit: 1))
+    |> IO.inspect(label: "EXISTENTES")
   end
 
   def create_tag(%{"name" => name}) do
-    case Repo.get_by(Tag, name: name) do
+    case get_by_name(name) do
       nil -> insert_tag(name)
       tag -> tag
     end

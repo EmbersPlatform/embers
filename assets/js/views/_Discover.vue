@@ -6,7 +6,7 @@
     <div id="wrapper">
       <div id="content" data-layout-type="masonry">
         <template v-if="$mq == 'sm'">
-          <popular-tags class="item"/>
+          <popular-tags class="item" />
           <card
             class="item"
             v-for="post in posts"
@@ -20,11 +20,11 @@
           v-else
           class="masonry"
           v-masonry
-          transition-duration=".3s"
+          transition-duration="0s"
           item-selector=".item"
           fit-width="true"
         >
-          <popular-tags class="item"/>
+          <popular-tags class="item" />
           <card
             class="item"
             v-for="post in posts"
@@ -34,10 +34,10 @@
             v-masonry-tile
           ></card>
         </div>
+        <intersector @intersect="load_more" />
         <h3 v-if="loading_more">
           <p>Cargando mas...</p>
         </h3>
-        <intersector @intersect="load_more"/>
       </div>
     </div>
   </div>

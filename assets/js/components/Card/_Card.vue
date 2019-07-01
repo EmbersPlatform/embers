@@ -173,13 +173,7 @@
           />
         </div>
         <template v-if="with_related && post.related_to">
-          <card
-            :no_header="isShared"
-            :post="post.related_to"
-            :tools="false"
-            :footer="false"
-            class="related"
-          />
+          <card :no_header="isShared" :post="post.related_to" :tools="false" class="related" />
         </template>
         <template v-if="post.attachment">
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>

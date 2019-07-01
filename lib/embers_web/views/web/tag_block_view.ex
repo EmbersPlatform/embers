@@ -8,8 +8,6 @@ defmodule EmbersWeb.TagBlockView do
   end
 
   def render("tags_paginated.json", %{entries: tags} = metadata) do
-    tags |> IO.inspect()
-
     %{
       items: render_many(tags, __MODULE__, "tag.json"),
       next: metadata.next,

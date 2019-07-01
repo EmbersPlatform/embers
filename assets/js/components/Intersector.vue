@@ -1,5 +1,5 @@
 <template>
-  <div class="intersector"/>
+  <div class="intersector" />
 </template>
 
 <script>
@@ -31,6 +31,8 @@ export default {
 <style lang="scss">
 .intersector {
   height: 1px;
+  width: 100%;
+  display: block;
 }
 </style>
 

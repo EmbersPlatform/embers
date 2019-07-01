@@ -29,7 +29,6 @@ defmodule EmbersWeb.Authenticate do
           user -> {:ok, user}
         end
     end
-    |> IO.inspect()
   end
 
   def report({:ok, user}, meta) do

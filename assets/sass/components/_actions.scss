@@ -64,7 +64,8 @@
         }
       }
       ul {
-        width: 120px;
+        max-width: 150px;
+        justify-content: space-between;
         height: auto;
         position: absolute;
         background: $darker;

@@ -282,7 +282,7 @@ defmodule Embers.Feed do
       Repo.update_all(
         from(
           p in Post,
-          where: p.id == ^post.parent_id,
+          where: p.id == ^post.related_to_id,
           update: [inc: [shares_count: -1]]
         ),
         []
@@ -398,15 +398,42 @@ defmodule Embers.Feed do
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        left_join: tags in assoc(post, :tags),
-        where: user.id not in ^blocked_users,
-        where: tags.id not in ^blocked_tags or is_nil(tags),
         preload: [:tags, :reactions, :links, :media, user: {user, meta: meta}]
       )
+      |> maybe_block_users(blocked_users)
 
     query
     |> Paginator.paginate(opts)
     |> fill_nsfw()
+    |> filter_tags(blocked_tags)
+  end
+
+  defp maybe_block_users(query, []) do
+    query
+  end
+
+  defp maybe_block_users(query, blocked_users) do
+    from(
+      p in query,
+      left_join: user in assoc(p, :user),
+      where: user.id not in ^blocked_users
+    )
+  end
+
+  defp filter_tags(page, blocked_tags) do
+    entries = page.entries
+
+    entries =
+      entries
+      |> Enum.reject(fn item ->
+        names =
+          item.tags
+          |> Enum.map(fn tag -> String.downcase(tag.name) end)
+
+        Enum.any?(names, fn name -> name in blocked_tags end)
+      end)
+
+    %{page | entries: entries}
   end
 
   def get_timeline(user_id, opts \\ []) do
@@ -426,7 +453,13 @@ defmodule Embers.Feed do
           }
         ],
         preload: [
-          post: [:media, :links, :tags, :reactions, related_to: [:media, :links, user: :meta]]
+          post: [
+            :media,
+            :links,
+            :tags,
+            :reactions,
+            related_to: [:media, :tags, :links, :reactions, user: :meta]
+          ]
         ]
       )
 

@@ -11,7 +11,7 @@
 		</div>
 		<div class="block" data-layout-type="column">
 			<form id="cover-upload" method="post" enctype="multipart/form-data">
-				<label>La portada se redimensionará a 800x400 píxeles.</label>
+				<label>La portada se redimensionará a 960x320 píxeles.</label>
 				<button :disabled="loading" @click.prevent="selectImage" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>{{loading ? 'Subiendo...' : 'Cambiar portada'}}</button>
 				<input class="hidden" type="file" name="cover" @change="uploadCover">
 			</form>
