@@ -1,5 +1,5 @@
 <template>
-  <div class="media-preview big" @click="clicked">
+  <div class="media-preview big" :class="{full_height: !overflowed}" @click="clicked">
     <div v-if="big" class="media-preview__image--big">
       <img v-if="media.type == 'image'" :src="media.url" />
       <img v-else :src="media.metadata.preview_url" />
@@ -40,6 +40,8 @@ export default {
   },
   computed: {
     overflowed() {
+      if (!this.$store.state.settings.settings.content_collapse_media)
+        return false;
       if (this.media.metadata.height == "undefined") return false;
       return this.media.metadata.height > 500;
     }
@@ -65,6 +67,14 @@ export default {
   background-position: center;
   flex-grow: 1;
   height: 160px;
+
+  &.full_height {
+    max-height: inherit !important;
+
+    .media-preview__image--big {
+      max-height: inherit !important;
+    }
+  }
 
   &.big {
     height: auto;

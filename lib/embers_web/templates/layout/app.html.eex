@@ -135,6 +135,7 @@
       settings: {
         content_nsfw: "<%= @user.settings.content_nsfw %>",
         content_lowres_images: <%= @user.settings.content_lowres_images %>,
+        content_collapse_media: <%= @user.settings.content_collapse_media %>,
         privacy_show_status: <%= @user.settings.privacy_show_status %>,
         privacy_show_reactions: <%= @user.settings.privacy_show_reactions %>
       }

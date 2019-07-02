@@ -10,7 +10,7 @@
             v-model="settings.content_nsfw"
             value="show"
             :checked="settings.content_nsfw == 'show'"
-          >
+          />
           <label for="settings-nsfw-show">Mostrar el contenido NSFW</label>
         </div>
         <div class="_line">
@@ -20,7 +20,7 @@
             v-model="settings.content_nsfw"
             value="ask"
             :checked="settings.content_nsfw == 'ask'"
-          >
+          />
           <label for="settings-nsfw-ask">Preguntar antes de mostrar</label>
         </div>
         <div class="_line">
@@ -30,9 +30,17 @@
             v-model="settings.content_nsfw"
             value="hide"
             :checked="settings.content_nsfw == 'hide'"
-          >
+          />
           <label for="settings-nsfw-hide">No mostrarme contenido NSFW</label>
         </div>
+
+        <h2>Imágenes</h2>
+        <input-switch
+          class="_line"
+          value="text"
+          v-model="settings.content_collapse_media"
+          :checked="settings.content_collapse_media"
+        >Contraer imágenes muy largas.</input-switch>
         <button
           :disabled="loading"
           @click.prevent="update()"
@@ -93,6 +101,7 @@ export default {
    */
   created() {
     this.settings.content_nsfw = this.$store.getters.settings.content_nsfw;
+    this.settings.content_collapse_media = this.$store.getters.settings.content_collapse_media;
   }
 };
 </script>
