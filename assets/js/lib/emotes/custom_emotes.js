@@ -2,8 +2,7 @@
  * @todo retrieve custom emotes from server
  */
 
-export default [
-  {
+export default [{
     name: "Smutley",
     short_names: ["smutley"],
     keywords: ["smutley"],
@@ -56,6 +55,36 @@ export default [
     short_names: ["horsello"],
     keywords: ["horsello"],
     imageUrl: "/img/emotes/horsello.png"
+  },
+  {
+    name: "Omegalul",
+    short_names: ["omegalul"],
+    keywords: ["omegalul"],
+    imageUrl: "/img/emotes/omegalul.png"
+  },
+  {
+    name: "Dorgan",
+    short_names: ["dorgan"],
+    keywords: ["dorgan"],
+    imageUrl: "/img/emotes/dorgan.png"
+  },
+  {
+    name: "Tomwat",
+    short_names: ["tomwat"],
+    keywords: ["tomwat"],
+    imageUrl: "/img/emotes/tomwat.png"
+  },
+  {
+    name: "Kuru",
+    short_names: ["kuru"],
+    keywords: ["kuru"],
+    imageUrl: "/img/emotes/kuru.png"
+  },
+  {
+    name: "Bob",
+    short_names: ["bob"],
+    keywords: ["bob"],
+    imageUrl: "/img/emotes/bob.png"
   },
   {
     name: "Coffee Cup",

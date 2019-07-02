@@ -54,6 +54,11 @@ body {
     overflow: hidden;
   }
 }
+
+.emoji-mart-emoji span {
+  background-repeat: no-repeat;
+  background-position: center;
+}
 //inicia #APPEX CHILDS
 @import "layout/module";
 //termina #APPEX CHILDS
