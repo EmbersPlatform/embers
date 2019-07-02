@@ -210,17 +210,8 @@ export default {
           window.scrollTo(0, this.previousScrollPosition);
           this.loading = false;
         });
-    }
-  },
-
-  /**
-   * Triggered when a component instance is created
-   */
-  created() {
-    this.reload();
-    this.$root.$on("refresh_feed", this.reload);
-    this.$root.$on("addFeedPost", new_post => this.posts.unshift(new_post));
-    this.$root.$on("prepend_new_posts", () => {
+    },
+    prepend_new_posts() {
       const new_posts = this.concat_post(this.$store.state.feed.new_posts).map(
         x => {
           x.new = true;
@@ -233,12 +224,23 @@ export default {
       });
       this.posts = [...new_posts, ...old_posts];
       this.$store.dispatch("reset_new_posts");
-    });
+    }
+  },
+
+  /**
+   * Triggered when a component instance is created
+   */
+  created() {
+    this.reload();
+    this.$root.$on("refresh_feed", this.reload);
+    this.$root.$on("addFeedPost", new_post => this.posts.unshift(new_post));
+    this.$root.$on("prepend_new_posts", this.prepend_new_posts);
     this.noMasonry(); //check if can show masonry at page load
     window.addEventListener("resize", this.noMasonry);
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.noMasonry);
+    this.$root.$off("prepend_new_posts", this.prepend_new_posts);
   }
 };
 </script>
