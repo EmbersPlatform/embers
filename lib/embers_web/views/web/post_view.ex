@@ -41,7 +41,7 @@ defmodule EmbersWeb.PostView do
 
     if Map.get(assigns, :with_related, true) do
       view
-      |> handle_related(post)
+      |> handle_related(post, assigns)
     end || view
   end
 
@@ -113,12 +113,13 @@ defmodule EmbersWeb.PostView do
     end || view
   end
 
-  defp handle_related(view, post) do
+  defp handle_related(view, post, assigns) do
     if Ecto.assoc_loaded?(post.related_to) && not is_nil(post.related_to) do
       Map.put(
         view,
         "related_to",
         render(__MODULE__, "post.json", %{post: post.related_to, with_related: false})
+        |> handle_reactions(post.related_to, assigns)
       )
     end || view
   end

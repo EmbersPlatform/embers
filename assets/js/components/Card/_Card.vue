@@ -513,14 +513,15 @@ export default {
      * @todo Implement multiple reactions
      */
     react(reaction) {
+      const has_reacted =
+        _.find(this.post.reactions, x => {
+          return x.name == reaction && x.reacted;
+        }) != undefined;
       this.isPicker = false;
       if (this.isOwner) {
         return;
       }
-      if (
-        this.post.reactions[reaction] &&
-        this.post.reactions[reaction].reacted
-      ) {
+      if (has_reacted) {
         post.deleteReaction(this.post.id, reaction).then(res => {
           this.post.reacted = true;
           this.post.reactions = res.reactions;

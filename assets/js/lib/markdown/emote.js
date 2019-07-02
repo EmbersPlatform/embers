@@ -5,6 +5,7 @@ const emotesList = [
   'shipit',
   'sanguche',
   'angrysock',
+  'angry_sock',
   'horsello',
   'pepe',
   'pls',

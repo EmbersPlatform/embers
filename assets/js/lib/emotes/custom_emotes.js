@@ -28,8 +28,8 @@ export default [{
   },
   {
     name: "Angry Sock",
-    short_names: ["angry_sock"],
-    keywords: ["angry_sock", "angry", "sock"],
+    short_names: ["angrysock", "angry_sock"],
+    keywords: ["angry_sock", "angrysock", "angry", "sock"],
     imageUrl: "/img/emotes/angrysock.png"
   },
   {
