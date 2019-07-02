@@ -221,7 +221,12 @@ export default {
     this.$root.$on("refresh_feed", this.reload);
     this.$root.$on("addFeedPost", new_post => this.posts.unshift(new_post));
     this.$root.$on("prepend_new_posts", () => {
-      const new_posts = this.$store.state.feed.new_posts;
+      const new_posts = this.concat_post(this.$store.state.feed.new_posts).map(
+        x => {
+          x.new = true;
+          return x;
+        }
+      );
       const old_posts = this.posts.map(p => {
         p.new = false;
         return p;
