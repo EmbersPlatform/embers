@@ -136,7 +136,7 @@ const initialData = function() {
       nsfw: false,
       medias: [],
       links: [],
-      tags: [],
+      tags: "",
       related_to_id: null,
       parent_id: null
     },
@@ -181,7 +181,7 @@ export default {
     },
     initial_tags: {
       type: Array,
-      default: []
+      default: () => []
     },
     flat: {
       type: Boolean,
