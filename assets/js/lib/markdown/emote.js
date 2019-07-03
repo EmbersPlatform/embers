@@ -15,7 +15,8 @@ const emotesList = [
   'bob',
   'shock',
   'tomwat',
-  'omegalul'
+  'omegalul',
+  'comfy'
 ]
 
 const EMOTE_REGEX = new RegExp(':(' + emotesList.join('|') + '):')

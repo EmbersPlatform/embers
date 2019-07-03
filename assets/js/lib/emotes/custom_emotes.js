@@ -87,6 +87,12 @@ export default [{
     imageUrl: "/img/emotes/bob.png"
   },
   {
+    name: "Comfy",
+    short_names: ["comfy"],
+    keywords: ["comfy"],
+    imageUrl: "/img/emotes/comfy.png"
+  },
+  {
     name: "Coffee Cup",
     short_names: ["w_coffeecup"],
     keywords: ["coffeecup", "coffee", "cup"],
