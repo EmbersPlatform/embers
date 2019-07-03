@@ -16,7 +16,7 @@
         item-selector=".little"
         fit-width="true"
       >
-        <template v-for="(post, index) in posts">
+        <template v-for="(post, index) in concated_posts">
           <Card
             v-if="post.isShared"
             v-masonry-tile
@@ -33,14 +33,14 @@
             :post="post"
             v-masonry-tile
             class="little"
-            :key="post.id"
+            :key="index"
             :showThumbnail="showThumbnail"
             :size="size"
           ></Card>
         </template>
       </div>
     </template>
-    <template v-else v-for="(post, index) in posts">
+    <template v-else v-for="(post, index) in concated_posts">
       <Card
         v-if="post.isShared"
         :post="post.source"
@@ -50,7 +50,7 @@
         :isShared="post.isShared"
         :size="size"
       ></Card>
-      <Card v-else :post="post" :key="post.id" :showThumbnail="showThumbnail" :size="size"></Card>
+      <Card v-else :post="post" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
     </template>
     <intersector @intersect="loadMore" style="height: 10px;" />
     <template v-if="reachedBottom && !loading && !refreshing">
@@ -110,6 +110,10 @@ export default {
     },
     infiniteScrollStill() {
       return this.loading || this.reachedBottom;
+    },
+    concated_posts() {
+      const posts = _.uniqBy(this.posts, "id");
+      return this.concat_post(posts);
     }
   },
   methods: {
@@ -124,33 +128,45 @@ export default {
     // Concatena shared post que se siguen el uno al otro
     // TODO concatenar post entre peticiones loadmore y vista actual
     concat_post(items) {
-      outer: for (var i = 0; i < items.length; i++) {
-        if (
-          items[i].related_to != null &&
-          (items[i].body == null || items[i].body == "")
-        ) {
-          var sharers = [items[i].user];
-          inner: for (var o = i + 1; o < items.length; o++) {
-            if (items[o].related_to != null && items[o].body == null) {
-              if (items[o].related_to.id == items[i].related_to.id) {
-                //is another shared from same post, save and delete
-                sharers.push(items[o].user);
-                items.splice(o, 1);
-                o -= 1;
-              }
-            } else {
-              if (items[o].id == items[i].related_to.id) {
-                //is original post
-                items.splice(o, 1);
-                break inner;
-              }
+      const { posts } = items.reduce(
+        (acc, post, index, posts) => {
+          if (post.related_to == null) {
+            if (
+              _.find(posts, x => x.related_to && x.related_to.id == post.id) ==
+              undefined
+            ) {
+              acc.posts.push(post);
+            }
+          } else if (post.body != null && post.body != "") {
+            acc.posts.push(post);
+          } else {
+            if (
+              _.find(
+                acc.remaining,
+                x => x.related_to && x.related_to.id == post.related_to.id
+              ) != undefined
+            ) {
+              let sharers = [post.user];
+              const is_new = post.new;
+              post = post.related_to;
+              post.new = is_new;
+              acc.remaining = acc.remaining.splice(index, 1);
+              const other_related = acc.remaining
+                .filter(p => p.related_to.id != post.id)
+                .map(p => p.user);
+              sharers.push(...other_related);
+              post.sharers = sharers;
+              acc.remaining = acc.remaining.filter(x =>
+                other_related.includes(x)
+              );
+              acc.posts.push(post);
             }
           }
-          items[i] = items[i]["related_to"];
-          items[i]["sharers"] = _.uniqBy(sharers, x => x.username);
-        }
-      }
-      return items;
+          return acc;
+        },
+        { posts: [], remaining: items }
+      );
+      return posts;
     },
     getPreviousScrollPosition() {
       this.previousScrollPosition = $(window).scrollTop();
@@ -161,7 +177,7 @@ export default {
       feed
         .get(this.name, { filters: this.filters })
         .then(res => {
-          var _res = this.concat_post(res.items);
+          var _res = res.items;
           if (this._inactive) {
             return;
           }
@@ -196,7 +212,7 @@ export default {
           filters: this.filters
         })
         .then(res => {
-          var _res = this.concat_post(res.items);
+          var _res = res.items;
           if (this._inactive) {
             return;
           }
@@ -212,15 +228,10 @@ export default {
         });
     },
     prepend_new_posts() {
-      const new_posts = this.concat_post(this.$store.state.feed.new_posts).map(
-        x => {
-          x.new = true;
-          return x;
-        }
-      );
-      const old_posts = this.posts.map(p => {
-        p.new = false;
-        return p;
+      const new_posts = this.$store.state.feed.new_posts;
+      const old_posts = this.posts.map(x => {
+        x.new = false;
+        return x;
       });
       this.posts = [...new_posts, ...old_posts];
       this.$store.dispatch("reset_new_posts");
