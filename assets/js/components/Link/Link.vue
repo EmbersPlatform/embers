@@ -94,6 +94,9 @@ export default {
     padding: 0;
   }
 }
+[data-card-size="little"] .link-item__oembed iframe {
+    max-height: 200px;
+}
 
 .link-item__title {
   color: $narrojo !important;
