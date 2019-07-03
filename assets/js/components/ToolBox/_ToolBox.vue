@@ -136,7 +136,7 @@ const initialData = function() {
       nsfw: false,
       medias: [],
       links: [],
-      tags: "",
+      tags: [],
       related_to_id: null,
       parent_id: null
     },
@@ -178,6 +178,10 @@ export default {
     with_tags: {
       type: Boolean,
       default: true
+    },
+    initial_tags: {
+      type: Array,
+      default: []
     },
     flat: {
       type: Boolean,
@@ -444,6 +448,7 @@ export default {
   },
   created() {
     if (this.related_to) this.post.related_to_id = this.related_to;
+    this.post.tags = this.initial_tags.join(" ");
   },
   beforeDestroy() {
     this.$root.$emit("blurToolBox", false);

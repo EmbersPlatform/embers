@@ -4,37 +4,23 @@
       <Top></Top>
     </div>
     <div id="wrapper">
-      <div id="content" data-layout-type="masonry">
+      <div id="content" data-layout-type="single-column">
         <h3 v-if="loading_tag">
           <p>Cargando tag...</p>
         </h3>
         <div class="tag-info" v-if="tag">
           <div class="tag-title">
             <p class="tag-name">{{tag.name}}</p>
-            <tag-options v-if="user" :tag="tag"/>
+            <tag-options v-if="user" :tag="tag" />
           </div>
           <div class="tag-desc" v-if="tag.desc">{{tag.description}}</div>
         </div>
+        <tool-box v-if="tag" :initial_tags="[tag.name]" type="tag" />
         <h3 v-if="loading_posts">
           <p>Cargando posts...</p>
         </h3>
         <div id="feed">
-          <div
-            class="tag-posts"
-            v-masonry
-            transition-duration=".3s"
-            item-selector=".card"
-            fit-width="true"
-          >
-            <card
-              v-for="post in posts"
-              :key="post.id"
-              :post="post"
-              v-masonry-tile
-              class="little"
-              size="little"
-            ></card>
-          </div>
+          <card v-for="post in posts" :key="post.id" :post="post"></card>
           <h3 v-if="loading_more_posts">
             <p>Cargando mas posts...</p>
           </h3>
@@ -53,10 +39,11 @@ import Top from "@/components/Top";
 import Card from "@/components/Card/_Card";
 import Intersector from "@/components/Intersector";
 import TagOptions from "@/components/Tag/TagOptions";
+import ToolBox from "@/components/ToolBox/_ToolBox";
 
 export default {
   name: "TagInfo",
-  components: { Top, Card, Intersector, TagOptions },
+  components: { Top, Card, Intersector, TagOptions, ToolBox },
   data: () => ({
     tag: null,
     posts: [],

@@ -23,7 +23,7 @@
 	<!-- Windows Phone -->
 	<meta name="msapplication-navbutton-color" content="#26272b">
 	<!-- iOS Safari -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-status-bar-style" content="#26272b">
 	<link rel="icon" href="/favicon.ico?v=3" />
 	<style type="text/css">
 		@keyframes load{

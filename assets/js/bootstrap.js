@@ -74,18 +74,17 @@ Vue.filter("truncate", function (text, stop, clamp) {
  * Store dispatchers
  */
 store.dispatch("setAppData", window.appData);
-store.dispatch("updateUser", window.appData.user);
-store.dispatch("tag/update", window.appData.tags);
-store.dispatch("notifications/update", window.appData.notifications);
-store.dispatch("chat/set_unread_conversations", window.appData.unread_conversations);
 
 if (window.appData.user !== null) {
-  store.dispatch("initNotifications", window.appData.user.unreadNotifications);
   store.dispatch(
     "chat/updateUnreadMessagesCount",
     window.appData.user.unreadChatMessages
   );
   store.dispatch("updateSettings", window.appData.user.settings);
+  store.dispatch("updateUser", window.appData.user);
+  store.dispatch("tag/update", window.appData.tags);
+  store.dispatch("notifications/update", window.appData.notifications);
+  store.dispatch("chat/set_unread_conversations", window.appData.unread_conversations);
 }
 
 sync(store, router);

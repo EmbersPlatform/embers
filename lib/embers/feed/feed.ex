@@ -401,16 +401,14 @@ defmodule Embers.Feed do
         preload: [:tags, :reactions, :links, :media, user: {user, meta: meta}]
       )
       |> maybe_block_users(blocked_users)
+      |> maybe_block_tags(blocked_tags)
 
     query
     |> Paginator.paginate(opts)
     |> fill_nsfw()
-    |> filter_tags(blocked_tags)
   end
 
-  defp maybe_block_users(query, []) do
-    query
-  end
+  defp maybe_block_users(query, []), do: query
 
   defp maybe_block_users(query, blocked_users) do
     from(
@@ -420,20 +418,14 @@ defmodule Embers.Feed do
     )
   end
 
-  defp filter_tags(page, blocked_tags) do
-    entries = page.entries
+  defp maybe_block_tags(query, []), do: query
 
-    entries =
-      entries
-      |> Enum.reject(fn item ->
-        names =
-          item.tags
-          |> Enum.map(fn tag -> String.downcase(tag.name) end)
-
-        Enum.any?(names, fn name -> name in blocked_tags end)
-      end)
-
-    %{page | entries: entries}
+  defp maybe_block_tags(query, blocked_tags) do
+    from(
+      p in query,
+      left_join: tags in assoc(p, :tags),
+      where: is_nil(tags.id) or tags.name not in ^blocked_tags
+    )
   end
 
   def get_timeline(user_id, opts \\ []) do

@@ -198,7 +198,7 @@ defmodule Embers.Tags do
       left_join: user in assoc(post, :user),
       left_join: meta in assoc(user, :meta),
       left_join: tags in assoc(post, :tags),
-      where: tags.name == ^tag,
+      where: ilike(tags.name, ^tag),
       preload: [
         [:media, :links, :reactions, :tags]
       ],
