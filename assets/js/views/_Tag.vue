@@ -15,7 +15,7 @@
           </div>
           <div class="tag-desc" v-if="tag.desc">{{tag.description}}</div>
         </div>
-        <tool-box v-if="tag" :initial_tags="[tag.name]" type="tag" />
+        <tool-box v-if="tag" :initial_tags="[tag.name]" type="tag" @created="prepend_post" />
         <h3 v-if="loading_posts">
           <p>Cargando posts...</p>
         </h3>
@@ -111,6 +111,9 @@ export default {
       this.last_page = res.last_page;
       this.next = res.next;
       this.loading_more_posts = false;
+    },
+    prepend_post(post) {
+      this.posts = [post, ...this.posts];
     }
   },
   mounted() {
