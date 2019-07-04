@@ -153,7 +153,7 @@ export default {
               const other_related = acc.remaining.filter(
                 p =>
                   p.related_to &&
-                  p.related_to.id != post.id &&
+                  p.related_to.id == post.related_to.id &&
                   (post.body == null || post.body == "")
               );
               const other_sharers = other_related.map(p => p.user);
