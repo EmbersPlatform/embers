@@ -150,12 +150,15 @@ export default {
               const is_new = post.new;
               post = post.related_to;
               post.new = is_new;
-              acc.remaining = acc.remaining.splice(index, 1);
-              const other_related = acc.remaining
-                .filter(p => p.related_to.id != post.id)
-                .map(p => p.user);
-              sharers.push(...other_related);
-              post.sharers = sharers;
+              const other_related = acc.remaining.filter(
+                p =>
+                  p.related_to &&
+                  p.related_to.id != post.id &&
+                  (post.body == null || post.body == "")
+              );
+              const other_sharers = other_related.map(p => p.user);
+              sharers.push(...other_sharers);
+              post.sharers = _.uniqBy(sharers, "id");
               acc.remaining = acc.remaining.filter(x =>
                 other_related.includes(x)
               );
