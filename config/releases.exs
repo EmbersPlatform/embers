@@ -2,6 +2,7 @@ import Config
 
 config :embers, Embers.Media, bucket: System.fetch_env!("EMBERS_MEDIA_BUCKET")
 config :embers, Embers.Profile, bucket: System.fetch_env!("EMBERS_PROFILE_BUCKET")
+config :embers, Embers.Email, host: System.fetch_env!("EMBERS_HOST")
 
 # Configure your database
 config :embers, Embers.Repo,

@@ -88,6 +88,6 @@ defmodule EmbersWeb.Email do
   end
 
   defp host do
-    Application.get_env(:embers, EmbersWeb.Endpoint)[:url][:host]
+    Application.get_env(:embers, Embers.Email)[:host]
   end
 end
