@@ -131,17 +131,19 @@ export default {
       const { posts } = items.reduce(
         (acc, post, index, posts) => {
           if (post.related_to == null) {
-            if (
+            const there_is_no_shares =
               _.find(posts, x => x.related_to && x.related_to.id == post.id) ==
-              undefined
-            ) {
+              undefined;
+            if (there_is_no_shares) {
               acc.posts.push(post);
             }
           } else if (post.body != null && post.body != "") {
             acc.posts.push(post);
           } else {
-            if (_.find(acc.remaining, x => x.id == post.id) == undefined)
+            if (_.find(acc.remaining, x => x.id == post.id) == undefined) {
+              // Skip if current post was removed from remaining posts
               return acc;
+            }
             if (
               _.find(
                 acc.remaining,

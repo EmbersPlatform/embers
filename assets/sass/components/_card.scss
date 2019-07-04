@@ -29,13 +29,20 @@
   }
 
   &.related {
-    padding-left: 30px;
+    margin-left: 30px;
+    border-left: 4px solid #eb3d2d44;
+    box-sizing: border-box;
+    width: auto !important;
 
     .card-wrapper {
       border: none;
       border-radius: 0;
       box-shadow: none;
-      border-left: 4px solid rgba(0, 0, 0, 0.1);
+    }
+    .actions {
+      border: none;
+      background: transparent;
+      box-shadow: none !important;
     }
   }
 
@@ -51,9 +58,6 @@
         @include blur(2, em);
       }
     }
-  }
-
-  &[data-card-size="big"] {
   }
 
   &[data-card-size="medium"] {
@@ -414,7 +418,7 @@
   }
 
   &.new > .card-wrapper {
-    border-color: $narrojo;
+    border-color: #aaa;
   }
 }
 

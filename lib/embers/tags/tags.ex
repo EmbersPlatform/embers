@@ -31,7 +31,6 @@ defmodule Embers.Tags do
     name = String.downcase(name)
 
     Repo.one(from(tag in Tag, where: fragment("LOWER(?) = ?", tag.name, ^name), limit: 1))
-    |> IO.inspect(label: "EXISTENTES")
   end
 
   def create_tag(%{"name" => name}) do
@@ -85,8 +84,12 @@ defmodule Embers.Tags do
         tag_post in TagPost,
         where: tag_post.inserted_at >= ^since_date,
         left_join: tag in assoc(tag_post, :tag),
+        where: not ilike(tag.name, "nsfw"),
         group_by: tag.id,
-        select: %{tag: tag, count: fragment("count(?) as tag_count", tag_post.id)},
+        select: %{
+          tag: tag,
+          count: fragment("count(?) as tag_count", tag_post.id)
+        },
         order_by: [desc: fragment("tag_count")],
         limit: ^limit
       )
@@ -102,6 +105,7 @@ defmodule Embers.Tags do
         tag_user in TagSubscription,
         left_join: tag in assoc(tag_user, :source),
         left_join: user in assoc(tag_user, :user),
+        where: not ilike(tag.name, "nsfw"),
         group_by: tag.id,
         select: %{tag: tag, count: fragment("count(?) as user_count", user.id)},
         order_by: [desc: fragment("user_count")],

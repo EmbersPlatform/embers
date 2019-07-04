@@ -594,7 +594,14 @@ defmodule Embers.Feed do
       end
 
     # Crear los tags que hacaen falta y obtener los ids que hacen falta
-    tags_ids = Tags.bulk_create_tags(hashtags)
+    tags_ids =
+      hashtags
+      |> Enum.reject(&(String.length(&1) == 0))
+      |> Enum.map(fn tag ->
+        new_tag = Embers.Tags.create_tag(%{"name" => tag})
+        new_tag.id
+      end)
+      |> Enum.uniq()
 
     # Generar una lista de los datos a insertar en la tabla "tag_post"
     tag_post_list =
