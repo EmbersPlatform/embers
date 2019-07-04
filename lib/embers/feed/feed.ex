@@ -424,7 +424,7 @@ defmodule Embers.Feed do
     from(
       p in query,
       left_join: tags in assoc(p, :tags),
-      where: is_nil(tags.id) or tags.name not in ^blocked_tags
+      where: is_nil(tags.id) or fragment("lower(?)", tags.name) not in ^blocked_tags
     )
   end
 
