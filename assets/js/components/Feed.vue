@@ -140,6 +140,8 @@ export default {
           } else if (post.body != null && post.body != "") {
             acc.posts.push(post);
           } else {
+            if (_.find(acc.remaining, x => x.id == post.id) == undefined)
+              return acc;
             if (
               _.find(
                 acc.remaining,
@@ -159,8 +161,8 @@ export default {
               post = post.related_to;
               post.new = is_new;
               post.sharers = _.uniqBy(sharers, "id");
-              acc.remaining = acc.remaining.filter(x =>
-                other_related.includes(x)
+              acc.remaining = acc.remaining.filter(
+                x => !other_related.includes(x)
               );
               acc.posts.push(post);
             }
