@@ -28,12 +28,11 @@ defmodule EmbersWeb.Email do
   An email with a confirmation link in it.
   """
   def confirm_request(address, key) do
-    port = port()
     host = host()
 
     prep_mail(address)
     |> subject("Confirmar cuenta")
-    |> text_body("Confirma tu cuenta en este enlace http://#{host}#{port}/confirm?key=#{key}")
+    |> text_body("Confirma tu cuenta en este enlace http://#{host}/confirm?key=#{key}")
     |> Mailer.deliver_now()
   end
 
@@ -50,13 +49,12 @@ defmodule EmbersWeb.Email do
   end
 
   def reset_request(address, key) do
-    port = port()
     host = host()
 
     prep_mail(address)
     |> subject("Reset your password")
     |> text_body(
-      "Para restablecer tu contraseña haz clic en este enlace: http://#{host}#{port}/password_resets/edit?key=#{
+      "Para restablecer tu contraseña haz clic en este enlace: http://#{host}/password_resets/edit?key=#{
         key
       }"
     )
@@ -91,13 +89,5 @@ defmodule EmbersWeb.Email do
 
   defp host do
     Application.get_env(:embers, EmbersWeb.Endpoint)[:url][:host]
-  end
-
-  defp port do
-    case System.get_env("PORT") do
-      nil -> ""
-      "80" -> ""
-      port -> ":#{port}"
-    end
   end
 end
