@@ -41,7 +41,7 @@ defmodule EmbersWeb.Email do
   """
   def reset_request(address, nil) do
     prep_mail(address)
-    |> subject("Reset your password")
+    |> subject("Recuperar contraseña")
     |> text_body(
       "You requested a password reset, but no user is associated with the email you provided."
     )
@@ -52,7 +52,7 @@ defmodule EmbersWeb.Email do
     host = host()
 
     prep_mail(address)
-    |> subject("Reset your password")
+    |> subject("Restablecer contraseña")
     |> text_body(
       "Para restablecer tu contraseña haz clic en este enlace: http://#{host}/password_resets/edit?key=#{
         key
@@ -66,8 +66,8 @@ defmodule EmbersWeb.Email do
   """
   def confirm_success(address) do
     prep_mail(address)
-    |> subject("Confirmed account")
-    |> text_body("Your account has been confirmed.")
+    |> subject("Cuenta confirmada")
+    |> text_body("Tu cuenta ha sido confirmada.")
     |> Mailer.deliver_now()
   end
 
@@ -76,8 +76,8 @@ defmodule EmbersWeb.Email do
   """
   def reset_success(address) do
     prep_mail(address)
-    |> subject("Password reset")
-    |> text_body("Your password has been reset.")
+    |> subject("Recuperar contraseña")
+    |> text_body("Tu contraseña ha sido restablecida.")
     |> Mailer.deliver_now()
   end
 
