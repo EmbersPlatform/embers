@@ -59,7 +59,7 @@
       <label class="label">
         Bio:
         <p><%= error_tag m, :bio %></p>
-        <%= text_input m, :bio, class: "input", placeholder: "Descripcion del perfil" %>
+        <%= textarea m, :bio, class: "textarea", placeholder: "Descripcion del perfil" %>
       </label>
     </div>
     <div class="field">
