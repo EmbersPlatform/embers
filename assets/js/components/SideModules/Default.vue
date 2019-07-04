@@ -46,3 +46,10 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+#secondary {
+  position: sticky;
+  top: 20px;
+}
+</style>
