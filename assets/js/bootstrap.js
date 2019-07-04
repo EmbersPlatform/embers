@@ -58,6 +58,10 @@ require("../compiled-icons");
 Vue.use(svgicon);
 Vue.use(VueMasonryPlugin);
 
+import VueCroppie from 'vue-croppie';
+import 'croppie/croppie.css';
+Vue.use(VueCroppie);
+
 Object.defineProperties(Vue.prototype, {
   $moment: {
     get: function () {
