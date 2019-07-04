@@ -16,14 +16,14 @@
         item-selector=".little"
         fit-width="true"
       >
-        <template v-for="(post, index) in concated_posts">
+        <template v-for="post in concated_posts">
           <Card
             v-if="post.isShared"
             v-masonry-tile
             class="little"
             :post="post.source"
             :showThumbnail="showThumbnail"
-            :key="index"
+            :key="post.id"
             :sharer="post.user"
             :isShared="post.isShared"
             :size="size"
@@ -33,24 +33,24 @@
             :post="post"
             v-masonry-tile
             class="little"
-            :key="index"
+            :key="post.id"
             :showThumbnail="showThumbnail"
             :size="size"
           ></Card>
         </template>
       </div>
     </template>
-    <template v-else v-for="(post, index) in concated_posts">
+    <template v-else v-for="post in concated_posts">
       <Card
         v-if="post.isShared"
         :post="post.source"
         :showThumbnail="showThumbnail"
-        :key="index"
+        :key="post.id"
         :sharers="post.sharers"
         :isShared="post.isShared"
         :size="size"
       ></Card>
-      <Card v-else :post="post" :key="index" :showThumbnail="showThumbnail" :size="size"></Card>
+      <Card v-else :post="post" :key="post.id" :showThumbnail="showThumbnail" :size="size"></Card>
     </template>
     <intersector @intersect="loadMore" style="height: 10px;" />
     <template v-if="reachedBottom && !loading && !refreshing">
