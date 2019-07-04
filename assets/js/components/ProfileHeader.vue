@@ -222,9 +222,11 @@ export default {
 }
 
 .profile-cover-image {
-  width: 100%;
-  height: 100%;
+  width: 960px;
+  height: 320px;
   position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .profile-user {
@@ -303,9 +305,6 @@ export default {
   height: auto !important;
   border: 3px solid rgba(0, 0, 0, 0.14);
 }
-</style>
-
-<style lang="scss">
 .profile-bio {
   text-align: center;
   padding: 10px;
