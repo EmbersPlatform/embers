@@ -147,9 +147,6 @@ export default {
               ) != undefined
             ) {
               let sharers = [post.user];
-              const is_new = post.new;
-              post = post.related_to;
-              post.new = is_new;
               const other_related = acc.remaining.filter(
                 p =>
                   p.related_to &&
@@ -158,6 +155,9 @@ export default {
               );
               const other_sharers = other_related.map(p => p.user);
               sharers.push(...other_sharers);
+              const is_new = post.new;
+              post = post.related_to;
+              post.new = is_new;
               post.sharers = _.uniqBy(sharers, "id");
               acc.remaining = acc.remaining.filter(x =>
                 other_related.includes(x)
