@@ -16,7 +16,7 @@ function emojiPlugin(opts = {}) {
     const codepoint = e2u(emoji)
 
     const base = opts.base || '/'
-    const ext = opts.ext || 'svg'
+    const ext = opts.ext || 'png'
 
     return eat(total)({
       type: 'emote',

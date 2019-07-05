@@ -1,11 +1,11 @@
 import unified from 'unified'
 import mdParse from 'remark-parse'
-import mdString from 'remark-stringify'
 import remark2rehype from 'remark-rehype'
 import highlight from 'rehype-highlight'
 import html from 'rehype-stringify'
+import breaks from 'remark-breaks'
 import emojiToShortcode from 'remark-gemoji-to-emoji'
-import disableTokens from 'remark-disable-tokenizers'
+import mdString from 'remark-stringify'
 
 import emoji from './emoji'
 import emote from './emote'
@@ -13,6 +13,24 @@ import mention from './mention'
 import tag from './tag'
 import post from './post'
 import greentext from './greentext';
+
+function noop() {
+  return false;
+}
+
+const disabled_tokenizers = [
+  'html',
+  'blockquote',
+  'table',
+  'definition',
+  'footnote',
+  'atxHeading',
+  'setextHeading'
+]
+
+disabled_tokenizers.forEach(tokenizer => {
+  mdParse.Parser.prototype.blockTokenizers[tokenizer] = noop;
+})
 
 function htmlDecode(input) {
   var e = document.createElement('textarea');
@@ -25,15 +43,6 @@ function format(input) {
   let res = unified()
     .use(mdParse, {
       gfm: true
-    })
-    .use(disableTokens, {
-      block: [
-        'indentedCode',
-        'blockquote',
-        'atxHeading',
-        'list',
-        'table'
-      ],
     })
     .use(emojiToShortcode)
     .use(mdString)
@@ -49,14 +58,11 @@ function format(input) {
 
   res.contents = htmlDecode(res.contents)
 
-  res = unified()
+  res =
+    unified()
     .use(mdParse)
-    .use(disableTokens, {
-      block: [
-        'list', 'indentedCode', 'html', 'atxHeading', 'setextHeading', 'table', 'blockquote'
-      ]
-    })
     .use(greentext)
+    .use(breaks)
     .use(emote, {
       base: '/img/emotes/',
       ext: 'png'
@@ -73,11 +79,11 @@ function format(input) {
       ignoreMissing: true
     })
     .use(html)
-    .processSync(res)
+    .processSync(res.contents)
 
   return res.toString()
 }
 
 export default input => {
-  return format(input).replace("\n", "</br>")
+  return format(input)
 }

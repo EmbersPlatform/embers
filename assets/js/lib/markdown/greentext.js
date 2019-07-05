@@ -22,7 +22,7 @@ function greentextPlugin(opts = {}) {
       type: 'greentext',
       value: greentext,
       data: {
-        hName: 'div',
+        hName: 'span',
         hProperties: {
           class: 'greentext',
         },

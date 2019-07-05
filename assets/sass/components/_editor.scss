@@ -2,6 +2,13 @@
   opacity: 1;
   max-height: 100vh;
 
+  .markup.preview {
+    a {
+      color: $narrojo;
+      font-weight: 400;
+    }
+  }
+
   &.compressed {
     max-height: 100px;
 

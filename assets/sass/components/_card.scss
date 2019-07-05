@@ -124,9 +124,15 @@
           @include font-size(12);
         }
 
-        > p {
-          margin: 0 15px;
+        & > p {
+          p,
+          ul {
+            margin-bottom: 1em;
+          }
+        }
 
+        & > p {
+          margin: 0 15px;
           &:not(:last-child) {
             margin-bottom: 15px;
           }
