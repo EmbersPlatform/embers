@@ -34,6 +34,7 @@ defmodule Embers.Reports.PostReport do
       where: r.resolved == false,
       left_join: post in assoc(r, :post),
       left_join: author in assoc(post, :user),
+      where: is_nil(post.deleted_at),
       group_by: [post.id, author.username],
       select: %{
         post: post,
