@@ -73,22 +73,16 @@
 <script>
 import user from "../../api/user";
 import _ from "lodash";
-
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-  });
-}
+import { blob_to_base64 } from "@/lib/blob_utils";
 
 export default {
   components: {},
   methods: {
     async start_cropping() {
       this.show_cropper = true;
-      this.cropper_image = await getBase64(this.$refs.cover_input.files[0]);
+      this.cropper_image = await blob_to_base64(
+        this.$refs.cover_input.files[0]
+      );
       this.resize_cropper();
     },
     resize_cropper() {
