@@ -243,6 +243,7 @@ export default {
     },
     reset() {
       Object.assign(this.$data, initialData());
+      this.post.tags = this.initial_tags.join(" ");
       this.$emit("reset");
     },
     updateBody(body) {
