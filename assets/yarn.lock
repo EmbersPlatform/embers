@@ -5511,6 +5511,10 @@ relateurl@0.2.x:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
 
+remark-breaks@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/remark-breaks/-/remark-breaks-1.0.3.tgz#9ca5dbf99ad04154bbf0b6e8f227b3735dfe637a"
+
 remark-disable-tokenizers@^1.0.20:
   version "1.0.21"
   resolved "https://registry.yarnpkg.com/remark-disable-tokenizers/-/remark-disable-tokenizers-1.0.21.tgz#2fef1015a1976d28677baab74507c3f91a4c98c6"

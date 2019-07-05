@@ -40,6 +40,7 @@
     "rehype-highlight": "^2.2.1",
     "rehype-prism": "^0.1.1",
     "rehype-stringify": "^5.0.0",
+    "remark-breaks": "^1.0.3",
     "remark-disable-tokenizers": "^1.0.20",
     "remark-gemoji-to-emoji": "^1.1.0",
     "remark-parse": "^6.0.3",
