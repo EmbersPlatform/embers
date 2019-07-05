@@ -29,6 +29,11 @@
         color: $primary;
         > p {
           display: block;
+          margin: 0 10px;
+          line-height: 22px;
+          &:not(:last-child) {
+            margin-bottom: 10px;
+          }
         }
         a {
           color: $narrojo;
