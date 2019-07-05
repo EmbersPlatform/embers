@@ -83,7 +83,7 @@ defmodule Embers.Feed do
 
   def get_post!(id) do
     case get_post(id) do
-      {:error, reason} -> nil
+      {:error, _reason} -> nil
       {:ok, post} -> post
     end
   end
@@ -401,11 +401,11 @@ defmodule Embers.Feed do
         preload: [:tags, :reactions, :links, :media, user: {user, meta: meta}]
       )
       |> maybe_block_users(blocked_users)
-      |> maybe_block_tags(blocked_tags)
 
     query
     |> Paginator.paginate(opts)
     |> fill_nsfw()
+    |> remove_blocked_tags_posts(blocked_tags)
   end
 
   defp maybe_block_users(query, []), do: query
@@ -418,14 +418,19 @@ defmodule Embers.Feed do
     )
   end
 
-  defp maybe_block_tags(query, []), do: query
+  defp remove_blocked_tags_posts(page, []), do: page
 
-  defp maybe_block_tags(query, blocked_tags) do
-    from(
-      p in query,
-      left_join: tags in assoc(p, :tags),
-      where: is_nil(tags.id) or fragment("lower(?)", tags.name) not in ^blocked_tags
-    )
+  defp remove_blocked_tags_posts(page, blocked_tags) do
+    blocked_tags = Enum.map(blocked_tags, &String.downcase/1)
+    entries = page.entries
+
+    entries =
+      entries
+      |> Enum.reject(fn post ->
+        Enum.any?(post.tags, fn tag -> String.downcase(tag.name) in blocked_tags end)
+      end)
+
+    %{page | entries: entries}
   end
 
   def get_timeline(user_id, opts \\ []) do
