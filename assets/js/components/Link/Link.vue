@@ -20,6 +20,7 @@
 
 <script>
 import ellipsize from "ellipsize";
+import he from "he";
 import MediaItem from "@/components/Media/MediaZone";
 
 export default {
@@ -33,10 +34,10 @@ export default {
   },
   computed: {
     title() {
-      return ellipsize(this.link.embed.title, 80);
+      return ellipsize(he.decode(this.link.embed.title), 80);
     },
     description() {
-      return ellipsize(this.link.embed.description, 200);
+      return ellipsize(he.decode(this.link.embed.description), 200);
     },
     url() {
       return ellipsize(this.link.url, 60);
