@@ -27,6 +27,7 @@
             :sharer="post.user"
             :isShared="post.isShared"
             :size="size"
+            :removable="removables"
             @deleted="remove_post(post.id)"
           ></Card>
           <Card
@@ -37,6 +38,7 @@
             :key="post.id"
             :showThumbnail="showThumbnail"
             :size="size"
+            :removable="removables"
             @deleted="remove_post(post.id)"
           ></Card>
         </template>
@@ -60,6 +62,7 @@
         :key="post.id"
         :showThumbnail="showThumbnail"
         :size="size"
+        :removable="removables"
         @deleted="remove_post(post.id)"
       ></Card>
     </template>

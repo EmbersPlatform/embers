@@ -126,7 +126,7 @@
                 Reacciones
               </span>
             </li>
-            <li>
+            <li v-if="removable">
               <span @click.prevent="hide_post">
                 <i class="far fa-eye-slash"></i>
                 Ocultar
@@ -331,6 +331,10 @@ export default {
       default: true
     },
     no_header: {
+      type: Boolean,
+      default: false
+    },
+    removable: {
       type: Boolean,
       default: false
     }
