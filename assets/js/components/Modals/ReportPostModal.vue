@@ -5,14 +5,14 @@
       <template v-for="(reason_text, index) in reasons">
         <div class="_line" :key="index">
           <label>
-            <input v-model="radio_reason" type="radio" :value="reason_text">
+            <input v-model="radio_reason" type="radio" :value="reason_text" />
             <span>{{reason_text}}</span>
           </label>
         </div>
       </template>
       <div class="_line">
         <label>
-          <input v-model="radio_reason" type="radio" value="other">
+          <input v-model="radio_reason" type="radio" value="other" />
           <span>Otra</span>
         </label>
       </div>
@@ -52,6 +52,7 @@ export default {
   data() {
     return {
       reasons: [
+        "No tiene filtro NSFW",
         "Contenido pornográfico",
         "Gore",
         "Representacion sexual de un/a menor de edad",
