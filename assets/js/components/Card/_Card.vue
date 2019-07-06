@@ -755,6 +755,19 @@ export default {
         axios.delete(`/api/v1/feed/activity/${post_id}`);
       });
       this.$emit("deleted");
+    },
+    init_intersector() {
+      const options = {};
+      this.observer = new IntersectionObserver(([entry]) => {
+        if (entry && entry.isIntersecting) {
+          this.$emit("intersect", this.$el);
+        }
+        if (entry && !entry.isIntersecting) {
+          this.$emit("leave");
+        }
+      }, options);
+
+      this.observer.observe(this.$el);
     }
   },
 
@@ -779,7 +792,11 @@ export default {
       clicked_media_index: 0
     };
   },
+  destroyed() {
+    this.observer.disconnect();
+  },
   mounted() {
+    this.init_intersector();
     $(this.$refs.trg_picker).on({
       "click tap": () => {
         this.isPicker = true;

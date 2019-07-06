@@ -4,6 +4,7 @@
     :class="{'tool-box-open': canShowEditor, 'renderbox': status.loading, flat: flat}"
     v-shortkey="['esc']"
     @shortkey="close"
+    tabindex="-1"
   >
     <div class="toolbox__overlay" v-if="has_overlay && show_overlay" @click="close"></div>
     <div class="toolbox__container">

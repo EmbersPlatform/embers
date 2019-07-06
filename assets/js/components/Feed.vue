@@ -5,6 +5,8 @@
     :data-renderbox-message="[loading ? 'Cargando posts...' : 'Actualizando feed...']"
     :data-renderbox-top="refreshing"
     ref="postList"
+    v-shortkey.once="['n']"
+    @shortkey="jump_to_next_post()"
   >
     <template v-if="isMasonry">
       <div
@@ -16,7 +18,7 @@
         item-selector=".little"
         fit-width="true"
       >
-        <template v-for="post in concated_posts">
+        <template v-for="(post, index) in concated_posts">
           <Card
             v-if="post.isShared"
             v-masonry-tile
@@ -29,6 +31,9 @@
             :size="size"
             :removable="removables"
             @deleted="remove_post(post.id)"
+            :ref="`item-${index}`"
+            @intersect="post_in_view(index)"
+            @leave="post_leaves_view(index)"
           ></Card>
           <Card
             v-else
@@ -40,11 +45,14 @@
             :size="size"
             :removable="removables"
             @deleted="remove_post(post.id)"
+            :ref="`item-${index}`"
+            @intersect="post_in_view(index)"
+            @leave="post_leaves_view(index)"
           ></Card>
         </template>
       </div>
     </template>
-    <template v-else v-for="post in concated_posts">
+    <template v-else v-for="(post, index) in concated_posts">
       <Card
         v-if="post.isShared"
         :post="post.source"
@@ -55,6 +63,9 @@
         :size="size"
         :removable="removables"
         @deleted="remove_post(post.id)"
+        :ref="`item-${index}`"
+        @intersect="post_in_view(index)"
+        @leave="post_leaves_view(index)"
       ></Card>
       <Card
         v-else
@@ -64,6 +75,9 @@
         :size="size"
         :removable="removables"
         @deleted="remove_post(post.id)"
+        :ref="`item-${index}`"
+        @intersect="post_in_view(index)"
+        @leave="post_leaves_view(index)"
       ></Card>
     </template>
     <intersector @intersect="loadMore" style="height: 10px;" />
@@ -119,7 +133,9 @@ export default {
       refreshing: false,
       first_load: false,
       isMasonry: true,
-      posts: []
+      posts: [],
+      posts_in_viewport: [],
+      shortcuts_enabled: false
     };
   },
   computed: {
@@ -285,7 +301,24 @@ export default {
         const is_id = post.id != id;
         return is_id && related;
       });
+    },
+    post_in_view(idx) {
+      this.posts_in_viewport.push(idx);
+    },
+    post_leaves_view(idx) {
+      this.posts_in_viewport = this.posts_in_viewport.filter(x => x != idx);
+    },
+    jump_to_next_post() {
+      let idx = this.posts_in_viewport[0];
+      let next_post = this.$refs[`item-${idx + 1}`][0].$el;
+      next_post.scrollIntoView({ behavior: "smooth" });
     }
+  },
+  mounted() {
+    document.addEventListener("keydown", this._keyListener.bind(this));
+  },
+  beforeDestroy() {
+    document.removeEventListener("keydown", this._keyListener);
   },
 
   /**

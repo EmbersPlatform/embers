@@ -29,7 +29,10 @@ Vue.use(VModal, {
 import Notifications from "vue-notification";
 Vue.use(Notifications);
 
-Vue.use(require("vue-shortkey"));
+import VueShortkey from "vue-shortkey"
+Vue.use(VueShortkey, {
+  prevent: ['.toolbox', 'input', 'textarea']
+});
 
 import v_visible from "./directives/v_visible";
 Vue.use(v_visible);
