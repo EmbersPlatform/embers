@@ -540,9 +540,15 @@ defmodule Embers.Feed do
   def delete_activity(%Activity{} = activity) do
     with {:ok, activity} <- Repo.delete(activity) do
       Embers.Event.emit(:activity_deleted, activity)
+      {:ok, activity}
     else
-      error -> error
+      error -> {:error, error}
     end
+  end
+
+  def delete_activity(user_id, post_id) do
+    activity = Repo.get_by!(Activity, user_id: user_id, post_id: post_id)
+    delete_activity(activity)
   end
 
   @doc """

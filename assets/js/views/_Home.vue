@@ -7,7 +7,7 @@
       <SideModule v-if="$mq == 'lg'"></SideModule>
       <div id="content" data-layout-type="single-column">
         <ToolBox v-if="auth.loggedIn()" @created="handle_new_post"></ToolBox>
-        <Feed></Feed>
+        <Feed removables></Feed>
       </div>
     </div>
   </div>

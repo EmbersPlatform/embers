@@ -94,8 +94,9 @@
       ul {
         padding: 0 5px;
         li {
-          padding: 10px;
           span {
+            display: block;
+            padding: 10px;
             @include font-size(2);
           }
         }

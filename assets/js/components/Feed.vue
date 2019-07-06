@@ -27,6 +27,7 @@
             :sharer="post.user"
             :isShared="post.isShared"
             :size="size"
+            @deleted="remove_post(post.id)"
           ></Card>
           <Card
             v-else
@@ -36,6 +37,7 @@
             :key="post.id"
             :showThumbnail="showThumbnail"
             :size="size"
+            @deleted="remove_post(post.id)"
           ></Card>
         </template>
       </div>
@@ -49,8 +51,17 @@
         :sharers="post.sharers"
         :isShared="post.isShared"
         :size="size"
+        :removable="removables"
+        @deleted="remove_post(post.id)"
       ></Card>
-      <Card v-else :post="post" :key="post.id" :showThumbnail="showThumbnail" :size="size"></Card>
+      <Card
+        v-else
+        :post="post"
+        :key="post.id"
+        :showThumbnail="showThumbnail"
+        :size="size"
+        @deleted="remove_post(post.id)"
+      ></Card>
     </template>
     <intersector @intersect="loadMore" style="height: 10px;" />
     <template v-if="reachedBottom && !loading && !refreshing">
@@ -73,7 +84,21 @@ import Intersector from "./Intersector";
 import { mapGetters } from "vuex";
 
 export default {
-  props: ["name", "filters", "size"],
+  props: {
+    name: {
+      type: String
+    },
+    filters: {
+      required: false
+    },
+    size: {
+      type: String
+    },
+    removables: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     Card,
     Intersector
@@ -151,6 +176,7 @@ export default {
               ) != undefined
             ) {
               let sharers = [post.user];
+              let activities_ids = [post.id];
               const other_related = acc.remaining.filter(
                 p =>
                   p.related_to &&
@@ -159,10 +185,12 @@ export default {
               );
               const other_sharers = other_related.map(p => p.user);
               sharers.push(...other_sharers);
+              activities_ids.push(...other_related.map(p => p.id));
               const is_new = post.new;
               post = post.related_to;
               post.new = is_new;
               post.sharers = _.uniqBy(sharers, "id");
+              post.activities_ids = _.uniq(activities_ids);
               acc.remaining = acc.remaining.filter(
                 x => !other_related.includes(x)
               );
@@ -242,6 +270,18 @@ export default {
       });
       this.posts = [...new_posts, ...old_posts];
       this.$store.dispatch("reset_new_posts");
+    },
+    remove_post(id) {
+      this.posts = this.posts.filter(post => {
+        let related;
+        if (post.related_to) {
+          related = post.related_to.id != id;
+        } else {
+          related = true;
+        }
+        const is_id = post.id != id;
+        return is_id && related;
+      });
     }
   },
 

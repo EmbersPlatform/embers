@@ -126,6 +126,12 @@
                 Reacciones
               </span>
             </li>
+            <li>
+              <span @click.prevent="hide_post">
+                <i class="far fa-eye-slash"></i>
+                Ocultar
+              </span>
+            </li>
             <li v-if="can('create_report')">
               <span @click.prevent="report_post">
                 <i class="far fa-flag"></i>
@@ -733,6 +739,18 @@ export default {
         { user_id: this.post.user.id },
         { height: "auto", adaptive: true, maxWidth: 400, scrollable: true }
       );
+    },
+    hide_post() {
+      let ids = [];
+      if (!this.post.activities_ids) {
+        ids = [this.post.id];
+      } else {
+        ids = this.post.activities_ids;
+      }
+      ids.forEach(async post_id => {
+        axios.delete(`/api/v1/feed/activity/${post_id}`);
+      });
+      this.$emit("deleted");
     }
   },
 

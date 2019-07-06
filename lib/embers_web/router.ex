@@ -175,6 +175,7 @@ defmodule EmbersWeb.Router do
         get("/feed", FeedController, :timeline)
         get("/feed/public", FeedController, :get_public_feed)
         get("/feed/user/:id", FeedController, :user_statuses)
+        delete("/feed/activity/:id", FeedController, :hide_post)
 
         get("/feed/favorites", FavoriteController, :list)
         post("/feed/favorites/:post_id", FavoriteController, :create)

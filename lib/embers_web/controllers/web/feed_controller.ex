@@ -1,8 +1,12 @@
 defmodule EmbersWeb.FeedController do
   use EmbersWeb, :controller
 
+  import EmbersWeb.Authorize
+
   alias Embers.Feed
   alias Embers.Helpers.IdHasher
+
+  plug(:user_check when action in [:timeline, :hide_post])
 
   def timeline(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, params) do
     results =
@@ -58,5 +62,13 @@ defmodule EmbersWeb.FeedController do
       )
 
     render(conn, "posts.json", posts)
+  end
+
+  def hide_post(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
+    with {:ok, _activity} <- Feed.delete_activity(user.id, IdHasher.decode(id)) do
+      conn
+      |> put_status(:no_content)
+      |> json(nil)
+    end
   end
 end
