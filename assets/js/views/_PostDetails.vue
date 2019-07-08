@@ -144,7 +144,7 @@ export default {
       }
       if (post.nesting_level == 1) {
         this.featured_comment = post;
-        post = await postAPI.get(post.in_reply_to);
+        this.post = await postAPI.get(post.in_reply_to);
       }
       if (post.nesting_level == 2) {
         this.featured_comment = await postAPI.get(post.in_reply_to);
@@ -166,7 +166,6 @@ export default {
      */
     loadComments() {
       this.loadingComments = true;
-
       let id = this.post.id;
 
       comment

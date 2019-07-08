@@ -145,17 +145,17 @@
             <i class="fas fa-chevron-down" /> Mostrar respuestas
           </template>
         </div>
-        <div class="replies-actions">
-          <div
-            v-if="show_replies && !last_page && !loading_more_replies"
-            @click="load_more_replies"
-            class="replies-action"
-          >
-            <i class="fas fa-level-up-alt" /> Ver mas respuestas
+
+        <template v-if="show_replies && !loading_replies">
+          <div class="replies-actions">
+            <div
+              v-if="!last_page && !loading_more_replies"
+              @click="load_more_replies"
+              class="replies-action"
+            >
+              <i class="fas fa-level-up-alt" /> Ver mas respuestas
+            </div>
           </div>
-        </div>
-        <template v-if="show_replies">
-          <div class="replies-loading" v-if="loading_replies">Cargando respuestas...</div>
           <div class="replies-loading" v-if="loading_more_replies">Cargando mas respuestas...</div>
           <comment
             v-for="(c, c_idx) in replies"
@@ -599,8 +599,9 @@ export default {
 <style lang="scss">
 @import "~@/../sass/base/_variables.scss";
 .comment {
-  &.remarked {
+  &.remarked > .header {
     background-color: transparentize($narrojo, 0.9);
+    box-shadow: 0 0 5px rgba(235, 61, 45, 0.2) !important;
   }
   .links {
     padding: 0 20px;
