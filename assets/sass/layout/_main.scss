@@ -733,6 +733,9 @@
   }
 
   .comments-list {
+    @media #{$query-mobile} {
+      margin-left: 5px;
+    }
   }
 
   .new-comment {

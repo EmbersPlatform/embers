@@ -1,5 +1,5 @@
 <template>
-  <div class="comment" :class="{'nsfw': comment.nsfw, 'locked' : locked}">
+  <div class="comment" :class="{'nsfw': comment.nsfw, 'locked' : locked, remarked: remarked}">
     <header class="header">
       <avatar :avatar="comment.user.avatar.small"></avatar>
       <div class="header-content">
@@ -72,11 +72,6 @@
             </li>
           </ul>
         </footer>
-        <router-link
-          v-if="!no_reply_link && comment.stats.replies > 0"
-          :to="`/post/${comment.id}`"
-          class="reply-link"
-        >Ver {{comment.stats.replies}} respuestas</router-link>
       </div>
       <div class="header-options-wrapper">
         <div
@@ -140,11 +135,64 @@
         </div>
       </div>
     </header>
+    <template v-if="comment.nesting_level < 2">
+      <div class="comments-list replies">
+        <div v-if="replies.length > 10" @click="toggle_replies" class="replies-action">
+          <template v-if="show_replies">
+            <i class="fas fa-chevron-up" /> Ocultar respuestas
+          </template>
+          <template v-else>
+            <i class="fas fa-chevron-down" /> Mostrar respuestas
+          </template>
+        </div>
+        <div class="replies-actions">
+          <div
+            v-if="show_replies && !last_page && !loading_more_replies"
+            @click="load_more_replies"
+            class="replies-action"
+          >
+            <i class="fas fa-level-up-alt" /> Ver mas respuestas
+          </div>
+        </div>
+        <template v-if="show_replies">
+          <div class="replies-loading" v-if="loading_replies">Cargando respuestas...</div>
+          <div class="replies-loading" v-if="loading_more_replies">Cargando mas respuestas...</div>
+          <comment
+            v-for="(c, c_idx) in replies"
+            :key="c.id"
+            :ref="`reply-${c_idx}`"
+            :comment="c"
+            @clicked_reply="reply_to"
+          />
+        </template>
+      </div>
+      <div v-if="show_replies && show_new_comment_box" class="new-comment reply_box">
+        <div class="comment">
+          <div class="comment--toolbox-title">Respondiendo a @{{comment.user.username}}</div>
+          <header class="header">
+            <avatar v-if="$mq != 'sm'" :avatar="user.avatar.small"></avatar>
+            <Toolbox
+              flat
+              :with_tags="false"
+              :parent_id="comment.id"
+              :has_overlay="false"
+              :with_toolbar="false"
+              type="reply"
+              autofocus
+              ref="comment_box"
+              @created="add_reply"
+              @closed="cancel_reply"
+            ></Toolbox>
+          </header>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import _ from "lodash";
 import post from "../../api/post";
 import avatar from "@/components/Avatar";
 import user from "../../api/user";
@@ -157,19 +205,45 @@ import MediaZone from "@/components/Media/MediaZone";
 import MediaSlides from "@/components/Media/MediaSlides";
 import LinkItem from "@/components/Link/Link";
 
+import CommentList from "@/components/Comment/CommentList";
+import Toolbox from "@/components/ToolBox/_ToolBox";
+
 import formatter from "@/lib/formatter";
 import markdown from "@/lib/markdown/formatter";
 
 export default {
-  components: { avatar, MediaZone, MediaSlides, LinkItem },
+  name: "Comment",
+  components: {
+    avatar,
+    MediaZone,
+    MediaSlides,
+    LinkItem,
+    CommentList,
+    Toolbox
+  },
   props: {
     comment: { type: Object, required: true },
     postId: { type: String },
     no_controls: { type: Boolean, default: false },
     no_reply_link: { type: Boolean, default: false }
   },
+  data() {
+    return {
+      App: this.$store.state.appData,
+      isPicker: false,
+      show_media_slides: false,
+      locked: false,
+      show_replies: true,
+      replies: [],
+      loading_replies: false,
+      loading_more_replies: false,
+      last_page: false,
+      next: null,
+      show_new_comment_box: false
+    };
+  },
   computed: {
-    ...mapGetters(["can"]),
+    ...mapGetters(["can", "user"]),
     loggedUser() {
       return this.$store.getters.user;
     },
@@ -201,12 +275,70 @@ export default {
         return false;
       }
       return true;
+    },
+    remarked() {
+      return (
+        this.$route.name == "post" ||
+        (this.$route.name == "post_no_user" &&
+          this.$route.params.id == this.comment.id)
+      );
     }
   },
 
   methods: {
+    toggle_replies() {
+      this.show_replies = !this.show_replies;
+    },
     reply() {
-      this.$root.$emit("reply comment", this.comment.user.username);
+      this.show_new_comment_box = true;
+      this.$emit("clicked_reply", this.comment);
+      //this.$root.$emit("reply comment", this.comment.user.username);
+    },
+    reply_to(comment) {
+      this.show_new_comment_box = true;
+      this.$nextTick(() => {
+        console.log(this.$refs.comment_box);
+        this.$refs.comment_box.reply_to(comment.user.username);
+      });
+    },
+    cancel_reply() {
+      this.show_new_comment_box = false;
+      //this.$root.$emit("reply comment", this.comment.user.username);
+    },
+    add_reply(reply) {
+      this.replies.push(reply);
+      this.comment.stats.replies++;
+    },
+    async load_replies() {
+      this.loading_replies = true;
+      let { data: res } = await axios(
+        `/api/v1/posts/${this.comment.id}/replies`,
+        { params: { order: "desc", limit: 2 } }
+      );
+      res.items = res.items.reverse();
+      if (!this.replies) {
+        this.replies = res.items;
+      } else {
+        this.replies = [...res.items, ...this.replies];
+      }
+      this.loading_replies = false;
+      this.last_page = res.last_page;
+      this.next = res.next;
+    },
+    async load_more_replies() {
+      this.loading_more_replies = true;
+      let { data: res } = await axios(
+        `/api/v1/posts/${this.comment.id}/replies`,
+        { params: { order: "desc", limit: 10, before: this.next } }
+      );
+      res.items = res.items.reverse();
+      this.replies = _.sortBy([...res.items, ...this.replies], "inserted_at");
+      this.loading_more_replies = false;
+      this.last_page = res.last_page;
+      this.next = res.next;
+      this.$nextTick(() => {
+        this.$refs["reply-0"][0].$el.scrollIntoView({ behavior: "smooth" });
+      });
     },
     toggleLock() {
       this.locked = !this.locked;
@@ -237,32 +369,6 @@ export default {
           }
         ],
         adaptive: true
-      });
-    },
-
-    /**
-     * Follows the comment owner
-     */
-    follow() {
-      user.follow(this.comment.user.id).then(user => {
-        this.comment.user.following = true;
-
-        if (user.mutual) {
-          this.$store.dispatch("addMutual", user);
-        }
-      });
-    },
-
-    /**
-     * Unfollows the comment owner
-     */
-    unfollow() {
-      user.unfollow(this.comment.user.id).then(user => {
-        this.comment.user.following = false;
-
-        if (!user.mutual) {
-          this.$store.dispatch("removeMutual", user);
-        }
       });
     },
 
@@ -466,25 +572,12 @@ export default {
       );
     }
   },
-
-  /**
-   * Component data
-   * @returns {object}
-   */
-  data() {
-    return {
-      App: this.$store.state.appData,
-      isPicker: false,
-      show_media_slides: false,
-      locked: false,
-      user
-    };
-  },
   created() {
     this.locked =
       this.comment.nsfw && this.$store.getters.settings.content_nsfw === "ask";
   },
   mounted() {
+    this.load_replies();
     $(this.$refs.trg_picker).on({
       "click tap": () => {
         this.isPicker = true;
@@ -504,7 +597,11 @@ export default {
 </script>
 
 <style lang="scss">
+@import "~@/../sass/base/_variables.scss";
 .comment {
+  &.remarked {
+    background-color: transparentize($narrojo, 0.9);
+  }
   .links {
     padding: 0 20px;
 
@@ -520,5 +617,32 @@ export default {
     font-weight: 300 !important;
     color: #ffffff50 !important;
   }
+}
+.replies-actions {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: $dark;
+}
+.replies-action {
+  padding: 5px 10px;
+  font-weight: 500;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
+
+  .fa-level-up-alt {
+    transform: rotate(90deg);
+  }
+}
+.replies-loading {
+  opacity: 0.7;
+  text-align: center;
+  padding: 5px 10px;
+}
+.comment--toolbox-title {
+  padding: 20px 10px;
+  color: #999;
 }
 </style>

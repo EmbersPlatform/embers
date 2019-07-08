@@ -14,9 +14,11 @@
           @update="updateBody"
           @paste="handlePaste"
           @focus="openEditor"
+          :with_toolbar="with_toolbar"
           :class="{'compressed': !canShowEditor, 'big-text': bigTextBody}"
           data-editor-style="toolbox"
-          rel="editor"
+          ref="editor"
+          :autofocus="autofocus"
         ></Editor>
         <div v-if="with_tags" class="tags-wrapper tool" :class="{'compact': !canShowEditor}">
           <input type="text" placeholder="Tags separados por espacios" v-model="post.tags" />
@@ -133,7 +135,7 @@ import { text_has_link, process_link } from "@/lib/links";
 const initialData = function() {
   return {
     post: {
-      body: null,
+      body: "",
       nsfw: false,
       medias: [],
       links: [],
@@ -192,7 +194,15 @@ export default {
       type: String,
       default: "toolbox"
     },
-    always_open: { type: Boolean, default: false }
+    always_open: { type: Boolean, default: false },
+    with_toolbar: {
+      type: Boolean,
+      default: true
+    },
+    autofocus: {
+      type: Boolean,
+      default: false
+    }
   },
   data: initialData,
   computed: {
@@ -230,6 +240,11 @@ export default {
     }
   },
   methods: {
+    reply_to(username) {
+      console.log(username);
+      let new_body = `@${username} ${this.post.body}`;
+      this.$refs.editor.update_body(new_body);
+    },
     openEditor() {
       if (this.status.open) return;
       this.status.open = true;

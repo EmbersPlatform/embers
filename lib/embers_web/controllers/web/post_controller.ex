@@ -100,11 +100,19 @@ defmodule EmbersWeb.PostController do
   def show_replies(conn, %{"id" => parent_id} = params) do
     parent_id = IdHasher.decode(parent_id)
 
+    order =
+      case params["order"] do
+        "desc" -> :desc
+        "asc" -> :asc
+        _ -> :asc
+      end
+
     results =
       Feed.get_post_replies(parent_id,
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
-        limit: params["limit"]
+        limit: params["limit"],
+        order: order
       )
 
     render(conn, "show_replies.json", results)

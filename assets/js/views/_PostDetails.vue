@@ -1,22 +1,22 @@
 <template>
   <div id="board">
-    <template v-if="!loading && post">
+    <template>
       <div id="heading" class="user">
         <Top></Top>
       </div>
       <div id="wrapper">
         <div id="content" data-layout-type="single-column">
-          <div id="post" v-if="post" :class="{container: !user}">
+          <div id="post" :class="{container: !user}">
             <p class="loading-comments" v-if="loading_context">Cargando..</p>
-            <Card v-if="post_context" :post="post_context" @deleted="postDeleted" />
-            <Card v-if="is_post" :post="post" @deleted="postDeleted"></Card>
-            <Comment v-if="is_comment" :comment="post" @deleted="postDeleted" no_reply_link></Comment>
-            <Comment
-              v-if="comment_context"
-              :comment="comment_context"
-              @deleted="postDeleted"
-              no_reply_link
-            ></Comment>
+            <Card v-if="post" :post="post" @deleted="postDeleted"></Card>
+            <template v-if="featured_comment">
+              <div class="featured-comment" id="featured_comment">
+                <div
+                  class="featured-comment--title"
+                >Comentario de @{{featured_comment.user.username}}</div>
+                <Comment :comment="featured_comment" @deleted="postDeleted" no_reply_link />
+              </div>
+            </template>
             <p class="loading-comments" v-if="loadingComments">Cargando comentarios...</p>
             <CommentList
               :comments="comments"
@@ -24,7 +24,6 @@
               :bottomComments="bottomComments"
               :lastPage="lastPage"
               :postId="id"
-              :class="{replies: is_comment || is_reply}"
               @loadMore="loadComments"
               @comment_deleted="comment_deleted"
             ></CommentList>
@@ -56,7 +55,7 @@ import Top from "@/components/Top";
 import UserCard from "@/components/UserCard";
 
 import formatter from "@/lib/formatter";
-import post from "@/api/post";
+import postAPI from "@/api/post";
 import comment from "@/api/comment";
 import { mapGetters } from "vuex";
 
@@ -92,7 +91,8 @@ export default {
       lastPage: true,
       post_context: null,
       comment_context: null,
-      loading_context: false
+      loading_context: false,
+      featured_comment: null
     };
   },
 
@@ -110,18 +110,23 @@ export default {
       user: "user"
     }),
     has_context() {
+      if (!this.post) return;
       return this.post.nesting_level > 0;
     },
     is_post() {
+      if (!this.post) return;
       return this.post.nesting_level == 0;
     },
     is_comment() {
+      if (!this.post) return;
       return this.post.nesting_level == 1;
     },
     is_reply() {
+      if (!this.post) return;
       return this.post.nesting_level == 2;
     },
     reply_to_id() {
+      if (!this.post) return;
       if (this.post.nesting_level == 2) {
         return this.post.in_reply_to;
       } else {
@@ -131,30 +136,28 @@ export default {
   },
 
   methods: {
-    /**
-     * Retrieves the post
-     */
-    async getPost() {
+    async get_post() {
       this.loading = true;
-      try {
-        let res = await post.get(this.id);
-        this.post = res;
-        if (res.body) {
-          this.$store.dispatch(
-            "title/update",
-            `${res.body.substring(0, 20)} · @${res.user.username} en Embers`
-          );
-        } else {
-          this.$store.dispatch(
-            "title/update",
-            `Post de @${res.user.username} en Embers`
-          );
-        }
-        this.loadComments();
-        this.load_context();
-      } catch (e) {
-        this.$router.push("/404");
+      let post = await postAPI.get(this.id);
+      if (post.nesting_level == 0) {
+        this.post = post;
       }
+      if (post.nesting_level == 1) {
+        this.featured_comment = post;
+        post = await postAPI.get(post.in_reply_to);
+      }
+      if (post.nesting_level == 2) {
+        this.featured_comment = await postAPI.get(post.in_reply_to);
+        this.post = await postAPI.get(this.featured_comment.in_reply_to);
+      }
+      if (post.nesting_level > 0) {
+        this.$nextTick(() => {
+          document
+            .getElementById("featured_comment")
+            .scrollIntoView({ behavior: "smooth" });
+        });
+      }
+      this.loadComments();
       this.loading = false;
     },
 
@@ -165,7 +168,6 @@ export default {
       this.loadingComments = true;
 
       let id = this.post.id;
-      if (this.is_reply) id = this.post.in_reply_to;
 
       comment
         .get(
@@ -209,12 +211,12 @@ export default {
     async load_context() {
       if (!this.has_context) return;
       this.loading_context = true;
-      const res = await post.get(this.post.in_reply_to);
+      const res = await postAPI.get(this.post.in_reply_to);
       if (this.is_comment) {
         this.post_context = res;
       } else {
         this.comment_context = res;
-        const root = await post.get(res.in_reply_to);
+        const root = await postAPI.get(res.in_reply_to);
         this.post_context = root;
       }
       this.loading_context = false;
@@ -225,7 +227,7 @@ export default {
    * Initializes the view
    */
   mounted() {
-    this.getPost();
+    this.get_post();
   },
 
   watch: {
@@ -234,7 +236,7 @@ export default {
       this.bottomComments = [];
       this.lastPage = this.loadingComments = this.loading = false;
 
-      this.getPost();
+      this.get_post();
     }
   }
 };
@@ -259,6 +261,14 @@ export default {
 
 .reply_box {
   margin-left: 50px;
+}
+.featured-comment {
+  border-bottom: 2px solid #0003;
+  padding-bottom: 20px;
+}
+.featured-comment--title {
+  font-size: 1.5em;
+  font-weight: 500;
 }
 </style>
 

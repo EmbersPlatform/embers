@@ -15,8 +15,8 @@
       ></textarea>
       <div class="markup preview" v-if="preview" v-html="formattedBody"></div>
     </div>
-    <twitter-counter v-if="body && !preview" :current-length="body.length" :dangerAt="1600"/>
-    <ul class="toolbar">
+    <twitter-counter v-if="body && !preview" :current-length="body.length" :dangerAt="1600" />
+    <ul class="toolbar" v-if="with_toolbar">
       <li @click="format('bold')">
         <i class="fas fa-bold"></i>
       </li>
@@ -56,7 +56,7 @@ function initialData() {
   };
 }
 export default {
-  props: ["attachment", "show", "type"],
+  props: ["attachment", "show", "type", "with_toolbar", "autofocus"],
   components: { "emoji-picker": EmojiPicker, TwitterCounter },
   data: initialData,
   computed: {
@@ -67,6 +67,9 @@ export default {
           break;
         case "toolbox":
           var title = "Nuevo post:";
+          break;
+        case "reply":
+          var title = "Respuesta:";
           break;
         default:
           var title = "Redactor:";
@@ -85,6 +88,9 @@ export default {
         case "chat":
           var placeholder = "Enviar mensaje";
           break;
+        case "reply":
+          var placeholder = "Escribe tu respuesta";
+          break;
         default:
           var placeholder = "Escribe algo interesante";
           break;
@@ -98,6 +104,9 @@ export default {
     }
   },
   methods: {
+    update_body(body) {
+      this.body = body;
+    },
     resetData() {
       Object.assign(this.$data, initialData());
     },
@@ -191,6 +200,9 @@ export default {
     show() {
       this.resetData();
     }
+  },
+  mounted() {
+    if (this.autofocus) this.$refs.textarea.focus();
   },
   created() {
     this.$root.$on("reply comment", user => {

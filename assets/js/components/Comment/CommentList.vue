@@ -1,7 +1,6 @@
 <template>
   <!-- <div class="comments" :class="{'renderbox' : loading}" :data-renderbox-message="[(!lastPage && !loading) ? 'moaring' : 'Cargando...']"> -->
   <div
-    v-if="comments.length > 0 || bottomComments.length > 0"
     class="comments-list"
     :class="{'renderbox' : loading}"
     data-renderbox-message="Cargando comentarios..."
@@ -39,7 +38,25 @@
 import Comment from "./Comment";
 
 export default {
-  props: ["postId", "comments", "bottomComments", "lastPage", "loading"],
+  props: {
+    postId: {
+      type: String
+    },
+    comments: {
+      type: Array,
+      default: []
+    },
+    bottomComments: {
+      type: Array,
+      default: []
+    },
+    lastPage: {
+      type: Boolean
+    },
+    loading: {
+      type: Boolean
+    }
+  },
   components: { Comment },
   methods: {
     /**

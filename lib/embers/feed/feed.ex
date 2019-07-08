@@ -555,16 +555,23 @@ defmodule Embers.Feed do
   Devuelve las respuestas a un post.
   """
   def get_post_replies(parent_id, opts \\ []) do
+    order = Keyword.get(opts, :order, :asc)
+
     query =
       from(
         post in Post,
         where: post.parent_id == ^parent_id and is_nil(post.deleted_at),
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
-        order_by: [asc: post.inserted_at],
         preload: [user: {user, meta: meta}],
         preload: [:reactions, :media, :links, :tags]
       )
+
+    query =
+      case order do
+        :desc -> from(post in query, order_by: [desc: post.inserted_at])
+        :asc -> from(post in query, order_by: [asc: post.inserted_at])
+      end
 
     query
     |> Paginator.paginate(opts)
