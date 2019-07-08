@@ -13,7 +13,7 @@ function emojiPlugin(opts = {}) {
     const total = keep[0]
     const emoji = keep[0]
 
-    const codepoint = e2u(emoji)
+    const codepoint = e2u(emoji).replace('-fe0f', '')
 
     const base = opts.base || '/'
     const ext = opts.ext || 'png'
