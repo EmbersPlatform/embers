@@ -158,6 +158,7 @@
           </div>
           <div class="replies-loading" v-if="loading_more_replies">Cargando mas respuestas...</div>
           <comment
+            class="is-reply"
             v-for="(c, c_idx) in replies"
             :key="c.id"
             :ref="`reply-${c_idx}`"
@@ -167,7 +168,7 @@
         </template>
       </div>
       <div v-if="show_replies && show_new_comment_box" class="new-comment reply_box">
-        <div class="comment">
+        <div class="comment is-reply">
           <div class="comment--toolbox-title">Respondiendo a @{{comment.user.username}}</div>
           <header class="header">
             <avatar v-if="$mq != 'sm'" :avatar="user.avatar.small"></avatar>
@@ -602,6 +603,12 @@ export default {
   &.remarked > .header {
     background-color: transparentize($narrojo, 0.9);
     box-shadow: 0 0 5px rgba(235, 61, 45, 0.2) !important;
+  }
+  &.is-reply {
+    .avatar {
+      width: 32px;
+      height: 32px;
+    }
   }
   .links {
     padding: 0 20px;
