@@ -4,8 +4,8 @@
       <router-link to="/" exact>
         <img
           v-if="efemerides"
-          :src="`/img/efemerides/${efemerides.image}.svg`"
-          :title="efemerides.description"
+          :src="`${efemerides.img}`"
+          :title="efemerides.desc"
         >
         <svgicon name="elogo" v-else></svgicon>
       </router-link>
@@ -111,6 +111,7 @@ import auth from "../api/auth";
 import notifications from "../components/Notifications";
 import { mapGetters, mapState } from "vuex";
 import _ from "lodash";
+import {get_ephemeris} from "@/lib/ephemeris";
 
 import EventBus from "@/lib/event_bus";
 
@@ -152,14 +153,7 @@ export default {
       return this.newActivity > 0;
     },
     efemerides() {
-      let today = this.$moment(new Date()).format("DD/MM/YYYY");
-      let efemeridesList = window.efemerides;
-
-      let efemeride = _.find(efemeridesList, o => {
-        return o.date == today;
-      });
-
-      return efemeride;
+      return get_ephemeris();
     },
     show() {
       return this.$mq != "sm" || this.show_navigation;
