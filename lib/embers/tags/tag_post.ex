@@ -8,7 +8,7 @@ defmodule Embers.Tags.TagPost do
 
   schema "tags_posts" do
     belongs_to(:tag, Embers.Tags.Tag)
-    belongs_to(:post, Embers.Feed.Post)
+    belongs_to(:post, Embers.Posts.Post)
 
     timestamps()
   end

@@ -2,8 +2,7 @@ defmodule EmbersWeb.PageController do
   use EmbersWeb, :controller
 
   alias Embers.Accounts.User
-  alias Embers.Feed
-  alias Embers.Feed.Subscriptions
+  alias Embers.Subscriptions
   alias Embers.LoadingMsg
   alias Embers.Notifications
   alias Embers.Profile.Meta
@@ -64,7 +63,7 @@ defmodule EmbersWeb.PageController do
   end
 
   def auth(%Plug.Conn{assigns: %{current_user: user}} = conn, _params) when not is_nil(user) do
-    tags = Feed.Subscriptions.Tags.list_subscribed_tags(user.id)
+    tags = Subscriptions.Tags.list_subscribed_tags(user.id)
 
     render(conn, "auth.json", conn: conn, tags: tags, user: user)
   end

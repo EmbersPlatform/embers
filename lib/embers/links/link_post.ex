@@ -5,7 +5,7 @@ defmodule Embers.Links.LinkPost do
   import Ecto.Changeset
 
   schema "link_post" do
-    belongs_to(:post, Embers.Feed.Post)
+    belongs_to(:post, Embers.Posts.Post)
     belongs_to(:link, Embers.Links.Link)
   end
 

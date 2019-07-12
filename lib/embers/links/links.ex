@@ -14,7 +14,7 @@ defmodule Embers.Links do
   se debe tener especial cuidado a la hora de almacenar/eliminar `Media`s.
   """
 
-  alias Embers.Feed.Post
+  alias Embers.Posts.Post
   alias Embers.Links.{EmbedSchema, Link, LinkPost}
   alias Embers.Repo
 

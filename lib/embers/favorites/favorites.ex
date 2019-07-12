@@ -1,4 +1,4 @@
-defmodule Embers.Feed.Favorites do
+defmodule Embers.Favorites do
   @moduledoc """
   Los favoritos son los contenidos que el usuario guardó para ver más tarde.
 
@@ -14,7 +14,7 @@ defmodule Embers.Feed.Favorites do
   devuelven la entrada del favorito, no del post. Si se desea obetner el post,
   debe levantarse utilizando el campo `post_id` del favorito.
   """
-  alias Embers.Feed.Favorite
+  alias Embers.Favorites.Favorite
   alias Embers.Paginator
   alias Embers.Repo
 

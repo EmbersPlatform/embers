@@ -3,8 +3,7 @@ defmodule Embers.Reports.PostReport do
   use Ecto.Schema
 
   alias Embers.Accounts.User
-  alias Embers.Feed.Post
-  alias Embers.Paginator
+  alias Embers.Posts.Post
   alias Embers.Repo
 
   import Ecto.Changeset
@@ -47,7 +46,7 @@ defmodule Embers.Reports.PostReport do
   end
 end
 
-defimpl Embers.Reportable, for: Embers.Feed.Post do
+defimpl Embers.Reportable, for: Embers.Posts.Post do
   alias Embers.Reports.PostReport
   import Ecto.Query, only: [from: 2]
 

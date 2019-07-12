@@ -1,4 +1,4 @@
-defmodule Embers.Feed.Post do
+defmodule Embers.Posts.Post do
   @moduledoc """
   Un post es la unidad mínima de contenido en Embers. Consiste de un
   cuerpo de texto que no exceda los 1600 caracteres, y opcionalmente
@@ -42,7 +42,6 @@ defmodule Embers.Feed.Post do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
-  alias __MODULE__
   alias Embers.Repo
 
   @max_body_len 1600
@@ -61,10 +60,10 @@ defmodule Embers.Feed.Post do
 
     # A post may be in reply to another post
     # Comments no longer have their own entity as they had in fenix
-    belongs_to(:parent, Embers.Feed.Post)
-    belongs_to(:related_to, Embers.Feed.Post)
-    has_many(:replies, Embers.Feed.Post)
-    has_many(:reactions, Embers.Feed.Reactions.Reaction)
+    belongs_to(:parent, __MODULE__)
+    belongs_to(:related_to, __MODULE__)
+    has_many(:replies, __MODULE__)
+    has_many(:reactions, Embers.Reactions.Reaction)
 
     many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
     many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
@@ -100,7 +99,7 @@ defmodule Embers.Feed.Post do
 
   def fill_nsfw(nil), do: nil
 
-  def fill_nsfw(%Post{} = post) do
+  def fill_nsfw(%__MODULE__{} = post) do
     if Ecto.assoc_loaded?(post.tags) do
       post = %{
         post
@@ -119,7 +118,6 @@ defmodule Embers.Feed.Post do
   end
 
   defp must_have_body?(attrs) do
-    has_parent? = not is_nil(attrs["parent_id"])
     is_shared? = not is_nil(attrs["related_to_id"])
     has_media? = Map.get(attrs, "media_count", 0) > 0
     has_link? = Map.get(attrs, "links_count", 0) > 0
@@ -182,7 +180,7 @@ defmodule Embers.Feed.Post do
     is_blocked? =
       Repo.exists?(
         from(
-          b in Embers.Feed.Subscriptions.UserBlock,
+          b in Embers.Blocks.UserBlock,
           where: b.source_id == ^user_id,
           where: b.user_id == ^parent.user_id
         )

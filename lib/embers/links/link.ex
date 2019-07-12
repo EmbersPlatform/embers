@@ -10,7 +10,7 @@ defmodule Embers.Links.Link do
     embeds_one(:embed, Embers.Links.EmbedSchema)
     field(:temporary, :boolean, default: true)
 
-    many_to_many(:posts, Embers.Feed.Post, join_through: "link_post")
+    many_to_many(:posts, Embers.Posts.Post, join_through: "link_post")
 
     timestamps()
   end
@@ -20,7 +20,7 @@ defmodule Embers.Links.Link do
     |> cast(attrs, [:user_id])
     |> foreign_key_constraint(:link_post)
     |> put_change(:embed, attrs.embed)
-    |> change([url: attrs.embed.url])
+    |> change(url: attrs.embed.url)
     |> validate_required([:user_id, :embed, :url])
   end
 end

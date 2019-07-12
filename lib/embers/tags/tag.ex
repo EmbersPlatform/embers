@@ -12,7 +12,7 @@ defmodule Embers.Tags.Tag do
     field(:name, :string, null: false)
     field(:description, :string)
 
-    many_to_many(:posts, Embers.Feed.Post, join_through: "tags_posts")
+    many_to_many(:posts, Embers.Posts.Post, join_through: "tags_posts")
   end
 
   def create_changeset(changeset, attrs) do

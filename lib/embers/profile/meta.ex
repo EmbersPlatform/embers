@@ -36,7 +36,7 @@ defmodule Embers.Profile.Meta do
     }
   end
 
-  def avatar_map(%Meta{avatar_version: "legacy:" <> version} = meta) do
+  def avatar_map(%Meta{avatar_version: "legacy:" <> version} = _meta) do
     %{
       small: "/legacy/avatar/#{version}",
       medium: "/legacy/avatar/#{version}",

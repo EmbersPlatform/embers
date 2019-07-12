@@ -5,9 +5,9 @@ defmodule EmbersWeb.Admin.ReportController do
   import Embers.Helpers.IdHasher
   import EmbersWeb.Helpers
 
-  alias Embers.Feed
+  alias Embers.Posts
   alias Embers.Reports
-  alias Embers.Reports.{PostReport, UserReport}
+  alias Embers.Reports.PostReport
   alias EmbersWeb.Plugs.CheckPermissions
 
   plug(CheckPermissions, [permission: "delete_post"] when action in [:delete_post])
@@ -28,7 +28,7 @@ defmodule EmbersWeb.Admin.ReportController do
   end
 
   def post_report(conn, %{"id" => post_id} = params) do
-    with {:ok, post} <- Feed.get_post(decode(post_id)) do
+    with {:ok, post} <- Posts.get_post(decode(post_id)) do
       reports =
         from(
           r in PostReport,
@@ -55,8 +55,8 @@ defmodule EmbersWeb.Admin.ReportController do
   def delete_post(conn, %{"id" => id}) do
     id = decode(id)
 
-    with {:ok, post} <- Feed.get_post(id),
-         {:ok, _post} <- Feed.delete_post(post),
+    with {:ok, post} <- Posts.get_post(id),
+         {:ok, _post} <- Posts.delete_post(post),
          :ok <- Reports.resolve_for(post) do
       success(conn, "Post eliminado y reportes resueltos", report_path(conn, :overview))
     end
@@ -65,7 +65,7 @@ defmodule EmbersWeb.Admin.ReportController do
   def resolve_post_reports(conn, %{"id" => id}) do
     id = decode(id)
 
-    with {:ok, post} <- Feed.get_post(id),
+    with {:ok, post} <- Posts.get_post(id),
          :ok <- Reports.resolve_for(post) do
       success(conn, "Reportes resueltos", report_path(conn, :overview))
     end

@@ -2,7 +2,7 @@ defmodule EmbersWeb.TagBlockController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.Feed.Subscriptions.Tags
+  alias Embers.Subscriptions.Tags
   alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.FallbackController)

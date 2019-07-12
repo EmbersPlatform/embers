@@ -1,7 +1,9 @@
 defmodule Embers.Feed.ActivitySubscriber do
   use Embers.EventSubscriber, topics: ~w(post_created)
 
+  alias Embers.Blocks
   alias Embers.Feed
+  alias Embers.Subscriptions
 
   import Ecto.Query
 
@@ -16,8 +18,8 @@ defmodule Embers.Feed.ActivitySubscriber do
   end
 
   defp create_activity_and_push(post) do
-    followers = Feed.Subscriptions.list_followers_ids(post.user_id)
-    blocked = Feed.Subscriptions.Blocks.list_users_ids_that_blocked(post.user_id)
+    followers = Subscriptions.list_followers_ids(post.user_id)
+    blocked = Blocks.list_users_ids_that_blocked(post.user_id)
     tag_names = Embers.Tags.list_post_tag_names(post.id) |> Enum.map(&String.upcase/1)
 
     tags =
@@ -30,7 +32,7 @@ defmodule Embers.Feed.ActivitySubscriber do
 
     tags_subscriptors =
       from(
-        sub in Feed.Subscriptions.TagSubscription,
+        sub in Subscriptions.TagSubscription,
         where: sub.level == 1,
         where: sub.source_id in ^tags,
         select: sub.user_id
@@ -39,7 +41,7 @@ defmodule Embers.Feed.ActivitySubscriber do
 
     tags_blockers =
       from(
-        block in Feed.Subscriptions.TagBlock,
+        block in Blocks.TagBlock,
         where: block.tag_id in ^tags,
         or_where: block.user_id in ^tags_subscriptors,
         select: block.user_id

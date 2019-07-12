@@ -1,4 +1,4 @@
-defmodule Embers.Feed.Favorite do
+defmodule Embers.Favorites.Favorite do
   @moduledoc false
   use Ecto.Schema
 
@@ -6,7 +6,7 @@ defmodule Embers.Feed.Favorite do
 
   schema "favorites" do
     belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:post, Embers.Feed.Post)
+    belongs_to(:post, Embers.Posts.Post)
 
     timestamps()
   end

@@ -1,4 +1,4 @@
-defmodule Embers.Feed.Subscriptions.TagBlock do
+defmodule Embers.Blocks.TagBlock do
   @moduledoc false
   use Ecto.Schema
 

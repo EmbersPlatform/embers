@@ -13,7 +13,7 @@ defmodule Embers.Notifications do
   - `:text` if needed
   - timestamps `inserted_at` and `updated_at`
 
-  Notification types are validated against a `@valid_types` list in `Embers.Feed.Notification` module(wich is where the `Notification` schema is defined)
+  Notification types are validated against a `@valid_types` list in `Embers.Notifications.Notification` module(wich is where the `Notification` schema is defined)
   """
 
   alias Embers.Notifications.Notification

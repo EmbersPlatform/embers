@@ -1,10 +1,10 @@
-defmodule Embers.Feed.Reactions do
+defmodule Embers.Reactions do
   @moduledoc """
   Las reacciones representan la emoción que un contenido provocó
   en un usuario. Un usuario puede reaccionar a un contenido más de una vez,
   siempre y cuando sea con distintas reacciones.
   """
-  alias Embers.Feed.Reactions.Reaction
+  alias Embers.Reactions.Reaction
   alias Embers.Paginator
   alias Embers.Profile.Settings
   alias Embers.Profile.Settings.Setting

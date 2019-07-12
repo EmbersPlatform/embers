@@ -21,7 +21,7 @@ defmodule EmbersWeb.NotificationSubscriber do
     )
   end
 
-  def handle_event(:post_reacted, %{data: %{reaction: reaction}} = event) do
+  def handle_event(:post_reacted, %{data: %{reaction: reaction}} = _event) do
     reaction = Embers.Repo.preload(reaction, user: :meta)
 
     reaction = %{
@@ -45,7 +45,7 @@ defmodule EmbersWeb.NotificationSubscriber do
     )
   end
 
-  def handle_event(:comment_reacted, %{data: %{reaction: reaction}} = event) do
+  def handle_event(:comment_reacted, %{data: %{reaction: reaction}} = _event) do
     reaction = Embers.Repo.preload(reaction, user: :meta)
 
     reaction = %{

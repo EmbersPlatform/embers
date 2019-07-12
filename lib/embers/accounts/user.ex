@@ -65,7 +65,7 @@ defmodule Embers.Accounts.User do
 
     has_one(:meta, Embers.Profile.Meta)
     has_one(:settings, Embers.Profile.Settings.Setting)
-    has_many(:posts, Embers.Feed.Post)
+    has_many(:posts, Embers.Posts.Post)
 
     has_many(:bans, Embers.Moderation.Ban)
 
@@ -113,7 +113,7 @@ defmodule Embers.Accounts.User do
 
   def load_following_status(%User{} = user, follower_id) do
     count =
-      Embers.Feed.Subscriptions.UserSubscription
+      Embers.Subscriptions.UserSubscription
       |> where([s], s.user_id == ^follower_id)
       |> where([s], s.source_id == ^user.id)
       |> select([s], count(s.id))
@@ -124,7 +124,7 @@ defmodule Embers.Accounts.User do
 
   def load_follows_me_status(%User{} = user, follower_id) do
     count =
-      Embers.Feed.Subscriptions.UserSubscription
+      Embers.Subscriptions.UserSubscription
       |> where([s], s.source_id == ^follower_id)
       |> where([s], s.user_id == ^user.id)
       |> select([s], count(s.id))
@@ -135,7 +135,7 @@ defmodule Embers.Accounts.User do
 
   def load_blocked_status(%User{} = user, follower_id) do
     count =
-      Embers.Feed.Subscriptions.UserBlock
+      Embers.Subscriptions.UserBlock
       |> where([b], b.user_id == ^follower_id)
       |> where([b], b.source_id == ^user.id)
       |> select([b], count(b.id))
@@ -163,7 +163,7 @@ defmodule Embers.Accounts.User do
 
   def get_followers_count(%User{} = user) do
     count =
-      Embers.Feed.Subscriptions.UserSubscription
+      Embers.Subscriptions.UserSubscription
       |> where([s], s.source_id == ^user.id)
       |> select([s], count(s.id))
       |> Embers.Repo.one()
@@ -173,7 +173,7 @@ defmodule Embers.Accounts.User do
 
   def get_friends_count(%User{} = user) do
     count =
-      Embers.Feed.Subscriptions.UserSubscription
+      Embers.Subscriptions.UserSubscription
       |> where([s], s.user_id == ^user.id)
       |> select([s], count(s.id))
       |> Embers.Repo.one()
@@ -182,7 +182,7 @@ defmodule Embers.Accounts.User do
   end
 
   def get_posts_count(%User{} = user) do
-    Embers.Feed.Post
+    Embers.Posts.Post
     |> where([p], p.user_id == ^user.id)
     |> select([p], count(p.id))
     |> Embers.Repo.one()

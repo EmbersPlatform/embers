@@ -31,7 +31,7 @@ defmodule Embers.Helpers.OldDbConverter do
     |> Stream.map(&handle_post/1)
     |> Enum.each(fn
       %{nsfw: nsfw, post: %{related_to_id: nil} = post} ->
-        post = struct(Embers.Feed.Post, post)
+        post = struct(Embers.Posts.Post, post)
         {:ok, post} = Repo.insert(post, on_conflict: :nothing)
 
         if nsfw == 1 do
@@ -74,7 +74,7 @@ defmodule Embers.Helpers.OldDbConverter do
           end
         end)
 
-      Repo.insert_all(Embers.Feed.Post, chunk)
+      Repo.insert_all(Embers.Posts.Post, chunk)
     end)
 
     update_auto_increment("posts")
@@ -119,7 +119,7 @@ defmodule Embers.Helpers.OldDbConverter do
           }
         end)
 
-      Repo.insert_all(Embers.Feed.Reactions.Reaction, chunk)
+      Repo.insert_all(Embers.Reactions.Reaction, chunk)
     end)
 
     update_auto_increment("reactions")
@@ -199,7 +199,7 @@ defmodule Embers.Helpers.OldDbConverter do
     end)
     |> Stream.chunk_every(1000)
     |> Enum.each(fn chunk ->
-      Repo.insert_all(Embers.Feed.Favorite, chunk, on_conflict: :nothing)
+      Repo.insert_all(Embers.Favorites.Favorite, chunk, on_conflict: :nothing)
     end)
 
     update_auto_increment("favorites")
@@ -224,7 +224,7 @@ defmodule Embers.Helpers.OldDbConverter do
     end)
     |> Stream.chunk_every(1000)
     |> Enum.each(fn chunk ->
-      Repo.insert_all(Embers.Feed.Subscriptions.UserSubscription, chunk, on_conflict: :nothing)
+      Repo.insert_all(Embers.Subscriptions.UserSubscription, chunk, on_conflict: :nothing)
     end)
 
     update_auto_increment("user_subscriptions")
@@ -249,7 +249,7 @@ defmodule Embers.Helpers.OldDbConverter do
     end)
     |> Stream.chunk_every(1000)
     |> Enum.each(fn chunk ->
-      Repo.insert_all(Embers.Feed.Subscriptions.UserBlock, chunk, on_conflict: :nothing)
+      Repo.insert_all(Embers.Subscriptions.UserBlock, chunk, on_conflict: :nothing)
     end)
 
     update_auto_increment("user_blocks")

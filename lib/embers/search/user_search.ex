@@ -6,7 +6,7 @@ defmodule Embers.UserSearch do
 
   def search(username, opts \\ []) when is_binary(username) do
     search_term = "%" <> String.replace(username, ~r/\W/u, "") <> "%"
-    limit = Keyword.get(opts, :limit, 0.3)
+    # limit = Keyword.get(opts, :limit, 0.3)
     except = Keyword.get(opts, :except, nil)
 
     query =
@@ -20,7 +20,7 @@ defmodule Embers.UserSearch do
 
     results = Repo.all(query)
 
-    if not is_nil("except") do
+    if not is_nil(except) do
       results |> Enum.reject(fn user -> user.canonical == except end)
     else
       results

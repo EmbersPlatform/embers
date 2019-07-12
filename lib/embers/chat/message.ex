@@ -40,14 +40,14 @@ defmodule Embers.Chat.Message do
     |> change(text: String.trim(text))
   end
 
-  defp check_blocked(changeset, attrs) do
+  defp check_blocked(changeset, _attrs) do
     user_id = get_change(changeset, :sender_id)
     receiver_id = get_change(changeset, :receiver_id)
 
     is_blocked? =
       Repo.exists?(
         from(
-          b in Embers.Feed.Subscriptions.UserBlock,
+          b in Embers.Blocks.UserBlock,
           where: b.source_id == ^user_id and b.user_id == ^receiver_id,
           or_where: b.source_id == ^receiver_id and b.user_id == ^user_id
         )

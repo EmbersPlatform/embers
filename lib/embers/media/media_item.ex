@@ -34,7 +34,7 @@ defmodule Embers.Media.MediaItem do
 
     belongs_to(:user, Embers.Accounts.User)
 
-    many_to_many(:post, Embers.Feed.Post, join_through: "posts_medias")
+    many_to_many(:post, Embers.Posts.Post, join_through: "posts_medias")
 
     timestamps()
     field(:deleted_at, :naive_datetime)

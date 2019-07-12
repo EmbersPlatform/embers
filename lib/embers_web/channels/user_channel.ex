@@ -2,7 +2,7 @@ defmodule EmbersWeb.UserChannel do
   @moduledoc false
   use Phoenix.Channel
 
-  alias Embers.Feed.Subscriptions
+  alias Embers.Subscriptions
   alias Embers.Helpers.IdHasher
   alias EmbersWeb.Presence
 
@@ -28,7 +28,7 @@ defmodule EmbersWeb.UserChannel do
     {:noreply, socket}
   end
 
-  def handle_in("chat_typing", %{"party" => party_id} = payload, socket) do
+  def handle_in("chat_typing", %{"party" => party_id} = _payload, socket) do
     dest_id = IdHasher.encode(socket.assigns.user.id)
 
     EmbersWeb.Endpoint.broadcast!("user:#{party_id}", "chat_typing", %{

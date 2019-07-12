@@ -31,7 +31,7 @@ defmodule Embers.Feed.Activity do
 
   schema "feed_activity" do
     belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:post, Embers.Feed.Post)
+    belongs_to(:post, Embers.Posts.Post)
   end
 
   @doc false

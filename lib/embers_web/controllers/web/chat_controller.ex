@@ -49,7 +49,7 @@ defmodule EmbersWeb.ChatController do
     end
   end
 
-  def read(conn, %{"id" => id} = params) do
+  def read(conn, %{"id" => id} = _params) do
     reader = conn.assigns.current_user.id
     party = decode(id)
 

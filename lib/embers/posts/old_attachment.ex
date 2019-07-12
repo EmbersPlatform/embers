@@ -1,4 +1,4 @@
-defmodule Embers.Feed.OldAttachment do
+defmodule Embers.Posts.OldAttachment do
   @moduledoc """
   Este es un esquema embebido usado sólo para los posts del backend viejo.
   Antes no existía el concepto de medio, sino de "attachments" que se guardaban

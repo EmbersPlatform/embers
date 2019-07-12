@@ -11,8 +11,8 @@ defmodule Embers.Tags do
   moderadores.
   """
 
-  alias Embers.Feed.Post
-  alias Embers.Feed.Subscriptions.TagSubscription
+  alias Embers.Posts.Post
+  alias Embers.Subscriptions.TagSubscription
   alias Embers.Repo
   alias Embers.Paginator
   alias Embers.Tags.{Tag, TagPost}

@@ -6,7 +6,7 @@ defmodule EmbersWeb.TagController do
   import Embers.Helpers.IdHasher
 
   alias Embers.Accounts
-  alias Embers.Feed.Subscriptions.Tags, as: Subscriptions
+  alias Embers.Subscriptions.Tags, as: Subscriptions
   alias Embers.Helpers.IdHasher
   alias Embers.Tags
 

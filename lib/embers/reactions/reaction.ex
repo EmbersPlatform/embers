@@ -1,10 +1,10 @@
-defmodule Embers.Feed.Reactions.Reaction do
+defmodule Embers.Reactions.Reaction do
   @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset
 
-  alias Embers.Feed.Subscriptions.Blocks
+  alias Embers.Blocks
   alias Embers.Repo
 
   @valid_reactions ~w(thumbsup thumbsdown grin cry thinking point_up angry tada heart eggplant hot_pepper cookie fire)
@@ -12,7 +12,7 @@ defmodule Embers.Feed.Reactions.Reaction do
   schema "reactions" do
     field(:name, :string, null: false)
     belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:post, Embers.Feed.Post)
+    belongs_to(:post, Embers.Posts.Post)
 
     timestamps()
   end
@@ -34,7 +34,7 @@ defmodule Embers.Feed.Reactions.Reaction do
   end
 
   defp validate_post(changeset, %{"post_id" => post_id} = attrs) do
-    case Repo.get(Embers.Feed.Post, post_id) do
+    case Repo.get(Embers.Posts.Post, post_id) do
       nil ->
         changeset
         |> Ecto.Changeset.add_error(:parent, "post does not exist")

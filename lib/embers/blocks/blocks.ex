@@ -1,4 +1,4 @@
-defmodule Embers.Feed.Subscriptions.Blocks do
+defmodule Embers.Blocks do
   @moduledoc """
   Los bloqueos son lo contrario a las suscripciones.
   Mientras que una suscripcion representa el deseo de un usuario de recibir
@@ -11,7 +11,7 @@ defmodule Embers.Feed.Subscriptions.Blocks do
 
   import Ecto.Query
 
-  alias Embers.Feed.Subscriptions.{UserBlock}
+  alias Embers.Blocks.UserBlock
   alias Embers.Paginator
   alias Embers.Repo
 
@@ -26,7 +26,7 @@ defmodule Embers.Feed.Subscriptions.Blocks do
       {:error, %Ecto.Changeset()}
   """
   @spec create_user_block(integer(), integer()) ::
-          {:ok, Embers.Feed.Subscriptions.UserBlock.t()} | {:error, Ecto.Changeset.t()}
+          {:ok, Embers.Subscriptions.UserBlock.t()} | {:error, Ecto.Changeset.t()}
   def create_user_block(user_id, source_id) do
     block = UserBlock.changeset(%UserBlock{}, %{user_id: user_id, source_id: source_id})
     Repo.insert(block)
@@ -52,7 +52,7 @@ defmodule Embers.Feed.Subscriptions.Blocks do
   end
 
   @spec list_users_blocked_ids_by(integer()) :: [
-          Embers.Feed.Subscriptions.UserBlock.t()
+          Embers.Subscriptions.UserBlock.t()
         ]
   def list_users_blocked_ids_by(user_id) do
     Repo.all(

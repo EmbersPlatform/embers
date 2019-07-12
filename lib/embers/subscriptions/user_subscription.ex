@@ -1,12 +1,13 @@
-defmodule Embers.Feed.Subscriptions.UserBlock do
+defmodule Embers.Subscriptions.UserSubscription do
   @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset
 
-  @type t :: %__MODULE__{}
+  alias __MODULE__
+  alias Embers.Repo
 
-  schema "user_blocks" do
+  schema "user_subscriptions" do
     belongs_to(:user, Embers.Accounts.User)
     belongs_to(:source, Embers.Accounts.User)
     field(:level, :integer, null: false, default: 1)
@@ -15,12 +16,12 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
   end
 
   @doc false
-  def changeset(block, attrs) do
-    block
+  def changeset(subscription, attrs) do
+    subscription
     |> cast(attrs, [:user_id, :source_id, :level])
     |> validate_required([:user_id, :source_id])
     |> validate_fields(attrs)
-    |> unique_constraint(:unique_user_blocks)
+    |> validate_unique_entry(attrs)
   end
 
   defp validate_fields(changeset, attrs) do
@@ -32,6 +33,17 @@ defmodule Embers.Feed.Subscriptions.UserBlock do
       )
     else
       changeset
+    end
+  end
+
+  defp validate_unique_entry(changeset, attrs) do
+    entries = Repo.get_by(UserSubscription, %{user_id: attrs.user_id, source_id: attrs.source_id})
+
+    if is_nil(entries) do
+      changeset
+    else
+      changeset
+      |> Ecto.Changeset.add_error(:already_exists, "subscription already exists")
     end
   end
 end

@@ -56,16 +56,6 @@ defmodule Embers.Chat do
     list_conversations_with(user_id)
   end
 
-  def list_unread_conversations(user_id) do
-    from(m in Message,
-      where: m.receiver_id == ^user_id,
-      where: is_nil(m.read_at),
-      group_by: m.sender_id,
-      select: %{party: m.sender_id, unread: count(m.sender_id)}
-    )
-    |> Repo.all()
-  end
-
   def list_conversations_with(user_id) when is_integer(user_id) do
     receivers =
       from(m in Message,
@@ -100,5 +90,15 @@ defmodule Embers.Chat do
     |> Enum.sort_by(fn [date, _user] -> date end)
     |> Enum.reverse()
     |> Enum.map(fn [date, user] -> %{user | inserted_at: date} end)
+  end
+
+  def list_unread_conversations(user_id) do
+    from(m in Message,
+      where: m.receiver_id == ^user_id,
+      where: is_nil(m.read_at),
+      group_by: m.sender_id,
+      select: %{party: m.sender_id, unread: count(m.sender_id)}
+    )
+    |> Repo.all()
   end
 end

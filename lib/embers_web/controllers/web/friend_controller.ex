@@ -3,7 +3,7 @@ defmodule EmbersWeb.FriendController do
 
   import EmbersWeb.Authorize
 
-  alias Embers.Feed.Subscriptions
+  alias Embers.Subscriptions
   alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.FallbackController)

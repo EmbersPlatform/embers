@@ -2,7 +2,7 @@ defmodule EmbersWeb.PostController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.{Feed, Repo}
+  alias Embers.Posts
   alias Embers.Helpers.IdHasher
   alias EmbersWeb.Plugs.CheckPermissions
 
@@ -10,7 +10,7 @@ defmodule EmbersWeb.PostController do
   plug(CheckPermissions, [permission: "create_post"] when action in [:create])
 
   def index(conn, _params) do
-    posts = Feed.list_posts()
+    posts = Posts.list_posts()
     render(conn, "index.json", posts: posts)
   end
 
@@ -44,7 +44,7 @@ defmodule EmbersWeb.PostController do
         %{post_params | "related_to_id" => IdHasher.decode(params["related_to_id"])}
       end || post_params
 
-    case Feed.create_post(post_params) do
+    case Posts.create_post(post_params) do
       {:ok, post} ->
         user = Embers.Accounts.get_populated(user.canonical)
         post = %{post | user: user}
@@ -71,7 +71,7 @@ defmodule EmbersWeb.PostController do
 
     post =
       post_id
-      |> Feed.get_post!()
+      |> Posts.get_post!()
       |> populate_user(conn)
 
     conn =
@@ -84,11 +84,11 @@ defmodule EmbersWeb.PostController do
 
   def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
     id = IdHasher.decode(id)
-    post = Feed.get_post!(id)
+    post = Posts.get_post!(id)
 
     case can_delete?(user, post) do
       true ->
-        {:ok, _post} = Feed.delete_post(post, actor: user.id)
+        {:ok, _post} = Posts.delete_post(post, actor: user.id)
 
       false ->
         conn |> put_status(:forbidden) |> json(nil)
@@ -108,7 +108,7 @@ defmodule EmbersWeb.PostController do
       end
 
     results =
-      Feed.get_post_replies(parent_id,
+      Posts.get_post_replies(parent_id,
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
         limit: params["limit"],

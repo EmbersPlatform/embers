@@ -1,12 +1,13 @@
-defmodule Embers.Feed.Subscriptions.Tags do
+defmodule Embers.Subscriptions.Tags do
   @moduledoc """
   Este módulo es la interfaz para las suscripciones y bloqueos a tags.
 
   Para una explicación más detallada sobre qué son las suscripciones y
-  bloqueos, ver la documentación de los módulos `Embers.Feed.Subscriptions` y
-  `Embers.Feed.Subscriptions.Blocks`.
+  bloqueos, ver la documentación de los módulos `Embers.Subscriptions` y
+  `Embers.Blocks`.
   """
-  alias Embers.Feed.Subscriptions.{TagBlock, TagSubscription}
+  alias Embers.Blocks.TagBlock
+  alias Embers.Subscriptions.TagSubscription
   alias Embers.Paginator
   alias Embers.Repo
 
@@ -18,7 +19,7 @@ defmodule Embers.Feed.Subscriptions.Tags do
   end
 
   def create_or_update_subscription(attrs \\ %{}) do
-    case Repo.get_by(TagSubscription, %{user_id: attrs.user_id, source_id: attrs.source_id}) do
+    case Repo.get_by(TagSubscription, user_id: attrs.user_id, source_id: attrs.source_id) do
       nil ->
         subscription = TagSubscription.create_changeset(%TagSubscription{}, attrs)
         Repo.insert(subscription)
@@ -168,7 +169,7 @@ defmodule Embers.Feed.Subscriptions.Tags do
     end
   end
 
-  defp maybe_with_level(query, opts \\ []) do
+  defp maybe_with_level(query, opts) do
     level = Keyword.get(opts, :level)
 
     if not is_nil(level) do

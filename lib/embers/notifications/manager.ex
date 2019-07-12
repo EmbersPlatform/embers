@@ -13,7 +13,8 @@ defmodule Embers.Notifications.Manager do
 
   import Ecto.Query
 
-  alias Embers.Feed.Subscriptions.Blocks
+  alias Embers.Posts.Post
+  alias Embers.Blocks
   alias Embers.Notifications
   alias Embers.Repo
 
@@ -76,7 +77,7 @@ defmodule Embers.Notifications.Manager do
     end
   end
 
-  defp handle_mentions(%Embers.Feed.Post{body: body} = post) when not is_nil(body) do
+  defp handle_mentions(%Post{body: body} = post) when not is_nil(body) do
     mentions = extract_mentions(body) |> Enum.map(&String.downcase/1)
 
     recipients =

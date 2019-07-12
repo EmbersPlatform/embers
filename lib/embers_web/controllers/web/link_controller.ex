@@ -18,7 +18,7 @@ defmodule EmbersWeb.LinkController do
         |> put_view(EmbersWeb.ErrorView)
         |> render("422.json", error: gettext("Couldn't process link"))
 
-      {:error, error} ->
+      {:error, _error} ->
         conn
         |> put_status(500)
         |> put_view(EmbersWeb.ErrorView)

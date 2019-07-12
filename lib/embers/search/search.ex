@@ -23,7 +23,7 @@ end
 defmodule Embers.Search do
   @moduledoc false
   alias Embers.Accounts.User
-  alias Embers.Feed.Post
+  alias Embers.Posts.Post
   alias Embers.Paginator
   alias Embers.Repo
   alias Embers.Search.Params

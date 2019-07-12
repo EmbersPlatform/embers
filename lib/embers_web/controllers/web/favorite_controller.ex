@@ -3,7 +3,7 @@ defmodule EmbersWeb.FavoriteController do
 
   import EmbersWeb.Authorize
 
-  alias Embers.Feed.Favorites
+  alias Embers.Favorites
   alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.FallbackController)

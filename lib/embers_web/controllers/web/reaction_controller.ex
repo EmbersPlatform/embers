@@ -4,7 +4,7 @@ defmodule EmbersWeb.ReactionController do
   import EmbersWeb.Authorize
   import Embers.Helpers.IdHasher
   alias Embers.Helpers.IdHasher
-  alias Embers.{Feed, Feed.Reactions}
+  alias Embers.{Posts, Reactions}
 
   plug(:user_check when action in [:create, :delete])
 
@@ -14,7 +14,7 @@ defmodule EmbersWeb.ReactionController do
 
     case Reactions.create_reaction(%{"name" => name, "user_id" => user_id, "post_id" => post_id}) do
       {:ok, _reaction} ->
-        post = Feed.get_post!(post_id)
+        post = Posts.get_post!(post_id)
 
         conn
         |> put_view(EmbersWeb.PostView)
@@ -37,7 +37,7 @@ defmodule EmbersWeb.ReactionController do
       "user_id" => user_id
     })
 
-    post = Feed.get_post!(post_id)
+    post = Posts.get_post!(post_id)
 
     conn
     |> put_view(EmbersWeb.PostView)

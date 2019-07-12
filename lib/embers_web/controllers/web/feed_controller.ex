@@ -35,9 +35,9 @@ defmodule EmbersWeb.FeedController do
 
   @spec get_public_feed(Plug.Conn.t(), nil | keyword | map) :: Plug.Conn.t()
   def get_public_feed(%{assigns: %{current_user: user}} = conn, params) do
-    blocked_users = Embers.Feed.Subscriptions.Blocks.list_users_blocked_ids_by(user.id)
+    blocked_users = Embers.Blocks.list_users_blocked_ids_by(user.id)
 
-    %{entries: blocked_tags} = Embers.Feed.Subscriptions.Tags.list_blocked_tags_paginated(user.id)
+    %{entries: blocked_tags} = Embers.Subscriptions.Tags.list_blocked_tags_paginated(user.id)
 
     blocked_tags = blocked_tags |> Enum.map(fn x -> String.downcase(x.name) end)
 
