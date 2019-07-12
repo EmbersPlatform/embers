@@ -42,6 +42,8 @@ defmodule Embers.Posts.Post do
   use Ecto.Schema
   import Ecto.Changeset
   import Ecto.Query
+
+  alias Embers.Posts.Post
   alias Embers.Repo
 
   @max_body_len 1600

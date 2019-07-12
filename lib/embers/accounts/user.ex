@@ -135,7 +135,7 @@ defmodule Embers.Accounts.User do
 
   def load_blocked_status(%User{} = user, follower_id) do
     count =
-      Embers.Subscriptions.UserBlock
+      Embers.Blocks.UserBlock
       |> where([b], b.user_id == ^follower_id)
       |> where([b], b.source_id == ^user.id)
       |> select([b], count(b.id))
