@@ -88,17 +88,9 @@ defmodule Embers.Posts.Post do
     |> validate_number(:nesting_level, less_than_or_equal_to: 2)
   end
 
-  def bulk_changeset(post, attrs) do
-    post
-    |> cast(attrs, [:id, :body, :user_id, :parent_id, :related_to_id])
-    |> trim_body(attrs)
-    |> validate_required([:user_id])
-    |> validate_related_to(attrs)
-    |> validate_parent_and_set_nesting_level(attrs)
-    |> validate_number(:nesting_level, less_than_or_equal_to: 2)
-    |> cast_embed(:old_attachment)
-  end
-
+  @doc """
+  Sets the virtual field `nsfw` to true if loaded tags contain the "nsfw" tag.
+  """
   def fill_nsfw(nil), do: nil
 
   def fill_nsfw(%__MODULE__{} = post) do

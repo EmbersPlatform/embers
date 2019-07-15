@@ -192,7 +192,8 @@ defmodule Embers.Tags do
     |> Repo.update()
   end
 
-  def list_tag_posts(tag, params) do
+  @spec list_tag_posts(String.t(), keyword) :: Embers.Paginator.Page.t()
+  def list_tag_posts(tag, params) when is_binary(tag) do
     from(
       post in Post,
       where: is_nil(post.deleted_at),

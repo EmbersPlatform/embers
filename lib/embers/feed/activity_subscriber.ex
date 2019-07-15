@@ -3,6 +3,7 @@ defmodule Embers.Feed.ActivitySubscriber do
 
   alias Embers.Blocks
   alias Embers.Feed
+  alias Embers.Feed.Timeline
   alias Embers.Subscriptions
 
   import Ecto.Query
@@ -57,7 +58,7 @@ defmodule Embers.Feed.ActivitySubscriber do
       |> Enum.uniq()
 
     # Create activity entries for the post
-    Feed.push_acitivity(post, recipients)
+    Timeline.push_acitivity(post, recipients)
 
     Embers.Event.emit(:new_activity, %{post: post, recipients: recipients})
   end

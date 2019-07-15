@@ -14,7 +14,7 @@ defmodule Embers.Posts do
   alias Embers.Tags
 
   @doc """
-  Returns the list of posts.
+  Returns the list of *all* the posts.
 
   ## Examples
 
@@ -104,25 +104,16 @@ defmodule Embers.Posts do
     Multi.new()
     # Intentamos insertar el post
     |> Multi.insert(:post, post_changeset)
-    # Si hay medios, asociarlos al post y quitarles el flag de temporal
     |> Multi.run(:medias, fn _repo, %{post: post} -> handle_medias(post, attrs) end)
-    # Si hay links, asociarlos al post y quitarles el flag de temporal
     |> Multi.run(:links, fn _repo, %{post: post} -> handle_links(post, attrs) end)
-    # Buscar tags en los atributos y en el cuerpo el post
     |> Multi.run(:tags, fn _repo, %{post: post} -> handle_tags(post, attrs) end)
-    # Actualizar el contador de respuestas del post padre
     |> Multi.run(:post_replies, fn _repo, %{post: post} ->
       update_parent_post_replies(post, attrs)
     end)
-    # Si el post es compartido, realizar las acciones correspondientes
-    # (Como actualizar el contador de compartidos)
     |> Multi.run(:related_to, fn _repo, %{post: post} -> handle_related_to(post, attrs) end)
-    # Ejecutar la transaccion
     |> Repo.transaction()
     |> case do
       {:ok, %{post: post} = _results} ->
-        # El post se creo exitosamente, asi que levantamos todas las
-        # asociaciones que hacen falta para poder mostrarlo en el front
         post =
           post
           |> Repo.preload([
@@ -135,7 +126,6 @@ defmodule Embers.Posts do
           ])
           |> Post.fill_nsfw()
 
-        # Disparamos un evento
         Embers.Event.emit(:post_created, post)
 
         {:ok, post}

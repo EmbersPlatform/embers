@@ -3,14 +3,17 @@ defmodule EmbersWeb.FeedController do
 
   import EmbersWeb.Authorize
 
-  alias Embers.Feed
+  alias Embers.Feed.Public
+  alias Embers.Feed.Timeline
+  alias Embers.Feed.User, as: UserFeed
   alias Embers.Helpers.IdHasher
 
   plug(:user_check when action in [:timeline, :hide_post])
 
   def timeline(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, params) do
     results =
-      Feed.get_timeline(user_id,
+      Timeline.get(
+        user_id: user_id,
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
         limit: params["limit"]
@@ -23,8 +26,8 @@ defmodule EmbersWeb.FeedController do
     id = IdHasher.decode(id)
 
     posts =
-      Feed.get_user_activities(
-        id,
+      UserFeed.get(
+        user_id: id,
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
         limit: params["limit"]
@@ -42,7 +45,7 @@ defmodule EmbersWeb.FeedController do
     blocked_tags = blocked_tags |> Enum.map(fn x -> String.downcase(x.name) end)
 
     posts =
-      Feed.get_public(
+      Public.get(
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
         limit: params["limit"],
@@ -55,7 +58,7 @@ defmodule EmbersWeb.FeedController do
 
   def get_public_feed(conn, params) do
     posts =
-      Feed.get_public(
+      Public.get(
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
         limit: params["limit"]
@@ -65,7 +68,7 @@ defmodule EmbersWeb.FeedController do
   end
 
   def hide_post(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    with {:ok, _activity} <- Feed.delete_activity(user.id, IdHasher.decode(id)) do
+    with {:ok, _activity} <- Timeline.delete_activity(user.id, IdHasher.decode(id)) do
       conn
       |> put_status(:no_content)
       |> json(nil)

@@ -186,8 +186,6 @@ defmodule Embers.Media do
      }}
   end
 
-  # En este caso, convierte el video a video mudo, esto es ideal para los gifs,
-  # pero si es otro tipo de video habria que procesarlo de otra manera.
   defp process_file(%{content_type: "video/" <> format} = file)
        when format in @supported_formats do
     with :ok <- file.path |> process_video(file.path <> ".mp4") do
