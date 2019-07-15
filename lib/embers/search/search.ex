@@ -44,13 +44,13 @@ defmodule Embers.Search do
   def search(what, opts \\ [])
 
   def search(%Params{} = params, opts) do
-    do_search(params, opts)
+    exec(params, opts)
   end
 
   def search(query, opts) do
     query
     |> parse_query()
-    |> do_search(opts)
+    |> exec(opts)
   end
 
   @spec parse_query(binary()) :: Embers.Search.Params.t()
@@ -73,7 +73,7 @@ defmodule Embers.Search do
     }
   end
 
-  defp do_search(%Params{} = params, opts) do
+  def exec(%Params{} = params, opts) do
     posts_query =
       from(
         post in Post,
