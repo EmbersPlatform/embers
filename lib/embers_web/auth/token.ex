@@ -9,7 +9,7 @@ defmodule EmbersWeb.Auth.Token do
   alias EmbersWeb.Endpoint
 
   # 7 days
-  @max_age 604_800
+  @max_age 7 * 24 * 60 * 60
   @token_salt "JaKgaBf2"
 
   @impl true

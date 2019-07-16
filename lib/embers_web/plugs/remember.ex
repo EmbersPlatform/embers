@@ -3,7 +3,7 @@ defmodule EmbersWeb.Remember do
 
   alias Phauxth.Config
 
-  @max_age 7 * 24 * 60 * 60
+  @max_age 90 * 24 * 60 * 60
 
   @impl Plug
   def init(opts) do
@@ -42,11 +42,15 @@ defmodule EmbersWeb.Remember do
   def set_user(nil, conn), do: super(nil, delete_rem_cookie(conn))
   def set_user(user, conn), do: super(user, conn)
 
-  defp add_session(%Plug.Conn{assigns: %{current_user: %{}}} = conn, create_session_func) do
+  defp add_session(
+         %Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn,
+         create_session_func
+       ) do
     case create_session_func.(conn) do
       {:ok, %{id: session_id}} ->
         conn
         |> put_session(:phauxth_session_id, session_id)
+        |> add_rem_cookie(user_id)
         |> configure_session(renew: true)
 
       {:error, _reason} ->

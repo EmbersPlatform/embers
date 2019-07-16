@@ -6,7 +6,7 @@ defmodule Embers.Sessions.Session do
 
   alias Embers.Accounts.User
 
-  @max_age 604_800
+  @max_age 7 * 24 * 60 * 60
 
   schema "sessions" do
     field(:expires_at, :utc_datetime)
