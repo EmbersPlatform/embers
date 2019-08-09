@@ -7,18 +7,17 @@ defmodule EmbersWeb.Authenticate do
   alias Phauxth.{Config, Log}
 
   def init(opts) do
-    {Keyword.get(opts, :user_context, Config.user_context()), Keyword.get(opts, :log_meta, []),
-     opts}
+    {Keyword.get(opts, :log_meta, []), opts}
   end
 
-  def call(conn, {user_context, log_meta, opts}) do
+  def call(conn, {log_meta, _opts}) do
     conn
-    |> authenticate(user_context, opts)
+    |> authenticate()
     |> report(log_meta)
     |> set_user(conn)
   end
 
-  def authenticate(conn, _user_context, _opts) do
+  def authenticate(conn) do
     case get_session(conn, :phauxth_session_id) do
       nil ->
         {:error, "anonymous user"}
@@ -26,7 +25,8 @@ defmodule EmbersWeb.Authenticate do
       session_id ->
         case Accounts.get_by(%{"session_id" => session_id}) do
           nil -> {:error, "no user found"}
-          user -> {:ok, user}
+          user ->
+            {:ok, user}
         end
     end
   end
@@ -45,6 +45,9 @@ defmodule EmbersWeb.Authenticate do
 
   def set_user(user, conn) do
     token = Token.sign(%{"user_id" => user.id})
-    assign(conn, :current_user, user) |> assign(:user_token, token)
+    conn
+    |> assign(:current_user, user)
+    |> assign(:user_token, token)
+    |> EmbersWeb.Remember.add_rem_cookie(user.id)
   end
 end

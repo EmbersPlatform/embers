@@ -1,58 +1,41 @@
 defmodule EmbersWeb.Remember do
-  use Phauxth.Authenticate.Base
+  @behaviour Plug
+  import Plug.Conn
 
-  alias Phauxth.Config
+  alias Embers.Sessions
+  alias EmbersWeb.Auth.Token
 
-  @max_age 90 * 24 * 60 * 60
+  @max_age :timer.hours(24) * 90
 
   @impl Plug
   def init(opts) do
-    create_session_func =
-      opts[:create_session_func] ||
-        raise """
-        Phauxth.Remember - you need to set a `create_session_func` in the opts
-        """
-
-    unless is_function(create_session_func, 1) do
-      raise """
-      Phauxth.Remember - the `create_session_func` should be a function
-      that takes one argument
-      """
-    end
-
-    {create_session_func, super(opts ++ [max_age: @max_age])}
+    opts
   end
 
   @impl Plug
-  def call(%Plug.Conn{assigns: %{current_user: %{}}} = conn, _), do: conn
+  def call(%Plug.Conn{assigns: %{current_user: %{}}} = conn, _) do
+    conn
+  end
 
-  def call(%Plug.Conn{req_cookies: %{"remember_me" => _}} = conn, {create_session_func, opts}) do
-    conn |> super(opts) |> add_session(create_session_func)
+  def call(%Plug.Conn{req_cookies: %{"remember_me" => remember_token}} = conn, _) do
+    conn
+    |> IO.inspect
+    |> maybe_renew_session(remember_token)
   end
 
   def call(conn, _), do: conn
 
-  @impl Phauxth.Authenticate.Base
-  def authenticate(%Plug.Conn{req_cookies: %{"remember_me" => token}}, user_context, opts) do
-    with {:ok, user_id} <- Config.token_module().verify(token, opts),
-         do: get_user({:ok, %{"user_id" => user_id}}, user_context)
-  end
-
-  @impl Phauxth.Authenticate.Base
-  def set_user(nil, conn), do: super(nil, delete_rem_cookie(conn))
-  def set_user(user, conn), do: super(user, conn)
-
-  defp add_session(
-         %Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn,
-         create_session_func
-       ) do
-    case create_session_func.(conn) do
-      {:ok, %{id: session_id}} ->
-        conn
-        |> put_session(:phauxth_session_id, session_id)
-        |> add_rem_cookie(user_id)
-        |> configure_session(renew: true)
-
+  defp maybe_renew_session(conn, token) do
+    with {:ok, user_id} <- Token.verify(token, max_age: @max_age),
+         {:ok, %{id: session_id}} <- Sessions.create_session(%{user_id: user_id}) do
+      conn
+      |> put_session(:phauxth_session_id, session_id)
+      |> add_rem_cookie(user_id)
+      |> configure_session(renew: true)
+      |> EmbersWeb.Authenticate.authenticate()
+      |> EmbersWeb.Authenticate.report([])
+      |> EmbersWeb.Authenticate.set_user(conn)
+    else
       {:error, _reason} ->
         conn
         |> delete_session(:phauxth_session_id)
@@ -60,15 +43,13 @@ defmodule EmbersWeb.Remember do
     end
   end
 
-  defp add_session(conn, _), do: conn
-
   @doc """
   Adds a remember me cookie to the conn.
   """
-  @spec add_rem_cookie(Plug.Conn.t(), integer, integer) :: Plug.Conn.t()
-  def add_rem_cookie(conn, user_id, max_age \\ @max_age, extra \\ "") do
-    cookie = Config.token_module().sign(user_id, max_age: max_age)
-    put_resp_cookie(conn, "remember_me", cookie, http_only: true, max_age: max_age, extra: extra)
+  @spec add_rem_cookie(Plug.Conn.t(), integer) :: Plug.Conn.t()
+  def add_rem_cookie(conn, user_id) do
+    cookie = Token.sign(user_id, max_age: @max_age)
+    put_resp_cookie(conn, "remember_me", cookie, http_only: true, max_age: @max_age)
   end
 
   @doc """

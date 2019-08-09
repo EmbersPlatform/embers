@@ -31,6 +31,9 @@ config :phauxth,
   token_module: EmbersWeb.Auth.Token,
   user_messages: EmbersWeb.UserMessages
 
+config :embers, :auth,
+  token_salt: "geDDVmqL"
+
 # Mailer configuration
 config :embers, EmbersWeb.Mailer,
   adapter: Bamboo.SendgridAdapter,

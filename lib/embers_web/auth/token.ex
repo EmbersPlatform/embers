@@ -10,7 +10,7 @@ defmodule EmbersWeb.Auth.Token do
 
   # 7 days
   @max_age 7 * 24 * 60 * 60
-  @token_salt "JaKgaBf2"
+  @token_salt Application.get_env(:embers, :auth) |> Keyword.get(:token_salt)
 
   @impl true
   def sign(data, opts \\ []) do
@@ -19,6 +19,7 @@ defmodule EmbersWeb.Auth.Token do
 
   @impl true
   def verify(token, opts \\ []) do
-    Token.verify(Endpoint, @token_salt, token, opts ++ [max_age: @max_age])
+    max_age = Keyword.get(opts, :max_age, @max_age)
+    Token.verify(Endpoint, @token_salt, token, opts ++ [max_age: max_age])
   end
 end

@@ -23,7 +23,7 @@ defmodule Embers.Sessions do
   """
   def get_session(id) do
     now = DateTime.utc_now()
-    Repo.get(from(s in Session, where: s.expires_at > ^now), id)
+    Repo.one(from(s in Session, where: s.id == ^id and s.expires_at > ^now, limit: 1))
   end
 
   @doc """
@@ -49,6 +49,11 @@ defmodule Embers.Sessions do
 
   def delete_user_sessions(%User{} = user) do
     delete_user_sessions(user.id)
+  end
+
+  def delete_expired() do
+    from(session in Session, where: session.expires_at < ^DateTime.utc_now())
+    |> Repo.delete_all()
   end
 
   @doc """

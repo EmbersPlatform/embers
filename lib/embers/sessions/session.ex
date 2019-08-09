@@ -6,7 +6,7 @@ defmodule Embers.Sessions.Session do
 
   alias Embers.Accounts.User
 
-  @max_age 7 * 24 * 60 * 60
+  @max_age :timer.hours(24) * 7
 
   schema "sessions" do
     field(:expires_at, :utc_datetime)
@@ -26,7 +26,7 @@ defmodule Embers.Sessions.Session do
 
   defp set_expires_at(%__MODULE__{} = session, attrs) do
     max_age = attrs[:max_age] || @max_age
-    {:ok, expires_at} = exp_datetime(max_age)
+    expires_at = exp_datetime(max_age)
     %__MODULE__{session | expires_at: DateTime.truncate(expires_at, :second)}
   end
 
