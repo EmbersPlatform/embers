@@ -115,7 +115,7 @@ defmodule Embers.Notifications.Manager do
   end
 
   defp extract_mentions(body) do
-    regex = ~r/(?<![\w.-])@([A-Za-z]\w*(?:\w+)*)(?!\S)/
+    regex = ~r/(?<![\w.-])@([-\w]*(?:\w+)*)(?!\S)/
 
     regex
     |> Regex.scan(body)

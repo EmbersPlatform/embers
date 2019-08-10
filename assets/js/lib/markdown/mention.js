@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-const MENTION_REGEX = /@([A-Za-z]\w*(?:\w+)*)(?!\S)/
+const MENTION_REGEX = /@([-\w]*(?:\w+)*)(?!\S)/
 
 function locator(value, fromIndex) {
   const keep = MENTION_REGEX.exec(value, fromIndex)
