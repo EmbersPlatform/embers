@@ -155,7 +155,8 @@ defmodule Embers.Accounts.User do
     stats = %{
       followers: get_followers_count(user),
       friends: get_friends_count(user),
-      posts: get_posts_count(user)
+      posts: get_posts_count(user),
+      comments: get_comments_count(user)
     }
 
     %{user | stats: stats}
@@ -182,9 +183,22 @@ defmodule Embers.Accounts.User do
   end
 
   def get_posts_count(%User{} = user) do
-    Embers.Posts.Post
-    |> where([p], p.user_id == ^user.id)
-    |> select([p], count(p.id))
+    from(p in Embers.Posts.Post,
+      where: p.user_id == ^user.id,
+      where: is_nil(p.deleted_at),
+      where: p.nesting_level == 0,
+      select: count(p.id)
+    )
+    |> Embers.Repo.one()
+  end
+
+  def get_comments_count(%User{} = user) do
+    from(p in Embers.Posts.Post,
+      where: p.user_id == ^user.id,
+      where: is_nil(p.deleted_at),
+      where: p.nesting_level > 0,
+      select: count(p.id)
+    )
     |> Embers.Repo.one()
   end
 

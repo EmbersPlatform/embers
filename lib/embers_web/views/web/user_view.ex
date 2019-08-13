@@ -20,7 +20,8 @@ defmodule EmbersWeb.UserView do
       stats: %{
         posts: 0,
         followers: 0,
-        friends: 0
+        friends: 0,
+        comments: 0
       },
       following: user.following,
       follows_me: user.follows_me,

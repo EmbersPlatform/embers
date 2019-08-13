@@ -15,6 +15,10 @@
           <span class="stat-name">Posts</span>
         </div>
         <div class="stat">
+          <span class="stat-value">{{user.stats.comments}}</span>
+          <span class="stat-name">Comentarios</span>
+        </div>
+        <div class="stat">
           <span class="stat-value">{{user.stats.followers}}</span>
           <span class="stat-name">Seguidores</span>
         </div>
