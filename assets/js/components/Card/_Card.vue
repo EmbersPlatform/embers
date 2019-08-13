@@ -181,7 +181,6 @@
         <template v-if="with_related && post.related_to">
           <card
             :no_header="isShared"
-            :footer="false"
             :post="post.related_to"
             :tools="false"
             class="related"
@@ -260,10 +259,10 @@
             </span>
           </li>
         </template>
-        <li v-if="loggedUser && (!isOwner || isOwner && post.stats.shares > 0)">
+        <li v-if="loggedUser">
           <span
             @click="share"
-            :data-tip="(isOwner) ? 'No puedes compartir algo tuyo' : 'Compartir post'"
+            data-tip="Compartir post"
             data-tip-position="bottom"
             data-tip-text
           >
@@ -465,7 +464,7 @@ export default {
      * Shares the post with subscribers
      */
     share() {
-      if (!this.loggedUser || this.isOwner || this.post.alreadyShared) {
+      if (!this.loggedUser) {
         return;
       }
       EventBus.$emit("show_new_post_modal", { related: this.post });
