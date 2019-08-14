@@ -81,10 +81,10 @@ defmodule Embers.Posts.Post do
     post
     |> cast(attrs, [:body, :user_id, :parent_id, :related_to_id])
     |> validate_required([:user_id])
-    |> trim_body(attrs)
+    |> trim_body()
     |> validate_body(attrs)
-    |> validate_related_to(attrs)
-    |> validate_parent_and_set_nesting_level(attrs)
+    |> validate_related_to()
+    |> validate_parent_and_set_nesting_level()
     |> validate_number(:nesting_level, less_than_or_equal_to: 2)
   end
 
@@ -111,10 +111,12 @@ defmodule Embers.Posts.Post do
     end
   end
 
-  defp must_have_body?(attrs) do
-    is_shared? = not is_nil(attrs["related_to_id"])
-    has_media? = Map.get(attrs, "media_count", 0) > 0
-    has_link? = Map.get(attrs, "links_count", 0) > 0
+  defp must_have_body?(changeset, attrs) do
+    media_count = Map.get(attrs, "media_count") || Map.get(attrs, :media_count) || 0
+    links_count = Map.get(attrs, "links_count") || Map.get(attrs, :links_count) || 0
+    is_shared? = not is_nil(get_change(changeset, :related_to_id))
+    has_media? = media_count > 0
+    has_link? = links_count > 0
 
     if is_shared? do
       false
@@ -124,7 +126,7 @@ defmodule Embers.Posts.Post do
   end
 
   defp validate_body(changeset, attrs) do
-    if must_have_body?(attrs) do
+    if must_have_body?(changeset, attrs) do
       changeset
       |> validate_required([:body])
       |> validate_length(:body, min: 1)
@@ -134,14 +136,20 @@ defmodule Embers.Posts.Post do
     end
   end
 
-  defp trim_body(changeset, %{"body" => body} = _attrs) when not is_nil(body) do
-    changeset
-    |> change(body: String.trim(body))
+  defp trim_body(changeset) do
+    body = get_change(changeset, :body)
+    unless is_nil body do
+      changeset
+      |> change(body: String.trim(body))
+    end || changeset
   end
 
-  defp trim_body(changeset, _), do: changeset
-
-  defp validate_parent_and_set_nesting_level(changeset, %{"parent_id" => parent_id}) do
+  defp validate_parent_and_set_nesting_level(changeset) do
+    parent_id = get_change(changeset, :parent_id)
+    validate_parent_and_set_nesting_level(changeset, parent_id)
+  end
+  defp validate_parent_and_set_nesting_level(changeset, nil), do: changeset
+  defp validate_parent_and_set_nesting_level(changeset, parent_id) do
     case Repo.get(Post, parent_id) do
       nil ->
         changeset
@@ -152,10 +160,6 @@ defmodule Embers.Posts.Post do
         |> check_if_can_reply(parent)
         |> set_nesting_level(parent.nesting_level)
     end
-  end
-
-  defp validate_parent_and_set_nesting_level(changeset, _) do
-    changeset
   end
 
   defp set_nesting_level(changeset, parent_nesting_level) do
@@ -188,16 +192,16 @@ defmodule Embers.Posts.Post do
     end
   end
 
-  defp validate_related_to(changeset, attrs) do
-    parent_id = attrs["parent_id"]
-    related_to_id = attrs["related_to_id"]
+  defp validate_related_to(changeset) do
+    parent_id = get_change(changeset, :parent_id)
+    related_to_id = get_change(changeset, :related_to_id)
 
     changeset =
       if not is_nil(parent_id) and not is_nil(related_to_id) do
         Ecto.Changeset.add_error(
           changeset,
           :invalid_data,
-          "only one of `parent_id` and `related_to` can be present at the same time"
+          "only one of `parent_id` and `related_to_id` can be present at the same time"
         )
       else
         changeset
