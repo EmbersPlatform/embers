@@ -21,6 +21,7 @@ defmodule Embers.Sessions do
   @doc """
   Gets a single user.
   """
+  def get_session(nil), do: nil
   def get_session(id) do
     now = DateTime.utc_now()
     Repo.one(from(s in Session, where: s.id == ^id and s.expires_at > ^now, limit: 1))
@@ -36,6 +37,7 @@ defmodule Embers.Sessions do
   @doc """
   Deletes a session.
   """
+  def delete_session(nil), do: nil
   def delete_session(%Session{} = session) do
     Repo.delete(session)
   end

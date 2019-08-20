@@ -33,7 +33,7 @@ defmodule Embers.Tags do
     Repo.one(from(tag in Tag, where: fragment("LOWER(?) = ?", tag.name, ^name), limit: 1))
   end
 
-  def create_tag(%{"name" => name}) do
+  def create_tag(name) do
     case get_by_name(name) do
       nil -> insert_tag(name)
       tag -> tag
@@ -144,7 +144,7 @@ defmodule Embers.Tags do
   end
 
   def add_tag(post, tag_name) when is_binary(tag_name) do
-    tag = create_tag(%{"name" => tag_name})
+    tag = create_tag(tag_name)
     add_tag(post, tag.id)
   end
 

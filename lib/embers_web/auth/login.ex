@@ -62,7 +62,7 @@ defmodule EmbersWeb.Auth.Login do
 
     conn
     |> delete_session(:request_path)
-    |> put_session(:session_id, session_id)
+    |> put_session(:phauxth_session_id, session_id)
     |> configure_session(renew: true)
     |> add_remember_me(user.id, params)
   end

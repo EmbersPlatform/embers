@@ -50,6 +50,7 @@ defmodule Embers.Posts.Post do
 
   schema "posts" do
     field(:body, :string)
+    belongs_to(:user, Embers.Accounts.User)
     field(:nesting_level, :integer, default: 0)
     field(:replies_count, :integer, default: 0)
     field(:shares_count, :integer, default: 0)
@@ -58,10 +59,6 @@ defmodule Embers.Posts.Post do
     field(:nsfw, :boolean, virtual: true, default: false)
     field(:faved, :boolean, virtual: true, default: false)
 
-    belongs_to(:user, Embers.Accounts.User)
-
-    # A post may be in reply to another post
-    # Comments no longer have their own entity as they had in fenix
     belongs_to(:parent, __MODULE__)
     belongs_to(:related_to, __MODULE__)
     has_many(:replies, __MODULE__)
@@ -81,11 +78,16 @@ defmodule Embers.Posts.Post do
     post
     |> cast(attrs, [:body, :user_id, :parent_id, :related_to_id])
     |> validate_required([:user_id])
-    |> trim_body()
-    |> validate_body(attrs)
+    |> assoc_constraint(:user)
+    |> validate_only_parent_or_related()
     |> validate_related_to()
     |> validate_parent_and_set_nesting_level()
     |> validate_number(:nesting_level, less_than_or_equal_to: 2)
+    |> maybe_put_media
+    |> maybe_put_link
+    |> trim_body()
+    |> validate_body()
+    |> maybe_put_tags
   end
 
   @doc """
@@ -111,12 +113,36 @@ defmodule Embers.Posts.Post do
     end
   end
 
-  defp must_have_body?(changeset, attrs) do
-    media_count = Map.get(attrs, "media_count") || Map.get(attrs, :media_count) || 0
-    links_count = Map.get(attrs, "links_count") || Map.get(attrs, :links_count) || 0
-    is_shared? = not is_nil(get_change(changeset, :related_to_id))
-    has_media? = media_count > 0
-    has_link? = links_count > 0
+  @doc """
+  Given a string, returns a List of valid tags
+
+  ## Examples
+      iex>parse_tags("#test")
+      ["test]
+
+      iex>parse_tags(#hello #world)
+      ["hello", "world"]
+  """
+  @spec parse_tags(String.t()) :: [String.t()]
+  def parse_tags(text) do
+    hashtag_regex = ~r/(?<!\w)#\w+/
+
+    if is_nil(text) do
+      []
+    else
+      hashtag_regex
+      |> Regex.scan(text)
+      |> Enum.map(fn [txt] -> String.replace(txt, "#", "") end)
+    end
+  end
+
+  defp must_have_body?(changeset) do
+    medias = get_change(changeset, :media) || []
+    links = get_change(changeset, :links) || []
+    related = get_change(changeset, :related_to_id)
+    is_shared? = not is_nil(related)
+    has_media? = length(medias) > 0
+    has_link? = length(links) > 0
 
     if is_shared? do
       false
@@ -125,8 +151,8 @@ defmodule Embers.Posts.Post do
     end
   end
 
-  defp validate_body(changeset, attrs) do
-    if must_have_body?(changeset, attrs) do
+  defp validate_body(changeset) do
+    if must_have_body?(changeset) do
       changeset
       |> validate_required([:body])
       |> validate_length(:body, min: 1)
@@ -192,21 +218,53 @@ defmodule Embers.Posts.Post do
     end
   end
 
-  defp validate_related_to(changeset) do
+  defp validate_only_parent_or_related(changeset) do
     parent_id = get_change(changeset, :parent_id)
     related_to_id = get_change(changeset, :related_to_id)
 
-    changeset =
-      if not is_nil(parent_id) and not is_nil(related_to_id) do
-        Ecto.Changeset.add_error(
-          changeset,
-          :invalid_data,
-          "only one of `parent_id` and `related_to_id` can be present at the same time"
-        )
-      else
-        changeset
-      end
-
-    assoc_constraint(changeset, :related_to)
+    if not is_nil(parent_id) and not is_nil(related_to_id) do
+      Ecto.Changeset.add_error(
+        changeset,
+        :invalid_data,
+        "only one of `parent_id` and `related_to_id` can be present at the same time"
+      )
+    else
+      changeset
+    end
   end
+
+  defp validate_related_to(changeset) do
+    if not is_nil(get_change(changeset, :related_to_id)) do
+      assoc_constraint(changeset, :related_to)
+    else
+      changeset
+    end
+  end
+
+  defp maybe_put_media(%{params: %{"media" => media}} = changeset)
+    when not is_nil(media)
+  do
+    changeset
+    |> put_assoc(:media, media)
+    |> validate_length(:media, max: 4)
+  end
+  defp maybe_put_media(changeset), do: changeset
+
+  defp maybe_put_link(%{params: %{"links" => links}} = changeset)
+    when not is_nil(links)
+  do
+    changeset
+    |> put_assoc(:links, links)
+    |> validate_length(:links, max: 1)
+  end
+  defp maybe_put_link(changeset), do: changeset
+
+  defp maybe_put_tags(%{params: %{"tags" => tags}} = changeset) do
+    tags = Enum.filter(tags, fn tag -> match?(%Embers.Tags.Tag{}, tag) end)
+
+    changeset
+    |> put_assoc(:tags, tags)
+    |> validate_length(:tags, max: 10)
+  end
+  defp maybe_put_tags(changeset), do: changeset
 end

@@ -1,13 +1,8 @@
 defmodule Embers.Posts do
-  @max_media_count 4
-
   import Ecto.Query
-
-  alias Ecto.Multi
 
   alias Embers.Helpers.IdHasher
   alias Embers.Links.Link
-  alias Embers.Media.MediaItem
   alias Embers.Paginator
   alias Embers.Posts.Post
   alias Embers.Repo
@@ -86,52 +81,18 @@ defmodule Embers.Posts do
   end
 
   @doc """
-  Creates a post.
-
-  ## Examples
-
-      iex> create_post(%{field: value})
-      {:ok, %Post{}}
-
-      iex> create_post(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
+  Creates a post. See `Embers.Posts.Post.changeset/2` for validations.
   """
-  def create_post(attrs) do
+  def create_post(attrs, opts \\ []) do
     post_changeset = Post.changeset(%Post{}, attrs)
 
-    # Inicializar la transaccion
-    Multi.new()
-    # Intentamos insertar el post
-    |> Multi.insert(:post, post_changeset)
-    |> Multi.run(:medias, fn _repo, %{post: post} -> handle_medias(post, attrs) end)
-    |> Multi.run(:links, fn _repo, %{post: post} -> handle_links(post, attrs) end)
-    |> Multi.run(:tags, fn _repo, %{post: post} -> handle_tags(post, attrs) end)
-    |> Multi.run(:post_replies, fn _repo, %{post: post} ->
-      update_parent_post_replies(post, attrs)
-    end)
-    |> Multi.run(:related_to, fn _repo, %{post: post} -> handle_related_to(post, attrs) end)
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{post: post} = _results} ->
-        post =
-          post
-          |> Repo.preload([
-            [user: :meta],
-            :media,
-            :links,
-            :tags,
-            :reactions,
-            [related_to: [:media, :links, :tags, :reactions, user: :meta]]
-          ])
-          |> Post.fill_nsfw()
-
+    with {:ok, post} <- Repo.insert(post_changeset) do
+      {:ok, post} = get_post(post.id)
+      emit_event? = Keyword.get(opts, :emit_event?, true)
+      if emit_event? do
         Embers.Event.emit(:post_created, post)
-
-        {:ok, post}
-
-      {:error, _failed_operation, failed_value, _changes_so_far} ->
-        {:error, failed_value}
+      end
+      {:ok, post}
     end
   end
 
@@ -180,35 +141,6 @@ defmodule Embers.Posts do
     end
 
     {:ok, nil}
-  end
-
-  defp handle_medias(post, attrs) do
-    medias = attrs["medias"]
-
-    if is_nil(medias) do
-      {:ok, nil}
-    else
-      if length(medias) <= @max_media_count do
-        medias = attrs["medias"]
-
-        ids = Enum.map(medias, fn x -> IdHasher.decode(x["id"]) end)
-
-        {_count, medias} =
-          Repo.update_all(
-            from(m in MediaItem, where: m.id in ^ids),
-            [set: [temporary: false]],
-            returning: true
-          )
-
-        post
-        |> Repo.preload(:media)
-        |> Ecto.Changeset.change()
-        |> Ecto.Changeset.put_assoc(:media, medias)
-        |> Repo.update()
-      else
-        {:error, "media count exceeded"}
-      end
-    end
   end
 
   defp handle_links(post, attrs) do
@@ -408,17 +340,8 @@ defmodule Embers.Posts do
   end
 
   defp handle_tags(post, attrs) do
-    hashtag_regex = ~r/(?<!\w)#\w+/
-
-    # Buscar tags en el cuerpo del post
-    hashtags =
-      if is_nil(post.body) do
-        []
-      else
-        hashtag_regex
-        |> Regex.scan(post.body)
-        |> Enum.map(fn [txt] -> String.replace(txt, "#", "") end)
-      end
+    IO.inspect("HANDLING TAGS")
+    hashtags = Post.parse_tags(post.body)
 
     # Sumarle los tags enviados en el campo "tags"
     hashtags =
@@ -427,6 +350,10 @@ defmodule Embers.Posts do
       else
         hashtags
       end
+
+    hashtags = Enum.filter(hashtags, fn name -> Tags.Tag.valid_name?(name) end)
+
+    IO.inspect(hashtags, label: "LOS TAGS AAAAAAAAAAAAAAAAAAAAAA")
 
     # Crear los tags que hacaen falta y obtener los ids que hacen falta
     tags_ids = Tags.bulk_create_tags(hashtags)
@@ -444,10 +371,6 @@ defmodule Embers.Posts do
 
     Embers.Repo.insert_all(Embers.Tags.TagPost, tag_post_list)
 
-    # Devolver un tuple con {:ok, _algo} porque esta accion se realiza
-    # dentro de una transaccion.
-    # Se podria hacer que falle toda la operacion si no se pudo insertar
-    # un tag.
     {:ok, nil}
   end
 
