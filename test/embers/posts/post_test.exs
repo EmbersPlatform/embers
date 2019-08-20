@@ -25,7 +25,7 @@ defmodule Embers.Posts.PostTest do
     test "body is required if there isn't any other content present" do
       changeset = Post.changeset(%Post{}, %{user_id: 1})
       refute changeset.valid?
-      assert {:body, {"can't be blank", [validation: :required]}} in changeset.errors
+      assert {:body, "can't be blank"} in changeset.errors
     end
 
     test "body is optional if there are Medias" do
@@ -57,7 +57,7 @@ defmodule Embers.Posts.PostTest do
       assert(
         {
           :invalid_data,
-          {"only one of `parent_id` and `related_to_id` can be present at the same time", []}
+          "only one of `parent_id` and `related_to_id` can be present at the same time"
         } in changeset.errors)
     end
   end
