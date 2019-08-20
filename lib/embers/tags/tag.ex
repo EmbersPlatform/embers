@@ -15,6 +15,7 @@ defmodule Embers.Tags.Tag do
     many_to_many(:posts, Embers.Posts.Post, join_through: "tags_posts")
   end
 
+  def changeset(changeset, attrs), do: create_changeset(changeset, attrs)
   def create_changeset(changeset, attrs) do
     changeset
     |> cast(attrs, [:name, :description])
@@ -23,6 +24,10 @@ defmodule Embers.Tags.Tag do
     |> validate_name()
     |> validate_format(:name, ~r/^\w+$/)
     |> trim_desc(attrs)
+  end
+
+  def valid_name?(name) do
+    Regex.match?(~r/^\w+$/, name)
   end
 
   defp validate_name(changeset) do

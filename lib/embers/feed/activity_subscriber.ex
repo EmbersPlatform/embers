@@ -2,7 +2,6 @@ defmodule Embers.Feed.ActivitySubscriber do
   use Embers.EventSubscriber, topics: ~w(post_created)
 
   alias Embers.Blocks
-  alias Embers.Feed
   alias Embers.Feed.Timeline
   alias Embers.Subscriptions
 
@@ -13,7 +12,7 @@ defmodule Embers.Feed.ActivitySubscriber do
   def handle_event(:post_created, event) do
     post = event.data
 
-    if(post.nesting_level == 0) do
+    if post.nesting_level == 0 do
       create_activity_and_push(post)
     end
   end
@@ -58,7 +57,8 @@ defmodule Embers.Feed.ActivitySubscriber do
       |> Enum.uniq()
 
     # Create activity entries for the post
-    Timeline.push_acitivity(post, recipients)
+    Timeline.push_activity(post, recipients)
+    |> IO.inspect(label: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAA")
 
     Embers.Event.emit(:new_activity, %{post: post, recipients: recipients})
   end

@@ -19,7 +19,6 @@ defmodule EmbersWeb.Remember do
 
   def call(%Plug.Conn{req_cookies: %{"remember_me" => remember_token}} = conn, _) do
     conn
-    |> IO.inspect
     |> maybe_renew_session(remember_token)
   end
 
