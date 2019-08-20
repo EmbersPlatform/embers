@@ -87,8 +87,7 @@ defmodule Embers.Posts.Post do
     |> maybe_put_link
     |> trim_body()
     |> validate_body()
-    |> maybe_put_tags()
-    |> check_share_rate_limit()
+    |> maybe_put_tags
   end
 
   @doc """
@@ -216,35 +215,6 @@ defmodule Embers.Posts.Post do
       |> Ecto.Changeset.add_error(:blocked, "parent post owner has blocked the post creator")
     else
       changeset
-    end
-  end
-
-  defp check_share_rate_limit(changeset) do
-    related_id = get_change(changeset, :related_to_id)
-    user_id = get_change(changeset, :user_id)
-
-    since_date =
-      Timex.now()
-      |> Timex.shift(minutes: -5)
-
-    case related_id do
-      nil -> changeset
-      _ ->
-        recently_shared? =
-          Repo.exists?(
-            from(
-              post in Post,
-              where: post.related_to_id == ^related_id,
-              where: post.user_id == ^user_id,
-              where: post.inserted_at >= ^since_date
-            )
-          )
-        if recently_shared? do
-          changeset
-          |> add_error(:related_to, "rate limited")
-        else
-          changeset
-        end
     end
   end
 
