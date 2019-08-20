@@ -6,8 +6,6 @@ defmodule EmbersWeb.PostController do
   alias Embers.Helpers.IdHasher
   alias EmbersWeb.Plugs.CheckPermissions
 
-  action_fallback(EmbersWeb.FallbackController)
-
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
   plug(CheckPermissions, [permission: "create_post"] when action in [:create])
 
@@ -17,78 +15,55 @@ defmodule EmbersWeb.PostController do
   end
 
   def create(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
-    params =
-      params
-      |> put_user_id(user.id)
-      |> maybe_put_parent_id()
-      |> maybe_put_related_to_id()
-      |> maybe_put_medias()
-      |> maybe_put_links()
-      |> get_and_put_tags()
+    post_params = Map.put(params, "user_id", user.id)
 
-    with {:ok, post} <- Posts.create_post(params) do
-      conn
-      |> render("show.json", post: post)
+    media_count =
+      if is_nil(params["medias"]) || Enum.empty?(params["medias"]) do
+        0
+      else
+        length(params["medias"])
+      end
+
+    links_count =
+      if is_nil(params["links"]) || Enum.empty?(params["links"]) do
+        0
+      else
+        length(params["links"])
+      end
+
+    post_params = Map.put(post_params, "media_count", media_count)
+    post_params = Map.put(post_params, "links_count", links_count)
+
+    post_params =
+      if Map.has_key?(params, "parent_id") do
+        %{post_params | "parent_id" => IdHasher.decode(params["parent_id"])}
+      end || post_params
+
+    post_params =
+      if Map.has_key?(params, "related_to_id") do
+        %{post_params | "related_to_id" => IdHasher.decode(params["related_to_id"])}
+      end || post_params
+
+    case Posts.create_post(post_params) do
+      {:ok, post} ->
+        user = Embers.Accounts.get_populated(user.canonical)
+        post = %{post | user: user}
+
+        conn
+        |> render("show.json", post: post)
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(EmbersWeb.ErrorView)
+        |> render("422.json", changeset: changeset)
+
+      {:error, reason} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> put_view(EmbersWeb.ErrorView)
+        |> render("422.json", %{error: reason})
     end
-  end
-
-  defp put_user_id(params, id) do
-    Map.put(params, "user_id", id)
-  end
-
-  defp maybe_put_parent_id(%{"parent_id" => parent_id} = params) do
-    parent_id = IdHasher.decode(parent_id)
-    Map.put(params, "parent_id", parent_id)
-  end
-  defp maybe_put_parent_id(params), do: params
-
-  defp maybe_put_related_to_id(%{"related_to_id" => related_to_id} = params) do
-    related_to_id = IdHasher.decode(related_to_id)
-    Map.put(params, "related_to_id", related_to_id)
-  end
-  defp maybe_put_related_to_id(params), do: params
-
-  defp maybe_put_medias(%{"medias" => medias} = params) do
-    medias =
-      for media <- medias,
-          %{"id" => id_hash} = media,
-          id = IdHasher.decode(id_hash),
-          media = Embers.Media.get(id) do
-        media
-      end
-    Map.put(params, "media", medias)
-  end
-  defp maybe_put_medias(params), do: params
-
-  defp maybe_put_links(%{"links" => links} = params) do
-    links =
-      for link <- links,
-          %{"id" => id_hash} = link,
-          id = IdHasher.decode(id_hash),
-          link = Embers.Links.get_by(%{id: id}) do
-        link
-      end
-    Map.put(params, "links", links)
-  end
-  defp maybe_put_links(params), do: params
-
-  defp get_and_put_tags(params) do
-    body = Map.get(params, "body") || ""
-    body_tags = Posts.Post.parse_tags(body)
-    provided_tags = Map.get(params, "tags", [])
-
-    tag_names =
-      Enum.concat(body_tags, provided_tags)
-      |> Enum.reject(fn tag -> tag == "" end)
-      |> Enum.uniq()
-      |> Enum.take(10)
-
-    tags =
-      for name <- tag_names do
-        Embers.Tags.create_tag(name)
-      end
-
-    Map.put(params, "tags", tags)
   end
 
   def show(conn, %{"id" => id}) do

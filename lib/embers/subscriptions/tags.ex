@@ -142,7 +142,7 @@ defmodule Embers.Subscriptions.Tags do
   end
 
   def create_block(user_id, tag_name) when is_binary(tag_name) do
-    tag = Embers.Tags.create_tag(tag_name)
+    tag = Embers.Tags.create_tag(%{"name" => tag_name})
     create_block(user_id, tag.id)
   end
 

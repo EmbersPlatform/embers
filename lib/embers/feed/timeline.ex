@@ -61,7 +61,7 @@ defmodule Embers.Feed.Timeline do
   @doc """
   Crea las actividades para los recipientes
   """
-  def push_activity(post, recipients \\ []) do
+  def push_acitivity(post, recipients \\ []) do
     activities =
       Enum.map(recipients, fn elem ->
         %{user_id: elem, post_id: post.id}
