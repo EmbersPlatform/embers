@@ -11,7 +11,7 @@ defmodule Embers.Posts.PostTest do
     user_id: 1
   }
 
-  describe "Embers.Posts.Post.changeset/2" do
+  describe "changeset/2" do
     test "builds post" do
       changeset = Post.changeset(%Post{}, @valid_attrs)
 
@@ -159,7 +159,45 @@ defmodule Embers.Posts.PostTest do
     end
   end
 
-  describe "Embers.Posts.Post.parse_tags/1" do
+  describe "create_changeset/2" do
+    test "increments the replies_count" do
+      user = insert(:user)
+      parent = insert(:post)
+      changeset =
+        Post.create_changeset(
+          %Post{},
+          %{
+            user_id: user.id,
+            body: "test",
+            parent_id: parent.id
+          }
+        )
+
+      assert {:ok, _post} = Repo.insert(changeset)
+      post = Repo.get(Post, parent.id)
+      assert post.replies_count == 1
+    end
+
+    test "increments the shares_count" do
+      user = insert(:user)
+      related = insert(:post)
+      changeset =
+        Post.create_changeset(
+          %Post{},
+          %{
+            user_id: user.id,
+            body: "test",
+            related_to_id: related.id
+          }
+        )
+
+      assert {:ok, _post} = Repo.insert(changeset)
+      post = Repo.get(Post, related.id)
+      assert post.shares_count == 1
+    end
+  end
+
+  describe "parse_tags/1" do
     tests = [
       %{
         text: "#test",
