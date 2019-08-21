@@ -55,12 +55,13 @@ export default {
     }
   },
   data: () => ({
-    body: null
+    body: null,
+    loading: false
   }),
   components: { Editor, Card },
   computed: {
     can_publish() {
-      return true;
+      return !this.loading;
     }
   },
   methods: {
@@ -80,6 +81,8 @@ export default {
         related_to_id: this.related.id
       };
 
+      this.loading = true;
+
       try {
         let res = await post.create(requestData);
 
@@ -91,11 +94,33 @@ export default {
         });
         this.close();
       } catch (error) {
-        this.$notify({
-          group: "top",
-          text: error.message,
-          type: "error"
-        });
+        switch (error.status) {
+          case 422:
+            let key = Object.keys(error.res.errors)[0];
+            let text = error.res.errors[key][0];
+            if (text === "rate limited") text = "Ya compartiste este post. Espera 5 minutos para volver a hacerlo.";
+            this.$notify({
+              group: "top",
+              text: text,
+              type: "error"
+            });
+            break;
+          case 500:
+            this.$notify({
+              group: "top",
+              text: "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.",
+              type: "error"
+            });
+            break;
+          default:
+            this.$notify({
+              group: "top",
+              text: error.message,
+              type: "error"
+            });
+        }
+      } finally {
+        this.loading = false;
       }
     }
   }

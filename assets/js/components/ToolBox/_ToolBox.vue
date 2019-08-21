@@ -29,7 +29,10 @@
         </div>
 
         <div class="tool" v-if="has_errors">
-          <div class="status-text error">Hubo un error al publicar el post: {{status.error}}</div>
+          <div class="status-text error">
+            <p>Hubo un error al publicar el post:</p>
+            <p v-for="error in status.errors" :key="error" v-text="error[0]"/>
+          </div>
         </div>
 
         <div
@@ -146,7 +149,7 @@ const initialData = function() {
     status: {
       open: false,
       loading: false,
-      error: null,
+      errors: null,
       loading_link: false,
       uploading_media: false
     },
@@ -207,7 +210,7 @@ export default {
   data: initialData,
   computed: {
     has_errors() {
-      return this.status.error !== null;
+      return this.status.errors !== null;
     },
     canShowEditor() {
       if (this.always_open) return true;
@@ -274,7 +277,6 @@ export default {
           return !/^[\w+]{2,100}$/m.test(x);
         })
         .filter(x => x != "");
-      console.log(invalid_tags);
       if (invalid_tags.length > 0) {
         this.warn_invalid_tags(invalid_tags);
         return;
@@ -317,11 +319,11 @@ export default {
       } catch (error) {
         switch (error.response.status) {
           case 413:
-            this.status.error = "el archivo que intentas subir supera los 5Mb.";
+            this.status.errors = {media: ["el archivo que intentas subir supera los 5Mb."]};
             break;
           default:
-            this.status.error =
-              "hubo un problema al subir el archivo, por favor intenta en otro momento.";
+            this.status.errors =
+              {media: ["hubo un problema al subir el archivo, por favor intenta en otro momento."]};
         }
       }
       this.status.uploading_media = false;
@@ -424,11 +426,11 @@ export default {
         .catch(error => {
           switch (error.status) {
             case 422:
-              this.status.error = error.res.errors.body[0];
+              this.status.errors = error.res.errors;
               break;
             case 500:
-              this.status.error =
-                "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.";
+              this.status.errors =
+                {server: ["hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador."]};
             default:
               throw error;
           }
