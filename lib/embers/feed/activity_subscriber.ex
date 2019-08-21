@@ -58,7 +58,6 @@ defmodule Embers.Feed.ActivitySubscriber do
 
     # Create activity entries for the post
     Timeline.push_activity(post, recipients)
-    |> IO.inspect(label: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAA")
 
     Embers.Event.emit(:new_activity, %{post: post, recipients: recipients})
   end
