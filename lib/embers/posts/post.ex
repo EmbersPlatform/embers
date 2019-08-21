@@ -73,7 +73,32 @@ defmodule Embers.Posts.Post do
     timestamps()
   end
 
-  @doc false
+  @doc """
+  Valida y prepara un `Post` para su persistencia en la base de datos.
+
+  Los siguientes atributos son casteados a sus correspondientes tipos:
+  - :body
+  - :user_id
+  - :parent_id
+  - :related_to_id
+
+  Realiza las siguientes validaciones:
+
+  - `:user_id` esta presente
+  - El `User` asociado debe existir
+  - Si `:parent_id` esta presente, debe existir
+  - Si `:related_to_id` esta presente, debe existir
+  - Solo pueden proveerse `:parent_id` o `:related_to_id`, no ambos
+  - El `:nesting_level` calculado en base al `:parent_id` no es mayor que 2
+  - Si se provee una lista de `MediaItem`s, deben ser maximo 4
+  - Si se provee una lista de `Link`s, debe ser maximo 1
+  - Luego de recortar el cuerpo del post, debe tener maximo 1600 caracteres
+
+  Ademas realiza las siguientes transformaciones:
+
+  - El `:body` es recortado
+  - El `:nesting_level` es calculado y asignado
+  """
   def changeset(post, attrs) do
     post
     |> cast(attrs, [:body, :user_id, :parent_id, :related_to_id])
@@ -88,6 +113,43 @@ defmodule Embers.Posts.Post do
     |> trim_body()
     |> validate_body()
     |> maybe_put_tags
+  end
+
+  @doc """
+  Hace lo mismo que `changeset/2`, pero agrega las siguientes acciones que se
+  realizaran en la misma transaccion y con el mismo repo que se conecta con la
+  base de datos:
+  - Si `:parent_id` esta presente y existe, incrementa su `:replies_count` en 1
+  - Si `:related_to_id` esta presente y existe, incrementa su `:shares_count`
+    en 1
+  """
+  def create_changeset(post, attrs) do
+    post
+    |> changeset(attrs)
+    |> prepare_changes(fn changeset ->
+      repo = changeset.repo
+      if parent_id = get_change(changeset, :parent_id) do
+        repo.update_all(
+          from(
+            p in __MODULE__,
+            where: p.id == ^parent_id,
+            update: [inc: [replies_count: 1]]
+          ), [])
+      end
+      changeset
+    end)
+    |> prepare_changes(fn changeset ->
+      repo = changeset.repo
+      if related_to_id = get_change(changeset, :related_to_id) do
+        repo.update_all(
+          from(
+            p in __MODULE__,
+            where: p.id == ^related_to_id,
+            update: [inc: [shares_count: 1]]
+          ), [])
+      end
+      changeset
+    end)
   end
 
   @doc """

@@ -1,12 +1,9 @@
 defmodule Embers.Posts do
   import Ecto.Query
 
-  alias Embers.Helpers.IdHasher
-  alias Embers.Links.Link
   alias Embers.Paginator
   alias Embers.Posts.Post
   alias Embers.Repo
-  alias Embers.Tags
 
   @doc """
   Returns the list of *all* the posts.
@@ -84,7 +81,7 @@ defmodule Embers.Posts do
   Creates a post. See `Embers.Posts.Post.changeset/2` for validations.
   """
   def create_post(attrs, opts \\ []) do
-    post_changeset = Post.changeset(%Post{}, attrs)
+    post_changeset = Post.create_changeset(%Post{}, attrs)
 
     with {:ok, post} <- Repo.insert(post_changeset) do
       {:ok, post} = get_post(post.id)
@@ -93,76 +90,6 @@ defmodule Embers.Posts do
         Embers.Event.emit(:post_created, post)
       end
       {:ok, post}
-    end
-  end
-
-  defp update_parent_post_replies(post, _attrs) do
-    if post.nesting_level > 0 do
-      {_, [parent]} =
-        Repo.update_all(
-          from(
-            p in Post,
-            where: p.id == ^post.parent_id,
-            update: [inc: [replies_count: 1]]
-          ),
-          [],
-          returning: true
-        )
-
-      Embers.Event.emit(:post_comment, %{
-        from: post.user_id,
-        recipient: parent.user_id,
-        source: parent.id
-      })
-    end
-
-    {:ok, nil}
-  end
-
-  defp handle_related_to(post, _attrs) do
-    if not is_nil(post.related_to_id) do
-      {_, [parent]} =
-        Repo.update_all(
-          from(
-            p in Post,
-            where: p.id == ^post.related_to_id,
-            where: is_nil(p.deleted_at),
-            update: [inc: [shares_count: 1]]
-          ),
-          [],
-          returning: true
-        )
-
-      Embers.Event.emit(:post_shared, %{
-        from: post.user_id,
-        recipient: parent.user_id,
-        source: post.id
-      })
-    end
-
-    {:ok, nil}
-  end
-
-  defp handle_links(post, attrs) do
-    links = attrs["links"]
-
-    if is_nil(links) do
-      {:ok, nil}
-    else
-      ids = Enum.map(links, fn x -> IdHasher.decode(x["id"]) end)
-
-      {_count, links} =
-        Repo.update_all(
-          from(l in Link, where: l.id in ^ids),
-          [set: [temporary: false]],
-          returning: true
-        )
-
-      post
-      |> Repo.preload(:links)
-      |> Ecto.Changeset.change()
-      |> Ecto.Changeset.put_assoc(:links, links)
-      |> Repo.update()
     end
   end
 
@@ -337,44 +264,5 @@ defmodule Embers.Posts do
       page
       | entries: Enum.map(page.entries, fn post -> Post.fill_nsfw(post) end)
     }
-  end
-
-  defp handle_tags(post, attrs) do
-    IO.inspect("HANDLING TAGS")
-    hashtags = Post.parse_tags(post.body)
-
-    # Sumarle los tags enviados en el campo "tags"
-    hashtags =
-      if Map.has_key?(attrs, "tags") and is_list(attrs["tags"]) do
-        Enum.concat(hashtags, attrs["tags"])
-      else
-        hashtags
-      end
-
-    hashtags = Enum.filter(hashtags, fn name -> Tags.Tag.valid_name?(name) end)
-
-    IO.inspect(hashtags, label: "LOS TAGS AAAAAAAAAAAAAAAAAAAAAA")
-
-    # Crear los tags que hacaen falta y obtener los ids que hacen falta
-    tags_ids = Tags.bulk_create_tags(hashtags)
-
-    # Generar una lista de los datos a insertar en la tabla "tag_post"
-    tag_post_list =
-      Enum.map(tags_ids, fn tag_id ->
-        %{
-          post_id: post.id,
-          tag_id: tag_id,
-          inserted_at: current_date_naive(),
-          updated_at: current_date_naive()
-        }
-      end)
-
-    Embers.Repo.insert_all(Embers.Tags.TagPost, tag_post_list)
-
-    {:ok, nil}
-  end
-
-  defp current_date_naive do
-    NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
   end
 end
