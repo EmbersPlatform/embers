@@ -45,9 +45,6 @@ defmodule Embers.Posts do
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
         preload: [:media, :links, :tags, :reactions, related_to: [:media, :links, :tags, :reactions]],
-        # Acá precargamos todo lo que levantamos más arriba con los joins,
-        # de lo contrario Ecto no mapeará los resultados a los esquemas
-        # correspondientes.
         preload: [
           user: {user, meta: meta},
           related_to: {
