@@ -1,12 +1,16 @@
 <template>
   <div
     class="media-slide"
-    v-shortkey="['esc']"
-    @shortkey="close"
-    @click.stop="click_outside"
     ref="root"
   >
     <div class="media-slide-content">
+      <div
+        class="close-overlay"
+        v-shortkey="['esc']"
+        @shortkey="close"
+        @click.stop="click_outside"
+        ref="overlay"
+      />
       <button class="close-slides" @click="close">
         <i class="fa fa-times"></i>
       </button>
@@ -15,7 +19,7 @@
         v-visible="index > 0"
         v-shortkey="['arrowleft']"
         @shortkey="previous"
-        class="slides-control"
+        class="slides-control slides-control--prev"
       >
         <i class="fa fa-chevron-left"></i>
       </button>
@@ -31,7 +35,7 @@
         v-visible="medias_count - 1 != index"
         v-shortkey="['arrowright']"
         @shortkey="next"
-        class="slides-control"
+        class="slides-control slides-control--next"
       >
         <i class="fa fa-chevron-right"></i>
       </button>
@@ -75,13 +79,25 @@ export default {
       this.$store.dispatch("media_slides/close");
     },
     click_outside(e) {
-      if (e.target == this.$refs.root) this.close();
+      if (e.target == this.$refs.overlay) this.close();
     }
+  },
+  mounted() {
+    document.documentElement.classList.add("scroll-lock")
+  },
+  beforeDestroy() {
+    document.documentElement.classList.remove("scroll-lock")
   }
 };
 </script>
 
 <style lang="scss">
+.close-overlay {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 0;
+}
 .media-slide {
   position: fixed;
   top: 0;
@@ -97,30 +113,40 @@ export default {
   background-color: #0000009e;
 
   .media-slide-content {
-    width: 80%;
-    height: 95%;
+    width: 100%;
+    height: 100%;
     // background: #333;
     display: flex;
     flex-direction: row;
     align-items: center;
+    overflow-y: auto;
 
     .slides-control,
     .close-slides {
       text-shadow: 0 0 5px #000;
+      cursor: pointer;
     }
 
     .slides-control {
       height: 100%;
       flex: 1 1 auto;
-      width: 10%;
+      width: 25%;
       background-color: transparent;
       color: #fff;
       font-size: 3em;
       cursor: pointer;
+      position: fixed;
+
+      &.slides-control--prev {
+        left: 0;
+      }
+      &.slides-control--next {
+        right: 0;
+      }
     }
 
     .close-slides {
-      position: absolute;
+      position: fixed;
       top: 0;
       right: 0;
       z-index: 1;
@@ -136,12 +162,14 @@ export default {
     }
 
     .media {
-      width: 100%;
-      height: 100%;
+      width: fit-content;
+      height: fit-content;
+      max-width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
       overflow-y: auto;
+      margin: 0 auto;
     }
     *[class^="media-"] {
       max-width: 100%;

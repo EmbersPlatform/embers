@@ -8,6 +8,10 @@ html {
   overflow-y: auto;
   overflow-x: hidden; // probably causing the infinite scroll issue on chrome android
   // overflow-x: visible; // posible fix
+
+  &.scroll-lock {
+    overflow-y: hidden;
+  }
 }
 
 i {
