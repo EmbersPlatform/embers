@@ -2,15 +2,11 @@
   <div
     class="media-slide"
     ref="root"
+    v-shortkey="['esc']"
+    @shortkey="close"
+    @click.stop="click_outside"
   >
     <div class="media-slide-content">
-      <div
-        class="close-overlay"
-        v-shortkey="['esc']"
-        @shortkey="close"
-        @click.stop="click_outside"
-        ref="overlay"
-      />
       <button class="close-slides" @click="close">
         <i class="fa fa-times"></i>
       </button>
@@ -23,13 +19,14 @@
       >
         <i class="fa fa-chevron-left"></i>
       </button>
-      <media-item
-        v-for="(media, m_index) in ordered_medias"
-        :key="m_index"
-        :media="media"
-        v-show="m_index == index"
-        :autoplay="true"
-      ></media-item>
+      <template v-for="(media, m_index) in ordered_medias">
+        <media-item
+          :key="m_index"
+          :media="media"
+          v-if="m_index == index"
+          :autoplay="true"
+        ></media-item>
+      </template>
       <button
         @click="next"
         v-visible="medias_count - 1 != index"
@@ -79,7 +76,7 @@ export default {
       this.$store.dispatch("media_slides/close");
     },
     click_outside(e) {
-      if (e.target == this.$refs.overlay) this.close();
+      if (e.target == this.$refs.root) this.close();
     }
   },
   mounted() {
@@ -92,12 +89,8 @@ export default {
 </script>
 
 <style lang="scss">
-.close-overlay {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  z-index: 0;
-}
+@import "~@/../sass/base/_variables.scss";
+
 .media-slide {
   position: fixed;
   top: 0;
@@ -113,71 +106,72 @@ export default {
   background-color: #0000009e;
 
   .media-slide-content {
-    width: 100%;
-    height: 100%;
-    // background: #333;
+    width: 80%;
+    height: 90%;
+    background: #333;
     display: flex;
     flex-direction: row;
     align-items: center;
-    overflow-y: auto;
+    overflow-y: hidden;
+    border-radius: 10px;
+
+    @media #{$query-mobile} {
+      width: 100%;
+      height: 100%;
+    }
 
     .slides-control,
     .close-slides {
-      text-shadow: 0 0 5px #000;
       cursor: pointer;
+      display: block;
+      height: 2em;
+      width: 2em;
+      font-size: 1.2em;
+      background: #0008;
+      border-radius: 50%;
     }
 
     .slides-control {
-      height: 100%;
       flex: 1 1 auto;
-      width: 25%;
-      background-color: transparent;
       color: #fff;
-      font-size: 3em;
       cursor: pointer;
-      position: fixed;
+      position: absolute;
+      z-index: 1;
 
       &.slides-control--prev {
-        left: 0;
+        left: 10px;
       }
       &.slides-control--next {
-        right: 0;
+        right: 10px;
       }
     }
 
     .close-slides {
-      position: fixed;
-      top: 0;
-      right: 0;
+      position: absolute;
+      top: 10px;
+      right: 10px;
       z-index: 1;
-      font-size: 2.5em;
       box-sizing: border-box;
       display: block;
-      width: 1.5em;
-      height: 1.5em;
-      line-height: 1.5em;
       text-align: center;
       color: #fff;
-      background-color: transparent;
     }
 
     .media {
-      width: fit-content;
-      height: fit-content;
-      max-width: 100%;
+      width: 100%;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow-y: auto;
-      margin: 0 auto;
+      margin: auto auto;
     }
     *[class^="media-"] {
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
       width: auto;
-      display: inline-block;
-      box-shadow: 0 2px 8px 3px #000000a3;
+      display: flex;
       background-color: #1a1b1d;
+      align-items: center;
 
       img {
         max-width: 100%;
