@@ -15,25 +15,51 @@
       ></textarea>
       <div class="markup preview" v-if="preview" v-html="formattedBody"></div>
     </div>
-    <twitter-counter v-if="body && !preview" :current-length="body.length" :dangerAt="1600" />
+    <div class="characters-counter">
+      <twitter-counter v-if="body && !preview" :current-length="body.length" :dangerAt="1600"
+          data-tip="Caracteres restantes"
+          data-tip-position="top"
+          data-tip-text/>
+    </div>
     <ul class="toolbar" v-if="with_toolbar">
-      <li @click="format('bold')">
+      <li @click="format('bold')"
+          data-tip="Negrita"
+          data-tip-position="top"
+          data-tip-text>
         <i class="fas fa-bold"></i>
       </li>
-      <li @click="format('italic')">
+      <li @click="format('italic')"
+          data-tip="Cursiva"
+          data-tip-position="top"
+          data-tip-text>
         <i class="fas fa-italic"></i>
       </li>
-      <li @click="format('strikethrough')">
+      <li @click="format('strikethrough')"
+          data-tip="Tachado"
+          data-tip-position="top"
+          data-tip-text>
         <i class="fas fa-strikethrough"></i>
       </li>
-      <li @click="format('code')">
+      <li @click="format('code')"
+          data-tip="Código"
+          data-tip-position="top"
+          data-tip-text>
         <i class="fas fa-code"></i>
       </li>
-      <emoji-picker @selected="addEmoji"></emoji-picker>
-      <li :class="{active: preview}" @click="previewPost">
+      <emoji-picker @selected="addEmoji"
+          data-tip="Emoticones"
+          data-tip-position="top"
+          data-tip-text></emoji-picker>
+      <li :class="{active: preview}" @click="previewPost"
+          data-tip="Vista previa"
+          data-tip-position="top"
+          data-tip-text>
         <i class="fas fa-eye"></i>
       </li>
-      <li @click="showHelp">
+      <li @click="showHelp"
+          data-tip="Referencia"
+          data-tip-position="top"
+          data-tip-text>
         <i class="fas fa-question"></i>
       </li>
     </ul>
@@ -237,11 +263,13 @@ export default {
 
 <style lang="scss">
 .editor {
-  .TwitterCounter {
+  .characters-counter {
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: flex-end;
+  }
+  .TwitterCounter {
+    display: inline-block;
 
     span {
       margin-top: 5px;
