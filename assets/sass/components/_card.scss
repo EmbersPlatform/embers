@@ -121,7 +121,11 @@
         @include font-size(4);
 
         &[class~="big-text"] {
-          @include font-size(12);
+          font-size: 1.5em;
+
+          * {
+            font-size: inherit;
+          }
         }
 
         & > p {
@@ -497,11 +501,11 @@
   p {
     font-size: inherit;
     color: $primary;
-    font-weight: 400;
+    font-weight: 300;
 
     a {
       color: $narrojo;
-      font-weight: 400;
+      font-weight: 300;
       font-size: 1em;
 
       &:hover {
