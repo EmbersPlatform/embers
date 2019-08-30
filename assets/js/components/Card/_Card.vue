@@ -386,7 +386,7 @@ export default {
     },
 
     /**
-     * Check whether the body has too many lines
+     * Check if the body has too many lines
      */
     bodyTooLong() {
       if (!this.isPostView) {
@@ -744,33 +744,36 @@ export default {
       );
     },
     hide_post() {
+      let title = "¿Ocultar el post? No se puede deshacer.";
+      let handler = () => {
+        let ids = [];
+        if (!this.post.activities_ids) {
+          ids = [this.post.id];
+        } else {
+          ids = this.post.activities_ids;
+        }
+        ids.forEach(async post_id => {
+          axios.delete(`/api/v1/feed/activity/${post_id}`);
+        });
+        this.$emit("deleted");
+        this.$modal.hide("dialog");
+      };
+      let buttons = [
+        {
+          title: "Cancelar",
+          class: "button"
+        },
+        {
+          title: "Ocultar",
+          default: true,
+          class: "button danger",
+          handler
+        }
+      ];
+
       this.$modal.show("dialog", {
-        title:
-          "¿Ocultar el post? No se puede deshacer.",
-        buttons: [
-          {
-            title: "Cancelar",
-            class: "button"
-          },
-          {
-            title: "Ocultar",
-            default: true,
-            class: "button danger",
-            handler: () => {
-              let ids = [];
-              if (!this.post.activities_ids) {
-                ids = [this.post.id];
-              } else {
-                ids = this.post.activities_ids;
-              }
-              ids.forEach(async post_id => {
-                axios.delete(`/api/v1/feed/activity/${post_id}`);
-              });
-              this.$emit("deleted");
-              this.$modal.hide("dialog");
-            }
-          }
-        ],
+        title,
+        buttons,
         adaptive: true
       });
     },
