@@ -170,7 +170,6 @@ export default {
       height: 100%;
       width: auto;
       display: flex;
-      background-color: #1a1b1d;
       align-items: center;
 
       img {
