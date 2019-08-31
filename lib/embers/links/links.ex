@@ -23,7 +23,9 @@ defmodule Embers.Links do
     Embers.Links.SoundcloudProvider,
     Embers.Links.SteamProvider,
     Embers.Links.TwitterProvider,
-    Embers.Links.YouTubeProvider
+    Embers.Links.YouTubeProvider,
+    Embers.Links.FacebookProvider,
+    Embers.Links.TwitchProvider
   ]
 
   def get_by(%{id: id}) do
@@ -78,13 +80,7 @@ defmodule Embers.Links do
         nil
 
       {:ok, og} ->
-        %EmbedSchema{
-          url: og.url || url,
-          type: og.type || "link",
-          title: og.title,
-          description: og.description,
-          thumbnail_url: og.image
-        }
+        og_to_schema(og, url)
     end
   end
 
@@ -108,6 +104,22 @@ defmodule Embers.Links do
 
       _ ->
         nil
+    end
+  end
+
+  defp og_to_schema(og, url) do
+    schema = %EmbedSchema{
+      url: og.url || url,
+      type: og.type || "link",
+      title: og.title,
+      description: og.description,
+      thumbnail_url: og.image
+    }
+
+    case og do
+      %{type: "video." <> _} ->
+        %{schema | type: "video", url: og.video}
+      _ -> schema
     end
   end
 end

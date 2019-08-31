@@ -94,6 +94,10 @@ export default {
   @media #{$query-mobile} {
     padding: 0;
   }
+
+  iframe {
+    max-width: 100%;
+  }
 }
 [data-card-size="little"] .link-item__oembed iframe {
     max-height: 200px;
