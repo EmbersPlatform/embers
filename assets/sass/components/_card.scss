@@ -121,10 +121,12 @@
         @include font-size(4);
 
         &[class~="big-text"] {
-          font-size: 1.5em;
+          .card-body {
+            font-size: 1.5em;
 
-          * {
-            font-size: inherit;
+            * {
+              font-size: inherit;
+            }
           }
         }
 
@@ -501,11 +503,11 @@
   p {
     font-size: inherit;
     color: $primary;
-    font-weight: 300;
+    font-weight: 400;
 
     a {
       color: $narrojo;
-      font-weight: 300;
+      font-weight: 400;
       font-size: 1em;
 
       &:hover {

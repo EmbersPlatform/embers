@@ -148,7 +148,7 @@
         </div>
       </header>
       <section class="card-wrapper-content" :class="{'big-text': (post.body && bigTextBody)}">
-        <p v-if="post.body" v-html="formattedBody" :class="{folded: (bodyTooLong && !unfolded)}"></p>
+        <p v-if="post.body" v-html="formattedBody" class="card-body" :class="{folded: (bodyTooLong && !unfolded)}"></p>
         <div v-if="post.body && bodyTooLong && !unfolded" class="controls">
           <button
             v-if="size != 'little'"
