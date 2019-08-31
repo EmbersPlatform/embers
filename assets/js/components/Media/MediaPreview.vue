@@ -4,7 +4,7 @@
       <img v-if="media.type == 'image'" :src="media.url" />
       <img v-else :src="media.metadata.preview_url" />
       <div v-if="overflowed" class="media-preview__overflowed-button">
-        <i class="fas fa-caret-down" />
+        <span>Ampliar imagen</span>
       </div>
     </div>
     <div
@@ -142,13 +142,19 @@ export default {
 }
 .media-preview__overflowed-button {
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
   left: 0;
   width: 100%;
   font-size: 3em;
   text-align: center;
-  color: #fff;
-  text-shadow: 0 0 2px black;
-  background: linear-gradient(transparent, #000000cc);
+
+  span {
+    display: inline-block;
+    color: #fffc;
+    font-weight: 400;
+    background: #000000cc;
+    border-radius: 2em;
+    padding: 5px 20px;
+  }
 }
 </style>

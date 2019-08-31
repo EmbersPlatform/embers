@@ -105,6 +105,23 @@ defmodule Embers.Subscriptions do
     |> Paginator.paginate(opts)
   end
 
+  def list_followers_paginated(user_id, opts \\ []) do
+    UserSubscription
+    |> where([sub], sub.source_id == ^user_id)
+    |> join(:left, [sub], user in assoc(sub, :user))
+    |> join(:left, [sub, user], meta in assoc(user, :meta))
+    |> preload([sub, user, meta], user: {user, meta: meta})
+    |> Paginator.paginate(opts)
+  end
+
+  @spec list_followers_ids_paginated(integer(), keyword()) :: Embers.Paginator.Page.t()
+  def list_followers_ids_paginated(user_id, opts \\ []) do
+    UserSubscription
+    |> where([sub], sub.source_id == ^user_id)
+    |> select([sub], sub.user_id)
+    |> Paginator.paginate(opts)
+  end
+
   def list_followers_ids(user_id) do
     UserSubscription
     |> where([sub], sub.source_id == ^user_id)

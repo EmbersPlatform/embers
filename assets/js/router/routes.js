@@ -21,6 +21,7 @@ import _UserProfile from "../views/_UserProfile";
 import _PostDetails from "../views/_PostDetails";
 import Profile from "../views/UserProfile/Profile.vue";
 import ProfileFollowing from "../views/UserProfile/Following.vue";
+import ProfileFollowers from "../views/UserProfile/Followers.vue";
 
 import SB_Default from "../views/Sidebar/Default";
 import SB_Home from "../views/Sidebar/Home";
@@ -348,6 +349,14 @@ const routes = [
     children: [{
         path: "following",
         component: ProfileFollowing,
+        meta: {
+          title: "Embers",
+          noSuffix: true
+        }
+      },
+      {
+        path: "followers",
+        component: ProfileFollowers,
         meta: {
           title: "Embers",
           noSuffix: true

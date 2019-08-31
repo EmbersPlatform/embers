@@ -100,4 +100,41 @@ defmodule EmbersWeb.FriendController do
 
     conn |> put_status(:no_content) |> json(nil)
   end
+
+  def list_followers(conn, %{"id" => id} = params) do
+    id = IdHasher.decode(id)
+
+    friends =
+      Subscriptions.list_followers_paginated(id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
+
+    users =
+      if not is_nil(conn.assigns.current_user) do
+        friends.entries
+        |> Enum.map(fn x ->
+          user = Embers.Accounts.User.load_following_status(x.user, conn.assigns.current_user.id)
+          %{x | user: user}
+        end)
+      end || friends.entries
+
+    friends = %{friends | entries: users}
+
+    render(conn, "friends.json", friends)
+  end
+
+  def list__followers_ids(conn, %{"id" => id} = params) do
+    id = IdHasher.decode(id)
+
+    friends_ids =
+      Subscriptions.list_followers_ids_paginated(id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
+
+    render(conn, "friends_ids.json", friends_ids)
+  end
 end

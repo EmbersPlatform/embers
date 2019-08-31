@@ -93,7 +93,7 @@ export default {
     else id = params.id;
 
     return wrap(() =>
-      axios.get(`${config.prefix}/friends/${id}/list`, {
+      axios.get(`${config.prefix}/following/${id}/list`, {
         query
       })
     );

@@ -1,8 +1,8 @@
 <template>
   <div id="content">
-    <h3 class="page-title">Usuarios seguidos por {{user.username}}</h3>
+    <h3 class="page-title">Seguidores de {{user.username}}</h3>
     <div class="users-list">
-      <user-card v-for="user in following" :key="user.id" :user="user" type="compact" no_stats />
+      <user-card v-for="user in followers" :key="user.id" :user="user" type="compact" no_stats />
     </div>
     <h3 v-if="loading_more">
       <p>Cargando mas...</p>
@@ -18,10 +18,10 @@ import Intersector from "@/components/Intersector";
 import UserCard from "@/components/UserCard";
 
 export default {
-  name: "ProfileFollowing",
+  name: "ProfileFollowers",
   components: { Intersector, UserCard },
   data: () => ({
-    following: [],
+    followers: [],
     last_page: false,
     next: null,
     loading: false,
@@ -33,13 +33,12 @@ export default {
     }
   },
   methods: {
-    async get_following() {
-      console.log("load following", this.user);
+    async get_followers() {
       this.loading = true;
       const { data: res } = await axios.get(
-        `/api/v1/following/${this.user.id}/list`
+        `/api/v1/followers/${this.user.id}/list`
       );
-      this.following = res.items;
+      this.followers = res.items;
       this.last_page = res.last_page;
       this.next = res.next;
       this.loading = false;
@@ -54,7 +53,7 @@ export default {
       const body = document.getElementsByTagName("html")[0];
       const old_scroll = body.scrollTop;
 
-      this.following.push(...res.items);
+      this.followers.push(...res.items);
       this.last_page = res.last_page;
       this.next = res.next;
 
@@ -65,7 +64,7 @@ export default {
     }
   },
   mounted() {
-    this.get_following();
+    this.get_followers();
   }
 };
 </script>

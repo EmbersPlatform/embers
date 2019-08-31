@@ -130,8 +130,6 @@ defmodule EmbersWeb.Router do
         post("/moderation/ban", ModerationController, :ban_user)
         post("/moderation/post/update_tags", ModerationController, :update_tags)
 
-        get("/friends/:id/ids", FriendController, :list_ids)
-        get("/friends/:id/list", FriendController, :list)
         post("/friends", FriendController, :create)
         post("/friends/name", FriendController, :create_by_name)
         delete("/friends/:id", FriendController, :destroy)
@@ -158,9 +156,10 @@ defmodule EmbersWeb.Router do
         get("/tags/:name", TagController, :show_tag)
         get("/tags/:name/posts", TagController, :show_tag_posts)
 
-        get("/followers/:id/ids", FriendController, :list_ids)
-        get("/followers/:id/list", FriendController, :list)
-        get("/following/:id/list", FriendController, :following)
+        get("/following/:id/ids", FriendController, :list_ids)
+        get("/following/:id/list", FriendController, :list)
+        get("/followers/:id/ids", FriendController, :list_followers_ids)
+        get("/followers/:id/list", FriendController, :list_followers)
 
         resources("/posts", PostController, only: [:show, :create, :delete])
         get("/posts/:id/replies", PostController, :show_replies)

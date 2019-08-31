@@ -18,14 +18,14 @@
           <span class="stat-value">{{user.stats.comments}}</span>
           <span class="stat-name">Comentarios</span>
         </div>
-        <div class="stat">
+        <router-link :to="`/@${user.username}/followers`" class="stat">
           <span class="stat-value">{{user.stats.followers}}</span>
           <span class="stat-name">Seguidores</span>
-        </div>
-        <div class="stat">
+        </router-link>
+        <router-link :to="`/@${user.username}/following`" class="stat">
           <span class="stat-value">{{user.stats.friends}}</span>
           <span class="stat-name">Siguiendo</span>
-        </div>
+        </router-link>
       </div>
     </div>
     <div class="profile-details">
@@ -263,6 +263,7 @@ export default {
   background: linear-gradient(transparent, #000);
   padding: 20px;
   .stat {
+    color: #fff;
     text-align: center;
     display: flex;
     flex-direction: column;
