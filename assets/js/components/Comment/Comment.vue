@@ -164,6 +164,7 @@
             :ref="`reply-${c_idx}`"
             :comment="c"
             @clicked_reply="reply_to"
+            @deleted="remove_comment"
           />
         </template>
       </div>
@@ -371,6 +372,9 @@ export default {
         ],
         adaptive: true
       });
+    },
+    remove_comment(comment) {
+      this.replies = this.replies.filter(x => x.id != comment.id)
     },
 
     /**
