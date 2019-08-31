@@ -48,7 +48,7 @@ export default {
       if (this.last_page || this.loading || this.loading_more) return;
       this.loading_more = true;
       const { data: res } = await axios.get(
-        `/api/v1/friends/${this.user.id}/list`,
+        `/api/v1/following/${this.user.id}/list`,
         { params: { after: this.next } }
       );
       const body = document.getElementsByTagName("html")[0];
