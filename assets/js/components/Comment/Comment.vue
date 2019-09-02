@@ -493,13 +493,16 @@ export default {
     // 	});
     // },
     react(reaction) {
+      const has_reacted =
+        _.find(this.comment.reactions, x => {
+          return x.name == reaction && x.reacted;
+        }) != undefined;
       this.isPicker = false;
       if (this.isOwner) {
         return;
       }
       if (
-        this.comment.reactions[reaction] &&
-        this.comment.reactions[reaction].reacted
+        has_reacted
       ) {
         post.deleteReaction(this.comment.id, reaction).then(res => {
           this.comment.reacted = false;
