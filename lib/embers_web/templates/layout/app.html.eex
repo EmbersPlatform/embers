@@ -19,7 +19,7 @@
 
   <%= if assigns[:og_metatags] do %>
     <%= for {name, content} <- @og_metatags do %>
-      <meta name="og:<%= name %>" content="<%= content %>">
+      <meta property="og:<%= name %>" content="<%= content %>">
     <% end %>
   <% end %>
 
