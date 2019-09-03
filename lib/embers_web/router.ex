@@ -115,6 +115,9 @@ defmodule EmbersWeb.Router do
 
     get("/auth_data", PageController, :auth)
 
+    # get("/@:username", WebUserController, :show)
+    get("/post/:hash", PostWebController, :show)
+
     scope "/api" do
       scope "/v1" do
         post("/auth", SessionController, :create_api)

@@ -105,7 +105,7 @@ defmodule Embers.Accounts do
   @doc """
   Similar a `get_by_identifier/1` pero devuelve al usuario con su `:meta`.
   """
-  def get_populated(identifier) do
+  def get_populated(identifier, opts \\ []) do
     query =
       case is_integer(identifier) do
         true -> User |> where([user], user.id == ^identifier)
@@ -117,6 +117,11 @@ defmodule Embers.Accounts do
       |> join(:left, [user], meta in assoc(user, :meta))
       |> preload([user, meta], meta: meta)
       |> Repo.one()
+
+    user =
+      if Keyword.get(opts, :with_settings, false) do
+        Repo.preload(user, :settings)
+      end || user
 
     case user do
       nil ->

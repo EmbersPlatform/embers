@@ -14,15 +14,17 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-	<!-- Pogressive web app manifest -->
 	<link rel="manifest" href="/manifest.json">
 	<meta name="mobile-web-app-capable" content="yes">
 
-	<!-- Chrome, Firefox OS and Opera -->
+  <%= if assigns[:og_metatags] do %>
+    <%= for {name, content} <- @og_metatags do %>
+      <meta name="og:<%= name %>" content="<%= content %>">
+    <% end %>
+  <% end %>
+
 	<meta name="theme-color" content="#26272b">
-	<!-- Windows Phone -->
 	<meta name="msapplication-navbutton-color" content="#26272b">
-	<!-- iOS Safari -->
 	<meta name="apple-mobile-web-app-status-bar-style" content="#26272b">
 	<link rel="icon" href="/favicon.ico?v=3" />
 	<style type="text/css">
