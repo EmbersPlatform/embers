@@ -44,7 +44,13 @@ defmodule Embers.Posts do
         left_join: related in assoc(post, :related_to),
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
-        preload: [:media, :links, :tags, :reactions, related_to: [:media, :links, :tags, :reactions]],
+        preload: [
+          :media,
+          :links,
+          :tags,
+          :reactions,
+          related_to: [:media, :links, :tags, :reactions]
+        ],
         preload: [
           user: {user, meta: meta},
           related_to: {
@@ -83,9 +89,11 @@ defmodule Embers.Posts do
     with {:ok, post} <- Repo.insert(post_changeset) do
       {:ok, post} = get_post(post.id)
       emit_event? = Keyword.get(opts, :emit_event?, true)
+
       if emit_event? do
         Embers.Event.emit(:post_created, post)
       end
+
       {:ok, post}
     end
   end
@@ -108,7 +116,7 @@ defmodule Embers.Posts do
     |> Repo.update()
   end
 
-  def delete_post(%Post{} = post, actor \\ nil) do
+  def delete_post(%Post{} = post, opts \\ []) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -133,6 +141,7 @@ defmodule Embers.Posts do
     end
 
     with {:ok, post} <- Repo.soft_delete(post) do
+      actor = Keyword.get(opts, :actor)
       Embers.Event.emit(:post_disabled, %{post: post, actor: actor})
       {:ok, post}
     else

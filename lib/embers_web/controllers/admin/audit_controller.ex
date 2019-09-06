@@ -6,7 +6,9 @@ defmodule EmbersWeb.Admin.AuditController do
   plug(:put_layout, "dashboard.html")
 
   def index(conn, params) do
-    audits = Audit.list(params)
+    page = Map.get(params, "page")
+    action = Map.get(params, "action")
+    audits = Audit.list(page: page, action: action)
 
     render(conn, "list.html", audits: audits)
   end

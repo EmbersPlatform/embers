@@ -40,12 +40,14 @@ defmodule EmbersWeb.PostController do
     parent_id = IdHasher.decode(parent_id)
     Map.put(params, "parent_id", parent_id)
   end
+
   defp maybe_put_parent_id(params), do: params
 
   defp maybe_put_related_to_id(%{"related_to_id" => related_to_id} = params) do
     related_to_id = IdHasher.decode(related_to_id)
     Map.put(params, "related_to_id", related_to_id)
   end
+
   defp maybe_put_related_to_id(params), do: params
 
   defp maybe_put_medias(%{"medias" => medias} = params) do
@@ -56,8 +58,10 @@ defmodule EmbersWeb.PostController do
           media = Embers.Media.get(id) do
         media
       end
+
     Map.put(params, "media", medias)
   end
+
   defp maybe_put_medias(params), do: params
 
   defp maybe_put_links(%{"links" => links} = params) do
@@ -68,8 +72,10 @@ defmodule EmbersWeb.PostController do
           link = Embers.Links.get_by(%{id: id}) do
         link
       end
+
     Map.put(params, "links", links)
   end
+
   defp maybe_put_links(params), do: params
 
   defp get_and_put_tags(params) do

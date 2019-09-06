@@ -691,7 +691,7 @@ export default {
      * Unmarks the post as Not Safe For Work
      */
     async unmarkAsNsfw() {
-      let tags = this.post.tags.map(x => x.name).filter(x => x != "nsfw");
+      let tags = this.post.tags.map(x => x.name).filter(x => x.toLowerCase() != "nsfw".toLowerCase());
       let { data: res } = await axios.post(
         "/api/v1/moderation/post/update_tags",
         {
