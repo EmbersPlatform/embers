@@ -25,12 +25,15 @@ defmodule EmbersWeb.FeedController do
   def user_statuses(conn, %{"id" => id} = params) do
     id = IdHasher.decode(id)
 
+    comments? = Map.get(params, "comments", false)
+
     posts =
       UserFeed.get(
         user_id: id,
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
-        limit: params["limit"]
+        limit: params["limit"],
+        comments: comments?
       )
 
     render(conn, "posts.json", posts)

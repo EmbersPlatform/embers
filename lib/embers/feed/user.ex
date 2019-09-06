@@ -16,7 +16,6 @@ defmodule Embers.Feed.User do
         post in Post,
         where: post.user_id == ^user_id,
         where: is_nil(post.deleted_at),
-        where: post.nesting_level == 0,
         order_by: [desc: post.id],
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
@@ -37,6 +36,19 @@ defmodule Embers.Feed.User do
           }
         ]
       )
+
+    comments? = Keyword.get(opts, :comments, false)
+
+    query =
+      if comments? do
+        from(post in query,
+          where: post.nesting_level > 1
+        )
+      else
+        from(post in query,
+          where: post.nesting_level == 0
+        )
+      end
 
     query
     |> Paginator.paginate(opts)

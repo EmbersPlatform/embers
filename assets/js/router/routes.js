@@ -20,6 +20,7 @@ import SecuritySettings from "../views/Settings/Security";
 import _UserProfile from "../views/_UserProfile";
 import _PostDetails from "../views/_PostDetails";
 import Profile from "../views/UserProfile/Profile.vue";
+import ProfileComments from "../views/UserProfile/Comments.vue";
 import ProfileFollowing from "../views/UserProfile/Following.vue";
 import ProfileFollowers from "../views/UserProfile/Followers.vue";
 
@@ -347,6 +348,14 @@ const routes = [
       noSuffix: true
     },
     children: [{
+        path: "comments",
+        component: ProfileComments,
+        meta: {
+          title: "Embers",
+          noSuffix: true
+        }
+      },
+      {
         path: "following",
         component: ProfileFollowing,
         meta: {
