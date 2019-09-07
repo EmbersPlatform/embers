@@ -48,7 +48,7 @@ defmodule EmbersWeb.UserController do
     {:ok, _user} = Accounts.delete_user(user)
 
     conn
-    |> delete_session(:session__id)
+    |> delete_session(:phauxth_session_id)
     |> success("User deleted successfully", session_path(conn, :new))
   end
 

@@ -28,7 +28,7 @@ defmodule EmbersWeb.Remember do
     with {:ok, user_id} <- Token.verify(token, max_age: @max_age),
          {:ok, %{id: session_id}} <- Sessions.create_session(%{user_id: user_id}) do
       conn
-      |> put_session(:session__id, session_id)
+      |> put_session(:phauxth_session_id, session_id)
       |> add_rem_cookie(user_id)
       |> configure_session(renew: true)
       |> EmbersWeb.Authenticate.authenticate()
@@ -37,7 +37,7 @@ defmodule EmbersWeb.Remember do
     else
       {:error, _reason} ->
         conn
-        |> delete_session(:session__id)
+        |> delete_session(:phauxth_session_id)
         |> delete_rem_cookie()
     end
   end
