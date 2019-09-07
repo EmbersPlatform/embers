@@ -6,25 +6,20 @@ defmodule Embers.Audit.Manager do
   def handle_event(:post_disabled, event) do
     %{post: post, actor: actor} = event.data
 
-    Embers.Audit.create(%{
-      user_id: "#{actor}",
+    Audit.create(%{
+      user_id: actor,
       action: "disable_post",
-      source: "#{post.id}",
-      details: [%{action: "in_post"}]
+      source: "#{post.id}"
     })
-    |> IO.inspect()
   end
 
   def handle_event(:post_restored, event) do
     %{post: post, actor: actor} = event.data
 
     Audit.create(%{
-      user_id: "#{actor}",
+      user_id: actor,
       action: "restore_post",
-      source: "#{post.id}",
-      details: %{
-        action: "in_post"
-      }
+      source: "#{post.id}"
     })
   end
 
@@ -32,28 +27,21 @@ defmodule Embers.Audit.Manager do
     %{post: post, actor: actor} = event.data
 
     Audit.create(%{
-      user_id: "#{actor}",
+      user_id: actor,
       action: "delete_post",
-      source: "#{post.id}",
-      details: %{
-        action: "in_post"
-      }
+      source: "#{post.id}"
     })
   end
 
   def handle_event(:user_banned, event) do
+    IO.puts("USER BANNED")
     %{ban: ban, actor: actor} = event.data
-    ban = Embers.Repo.preload(ban, :user)
 
     Audit.create(%{
-      user_id: "#{actor}",
+      user_id: actor,
       action: "ban_user",
-      source: "#{ban.user.id}",
+      source: "#{ban.user_id}",
       details: [
-        %{
-          action: "in_user",
-          description: ban.user.username
-        },
         %{
           description: "Motivo: #{ban.reason}"
         }
