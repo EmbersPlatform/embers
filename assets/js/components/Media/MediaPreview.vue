@@ -4,9 +4,7 @@
       <img v-if="media.type == 'image'" :src="media.url" />
       <img v-else :src="media.metadata.preview_url" />
       <div v-if="overflowed" class="media-preview__overflowed-button">
-        <span>
-          <i class="fas fa-expand"></i>
-        </span>
+        <span>Ampliar imagen</span>
       </div>
     </div>
     <div
@@ -87,10 +85,6 @@ export default {
   &:hover {
     box-shadow: 0 5px 5px #00000050;
     filter: brightness(80%);
-
-    .media-preview__overflowed-button {
-      visibility: visible;
-    }
   }
 
   .media-preview__image {
@@ -147,24 +141,20 @@ export default {
   }
 }
 .media-preview__overflowed-button {
-  visibility: hidden;
   position: absolute;
   bottom: 10px;
   left: 0;
   width: 100%;
   font-size: 3em;
-  text-align: right;
+  text-align: center;
 
   span {
     display: inline-block;
     color: #fffc;
     font-weight: 400;
     background: #000000cc;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin-right: 10px;
-    line-height: 1em;
-    font-size: 0.5em;
+    border-radius: 2em;
+    padding: 5px 20px;
   }
 }
 </style>
