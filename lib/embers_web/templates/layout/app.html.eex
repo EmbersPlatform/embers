@@ -91,7 +91,7 @@
 	<link href="<%= static_path(@conn, "/css/main.css") %>" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 </head>
-<body <%= if @current_user do %> theme="<%= @user.settings.style_theme %>" <% else %> theme="dark" <% end %>>
+<body <%= if @current_user do %> theme="<%= @user.settings.style_theme %>" <% end %>>
 	<div id="loader" class="not-vex">
     <%= if assigns[:loading_msg] do %>
       <%= if not is_nil @loading_msg.url do %>
