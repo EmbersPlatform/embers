@@ -44,7 +44,7 @@ defmodule EmbersWeb.PostWebController do
         {"image", media.url}
       end
 
-    metatags = metatags ++ images
+    metatags = [metatags | images]
 
     metatags
   end
