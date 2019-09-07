@@ -25,9 +25,8 @@ i {
   }
 }
 
-b,
-strong {
-  color: var(--link);
+b, strong {
+  color: #fff;
 }
 
 img:not(.emoji) {
@@ -41,7 +40,7 @@ img:not(.emoji) {
     display: inline-block;
     padding: 30px 30px 30px 20px;
     font-weight: 400;
-    color: var(--text);
+    color: $secondary;
     z-index: 1;
     width: calc(100% - 20px);
     box-sizing: border-box;
@@ -77,14 +76,13 @@ img:not(.emoji) {
 
 .no-results {
   p {
-    color: var(--text);
+    color: $secondary;
     text-align: center;
   }
 }
 
 code {
-  background: #282a36;
-  color: #f8f8f2;
+  background: negro(1);
   padding: 0 5px;
   @include border-radius(3px);
 }
@@ -114,35 +112,35 @@ form {
     height: 45px;
     width: 100%;
     background: transparent;
-    border-bottom: 4px solid var(--secondary-accent);
+    border-bottom: 4px solid negro(1);
     padding: 0 15px;
-    color: var(--text);
+    color: $primary;
     @include flexbox(row, nowrap, flex-start, center);
 
     &:focus,
     &:hover {
       background: negro(1);
-      border-bottom: 4px solid var(--text);
+      border-bottom: 4px solid $secondary;
     }
 
     &[readonly] {
-      color: var(--text);
-      border-bottom: 4px solid var(--secondary-accent);
+      color: $secondary;
+      border-bottom: 4px solid blanco("05");
 
       &:focus,
       &:hover {
         background: transparent;
-        border-bottom: 4px solid var(--secondary-accent);
+        border-bottom: 4px solid blanco("05");
       }
     }
 
     &[data-error] {
-      color: var(--accent);
-      border-bottom: 4px solid var(--accent);
+      color: $narrojo;
+      border-bottom: 4px solid $narrojo;
 
       &:focus,
       &:hover {
-        border-bottom: 4px solid var(--accent);
+        border-bottom: 4px solid $narrojo;
       }
     }
   }
@@ -155,10 +153,10 @@ form {
     @include border-radius(50%);
 
     &:checked {
-      border: 3px solid var(--accent);
+      border: 3px solid $narrojo;
 
       &:hover {
-        border: 3px solid var(--accent);
+        border: 3px solid $narrojo;
       }
 
       &:after {
@@ -194,10 +192,10 @@ form {
     border-radius: 5px;
 
     &:checked {
-      border: 3px solid var(--accent);
+      border: 3px solid $narrojo;
 
       &:hover {
-        border: 3px solid var(--accent);
+        border: 3px solid $narrojo;
       }
 
       &:after {
@@ -233,14 +231,14 @@ form {
     min-height: 100px;
     background: negro(1);
     padding: 15px;
-    color: var(--text);
+    color: $primary;
     border: 1px solid transparent;
     @include font-size(4);
     @include border-radius(3px);
 
     &:focus,
     &:hover {
-      border: 1px solid var(--text);
+      border: 1px solid $secondary;
     }
   }
 
@@ -255,14 +253,14 @@ form {
   }
 
   label {
-    color: var(--text);
+    color: $secondary;
 
     &:first-letter {
       text-transform: capitalize;
     }
 
     &[data-error] {
-      color: var(--accent);
+      color: $narrojo;
     }
 
     &[for] {
@@ -272,14 +270,13 @@ form {
 
   .error {
     display: block;
-    color: var(--accent);
+    color: $narrojo;
 
     &:first-letter {
       text-transform: uppercase;
     }
   }
 }
-
 .greentext {
   color: $greentext;
   font-size: 1em;
@@ -306,24 +303,22 @@ form {
 .controls {
   @include flexbox(row, nowrap, flex-end, center);
 
-  >* {
+  > * {
     margin-left: 15px;
   }
 
   ._line {
-    color: var(--text);
+    color: $secondary;
   }
 }
 
 .--danger {
   color: $t-error !important;
-
   svg {
     * {
       fill: $t-error !important;
     }
   }
-
   i {
     color: $t-error !important;
   }

@@ -1,75 +1,54 @@
 // main.scss
 @import "base/module";
-@import "themes/default";
 @import "components/module";
 @import "pseudo/module";
-
 body {
-  font-family: 'Work Sans', sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
-  color: var(--text);
-
-  background-color: var(--primary);
-
+  width: 100%;
+  font-family: "Work Sans", sans-serif;
+  background: $darker;
+  color: $primary;
   &::-webkit-scrollbar {
     width: 7px;
-    background-color: var(--scrollbar-bg);
+    background-color: #000;
   }
-
   &::-webkit-scrollbar-thumb {
     border-width: 0;
-    background-color: var(--scrollbar-thumb-bg);
   }
 }
-
 //inicia BODY CHILDS
 #loader {
-  ~#appex {
+  ~ #appex {
     display: none;
   }
 }
-
 #appex {
   z-index: 0;
-
   &[class*="blur"] {
     #navigation {
       z-index: 0 !important;
     }
-
     #main {
       z-index: 1 !important;
-
       &[data-layout-type="chat"] {
         #content {
           overflow-y: hidden;
         }
       }
-
       #sidebar {
         &:empty {
           z-index: 0;
         }
       }
-
       #content {
         &:before {
           display: block !important;
         }
       }
     }
-
     .signals {
       display: none;
     }
   }
-
   &[class*="fixed"] {
     max-height: 100vh;
     overflow: hidden;
@@ -80,7 +59,6 @@ body {
   background-repeat: no-repeat;
   background-position: center;
 }
-
 //inicia #APPEX CHILDS
 @import "layout/module";
 //termina #APPEX CHILDS

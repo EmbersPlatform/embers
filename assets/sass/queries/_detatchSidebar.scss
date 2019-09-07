@@ -41,10 +41,10 @@
 				#sidebar{
 					z-index: 1;
 					&::-webkit-scrollbar{
-						background-color: var(--primary);
+						background-color: $dark_n1;
 					}
 					&::-webkit-scrollbar-thumb{
-						border-color:var(--primary);
+						border-color:$dark_n1;
 					}
 					&:empty{
 						&:after{
@@ -54,7 +54,7 @@
 							position:fixed;
 							top: calc(50% - 50px);
 							margin-left: 7px;
-							background:var(--text);
+							background:$secondary;
 							border: 1px solid negro(7);
 							width: 5px;
 							height: 100px;

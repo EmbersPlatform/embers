@@ -1,8 +1,12 @@
 <template>
   <nav id="navigation" v-if="show">
-    <h1 id="logo">
+    <h1>
       <router-link to="/" exact>
-        <img v-if="efemerides" :src="`${efemerides.img}`" :title="efemerides.desc" />
+        <img
+          v-if="efemerides"
+          :src="`${efemerides.img}`"
+          :title="efemerides.desc"
+        >
         <svgicon name="elogo" v-else></svgicon>
       </router-link>
     </h1>
@@ -69,7 +73,7 @@
         data-tip-position="right"
       >
         <span class="page" id="menu-switch" ref="trg_userMenu">
-          <img :data-user="$store.getters.user.id" :src="$store.getters.user.avatar.small" />
+          <img :data-user="$store.getters.user.id" :src="$store.getters.user.avatar.small">
         </span>
         <ul data-name="opciones" ref="userMenu">
           <li :class="{'is-profile' : $route.path == '/@'+$store.getters.user.username}">
@@ -107,7 +111,7 @@ import auth from "../api/auth";
 import notifications from "../components/Notifications";
 import { mapGetters, mapState } from "vuex";
 import _ from "lodash";
-import { get_ephemeris } from "@/lib/ephemeris";
+import {get_ephemeris} from "@/lib/ephemeris";
 
 import EventBus from "@/lib/event_bus";
 

@@ -9,7 +9,7 @@
 }
 
 @function narrojo($opacity){
-  @return rgba(var(--accent), $opacity);
+  @return rgba($narrojo, $opacity);
 }
 // busca y elimina la string dada
 @function str-replace($string, $search, $replace: '') {
@@ -39,7 +39,7 @@
              / nth($conversion-factors, index($convertable-units, unit($value)))
              * nth($conversion-factors, index($convertable-units, $unit));
   }
-
+  
   @warn "Cannot convert `#{unit($value)}` to `#{$unit}`.";
 }
 
@@ -49,7 +49,7 @@
 @function is-direction($value) {
   $is-direction: index((to top, to top right, to right top, to right, to bottom right, to right bottom, to bottom, to bottom left, to left bottom, to left, to left top, to top left), $value);
   $is-angle: type-of($value) == 'number' and index('deg' 'grad' 'turn' 'rad', unit($value));
-
+  
   @return $is-direction or $is-angle;
 }
 
@@ -61,8 +61,8 @@
   @if is-direction($value) == false {
     @warn "Cannot convert `#{$value}` to legacy syntax because it doesn't seem to be an angle or a direction";
   }
-
-  $conversion-map: (
+  
+  $conversion-map: ( 
     to top          : bottom,
     to top right    : bottom left,
     to right top    : left bottom,
@@ -76,10 +76,10 @@
     to left top     : right bottom,
     to top left     : bottom right
   );
-
+    
   @if map-has-key($conversion-map, $value) {
     @return map-get($conversion-map, $value);
   }
-
+  
   @return 90deg - convert-angle($value, 'deg');
 }

@@ -10,7 +10,7 @@
 
   &:focus {
     .card-wrapper {
-      border: var(--border);
+      border: 1px solid $secondary;
     }
   }
 
@@ -23,9 +23,8 @@
     }
 
     .card-date {
-      color: var(--text);
+      color: $secondary;
       font-size: 12px;
-      opacity: 0.8;
     }
   }
 
@@ -40,7 +39,6 @@
       border-radius: 0;
       box-shadow: none;
     }
-
     .actions {
       border: none;
       background: transparent;
@@ -52,11 +50,11 @@
     .card-wrapper {
       overflow: hidden;
 
-      >*:not(.header) {
+      > *:not(.header) {
         pointer-events: none;
       }
 
-      >*:not(.header)>*:not(.card-wrapper-content-tags) {
+      > *:not(.header) > *:not(.card-wrapper-content-tags) {
         @include blur(2, em);
       }
     }
@@ -95,7 +93,7 @@
         }
 
         .header-options {
-          >span {
+          > span {
             padding: 5px;
 
             svg {
@@ -132,17 +130,15 @@
           }
         }
 
-        &>p {
-
+        & > p {
           p,
           ul {
             margin-bottom: 1em;
           }
         }
 
-        &>p {
+        & > p {
           margin: 0 15px;
-
           &:not(:last-child) {
             margin-bottom: 15px;
           }
@@ -177,7 +173,7 @@
               @include font-size(2);
             }
 
-            ~.source {
+            ~ .source {
               @include font-size();
             }
           }
@@ -192,7 +188,6 @@
 
         .card-wrapper-content-tags {
           margin: 0 15px;
-
           .tag {
             @include font-size();
           }
@@ -227,11 +222,11 @@
         height: 35px;
         @include justify-content(flex-end);
 
-        >li:not(:last-child) {
+        > li:not(:last-child) {
           margin-right: 15px;
         }
 
-        >li {
+        > li {
           @include font-size(2);
 
           ul {
@@ -288,7 +283,7 @@
         }
 
         .header-options {
-          >span {
+          > span {
             padding: 5px;
 
             svg {
@@ -319,7 +314,7 @@
           @include font-size(6);
         }
 
-        >p {
+        > p {
           margin: 0 10px;
 
           &:not(:last-child) {
@@ -356,7 +351,7 @@
               @include font-size();
             }
 
-            ~.source {
+            ~ .source {
               @include font-size();
             }
           }
@@ -405,11 +400,11 @@
         height: 25px;
         @include justify-content(flex-end);
 
-        >li:not(:last-child) {
+        > li:not(:last-child) {
           margin-right: 10px;
         }
 
-        >li {
+        > li {
           @include font-size();
 
           ul {
@@ -429,13 +424,12 @@
 
   .actions {
     z-index: 0;
-    background: var(--post-commentbox-bg);
-    border: var(--border);
+    background: $blue_dark;
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
   }
 
-  &.new>.card-wrapper {
+  &.new > .card-wrapper {
     border-color: #aaa;
   }
 }
@@ -450,20 +444,27 @@
     border-bottom: 0;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    color: var(--text);
-    background: var(--secondary-accent);
+    color: $secondary;
+    background: $blue_dark;
     @include box-shadow(0 5px 15px negro(25));
     @include flexbox(row, nowrap, space-between, center, inline-flex);
     @include box-sizing(border-box);
 
     &[class*="nsfw"] {
-      background: var(--danger)
+      // background: rgba($narrojo, 0.4);
+      // background: $t-error;
+      // @include linear-gradient(45deg, lighten($t-error, 3), darken($t-error, 3));
+      @include linear-gradient(
+        45deg,
+        rgba(lighten($narrojo, 3), 0.4),
+        rgba(darken($narrojo, 3), 0.4)
+      );
     }
 
     p {
       z-index: 1;
 
-      ~* {
+      ~ * {
         z-index: 0;
       }
     }
@@ -471,8 +472,8 @@
 }
 
 .card-wrapper {
-  background: var(--primary);
-  border: var(--border);
+  background: $dark_n1;
+  border: 1px solid blanco("05");
   @include box-sizing(border-box);
   @include border-radius(3px);
   @include box-shadow(0 0 15px negro(25));
@@ -481,7 +482,7 @@
     z-index: 0;
     @include box-shadow(none);
 
-    ~.actions {
+    ~ .actions {
       z-index: 3;
     }
 
@@ -501,11 +502,11 @@
 
   p {
     font-size: inherit;
-    color: var(--text);
+    color: $primary;
     font-weight: 400;
 
     a {
-      color: var(--accent);
+      color: $narrojo;
       font-weight: 400;
       font-size: 1em;
 
@@ -521,7 +522,7 @@
     }
   }
 
-  >p {
+  > p {
     display: block;
 
     &[class~="folded"] {
@@ -547,10 +548,10 @@
   margin-top: 10px !important;
 
   .tag {
-    color: var(--text);
+    color: $secondary;
 
     &:hover {
-      color: var(--link);
+      color: $primary;
     }
   }
 }
@@ -559,7 +560,6 @@
   .header {
     padding: 0 15px !important;
   }
-
   .avatar {
     width: 36px !important;
     height: 36px !important;

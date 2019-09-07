@@ -55,7 +55,7 @@
       border-left: 3px solid $t-error;
     }
     &[class*="info"]{
-      border-left: 3px solid var(--accent);
+      border-left: 3px solid $narrojo;
     }
     &[class*="warning"]{
       border-left: 3px solid $t-warning;

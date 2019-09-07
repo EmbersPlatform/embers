@@ -1,7 +1,7 @@
 .switch{
 	input[type="checkbox"]{
 		&:checked + .tip{
-			background: var(--accent);
+			background: $narrojo;
 			&:after{
 				left: calc(100% - .3em);
 				@include transform(translate(-100%, -50%));

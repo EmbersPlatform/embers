@@ -11,11 +11,10 @@ import _Tag from "../views/_Tag.vue";
 
 import _Settings from "../views/_Settings";
 import AppsSettings from "../views/Settings/Apps";
-import AccountSettings from "../views/Settings/Account";
+import AppearanceSettings from "../views/Settings/Appearance";
 import ContentSettings from "../views/Settings/Content";
 import PrivacySettings from "../views/Settings/Privacy";
 import ProfileSettings from "../views/Settings/Profile";
-import StyleSettings from "../views/Settings/Style";
 import SecuritySettings from "../views/Settings/Security";
 
 import _UserProfile from "../views/_UserProfile";
@@ -294,21 +293,14 @@ const routes = [
     beforeEnter: requireAuth,
     children: [{
         path: "",
-        component: AccountSettings,
-        meta: {
-          title: "Configuración › Cuenta"
-        }
-      },
-      {
-        path: "profile",
         component: ProfileSettings,
         meta: {
           title: "Configuración › Perfil"
         }
       },
       {
-        path: "style",
-        component: StyleSettings,
+        path: "appearance",
+        component: AppearanceSettings,
         meta: {
           title: "Configuración › Apariencia"
         }

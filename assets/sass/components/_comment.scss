@@ -2,94 +2,73 @@
   padding: 15px 5px;
   border-bottom: 1px solid negro(1);
   @include flexbox(column, nowrap, flex-start, stretch);
-
   &:first-child {
     padding-top: 0;
   }
-
   &:last-child {
     border-bottom: 0;
     padding-bottom: 0;
   }
-
   .header {
     @include box-sizing(content-box);
     min-height: 45px;
-
     .avatar {
       width: 45px;
       height: 45px;
       margin-right: 10px;
     }
-
     .header-content {
       @include font-size(4);
-
-      >*:not(:last-child) {
+      > *:not(:last-child) {
         margin-bottom: 10px;
       }
-
       h4 {
         @include font-size(2);
       }
-
-      >p {
-        color: var(--text);
-
-        >p {
+      > p {
+        color: $primary;
+        > p {
           display: block;
           margin: 0 10px;
           line-height: 22px;
-
           &:not(:last-child) {
             margin-bottom: 10px;
           }
         }
-
         a {
-          color: var(--accent);
+          color: $narrojo;
           font-size: inherit;
-
           &:hover {
             text-decoration: undeline;
           }
         }
       }
-
       .actions {
         .reaction {
           padding: 0 10px;
           @include font-size(2);
         }
-
         .actions-reactions {
           padding: 5px 10px 0 0;
-
           .reaction {
             margin: 0 5px 5px 0;
             height: 2.5em;
-
             .emoji {
               margin-right: 10px;
             }
           }
         }
-
         .actions-panel {
           height: 35px;
-
-          >li:not(:last-child) {
+          > li:not(:last-child) {
             margin-right: 15px;
           }
-
-          >li {
+          > li {
             @include font-size(2);
-
             ul {
               width: 135px;
               padding: 10px 5px 5px 10px;
               transform: translate(-90%, -100%);
-
               .reaction {
                 margin: 0 5px 5px 0;
                 height: 2em;
@@ -100,25 +79,20 @@
         }
       }
     }
-
     .header-options-wrapper {
       display: flex;
       flex-shrink: 0;
     }
-
     .header-options {
-      >span {
+      > span {
         padding: 5px;
-
         svg {
           width: 15px;
           height: 15px;
         }
       }
-
       ul {
         padding: 0 5px;
-
         li {
           span {
             display: block;
@@ -128,9 +102,8 @@
         }
       }
     }
-
     .reply-link {
-      color: var(--accent);
+      color: $narrojo;
       display: block;
       text-align: center;
     }
@@ -140,8 +113,7 @@
     .header-content {
       overflow: hidden;
     }
-
-    .header-content>*:not(.actions):not(h4) {
+    .header-content > *:not(.actions):not(h4) {
       pointer-events: none;
       @include blur(1, em);
     }

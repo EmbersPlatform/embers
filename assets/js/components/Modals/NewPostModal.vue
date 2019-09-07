@@ -98,9 +98,7 @@ export default {
           case 422:
             let key = Object.keys(error.res.errors)[0];
             let text = error.res.errors[key][0];
-            if (text === "rate limited")
-              text =
-                "Ya compartiste este post. Espera 5 minutos para volver a hacerlo.";
+            if (text === "rate limited") text = "Ya compartiste este post. Espera 5 minutos para volver a hacerlo.";
             this.$notify({
               group: "top",
               text: text,
@@ -110,8 +108,7 @@ export default {
           case 500:
             this.$notify({
               group: "top",
-              text:
-                "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.",
+              text: "hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador.",
               type: "error"
             });
             break;
@@ -159,11 +156,11 @@ export default {
   .new-post-modal__content {
     max-width: 80%;
     width: 600px;
-    background: var(--primary);
-    border: var(--border);
+    background: #222327;
+    border: 1px solid rgba(255, 255, 255, 0.05);
     box-sizing: border-box;
     border-radius: 3px;
-    box-shadow: var(--box-shadow);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
     margin: 20px 0;
     animation: slidefade 0.5s ease;
 

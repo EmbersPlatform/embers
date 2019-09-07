@@ -105,7 +105,7 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     border: 5px solid #fff;
-    background: var(--accent);
+    background: $narrojo;
     color: #fff;
     box-sizing: border-box;
     border-radius: 50%;

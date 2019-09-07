@@ -1,90 +1,75 @@
 .actions {
   @include box-sizing(content-box);
   @include flexbox(row, wrap, flex-start, center);
-
   .reaction {
     cursor: pointer;
     @include box-sizing(border-box);
     @include border-radius(3px);
     @include flexbox(row, nowrap, center, center);
-
     .emoji {
       margin-bottom: 0;
     }
   }
-
   .actions-reactions {
     @include flexbox(row, wrap, flex-start, center);
-
     &:empty {
       display: none;
     }
-
     .reaction {
       background: negro(2);
       // border: 1px solid blanco('05');
-      color: var(--text);
+      color: $secondary;
       @include transition(0.3s all ease-out);
-
       &:hover {
-        background: var(--secondary-accent);
-        color: var(--link);
+        background: blanco(1);
+        color: $primary;
       }
 
       &[reacted] {
-        border: 2px solid var(--accent);
-        color: var(--link);
+        border: 2px solid narrojo(0.5);
+        color: $primary;
       }
     }
   }
-
   .actions-panel {
     display: block;
     margin: 0 auto;
     width: auto;
     @include flex(1 1 auto);
     @include flexbox(row, nowrap, flex-start, center);
-
     .emoji {
       width: auto;
       margin-bottom: 0;
     }
-
     .emoji-pick-list {
       @include flex(1 1 auto);
     }
-
-    >li {
+    > li {
       @include flexbox(row, nowrap, flex-start, center);
-
       span,
       a {
         @include flexbox(row, nowrap, flex-start, center, inline-flex);
-        color: var(--text);
-
+        color: $secondary;
         svg {
           * {
-            fill: var(--text);
+            fill: $secondary;
           }
         }
-
         &:hover {
           cursor: pointer;
-          color: var(--link);
-
+          color: $primary;
           * {
-            fill: var(--link);
+            fill: $primary;
           }
         }
       }
-
       ul {
         z-index: 1;
         max-width: 150px;
         justify-content: space-between;
         height: auto;
         position: absolute;
-        background: var(--secondary);
+        background: $darker;
         top: 0;
         left: 0.5em;
         display: flex;
@@ -94,7 +79,6 @@
         @include transform(translate(0, calc(-100% - 0.5em)));
         @include box-sizing(content-box);
         @include box-shadow(5px 5px 15px negro(25));
-
         .reaction {
           &:hover {
             img {
@@ -104,7 +88,6 @@
         }
       }
     }
-
     .active {
       display: none;
     }

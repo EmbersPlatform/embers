@@ -374,7 +374,7 @@ export default {
       });
     },
     remove_comment(comment) {
-      this.replies = this.replies.filter(x => x.id != comment.id);
+      this.replies = this.replies.filter(x => x.id != comment.id)
     },
 
     /**
@@ -501,7 +501,9 @@ export default {
       if (this.isOwner) {
         return;
       }
-      if (has_reacted) {
+      if (
+        has_reacted
+      ) {
         post.deleteReaction(this.comment.id, reaction).then(res => {
           this.comment.reacted = false;
           this.comment.reactions = res.reactions;
@@ -606,7 +608,7 @@ export default {
 @import "~@/../sass/base/_variables.scss";
 .comment {
   &.remarked > .header {
-    background-color: var(--accent);
+    background-color: transparentize($narrojo, 0.9);
     box-shadow: 0 0 5px rgba(235, 61, 45, 0.2) !important;
   }
   &.is-reply {
@@ -635,7 +637,7 @@ export default {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: var(--secondary);
+  background: $dark;
 }
 .replies-action {
   padding: 5px 10px;

@@ -1,71 +1,56 @@
 // landing.scss
-@import 'themes/default';
 @import 'base/module';
 @import 'components/module';
-
-body {
-  width: 100%;
-  font-family: 'Work Sans', sans-serif;
-  background: var(--secondary);
-
-  &::-webkit-scrollbar {
-    width: 7px;
-    background-color: #000;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-width: 0;
-  }
+body{
+	width: 100%;
+	font-family: 'Work Sans', sans-serif;
+	background: $darker;
+	&::-webkit-scrollbar{
+		width: 7px;
+		background-color: #000;
+	}
+	&::-webkit-scrollbar-thumb{
+		border-width:0;
+	}
 }
-
 //inicia BODY CHILDS
-#appex {
-  z-index: 0;
-
-  >.block {
-    padding-bottom: 0;
-  }
-}
-
-//inicia #APPEX CHILDS
-@import 'layout/sticky';
-
-#sticky {
-
-  &:hover,
-  &:focus {
-    ul {
-      height: auto;
-    }
-  }
-}
-
-.block {
-  >*:not(:last-child) {
-    margin-bottom: 30px;
-  }
-}
-
-//inicia .BLOCK CHILDS
-#logo {
-  background: transparent;
-  max-width: 300px;
-}
-
-#masonry {
-  width: 100%;
-}
-
-//termina .BLOCK CHILDS
-#footer {
-  z-index: 0;
-  background: var(--accent);
-
-  h3 {
-    color: var(--link);
-  }
-}
-
-//termina #APPEX CHILDS
+	#appex{
+		z-index: 0;
+		> .block{
+			padding-bottom: 0;
+		}
+	}
+	//inicia #APPEX CHILDS
+		@import 'layout/sticky';
+		#sticky{
+			&:hover, &:focus{
+				ul{
+					height: auto;
+				}
+			}
+		}
+		.block{
+			> *:not(:last-child){
+				margin-bottom: 30px;
+			}
+		}
+		//inicia .BLOCK CHILDS
+			#logo{
+				background: transparent;
+				max-width: 300px;
+			}
+			#masonry{
+				width:100%;
+			}
+		//termina .BLOCK CHILDS
+		#footer{
+			z-index:0;
+			background:$narrojo;
+			h3{
+				color:#fff;
+			}
+		}
+	//termina #APPEX CHILDS
 //termina BODY CHILDS
 @import 'queries/module';
+

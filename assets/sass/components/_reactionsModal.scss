@@ -1,7 +1,7 @@
 .reactions-modal {
   display: flex;
   flex-direction: row;
-  background: var(--primary);
+  background: $dark_n1;
   color: $primary;
   min-height: 350px;
   max-height: 75%;
@@ -16,40 +16,37 @@
       width: 75%;
     }
 
-    .reaction {
+    .reaction{
       border: 2px solid transparent;
-      background: negro(2);
-      color: var(--text);
+			background: negro(2);
+			color: $secondary;
       padding: 0 10px;
       @include font-size(2);
-      @include transition(.3s all ease-out);
+			@include transition(.3s all ease-out);
       @include flexbox(row, nowrap, flex-start, center);
       margin: 0 5px 5px 0;
       height: 2.5em;
       border-radius: 2px;
       cursor: pointer;
-
-      &:hover {
-        background: blanco(1);
-        color: $primary;
-      }
-
-      &[active] {
-        border-color: narrojo(0.5);
-        color: $primary;
-      }
-
-      .emoji {
+			&:hover{
+				background: blanco(1);
+				color: $primary;
+			}
+      &[active]{
+				border-color: narrojo(0.5);
+				color: $primary;
+			}
+      .emoji{
         margin-right: 10px;
       }
-    }
+		}
   }
 
   .reactions-users {
     flex-grow: 1;
     padding: 10px;
 
-    &:before {
+    &:before{
       content: "";
       display: block;
       position: absolute;
@@ -58,7 +55,7 @@
       width: 4px;
       height: calc(100% - 20px);
       z-index: 1;
-      background: rgba(0, 0, 0, .1);
+      background: rgba(0,0,0,.1);
     }
 
     .hidden-reactions-notice {
@@ -77,7 +74,6 @@
       display: flex;
       align-items: center;
       color: $primary;
-
       &:not(:first-child) {
         margin-top: 5px;
       }
