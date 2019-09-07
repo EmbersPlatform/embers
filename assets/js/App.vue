@@ -35,11 +35,11 @@
         <router-view></router-view>
       </template>
     </template>
-    <modals-container/>
-    <v-dialog/>
+    <modals-container />
+    <v-dialog />
     <notifications group="top" position="top center" :max="3">
       <template slot="body" slot-scope="props">
-        <notification :props="props"/>
+        <notification :props="props" />
       </template>
     </notifications>
     <notifications
@@ -48,11 +48,11 @@
       :max="5"
     >
       <template slot="body" slot-scope="props">
-        <notification :props="props"/>
+        <notification :props="props" />
       </template>
     </notifications>
-    <rules-modal/>
-    <new-post-modal v-show="show_new_post_modal" :related="new_post_modal_related"/>
+    <rules-modal />
+    <new-post-modal v-show="show_new_post_modal" :related="new_post_modal_related" />
     <media-slides v-if="show_media_slides"></media-slides>
   </div>
 </template>
@@ -119,6 +119,7 @@ export default {
     }),
     ...mapGetters("title", ["title"]),
     ...mapGetters("chat", ["unread_conversations_count"]),
+    ...mapGetters(["settings"]),
     ...mapState("chat", ["online_friends"]),
     ...mapState("media_slides", ["show_media_slides"]),
     isApp: function() {
@@ -267,6 +268,9 @@ export default {
         clearInterval(this.newMessageTitleInterval);
         document.title = this.title;
       }
+    },
+    settings() {
+      document.body.setAttribute("theme", this.settings.style_theme);
     }
   },
   beforeDestroy() {

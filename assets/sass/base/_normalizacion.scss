@@ -10,50 +10,57 @@
   font-weight: 300;
   @include font-size(2);
   @include appearance(none);
+
   &::-webkit-scrollbar {
     width: 13px;
-    background-color: $dark;
+    background-color: var(--scrollbar-bg);
   }
+
   &::-webkit-scrollbar-track {
-    -webkit-box-shadow: none;
+    box-shadow: none;
   }
+
   &::-webkit-scrollbar-thumb {
-    background-color: $secondary;
+    background-color: var(--scrollbar-thumb-bg);
     border-style: solid;
     border-width: 0 3px;
-    border-color: $dark;
-    &:hover {
-      background-color: $primary;
-    }
+    border-color: var(--secondary);
   }
+
   &:active,
   &:focus,
   &:hover {
     outline: 0;
   }
+
   &:before,
   &:after {
     line-height: 1.2em;
     @include box-sizing(inherit);
   }
 }
+
 ul,
 ol {
   list-style: none;
 }
+
 a {
   text-decoration: none;
 }
+
 a,
 button,
 label {
-  > hr {
+  >hr {
     display: none;
   }
 }
+
 textarea {
   resize: none;
 }
+
 p {
   /* These are technically the same, but use both */
   overflow-wrap: break-word;
@@ -70,33 +77,39 @@ p {
   -webkit-hyphens: auto;
   hyphens: auto;
 }
+
 strong {
   font-weight: 500;
   font-size: inherit;
 }
+
 small {
   @include font-size();
 }
+
 code {
   font-family: "Courier New", Courier, monospace;
 }
+
 svg {
   width: inherit;
   height: inherit;
-  * {
-    fill: #fff;
-  }
 }
+
 ::-webkit-input-placeholder {
-  color: $secondary;
+  color: var(--text);
 }
+
 ::-moz-placeholder {
-  color: $secondary;
+  color: var(--text);
 }
+
 :-ms-input-placeholder {
-  color: $secondary;
+  color: var(--text);
 }
+
 :-moz-placeholder {
-  color: $secondary;
+  color: var(--text);
 }
+
 // termina: NORMALIZACION

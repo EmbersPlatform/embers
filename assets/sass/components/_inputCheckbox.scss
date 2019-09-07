@@ -11,7 +11,7 @@
 			-webkit-user-select: none;
 			-moz-user-select: none;
 			-ms-user-select: none;
-			color: $secondary;
+			color: var(--text);
 			user-select: none; // unselectable
 			touch-action: manipulation; // disables tap zoom
 			@include flexbox(row, nowrap, flex-start, center, inline-flex);
@@ -24,7 +24,7 @@
 				display: block;
 				width: 2em;
 				height: 2em;
-				border: 0.15em solid $secondary;
+				border: 0.15em solid var(--text);
 				position: absolute;
 				left: 0;
 				top: 50%;
@@ -43,7 +43,7 @@
 					// top: -0.3em;
 					// left: 3em;
 					opacity: 1;
-					border-color: $narrojo;
+					border-color: var(--accent);
 					border-top-color: transparent;
 					border-left-color: transparent;
 					-webkit-transform: rotate(45deg);

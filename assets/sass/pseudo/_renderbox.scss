@@ -14,7 +14,7 @@
 				border-top: 4px solid transparent;
 				border-right: 4px solid transparent;
 				border-bottom: 4px solid transparent;
-				border-left: 4px solid $narrojo;
+				border-left: 4px solid var(--accent);
 				margin: 0 auto 30px;
 				@include box-sizing(border-box);
 				@include border-radius(50%);
@@ -53,7 +53,7 @@
 				border-top: 4px solid transparent;
 				border-right: 4px solid transparent;
 				border-bottom: 4px solid transparent;
-				border-left: 4px solid $narrojo;
+				border-left: 4px solid var(--accent);
 				margin: 30px auto;
 				@include box-sizing(border-box);
 				@include border-radius(50%);

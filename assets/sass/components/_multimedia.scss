@@ -1,6 +1,7 @@
 //inicia MULTIMEDIA
 .multimedia {
   overflow: hidden;
+
   .row {
     display: flex;
     flex-direction: row;
@@ -14,27 +15,34 @@
     justify-content: center;
     flex-grow: 1;
     flex-basis: 0;
+
     &[class*="link"] {
       img {
         @include border-radius(3px);
       }
     }
+
     &[class*="image"] {
       @include border-radius(3px);
     }
+
     &[class*="video"] {
       background: #000;
       @include border-radius(3px);
+
       &[data-title]:not([data-title=""]) {
         &:hover {
           cursor: pointer;
+
           img {
             @include transform(scale(1.25));
           }
+
           &:before {
             opacity: 1;
           }
         }
+
         &:before {
           content: attr(data-title);
           z-index: 1;
@@ -52,19 +60,22 @@
           @include flexbox(row, nowrap, flex-start, center);
           @include box-sizing(border-box);
         }
+
         img {
           margin: 5% 0;
         }
       }
+
       .toggle {
         i {
           padding: 20px;
           border-radius: 50%;
-          background: $narrojo;
+          background: var(--accent);
           height: 1.5rem;
           width: 1.5rem;
           border: 5px solid #fff;
           box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+
           &:before {
             line-height: 1em;
             position: relative;
@@ -73,24 +84,29 @@
         }
       }
     }
+
     &[class*="audio"] {
       height: 4em;
       overflow: hidden;
       border: 4px solid negro(1);
       @include border-radius(2em);
       @include box-sizing(border-box);
+
       &:hover {
         cursor: pointer;
+
         img {
           @include transform(scale(1));
           @include blur(0.5, em);
         }
       }
+
       img {
         margin-top: -50%;
         @include transform(scale(1.25));
         @include blur(1.5, em);
       }
+
       hr {
         position: absolute;
         top: 0;
@@ -103,6 +119,7 @@
         @include box-shadow(5px 5px 15px negro(25));
       }
     }
+
     iframe,
     img {
       display: block;
@@ -110,9 +127,11 @@
       margin: 0;
       z-index: 0;
     }
+
     iframe {
       width: 100%;
     }
+
     .toggle {
       z-index: 2;
       background: transparent;
@@ -125,6 +144,7 @@
       cursor: pointer;
       @include font-size(2);
       @include flexbox(row, nowrap, center, center);
+
       * {
         font-size: 1.5em;
         margin: 0 30px;
@@ -132,18 +152,21 @@
       }
     }
   }
+
   .media.link-embed {
     width: 550px;
     max-width: 100%;
     height: 550px;
   }
+
   .media.video-embed-custom {
     max-width: 100%;
     margin: 0 auto;
   }
+
   .source {
     display: block;
-    color: $secondary;
+    color: var(--text);
     border-left: 4px solid negro(1);
     /* These are technically the same, but use both */
     overflow-wrap: break-word;
@@ -159,6 +182,7 @@
     -moz-hyphens: auto;
     -webkit-hyphens: auto;
     hyphens: auto;
+
     &:hover {
       color: $primary;
     }
@@ -167,37 +191,41 @@
       color: narrojo(75);
       font-weight: 700;
     }
+
     .media.description {
       margin-top: 10px;
     }
+
     .media.url {
       margin-top: 10px;
+
       span {
         display: inline;
         vertical-align: middle;
         text-transform: uppercase;
       }
     }
+
     .media.provider-icon {
       display: inline;
-      float: left;
       position: relative;
       top: 2px;
-      width: 16px;
-      height: 16px;
       margin-right: 5px !important;
       border-radius: 2px;
     }
   }
+
   img {
     width: auto;
     max-width: 100%;
     height: auto;
     margin: 0 auto !important;
     @include transition(0.3s transform ease-out, 0.3s filter ease-out);
+
     :empty {
       display: none;
     }
   }
 }
+
 //termina MULTIMEDIA

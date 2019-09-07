@@ -8,7 +8,7 @@
 
   .toolbox__container {
     height: 100%;
-    background: $dark_n1;
+    background: var(--primary);
     border: 1px solid blanco("05");
     @include box-shadow(0 5px 20px negro(3));
     @include border-radius(3px);
@@ -76,14 +76,14 @@
   .remove-attachment {
     position: absolute;
     right: 0;
-    background: $narrojo;
+    background: var(--accent);
     color: #fff;
     cursor: pointer;
     border-radius: 50%;
     font-size: 1.25em;
     width: 1.75em;
     height: 1.75em;
-    border: 4px solid $darker;
+    border: 4px solid var(--secondary);
     box-sizing: content-box;
   }
 
@@ -92,7 +92,7 @@
     flex-direction: row;
     margin: 0;
 
-    & > * {
+    &>* {
       margin-left: 15px;
     }
   }
@@ -128,7 +128,7 @@
 
       svg {
         * {
-          fill: $narrojo;
+          fill: var(--accent);
         }
       }
 
@@ -183,7 +183,7 @@
       width: auto;
       height: 0;
       text-align: center;
-      color: $narrojo;
+      color: var(--accent);
       font-weight: 400;
       margin-top: 0;
       overflow: hidden;
@@ -203,7 +203,7 @@
   .supported {
     font-size: 3em;
     margin-bottom: 15px;
-    color: $secondary;
+    color: var(--text);
     @include flexbox(row, nowrap, space-around, flex-start);
   }
 
@@ -229,7 +229,7 @@
   button {
     width: 55px;
     height: 55px;
-    background: $secondary;
+    background: var(--text);
     border: 4px solid negro(1);
     color: $primary;
     font-weight: 400;
@@ -243,14 +243,14 @@
     @include transition(0.3s background ease-out, 0.3s border ease-out);
 
     &:hover {
-      background: $narrojo;
+      background: var(--accent);
       border-color: #fff;
     }
 
     &[class*="recording"] {
-      background: $narrojo;
+      background: var(--accent);
       animation: pulse 2s infinite;
-      @include box-shadow(0 0 0 0 rgba($narrojo, 0.4));
+      @include box-shadow(0 0 0 0 rgba(var(--accent), 0.4));
 
       &:hover {
         animation: none;
@@ -263,9 +263,9 @@
   @include flexbox(row, wrap, flex-start, center);
 
   .tag {
-    background: $dark;
+    background: var(--text);
     padding: 5px 10px;
-    color: $secondary;
+    color: var(--text);
     cursor: pointer;
     margin: 0 10px 10px 0;
     @include border-radius(3px);
@@ -273,7 +273,7 @@
     @include flexbox(row, nowrap, center, center);
 
     &:hover {
-      color: $dark;
+      color: var(--text);
 
       button {
         @include flexbox(row, nowrap, center, center);
@@ -289,7 +289,7 @@
       width: 100%;
       height: 100%;
       background: transparent;
-      color: $secondary;
+      color: var(--text);
       cursor: inherit;
       @include font-size(2);
     }
@@ -298,7 +298,7 @@
   input[type="text"] {
     display: block;
     background: transparent;
-    color: $primary;
+    color: var(--text);
     padding: 5px 0;
     margin-bottom: 10px;
     @include flex(1 1 auto);

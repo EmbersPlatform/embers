@@ -21,7 +21,7 @@ $info: $blue;
 $yellow-invert: #fff;
 
 $light: $grey-lighter;
-$dark : darken($grey-darker, 3);
+var(--secondary) : darken($grey-darker, 3);
 
 $family-sans-serif: "Lato",
 -apple-system,

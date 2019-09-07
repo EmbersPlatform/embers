@@ -104,7 +104,7 @@
 		}
 		&[class*="toast-info"]{
 			background-color: negro(8);
-			border-right: 3px solid $narrojo;
+			border-right: 3px solid var(--accent);
 		}
 		&[class*="toast-warning"]{
 			background-color: negro(8);
@@ -140,7 +140,7 @@
 			-ms-word-wrap: break-word;
 			word-wrap: break-word;
 			a, label{
-				color: $narrojo;
+				color: var(--accent);
 			}
 			a{
 				&:hover{

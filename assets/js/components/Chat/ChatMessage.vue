@@ -130,7 +130,7 @@ export default {
     box-sizing: border-box;
     flex: 1;
     .chat-message__bubble {
-      background: $blue_dark;
+      background: var(--secondary-accent);
       color: #ffffffdd;
       padding: 5px 10px;
       border-radius: 14px;
@@ -173,7 +173,7 @@ export default {
     }
     .chat-message__content {
       .chat-message__bubble {
-        background: transparentize($narrojo, 0.7);
+        background: var(--accent);
       }
     }
   }

@@ -590,7 +590,7 @@
     }
   }
   #nav_user {
-    background: $darker;
+    background: var(--secondary);
     width: calc(100% - 55px);
     position: absolute;
     top: 0;
@@ -693,7 +693,7 @@
     padding: 0 15px;
     height: 100vh;
     &::-webkit-scrollbar {
-      background-color: $darker;
+      background-color: var(--secondary);
     }
     &:empty {
       all: unset;
@@ -761,7 +761,7 @@
   // termina #SIDEBAR CHILDS
   #board {
     width: 100%;
-    background: $dark;
+    background: var(--secondary);
     @include box-shadow(-5px 0 15px negro(25));
   }
   // inicia #BOARD CHILDS

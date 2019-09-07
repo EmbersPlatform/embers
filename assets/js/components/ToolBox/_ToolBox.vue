@@ -522,7 +522,7 @@ export default {
   right: 10px;
   color: white;
   font-size: 1rem;
-  background: $narrojo;
+  background: var(--accent);
   padding: 1px;
   width: 1.2em;
   height: 1.2em;

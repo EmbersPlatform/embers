@@ -5,7 +5,7 @@
       :style="{ color: isInDanger ? danger : 'inherit' }"
     >{{ counterNumber }}</span>
     <svg viewBox="0 0 20 20" preserveAspectRatio="xMidYMid meet">
-      <circle cx="50%" cy="50%" r="8" fill="none" stroke-width="1" :stroke="underlay"></circle>
+      <circle cx="50%" cy="50%" r="8" fill="none" stroke-width="1" :stroke="underlay" />
       <transition name="fade">
         <circle
           cx="50%"
@@ -18,7 +18,7 @@
           :stroke-dasharray="dashArray"
           :style="animateStyle"
           v-show="show"
-        ></circle>
+        />
       </transition>
     </svg>
   </div>
@@ -175,7 +175,7 @@ export default {
     transform: rotate(-90deg);
 
     * {
-      fill: #222327;
+      fill: var(--secondary-accent);
     }
   }
 }

@@ -12,13 +12,13 @@
 }
 @keyframes pulse {
 	0% {
-		@include box-shadow(0 0 0 0 rgba($narrojo, 0.4));
+		@include box-shadow(0 0 0 0 rgba(var(--accent), 0.4));
 	}
 	70% {
-		@include box-shadow(0 0 0 10px rgba($narrojo, 0));
+		@include box-shadow(0 0 0 10px rgba(var(--accent), 0));
 	}
 	100% {
-		@include box-shadow(0 0 0 0 rgba($narrojo, 0));
+		@include box-shadow(0 0 0 0 rgba(var(--accent), 0));
 	}
 }
 @keyframes spin {

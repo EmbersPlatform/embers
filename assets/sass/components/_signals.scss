@@ -11,7 +11,7 @@
 		cursor: pointer;
 		margin-top: 1em;
 		background: negro(2);
-		color: $secondary;
+		color: var(--text);
 		font-size: 1.5em;
 		font-weight: 400;
 		user-select: none; // unselectable
@@ -37,11 +37,11 @@
 			height: 25px;
 			transform: rotate(90deg);
 			*{
-				fill: $secondary;
+				fill: var(--text);
 			}
 		}
 	}
 	.new-activity{
-		background:$narrojo;
+		background:var(--accent);
 	}
 }

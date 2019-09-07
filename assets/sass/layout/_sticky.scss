@@ -1,100 +1,130 @@
-#sticky{
-	width: 100%;
-	height: 70px;
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	background: $dark_n1;
-	border-bottom: 4px solid blanco('05');
-	padding: 0 30px;
-	@include flexbox(row, nowrap, space-between, center);
-	@include box-sizing(border-box);
-	~ #main, ~ .block{
-		margin-top: 70px;
-	}
-	~ #main{
-		min-height: calc(100vh - 70px);
-	}
-	&[class*='in-app']{
-		h1{
-			a{
-				svg{
-					*{
-						fill: $narrojo;
-					}
-				}
-				&:hover{
-					opacity: .7;
-					svg{
-						*{
-							fill: $narrojo;
-						}
-					}
-				}
-			}
-		}
-		ul{
-			li{
-				.button{
-					background: $narrojo;
-					&[class*='active'], &:hover:not[disabled]{
-						background: $narrojo;
-					}
-				}
-			}
-		}
-	}
-	h1{
-		width: 35px;
-		height: 35px;
-		z-index: 0;
-		a{
-			width: inherit;
-			height: inherit;
-			display: block;
-			svg{
-				*{
-					fill: $secondary;
-					@include transition(.3s all ease-out);
-				}
-			}
-			&:hover{
-				svg{
-					*{
-						fill: $primary;
-					}
-				}
-			}
-		}
-	}
-	ul{
-		@include flexbox(row, nowrap, flex-start, center);
-		li{
-			margin: 0 15px;
-			&:hover{
-				a, span{
-					color: $primary;
-				}
-			}
-			&:first-child{
-				display: none;
-			}
-			&:last-child{
-				margin-right:0;
-			}
-			a{
-				text-transform: uppercase;
-				color: $secondary;
-				cursor: pointer;
-				white-space: nowrap;
-				@include font-size(2);
-				@include transition(.3s background ease-out, .3s color ease-out);
-				&[class*='active']{
-					font-weight: 500;
-					color: $primary;
-				}
-			}
-		}
-	}
+#sticky {
+  width: 100%;
+  height: 70px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  background: var(--accent);
+  border-bottom: 4px solidvar(--secondary-accent);
+  padding: 0 30px;
+  @include flexbox(row, nowrap, space-between, center);
+  @include box-sizing(border-box);
+
+  ~#main,
+  ~.block {
+    margin-top: 70px;
+  }
+
+  ~#main {
+    min-height: calc(100vh - 70px);
+  }
+
+  &[class*='in-app'] {
+    h1 {
+      a {
+        svg {
+          * {
+            fill: var(--navigation-color);
+          }
+        }
+
+        &:hover {
+          opacity: .7;
+
+          svg {
+            * {
+              fill: var(--navigation-color);
+            }
+          }
+        }
+      }
+    }
+
+    ul {
+      li {
+        .button {
+          background: var(--accent);
+
+          &[class*='active'],
+          &:hover:not[disabled] {
+            background: var(--accent);
+          }
+        }
+      }
+    }
+  }
+
+  h1 {
+    width: 35px;
+    height: 35px;
+    z-index: 0;
+
+    a {
+      width: inherit;
+      height: inherit;
+      display: block;
+
+      svg {
+        * {
+          fill: var(--navigation-color);
+          @include transition(.3s all ease-out);
+        }
+      }
+
+      &:hover {
+        svg {
+          * {
+            fill: var(--navigation-color);
+          }
+        }
+      }
+    }
+  }
+
+  ul {
+    @include flexbox(row, nowrap, flex-start, center);
+
+    li {
+      margin: 0 15px;
+
+      &:hover {
+
+        a,
+        span {
+          color: var(--navigation-color);
+        }
+      }
+
+      &:first-child {
+        display: none;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      a {
+        text-transform: uppercase;
+        color: var(--navigation-color);
+        cursor: pointer;
+        white-space: nowrap;
+        @include font-size(2);
+        @include transition(.3s background ease-out, .3s color ease-out);
+
+        &[class*='active'] {
+          font-weight: 500;
+          color: var(--navigation-color);
+        }
+      }
+
+      .button {
+        color: var(--button-color);
+
+        &:hover {
+          color: var(--button-color);
+        }
+      }
+    }
+  }
 }

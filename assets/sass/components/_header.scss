@@ -2,104 +2,128 @@
   overflow: visible;
   z-index: 1;
   @include flexbox(row, nowrap, flex-start, flex-start);
+
   .avatar {
     float: left;
   }
+
   .header-content {
-    color: $secondary;
+    color: var(--text);
     margin: 0;
     @include flex(1 1 auto);
     @include flexbox(column, nowrap, flex-start, stretch);
+
     h4 {
       z-index: 1;
       width: 100%;
       line-height: 1.6em;
       white-space: normal;
-      ~ *:not(.actions) {
+
+      ~*:not(.actions) {
         z-index: 0;
       }
+
       a {
         display: inline-block;
         font-size: inherit;
-        color: $primary;
+        color: var(--link);
         font-weight: 500;
         margin: 0;
         padding: 0;
         line-height: inherit;
+
         &:hover {
-          color: #fff;
+          color: var(--link-hover);
         }
       }
     }
+
     p,
     small {
       display: inline;
       white-space: inherit;
       font-size: inherit;
       line-height: inherit;
+
       * {
         z-index: 0;
       }
+
       strong {
         z-index: 1;
       }
     }
   }
+
   .header-options {
+
     &:hover,
     &:focus {
       ul {
+        border: var(--border);
         @include flexbox(column, nowrap, flex-start, stretch);
       }
+
       svg {
         @include transform(rotate(90deg));
       }
     }
-    > span {
+
+    >span {
       display: block;
       cursor: pointer;
+
       svg {
         @include transform(rotate(-90deg));
+
         * {
-          fill: $secondary;
+          fill: var(--text);
         }
       }
+
       i {
-        color: $secondary;
+        color: var(--text);
       }
+
       &:hover {
         svg {
           * {
-            fill: $primary;
+            fill: var(--link);
           }
         }
+
         i {
-          color: $primary;
+          color: var(--link);
         }
       }
     }
+
     ul {
       position: absolute;
-      background: $dark;
+      background: var(--primary);
       bottom: 0;
       right: 0;
       display: none;
       @include transform(translate(0, 100%));
       @include border-radius(3px);
       @include box-shadow(5px 5px 15px negro(25));
+
       li {
         border-bottom: 1px solid negro(1);
+
         &:last-child {
           border-bottom: 0;
         }
+
         span {
           display: block;
           padding: 10px;
           white-space: nowrap;
-          color: $secondary;
+          color: var(--text);
           cursor: pointer;
+
           &:hover {
-            color: $primary;
+            color: var(--text);
             filter: brightness(1.3) !important;
           }
         }

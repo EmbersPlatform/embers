@@ -1,137 +1,146 @@
 <template>
-  <div id="wrapper" class="profile-settings">
-    <div class="secondary">
-      <div class="uploading-overlay" v-if="uploading_avatar"></div>
-      <div class="avatar-wrapper" v-if="!cropping_avatar">
-        <div class="change-avatar-button" @click="select_image">
-          <i class="fas fa-upload"></i>
-        </div>
-        <avatar data-size="wide" :avatar="$store.getters.user.avatar.big"></avatar>
+  <div id="wrapper" data-layout-type="column">
+    <div class="block" data-layout-type="column">
+      <h2>Portada</h2>
+    </div>
+    <div class="block" data-layout-type="wide" ref="container">
+      <div
+        class="cover-preview"
+        :style="`min-height: ${cropper_height}px;`"
+        :class="{uploading: uploading}"
+      >
+        <div
+          v-if="uploading"
+          class="uploading-overlay"
+          :style="`width: ${cropper_width}px; height: ${cropper_height}px;`"
+        >Guardando...</div>
+        <vue-croppie
+          v-if="show_cropper"
+          ref="cropper"
+          :enableResize="false"
+          :viewport="{ width: cropper_width, height: cropper_height }"
+          :boundary="{ width: cropper_width, height: cropper_height }"
+        />
+        <img
+          v-else
+          :style="`width: ${cropper_width}px; height: ${cropper_height}px;`"
+          :src="user.cover"
+          @load="resize_cropper"
+        />
       </div>
-      <vue-croppie
-        v-if="cropping_avatar"
-        ref="cropper"
-        :enableResize="false"
-        :viewport="{ width: 256, height: 256, type: 'circle'}"
-        :boundary="{ width: 256, height: 256 }"
-      />
-      <div class="cropping-actions" v-if="cropping_avatar">
-        <button
-          :disabled="uploading_avatar"
-          class="button"
-          @click="cancel_cropping"
-          data-button-size="medium"
-          data-button-text="medium"
-        >Cancelar</button>
-        <button
-          :disabled="uploading_avatar"
-          class="button"
-          @click="confirm_cropping"
-          data-button-important
-          data-button-size="medium"
-          data-button-text="medium"
-        >Guardar</button>
-      </div>
-      <form class="hidden" id="avatar-upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="avatar" ref="avatar_input" @change="avatar_selected" />
-      </form>
     </div>
     <div class="block" data-layout-type="column">
-      <form>
-        <label>Nombre de usuario</label>
-        <input type="text" :value="$store.getters.user.username" autocomplete="username" readonly />
-        <label>Correo electrónico</label>
-        <input id="email" type="email" v-model="email" autocomplete="email" readonly />
-        <label>Mensaje de perfil</label>
-        <textarea
-          name="bio"
-          id="bio"
-          v-model="bio"
-          class="form-control"
-          placeholder="¡Di algo sobre ti!"
-          data-autoresize
-        ></textarea>
-        <button
-          :disabled="loading"
-          @click.prevent="update()"
-          class="button"
-          data-button-size="big"
-          data-button-font="medium"
-          data-button-uppercase
-          data-button-important
-        >{{loading ? 'Guardando...' : 'Guardar cambios'}}</button>
+      <form id="cover-upload" method="post" enctype="multipart/form-data">
+        <label>La portada se redimensionará a 960x320 píxeles.</label>
+        <div class="actions">
+          <button
+            v-if="!show_cropper"
+            :disabled="uploading"
+            @click.prevent="select_image"
+            class="button"
+            data-button-size="big"
+            data-button-font="medium"
+            data-button-uppercase
+            data-button-important
+          >{{uploading ? 'Subiendo...' : 'Cambiar portada'}}</button>
+          <template v-if="show_cropper">
+            <button
+              @click.prevent="cancel_cropping"
+              class="button"
+              data-button-size="big"
+              data-button-font="medium"
+              data-button-uppercase
+              :disabled="uploading"
+            >Cancelar</button>
+            <button
+              @click.prevent="upload_cover"
+              class="button"
+              data-button-size="big"
+              data-button-font="medium"
+              data-button-uppercase
+              data-button-important
+              :disabled="uploading"
+            >Guardar portada</button>
+          </template>
+        </div>
+
+        <input class="hidden" type="file" name="cover" ref="cover_input" @change="start_cropping" />
       </form>
     </div>
   </div>
 </template>
 
 <script>
-import user from "@/api/user";
+import user from "../../api/user";
+import _ from "lodash";
 import { blob_to_base64 } from "@/lib/blob_utils";
 
-import avatar from "@/components/Avatar";
-
 export default {
-  components: { avatar },
+  components: {},
   methods: {
-    /**
-     * Update user information
-     */
-    update() {
-      this.loading = true;
-      user.settings
-        .updateProfile({ email: this.email, bio: this.bio })
-        .then(res => {
-          this.$store.dispatch("updateSettings", res);
-          this.$notify({
-            group: "top",
-            text: "¡Los cambios en tu perfil han sido aplicados!",
-            type: "success"
-          });
-        })
-        .finally(() => (this.loading = false));
+    async start_cropping() {
+      this.show_cropper = true;
+      this.cropper_image = await blob_to_base64(
+        this.$refs.cover_input.files[0]
+      );
+      this.resize_cropper();
     },
-    async avatar_selected() {
-      const file = this.$refs.avatar_input.files[0];
+    resize_cropper() {
+      if (this.resize_timeout) return;
+      this.resize_timeout = setTimeout(() => {
+        clearTimeout(this.resize_timeout);
+        this.resize_timeout = null;
+      }, 50);
 
-      this.cropped_avatar_url = await blob_to_base64(file);
-      this.cropping_avatar = true;
-      this.$nextTick(() => {
-        this.$refs.cropper.bind({
-          url: this.cropped_avatar_url
+      var parentW = this.$refs.container.offsetWidth;
+      var w = parentW < 960 ? parentW : 960;
+      var h = parentW < 960 ? Math.round(parentW * 0.33) : 320;
+      this.cropper_width = w;
+      this.cropper_height = h;
+      if (this.show_cropper) {
+        this.show_cropper = false;
+        this.$nextTick(() => {
+          this.show_cropper = true;
+          this.$nextTick(() => {
+            this.bind_cropper();
+          });
         });
+      }
+    },
+    bind_cropper() {
+      this.$refs.cropper.bind({
+        url: this.cropper_image
       });
     },
-    confirm_cropping() {
-      this.uploading_avatar = true;
+
+    /**
+     * Simulates a click over the file input
+     */
+    select_image() {
+      this.$refs.cover_input.click();
+    },
+    cancel_cropping() {
+      this.show_cropper = false;
+      this.cropper_image = null;
+    },
+    upload_cover() {
       let options = {
         type: "blob",
         format: "png",
-        size: { width: 256, height: 256 }
+        size: { width: 960, height: 320 }
       };
       this.$refs.cropper.result(options, file => {
         let form_data = new FormData();
-        form_data.append("avatar", file, "cover.png");
+        form_data.append("cover", file, "cover.png");
         this.uploading = true;
         user.settings
-          .updateAvatar(form_data)
-          .then(avatar => (this.$store.getters.user.avatar = avatar))
+          .updateCover(form_data)
+          .then(url => (this.$store.getters.user.cover = url))
           .finally(() => {
-            this.uploading_avatar = false;
-            this.cancel_cropping();
+            this.uploading = false;
+            this.show_cropper = false;
           });
       });
-    },
-    cancel_cropping() {
-      this.cropping_avatar = false;
-      this.cropped_avatar_url = null;
-    },
-
-    /**
-     * Simulates click over an invisible "Browse..." button
-     */
-    select_image() {
-      this.$refs.avatar_input.click();
     }
   },
 
@@ -141,102 +150,67 @@ export default {
    */
   data() {
     return {
-      email: "",
-      bio: "",
-      loading: false,
-      uploading_avatar: false,
-      cropping_avatar: false,
-      cropped_avatar_url: null
+      uploading: false,
+      show_cropper: false,
+      cropper_width: 960,
+      cropper_height: 320,
+      cropper_image: null,
+      resize_timeout: null
     };
   },
-
-  /**
-   * Triggered when a component instance is created
-   */
-  created() {
-    this.email = this.$store.getters.user.email;
-    this.bio = this.$store.getters.user.bio;
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
+  },
+  mounted() {
+    setTimeout(this.resize_cropper, 100);
+    window.addEventListener("resize", this.resize_cropper);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.resize_cropper);
   }
 };
 </script>
 
 <style lang="scss">
-@import "~@/../sass/base/_variables.scss";
-
-.profile-settings {
-  .cr-viewport {
-    box-shadow: 0 0 2000px 2000px rgba(0, 0, 0, 0.5) !important;
-  }
-  .croppie-container {
-    height: auto;
-  }
-
-  .secondary {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 30%;
-    justify-content: flex-start;
-    align-items: center;
-    height: fit-content;
-    margin: 0 20px;
-    margin-bottom: 20px;
-    padding: 20px 0;
-    @media #{$query-mobile} {
-      width: 100%;
-    }
-  }
-  .avatar-wrapper {
-    margin-bottom: 20px;
-    border-radius: 50%;
-    &:hover {
-      .change-avatar-button {
-        visibility: visible;
-      }
-    }
-  }
-  .avatar {
-    width: 256px;
-    height: 256px;
-    margin: 0;
-  }
-
-  .change-avatar-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 256px;
-    height: 256px;
-    border-radius: 50%;
-    cursor: pointer;
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    font-size: 3em;
-    z-index: 1;
+.cr-viewport {
+  border: none !important;
+}
+.uploading {
+  .cr-slider-wrap {
     visibility: hidden;
   }
-  .uploading-overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: #0007;
-    box-shadow: 0 1px 20px #0007 !important;
-    z-index: 2;
-    border-radius: 20px;
+}
+.block {
+  width: 100%;
+}
+.uploading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #00000099;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2em;
+}
+.cover-preview {
+  & > img {
+    height: initial;
   }
-  .cropping-actions {
+}
+#cover-upload {
+  label {
+    text-align: center;
+  }
+  .actions {
     display: flex;
     justify-content: center;
-    .button:not(:last-child) {
-      margin-right: 10px;
+    .button {
+      width: auto;
     }
   }
 }
 </style>
-

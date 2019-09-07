@@ -4,7 +4,7 @@
 
   .markup.preview {
     a {
-      color: $narrojo;
+      color: var(--accent);
       font-weight: 400;
     }
   }
@@ -20,6 +20,7 @@
   }
 
   &.big-text .canvas {
+
     .markup,
     .markup.preview * {
       @include font-size(12);
@@ -131,7 +132,7 @@
       height: 15px;
       padding: 5px;
       text-align: center;
-      color: $secondary;
+      color: var(--text);
       border: 1px solid negro(2);
       cursor: pointer;
       user-select: none; // unselectable
@@ -198,7 +199,7 @@
       content: attr(data-title);
       display: block;
       position: absolute;
-      color: $secondary;
+      color: var(--text);
       line-height: 15px;
       font-weight: 400;
       @include font-size();
@@ -213,7 +214,7 @@
       width: 100%;
       height: auto;
       background: transparent;
-      color: $primary;
+      color: var(--text);
       word-wrap: break-word;
       min-height: 100px;
       @include box-sizing(border-box);

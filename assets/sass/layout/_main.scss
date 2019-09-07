@@ -3,7 +3,7 @@
   height: auto;
   min-height: 100vh;
   margin: 0 auto;
-  background: $dark;
+  background: var(--secondary);
   z-index: 0;
   @include flexbox(row, nowrap, flex-start, stretch);
 
@@ -35,7 +35,7 @@
           padding: 0 30px;
           @include flex(1 1 auto);
 
-          > * {
+          >* {
             z-index: 1;
           }
 
@@ -61,7 +61,7 @@
       position: absolute;
       bottom: 10px;
       right: 10px;
-      color: $secondary;
+      color: var(--text);
       @include font-size();
     }
   }
@@ -72,7 +72,7 @@
   width: 230px;
   height: 100%;
   padding: 0;
-  background: $dark_n1;
+  background: var(--primary);
   border-right: 1px solid negro(1);
   z-index: 0;
   position: fixed;
@@ -81,20 +81,20 @@
   @include box-sizing(border-box);
 
   &::-webkit-scrollbar {
-    background-color: $dark_n1;
+    background-color: var(--primary);
   }
 
   &:empty {
     width: 10px;
     padding: 0;
 
-    ~ #board {
+    ~#board {
       margin-left: 10px;
       max-width: calc(100% - 10px);
     }
   }
 
-  ~ #board {
+  ~#board {
     margin-left: 230px;
     max-width: calc(100% - 230px);
   }
@@ -113,12 +113,13 @@
 
 // inicia #COLUMN CHILDS
 .nav_ {
+
   h2,
   h3,
-  > span {
+  >span {
     display: block;
     text-transform: uppercase;
-    color: $secondary;
+    color: var(--text);
     line-height: 15px;
     padding: 15px 10px;
     font-weight: 400;
@@ -147,37 +148,23 @@
         &:not(.active) {
           .n_i_w_clip {
             i {
-              color: $primary;
+              color: var(--text);
             }
 
             svg {
               * {
-                fill: $primary;
+                fill: var(--text);
               }
             }
           }
 
           .n_i_w_content {
-            color: $primary;
+            color: var(--text);
           }
 
           &:hover {
-            background: blanco(1);
+            background: var(--secondary-accent);
             cursor: pointer;
-
-            i {
-              color: #fff;
-            }
-
-            svg {
-              * {
-                fill: #fff;
-              }
-            }
-
-            .n_i_w_content {
-              color: #fff;
-            }
           }
         }
 
@@ -189,8 +176,8 @@
             font-weight: 300;
             margin: 1px 0 0 10px;
             padding: 3px;
-            background: $narrojo;
-            color: $primary;
+            background: var(--accent);
+            color: var(--text);
             text-transform: capitalize;
             text-align: center;
             @include border-radius(3px);
@@ -224,26 +211,25 @@
           }
         }
 
-        .u_name {
-        }
+        .u_name {}
       }
 
       .active {
-        background: $narrojo;
+        background: var(--secondary-accent);
 
         svg {
           * {
-            fill: negro(8);
+            fill: var(--accent);
             @include transition(0.3s all ease-out);
           }
         }
 
         i {
-          color: negro(8);
+          color: var(--accent);
         }
 
         .n_i_w_content {
-          color: negro(8);
+          color: var(--accent);
         }
       }
     }
@@ -292,7 +278,7 @@
   z-index: 0;
 
   &[class*="user"] {
-    > hr {
+    >hr {
       display: block;
     }
 
@@ -300,19 +286,19 @@
       border-bottom: none;
 
       #breadcrumbs {
-        color: $primary;
+        color: var(--text);
         text-shadow: 1px 1px 0 #000;
         font-weight: 500;
       }
 
       #search {
-        background: $dark;
+        background: var(--secondary);
         @include box-shadow(0 5px 15px negro(25));
       }
     }
   }
 
-  > hr {
+  >hr {
     display: none;
     z-index: 0;
     width: 100%;
@@ -345,14 +331,14 @@
   @include flexbox(row, nowrap, flex-start, center);
   @include box-sizing(border-box);
 
-  > *:not(:last-child) {
+  >*:not(:last-child) {
     margin-right: 15px;
   }
 }
 
 //inicia #TOP CHILDS
 #breadcrumbs {
-  color: $secondary;
+  color: var(--text);
   @include flexbox(row, nowrap, flex-start, center);
 
   li {
@@ -384,16 +370,16 @@
   width: auto;
   height: 25px;
   padding: 0 15px;
-  background: $dark_n1;
+  background: var(--primary);
   border: 1px solid negro(1);
-  color: $primary;
+  color: var(--text);
   @include flex(1 1 auto);
   @include flexbox(row, nowrap, flex-start, center);
   @include border-radius(3px);
   @include box-sizing(border-box);
 
   &:focus {
-    border: 1px solid $secondary;
+    border: 1px solid var(--text);
   }
 }
 
@@ -425,8 +411,8 @@
   @include box-sizing(border-box);
   height: fit-content;
 
-  > *,
-  #secondary-sticky > * {
+  >*,
+  #secondary-sticky>* {
     &:not(:last-child) {
       margin-bottom: 15px;
     }
@@ -443,7 +429,7 @@
   h3 {
     text-transform: uppercase;
     font-size: inherit;
-    color: $secondary;
+    color: var(--text);
     line-height: 15px;
     padding: 0 10px 15px 10px;
     font-weight: 400;
@@ -458,7 +444,7 @@
     margin-bottom: 5px;
     width: 100%;
     padding: 0 10px;
-    color: $secondary;
+    color: var(--text);
     font-size: inherit;
     @include box-sizing(border-box);
 
@@ -467,7 +453,7 @@
     }
 
     a {
-      color: $narrojo;
+      color: var(--accent);
       font-size: inherit;
       font-weight: 400;
 
@@ -584,7 +570,7 @@
     margin-bottom: 30px;
   }
 
-  > .button {
+  >.button {
     margin: 30px auto;
   }
 }
@@ -605,7 +591,7 @@
     }
   }
 
-  & ~ .renderbox {
+  &~.renderbox {
     &:before {
       margin-top: 0;
     }
@@ -618,7 +604,7 @@
     button {
       cursor: pointer;
       background: transparent;
-      color: $secondary;
+      color: var(--text);
       user-select: none; // unselectable
       touch-action: manipulation; // disables tap zoom
       @include font-size(2);
@@ -649,7 +635,7 @@
 
       h5 {
         text-transform: uppercase;
-        color: $secondary;
+        color: var(--text);
         line-height: 15px;
         padding: 0 0 15px 0;
         font-weight: 400;
@@ -686,7 +672,7 @@
     text-align: center;
 
     p {
-      color: $secondary;
+      color: var(--text);
       font-weight: 300;
       @include font-size(10);
 
@@ -711,14 +697,14 @@
   margin: 0 auto;
   @include flexbox(column, nowrap, flex-end, center);
 
-  ~ h3 {
+  ~h3 {
     margin-top: 15px;
   }
 
   &:empty {
     display: none;
 
-    ~ h3 {
+    ~h3 {
       margin-top: 0;
     }
   }
@@ -728,7 +714,7 @@
 #post {
   z-index: 0;
 
-  > *:not(:last-child) {
+  >*:not(:last-child) {
     margin-bottom: 30px;
   }
 
@@ -738,8 +724,7 @@
     }
   }
 
-  .new-comment {
-  }
+  .new-comment {}
 }
 
 // termina #CONTENT CHILDS
@@ -756,7 +741,7 @@
 
   .body {
     z-index: 1;
-    background-color: $dark;
+    background-color: var(--secondary);
     padding: 15px;
     width: 230px;
     max-height: 60%;
@@ -765,11 +750,11 @@
     @include border-radius(3px);
     @include box-shadow(0 5px 15px negro(25));
 
-    > *:not(:last-child) {
+    >*:not(:last-child) {
       margin-bottom: 15px;
     }
 
-    > .nav_ {
+    >.nav_ {
       flex-grow: 1;
       overflow-y: auto;
     }

@@ -47,22 +47,13 @@
               <router-link
                 class="username"
                 :to="`/@${post.sharers[0].username}`"
-                :data-badge="`${post.sharers[0].badges[0]}`"
               >{{ post.sharers[0].username }}</router-link>
               <p v-html="s_message"></p>
-              <router-link
-                class="username"
-                :to="`/@${post.user.username}`"
-                :data-badge="`${post.user.badges[0]}`"
-              >{{post.user.username}}</router-link>
+              <router-link class="username" :to="`/@${post.user.username}`">{{post.user.username}}</router-link>
               <p>:</p>
             </template>
             <template v-else>
-              <router-link
-                class="username"
-                :to="`/@${post.user.username}`"
-                :data-badge="`${post.user.badges[0]}`"
-              >{{post.user.username}}</router-link>
+              <router-link class="username" :to="`/@${post.user.username}`">{{post.user.username}}</router-link>
             </template>
           </h4>
           <router-link
@@ -148,7 +139,12 @@
         </div>
       </header>
       <section class="card-wrapper-content" :class="{'big-text': (post.body && bigTextBody)}">
-        <p v-if="post.body" v-html="formattedBody" class="card-body" :class="{folded: (bodyTooLong && !unfolded)}"></p>
+        <p
+          v-if="post.body"
+          v-html="formattedBody"
+          class="card-body"
+          :class="{folded: (bodyTooLong && !unfolded)}"
+        ></p>
         <div v-if="post.body && bodyTooLong && !unfolded" class="controls">
           <button
             v-if="size != 'little'"
@@ -179,12 +175,7 @@
           />
         </div>
         <template v-if="with_related && post.related_to">
-          <card
-            :no_header="isShared"
-            :post="post.related_to"
-            :tools="false"
-            class="related"
-          />
+          <card :no_header="isShared" :post="post.related_to" :tools="false" class="related" />
         </template>
         <template v-if="post.attachment">
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>
@@ -260,12 +251,7 @@
           </li>
         </template>
         <li v-if="loggedUser">
-          <span
-            @click="share"
-            data-tip="Compartir post"
-            data-tip-position="bottom"
-            data-tip-text
-          >
+          <span @click="share" data-tip="Compartir post" data-tip-position="bottom" data-tip-text>
             {{(post.stats.shares > 0) ? post.stats.shares+'&nbsp;' : ''}}
             <svgicon name="s_share" class="emoji"></svgicon>
           </span>
@@ -691,7 +677,9 @@ export default {
      * Unmarks the post as Not Safe For Work
      */
     async unmarkAsNsfw() {
-      let tags = this.post.tags.map(x => x.name).filter(x => x.toLowerCase() != "nsfw".toLowerCase());
+      let tags = this.post.tags
+        .map(x => x.name)
+        .filter(x => x.toLowerCase() != "nsfw".toLowerCase());
       let { data: res } = await axios.post(
         "/api/v1/moderation/post/update_tags",
         {
@@ -841,17 +829,6 @@ export default {
 .card {
   .links {
     padding: 0 20px;
-  }
-
-  .header-options {
-    & > span:hover {
-      i {
-        color: #ffffffb3;
-      }
-    }
-    i {
-      color: #ffffff4d;
-    }
   }
 }
 .emoji-pick-list {

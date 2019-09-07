@@ -33,12 +33,11 @@ export default {
 @import "~@/../sass/base/_mixins.scss";
 
 .tag {
-  @include font-size();
   padding: 2px 10px;
   border: 2px solid transparent;
   border-radius: 2em;
   margin: 0;
-
+  color: var(--text);
   transition: 100ms ease all;
 
   &:not(:last-child) {
@@ -46,15 +45,16 @@ export default {
   }
 
   &:hover {
-    background-color: #ffffff16;
-    border-color: #ffffff11;
-    box-shadow: 0 2px 13px -1px #00000091;
+    background-color: var(--secondary-accent);
+    border-color: var(--border);
+    box-shadow: var(--box-shadow);
+    color: var(--text);
   }
 
   &.active {
-    background-color: $narrojo;
-    border-color: #ffffff22;
-    color: #ffffff99;
+    background-color: var(--accent);
+    border-color: var(--border);
+    color: var(--accent-color);
     font-weight: bold;
     opacity: 0.7;
 
@@ -65,10 +65,10 @@ export default {
 }
 
 .tag-popup {
-  background: $dark;
-  color: #ddd;
+  background: var(--secondary);
+  color: var(--text);
   box-shadow: rgba(0, 0, 0, 0.17) 0 0 6px 0;
-  border-color: darken($dark, 2);
+  border-color: var(--primary);
   min-width: 200px;
   text-align: left;
   padding: 5px 10px;
@@ -90,22 +90,22 @@ export default {
 
   &[x-placement^="top"] {
     .popper__arrow {
-      border-color: $dark transparent transparent transparent;
+      border-color: var(--secondary) transparent transparent transparent;
     }
   }
   &[x-placement^="right"] {
     .popper__arrow {
-      border-color: transparent $dark transparent transparent;
+      border-color: transparent var(--secondary) transparent transparent;
     }
   }
   &[x-placement^="bottom"] {
     .popper__arrow {
-      border-color: transparent transparent $dark transparent;
+      border-color: transparent transparent var(--secondary) transparent;
     }
   }
   &[x-placement^="left"] {
     .popper__arrow {
-      border-color: transparent transparent transparent $dark;
+      border-color: transparent transparent transparent var(--secondary);
     }
   }
 }

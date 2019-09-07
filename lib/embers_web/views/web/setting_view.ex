@@ -15,7 +15,8 @@ defmodule EmbersWeb.SettingView do
       content_lowres_images: settings.content_lowres_images,
       content_nsfw: settings.content_nsfw,
       privacy_show_reactions: settings.privacy_show_reactions,
-      privacy_show_status: settings.privacy_show_status
+      privacy_show_status: settings.privacy_show_status,
+      style_theme: settings.style_theme
     }
   end
 end

@@ -104,7 +104,7 @@ export default {
 }
 
 .link-item__title {
-  color: $narrojo !important;
+  color: var(--accent) !important;
   font-weight: bold !important;
   margin-bottom: 10px;
   overflow: hidden;

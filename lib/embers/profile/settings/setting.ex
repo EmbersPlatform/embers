@@ -13,6 +13,8 @@ defmodule Embers.Profile.Settings.Setting do
     field(:privacy_show_status, :boolean, default: true)
     field(:privacy_show_reactions, :boolean, default: true)
 
+    field(:style_theme, :string, default: "dark")
+
     belongs_to(:user, Embers.Accounts.User)
 
     timestamps()
@@ -26,8 +28,10 @@ defmodule Embers.Profile.Settings.Setting do
       :content_lowres_images,
       :content_collapse_media,
       :privacy_show_status,
-      :privacy_show_reactions
+      :privacy_show_reactions,
+      :style_theme
     ])
     |> validate_required([:user_id])
+    |> validate_inclusion(:style_theme, ["dark", "light"])
   end
 end
