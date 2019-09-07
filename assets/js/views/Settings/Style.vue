@@ -27,10 +27,10 @@
           <input
             type="radio"
             id="settings-theme-dark"
-            v-model="settings.style_theme"
+            v-model="theme"
             value="dark"
-            :checked="settings.style_theme == 'dark'"
-            @click="update_theme('dark')"
+            :checked="theme == 'dark'"
+            @change="update_theme"
           />
           <label for="settings-theme-dark">Tema oscuro</label>
         </div>
@@ -38,10 +38,10 @@
           <input
             type="radio"
             id="settings-theme-light"
-            v-model="settings.style_theme"
+            v-model="theme"
             value="light"
-            :checked="settings.style_theme == 'light'"
-            @click="update_theme('light')"
+            :checked="theme == 'light'"
+            @change="update_theme"
           />
           <label for="settings-theme-light">Tema claro</label>
         </div>
@@ -59,18 +59,19 @@ export default {
   components: { Post },
   data: () => ({
     user: null,
+    theme: "dark",
     settings: {
       style_theme: "dark"
     }
   }),
   methods: {
-    update_theme(theme) {
-      this.settings.style_theme = theme;
+    update_theme() {
+      let theme = this.theme;
       user.settings
-        .updateContent(this.settings)
-        .then(settings => {
-          this.$store.dispatch("updateSettings", settings);
-          this.$notify({
+        .updateContent({ style_theme: theme })
+        .then(res => {
+          this.$store.dispatch("updateSettings", res);
+          this.this.$notify({
             group: "top",
             text: "¡Los cambios han sido aplicados!",
             type: "success"
@@ -82,6 +83,7 @@ export default {
   created() {
     this.user = this.$store.getters.user;
     this.settings = this.$store.getters.settings;
+    this.theme = this.settings.style_theme;
   }
 };
 </script>

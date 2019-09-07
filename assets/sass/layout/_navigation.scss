@@ -197,7 +197,7 @@
     li {
       width: 100%;
       height: auto;
-      background: negro(1);
+      background: var(--primary);
       padding: 5px;
       border-right: 5px solid negro(1);
       @include border-radius(3px);
@@ -209,27 +209,27 @@
       }
 
       &:hover {
-        background: blanco(1);
+        background: var(--secondary-accent);
 
         a {
           .tip {
-            color: $primary;
+            color: var(--text);
 
             p {
               strong {
-                color: #fff;
+                color: var(--link);
               }
             }
 
             span {
-              color: $primary;
+              color: var(--text);
             }
           }
         }
       }
 
       &.unread {
-        background: blanco(1);
+        background: var(--secondary-accent);
 
         &:hover {
           background: var(--accent);
@@ -239,16 +239,16 @@
 
               a,
               span {
-                background: negro(2);
+                background: var(--text);
               }
             }
 
             .tip {
-              color: negro(5);
+              color: var(--text);
 
               p {
                 strong {
-                  color: negro(9);
+                  color: var(--link);
                 }
               }
             }
@@ -260,24 +260,24 @@
         background: var(--accent);
 
         .tip {
-          color: negro(5);
+          color: var(--text);
 
           p {
             strong {
-              color: negro(9);
+              color: var(--link);
             }
           }
         }
 
         &:hover {
-          background: var(--accent);
+          filter: var(--filter);
 
           .tip {
-            color: negro(5);
+            color: var(--text);
 
             p {
               strong {
-                color: negro(9);
+                color: var(--link);
               }
             }
           }
@@ -314,7 +314,7 @@
             font-weight: 400;
 
             strong {
-              color: $primary;
+              color: var(--link);
               font-weight: inherit;
             }
           }
@@ -439,11 +439,11 @@
 
           a,
           span {
-            color: #fff;
+            color: var(--link);
 
             svg {
               * {
-                fill: #fff;
+                fill: var(--link);
                 @include transition(.3s all ease-out);
               }
             }

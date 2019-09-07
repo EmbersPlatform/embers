@@ -31,6 +31,13 @@
   --button-color: var(--text);
   --button-border-color: #0003;
   --button-hover-filter: brightness(120%);
+
+  --reaction-bg: var(--secondary);
+  --reaction-color: var(--text);
+  --reaction-hover-bg: var(--secondary-accent);
+  --reaction-hover-color: var(--text);
+  --reaction-active-border: var(--accent);
+  --reaction-active-color: var(--link);
 }
 
 [theme=light] {
@@ -63,4 +70,11 @@
   --button-color: var(--text);
   --button-border-color: #0003;
   --button-hover-filter: brightness(90%);
+
+  --reaction-bg: var(--secondary);
+  --reaction-color: var(--text);
+  --reaction-hover-bg: var(--secondary-accent);
+  --reaction-hover-color: var(--text);
+  --reaction-active-border: var(--accent);
+  --reaction-active-color: var(--link);
 }

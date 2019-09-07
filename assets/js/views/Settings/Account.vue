@@ -82,7 +82,7 @@ export default {
       user.settings
         .updateProfile({ email: this.email, bio: this.bio })
         .then(res => {
-          this.$store.dispatch("updateSettings", res);
+          // this.$store.dispatch("updateUser", res);
           this.$notify({
             group: "top",
             text: "¡Los cambios en tu perfil han sido aplicados!",
