@@ -8,16 +8,8 @@ defmodule EmbersWeb.PageController do
   alias Embers.Profile.Meta
   alias Embers.Repo
 
-  def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, params) do
-    if is_nil(params["path"]) do
-      conn = put_layout(conn, false)
-      render(conn, "landing.html")
-    else
-      render(conn, "index.html")
-    end
-  end
-
-  def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
+  def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params)
+      when not is_nil(current_user) do
     user =
       User
       |> Repo.get(current_user.id)
@@ -60,6 +52,15 @@ defmodule EmbersWeb.PageController do
       loading_msg: LoadingMsg.get_random(),
       unread_conversations: unread_conversations
     )
+  end
+
+  def index(conn, params) do
+    if is_nil(params["path"]) do
+      conn = put_layout(conn, false)
+      render(conn, "landing.html")
+    else
+      render(conn, "index.html")
+    end
   end
 
   def auth(%Plug.Conn{assigns: %{current_user: user}} = conn, _params) when not is_nil(user) do
