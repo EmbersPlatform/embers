@@ -21,19 +21,19 @@
     }
 
     .reaction {
-      background: var(--reaction-bg);
+      background: negro(2);
       // border: 1px solid blanco('05');
-      color: var(--reaction-color);
+      color: var(--text);
       @include transition(0.3s all ease-out);
 
       &:hover {
-        background: var(--reaction-hover-bg);
-        color: var(--reaction-hover-color);
+        background: var(--secondary-accent);
+        color: var(--link);
       }
 
       &[reacted] {
-        border: 2px solid var(--reaction-active-border);
-        color: var(--reaction-active-color);
+        border: 2px solid var(--accent);
+        color: var(--link);
       }
     }
   }
