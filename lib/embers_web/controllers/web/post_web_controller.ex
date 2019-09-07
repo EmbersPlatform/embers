@@ -46,10 +46,15 @@ defmodule EmbersWeb.PostWebController do
       end
 
     type =
-      if length(post.media) == 1 do
-        Map.get(List.first(post.media), :type)
-      else
-        "article"
+      cond do
+        length(post.media) == 1 ->
+          Map.get(List.first(post.media), :type)
+
+        length(post.media) > 0 ->
+          "article"
+
+        true ->
+          "article"
       end
 
     medias =
