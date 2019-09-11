@@ -31,8 +31,14 @@ config :phauxth,
   token_module: EmbersWeb.Auth.Token,
   user_messages: EmbersWeb.UserMessages
 
-config :embers, :auth,
-  token_salt: "geDDVmqL"
+config :embers, :pow,
+  user: Embers.Accounts.User,
+  repo: Embers.Repo,
+  cache_store_backend: Pow.Store.Backend.MnesiaCache,
+  extensions: [PowPersistentSession],
+  controller_callbacks: Pow.Extension.Phoenix.ControllerCallbacks
+
+config :embers, :auth, token_salt: "geDDVmqL"
 
 # Mailer configuration
 config :embers, EmbersWeb.Mailer,

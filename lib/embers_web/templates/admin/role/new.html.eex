@@ -8,7 +8,7 @@
 </article>
 <% end %>
 
-<%= form_for @changeset, role_path(@conn, :create), fn f -> %>
+<%= form_for @changeset, role_path(@conn, :create), [], fn f -> %>
 <div class="field">
   <label class="label">
     Nombre:

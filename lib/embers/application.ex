@@ -12,6 +12,7 @@ defmodule Embers.Application do
       supervisor(Embers.Repo, []),
       # Start the endpoint when the application starts
       supervisor(EmbersWeb.Endpoint, []),
+      Pow.Store.Backend.MnesiaCache,
       # Start your own worker by calling: Embers.Worker.start_link(arg1, arg2, arg3)
       # worker(Embers.Worker, [arg1, arg2, arg3]),
       EmbersWeb.Presence,

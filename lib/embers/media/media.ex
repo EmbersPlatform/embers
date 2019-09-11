@@ -84,19 +84,14 @@ defmodule Embers.Media do
 
       media_data =
         if media_data.type == "image" do
-          case Fastimage.size(processed_file.path) do
-            %{height: height, width: width} ->
-              metadata =
-                media_data.metadata
-                |> put_in([:height], height)
-                |> put_in([:width], width)
+          %{height: height, width: width} = Fastimage.size(processed_file.path)
 
-              %{media_data | metadata: metadata}
+          metadata =
+            media_data.metadata
+            |> put_in([:height], height)
+            |> put_in([:width], width)
 
-            error ->
-              Logger.error("Couldn't get image dimentions: #{inspect(error)}")
-              media_data
-          end
+          %{media_data | metadata: metadata}
         end || media_data
 
       media = Repo.insert!(MediaItem.changeset(%MediaItem{}, media_data))

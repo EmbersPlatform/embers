@@ -60,11 +60,13 @@ defmodule EmbersWeb.Endpoint do
   plug(
     Plug.Session,
     store: :cookie,
-    # 7 days
-    max_age: 24 * 60 * 60 * 7,
     key: "_embers_key",
     signing_salt: "8LHeFKPR"
   )
+
+  plug(Pow.Plug.Session, otp_app: :embers)
+
+  plug(PowPersistentSession.Plug.Cookie)
 
   plug(Corsica, origins: "http://localhost:3000")
   plug(EmbersWeb.Router)

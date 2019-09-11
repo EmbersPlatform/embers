@@ -58,7 +58,7 @@ defmodule EmbersWeb.Authorize do
     conn
     |> put_session(:request_path, current_path(conn))
     |> put_flash(:error, "You need to log in to view this page")
-    |> redirect(to: Routes.session_path(conn, :new))
+    |> redirect(to: Routes.login_path(conn, :new))
     |> halt()
   end
 end

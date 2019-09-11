@@ -1,6 +1,6 @@
 <div class="title is-3">Editar mensaje</div>
 
-<%= form_for @changeset, loading_msg_path(@conn, :update, @changeset.data.id), fn f -> %>
+<%= form_for @changeset, loading_msg_path(@conn, :update, @changeset.data.id), [], fn f -> %>
   <div class="field">
     <label class="label">
       Nombre:
