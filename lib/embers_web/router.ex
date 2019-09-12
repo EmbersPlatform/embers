@@ -9,6 +9,7 @@ defmodule EmbersWeb.Router do
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
+    plug(EmbersWeb.Plugs.UserToken)
     plug(GetPermissions)
   end
 
