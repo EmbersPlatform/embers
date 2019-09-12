@@ -61,7 +61,6 @@ defmodule EmbersWeb.SessionController do
     {:ok, conn} = Pow.Plug.clear_authenticated_user(conn)
 
     conn
-    |> PowPersistentSession.Plug.delete()
     |> put_status(:no_content)
     |> json(nil)
   end
