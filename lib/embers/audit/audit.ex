@@ -8,15 +8,7 @@ defmodule Embers.Audit do
   alias Embers.Repo
 
   def list(opts \\ []) do
-    action = Keyword.get(opts, :action)
-    query = from(entry in Entry, preload: [:user], order_by: [desc: entry.inserted_at])
-
-    query =
-      if action do
-        from(entry in query, where: entry.action == ^action)
-      end || query
-
-    Repo.paginate(query, opts)
+    from(entry in Entry, preload: [:user]) |> Repo.paginate(opts)
   end
 
   def get(id) when is_integer(id) do

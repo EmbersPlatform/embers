@@ -33,12 +33,6 @@ defmodule Embers.Tags do
     Repo.one(from(tag in Tag, where: fragment("LOWER(?) = ?", tag.name, ^name), limit: 1))
   end
 
-  def get_all_by_name(name) when is_binary(name) do
-    name = String.downcase(name)
-
-    Repo.all(from(tag in Tag, where: fragment("LOWER(?) = ?", tag.name, ^name)))
-  end
-
   def create_tag(name) do
     case get_by_name(name) do
       nil -> insert_tag(name)
@@ -165,7 +159,7 @@ defmodule Embers.Tags do
   end
 
   def remove_tag(post, tag_name) when is_binary(tag_name) do
-    case get_by_name(tag_name) do
+    case Repo.get_by(Tag, %{name: tag_name}) do
       nil -> nil
       tag -> remove_tag(post, tag.id)
     end

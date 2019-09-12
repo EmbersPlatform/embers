@@ -7,12 +7,7 @@
 </style>
 
 <div class="box content">
-  <p>
-    <strong>Post: <%= link @post.id, to: "/post/#{@post.id}", target: "_blank" %></strong>
-  </p>
-  <p>
-    <strong>Autor: <%= link "@" <> @post.user.username, to: "/@#{@post.user.username}", target: "_blank" %></strong>
-  </p>
+  <strong>Autor: <%= link "@" <> @post.user.username, to: "/@#{@post.user.username}", target: "_blank" %></strong>
   <p><%= @post.body %></p>
   <%= if length(@post.tags) > 0 do %>
     <p>
