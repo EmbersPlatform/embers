@@ -8,13 +8,14 @@ defmodule EmbersWeb.SessionController do
   plug(:guest_check when action in [:new, :create, :create_api])
   plug(:put_layout, "app_no_js.html")
 
-  # plug(
-  #   :rate_limit_authentication,
-  #   [max_requests: 5, interval_seconds: 60] when action in [:create, :create_api]
-  # )
+  plug(
+    :rate_limit_authentication,
+    [max_requests: 5, interval_seconds: 60] when action in [:create, :create_api]
+  )
 
   def rate_limit_authentication(conn, options \\ []) do
-    options = Keyword.merge(options, bucket_name: "authorization:" <> conn.params["email"])
+    id = get_in(conn.params, ["user", "id"])
+    options = Keyword.merge(options, bucket_name: "authorization:" <> id)
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end
 
