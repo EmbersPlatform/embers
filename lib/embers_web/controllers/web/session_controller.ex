@@ -28,7 +28,11 @@ defmodule EmbersWeb.SessionController do
 
   def create(conn, %{"user" => user_params}) do
     id = Map.get(user_params, "id")
-    user_params = Map.put(user_params, "email", id_to_email(id))
+
+    user_params =
+      user_params
+      |> Map.drop(["id"])
+      |> Map.put("email", id_to_email(id))
 
     conn
     |> Pow.Plug.authenticate_user(user_params)
@@ -50,9 +54,6 @@ defmodule EmbersWeb.SessionController do
         |> render("new.html", changeset: changeset)
 
       {:error, conn} ->
-        conn
-        |> IO.inspect(label: "LOGIN ERROR")
-
         changeset = Pow.Plug.change_user(conn, conn.params["user"])
 
         conn
@@ -71,8 +72,18 @@ defmodule EmbersWeb.SessionController do
   end
 
   defp id_to_email(id) do
-    with %{email: email} <- Embers.Accounts.get_by_identifier(id) do
-      email
+    case Regex.match?(~r/@/, id) do
+      true ->
+        id
+
+      false ->
+        case Embers.Accounts.get_by_identifier(id) do
+          %{email: email} ->
+            email
+
+          _ ->
+            nil
+        end
     end
   end
 
