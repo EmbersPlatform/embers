@@ -60,7 +60,7 @@ defmodule EmbersWeb.Endpoint do
   plug(
     Plug.Session,
     store: :cookie,
-    key: "_embers_key",
+    key: "embers_session",
     signing_salt: "8LHeFKPR"
   )
 

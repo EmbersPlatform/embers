@@ -40,7 +40,7 @@ defmodule Embers.Accounts.User do
   use Ecto.Schema
 
   use Pow.Ecto.Schema,
-    password_hash_methods: {&Pbkdf2.hash_pwd_salt/1, &Pbkdf2.verify_pass/2}
+    password_hash_methods: {&Pbkdf2.add_hash/1, &Pbkdf2.verify_pass/2}
 
   import Ecto.Changeset
   import Ecto.Query
