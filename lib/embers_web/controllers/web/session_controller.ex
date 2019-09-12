@@ -50,9 +50,10 @@ defmodule EmbersWeb.SessionController do
         |> render("new.html", changeset: changeset)
 
       {:error, conn} ->
-        changeset =
-          Pow.Plug.change_user(conn, conn.params["user"])
-          |> IO.inspect(label: "LOGIN ERROR")
+        conn
+        |> IO.inspect(label: "LOGIN ERROR")
+
+        changeset = Pow.Plug.change_user(conn, conn.params["user"])
 
         conn
         |> put_flash(:error, gettext("invalid credentials"))
