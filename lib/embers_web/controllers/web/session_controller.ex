@@ -77,7 +77,7 @@ defmodule EmbersWeb.SessionController do
         id
 
       false ->
-        case Embers.Accounts.get_by_identifier(id) do
+        case Embers.Accounts.get_by_identifier(String.downcase(id)) do
           %{email: email} ->
             email
 
