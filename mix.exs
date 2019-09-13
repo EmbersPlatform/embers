@@ -30,7 +30,9 @@ defmodule Embers.Mixfile do
         :recaptcha,
         :scrivener_ecto,
         :scrivener_html,
-        :ex_rated
+        :ex_rated,
+        :swoosh,
+        :gen_smtp
       ]
     ]
   end
@@ -56,7 +58,9 @@ defmodule Embers.Mixfile do
       {:plug_cowboy, "~> 2.0"},
       {:phauxth, "~> 2.1"},
       {:pow, "~> 1.0.13"},
-      {:bamboo, "~> 0.8"},
+      {:swoosh, "~> 0.23.4"},
+      {:mail, "~> 0.2.1"},
+      {:gen_smtp, "~> 0.13"},
       {:not_qwerty123, "~> 2.3"},
       {:pbkdf2_elixir, "~> 1.0"},
       {:uuid, "~> 1.1"},

@@ -42,7 +42,7 @@ config :embers, :auth, token_salt: "geDDVmqL"
 
 # Mailer configuration
 config :embers, EmbersWeb.Mailer,
-  adapter: Bamboo.SendgridAdapter,
+  adapter: Swoosh.Adapters.Sendgrid,
   api_key: "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"
 
 # Configures Elixir's Logger
