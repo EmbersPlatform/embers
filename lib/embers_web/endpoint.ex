@@ -60,6 +60,7 @@ defmodule EmbersWeb.Endpoint do
   plug(
     Plug.Session,
     store: :cookie,
+    max_age: 24 * 60 * 60 * 37,
     key: "embers_session",
     signing_salt: "8LHeFKPR"
   )
