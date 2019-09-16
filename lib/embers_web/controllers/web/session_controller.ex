@@ -48,15 +48,19 @@ defmodule EmbersWeb.SessionController do
 
       {:error, {conn, reason}} ->
         changeset = Pow.Plug.change_user(conn, conn.params["user"])
+        {:ok, conn} = Pow.Plug.clear_authenticated_user(conn)
 
         conn
+        |> PowPersistentSession.Plug.delete()
         |> put_flash(:error, reason)
         |> render("new.html", changeset: changeset)
 
       {:error, conn} ->
         changeset = Pow.Plug.change_user(conn, conn.params["user"])
+        {:ok, conn} = Pow.Plug.clear_authenticated_user(conn)
 
         conn
+        |> PowPersistentSession.Plug.delete()
         |> put_flash(:error, gettext("invalid credentials"))
         |> render("new.html", changeset: changeset)
     end

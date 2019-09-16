@@ -9,7 +9,7 @@
     </div>
   <% end %>
 
-  <%= form_for @changeset, login_path(@conn, :create), [], fn f -> %>
+  <%= form_for @changeset, login_path(@conn, :create), [method: "POST"], fn f -> %>
 
     <%= text_input f, :id, class: "form-control", placeholder: "Nombre de usuario o e-mail", required: true %>
     <%= error_tag f, :id %>

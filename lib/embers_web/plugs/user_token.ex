@@ -1,6 +1,5 @@
 defmodule EmbersWeb.Plugs.UserToken do
   alias EmbersWeb.Auth.Token
-  alias Embers.Accounts
   import Plug.Conn
 
   def init(opts), do: opts
