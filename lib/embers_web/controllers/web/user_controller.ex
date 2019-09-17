@@ -49,7 +49,7 @@ defmodule EmbersWeb.UserController do
 
     conn
     |> delete_session(:phauxth_session_id)
-    |> success("User deleted successfully", login_path(conn, :new))
+    |> success("User deleted successfully", session_path(conn, :new))
   end
 
   def reset_pass(conn, _params) do

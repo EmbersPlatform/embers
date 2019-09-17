@@ -25,14 +25,11 @@ defmodule Embers.Mixfile do
       mod: {Embers.Application, []},
       extra_applications: [
         :logger,
-        :mnesia,
         :runtime_tools,
         :recaptcha,
         :scrivener_ecto,
         :scrivener_html,
-        :ex_rated,
-        :swoosh,
-        :gen_smtp
+        :ex_rated
       ]
     ]
   end
@@ -51,16 +48,13 @@ defmodule Embers.Mixfile do
       {:phoenix_ecto, "~> 4.0"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.13"},
+      {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:phauxth, "~> 2.1"},
-      {:pow, "~> 1.0.13"},
-      {:swoosh, "~> 0.23.4"},
-      {:mail, "~> 0.2.1"},
-      {:gen_smtp, "~> 0.13"},
+      {:bamboo, "~> 0.8"},
       {:not_qwerty123, "~> 2.3"},
       {:pbkdf2_elixir, "~> 1.0"},
       {:uuid, "~> 1.1"},

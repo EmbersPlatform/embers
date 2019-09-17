@@ -5,14 +5,14 @@ defmodule EmbersWeb.Plugs.InitialData do
   alias Embers.Subscriptions
   alias Embers.LoadingMsg
   alias Embers.Notifications
+  alias Embers.Profile.Meta
 
   def init(default), do: default
 
   def call(
         %Plug.Conn{assigns: %{current_user: current_user}} = conn,
         _options
-      )
-      when not is_nil(current_user) do
+      ) when not is_nil(current_user) do
     user = Accounts.get_populated(current_user.id, with_settings: true)
 
     tags = Subscriptions.Tags.list_subscribed_tags(user.id)
@@ -44,6 +44,5 @@ defmodule EmbersWeb.Plugs.InitialData do
     |> assign(:loading_msg, LoadingMsg.get_random())
     |> assign(:unread_conversations, unread_conversations)
   end
-
-  def call(conn, _options), do: conn
+  def call(conn,_options), do: conn
 end

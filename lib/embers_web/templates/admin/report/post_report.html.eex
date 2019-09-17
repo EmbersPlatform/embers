@@ -13,7 +13,7 @@
     <p>
       <strong>Tags: </strong><%= Enum.map(@post.tags, & &1.name) |> Enum.join(", ") %>
     </p>
-  <% end %>
+  <%= end %>
   <%= if length(@post.media) > 0 do %>
     <p>
     <strong>Medios:</strong>
@@ -29,7 +29,7 @@
     </div>
     <% end %>
     </div>
-  <% end %>
+  <%= end %>
   <%= if length(@post.links) > 0 do %>
     <p>
     <strong>Enlaces:</strong>
@@ -39,7 +39,7 @@
       <% end %>
     </ul>
     </p>
-  <% end %>
+  <%= end %>
 </div>
 
 <div class="field">

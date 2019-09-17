@@ -38,7 +38,7 @@
     </figure>
   </div>
   <div class="column">
-    <%= form_for @changeset, user_path(@conn, :update, @changeset.data.canonical), [], fn f -> %>
+    <%= form_for @changeset, user_path(@conn, :update, @changeset.data.canonical), fn f -> %>
     <div class="field"><label class="label">
         ID: <%= Embers.Helpers.IdHasher.encode(@user.id) %>
       </label></div>

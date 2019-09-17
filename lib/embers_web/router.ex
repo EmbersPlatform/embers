@@ -9,20 +9,9 @@ defmodule EmbersWeb.Router do
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
-    plug(EmbersWeb.Plugs.UserToken)
+    plug(EmbersWeb.Authenticate)
+    plug(EmbersWeb.Remember)
     plug(GetPermissions)
-  end
-
-  pipeline :protected do
-    plug(Pow.Plug.RequireAuthenticated,
-      error_handler: EmbersWeb.AuthErrorHandler
-    )
-  end
-
-  pipeline :not_authenticated do
-    plug(Pow.Plug.RequireNotAuthenticated,
-      error_handler: EmbersWeb.AuthErrorHandler
-    )
   end
 
   pipeline :admin do
@@ -30,11 +19,8 @@ defmodule EmbersWeb.Router do
     plug(:fetch_session)
     plug(:fetch_flash)
     plug(:put_secure_browser_headers)
-
-    plug(Pow.Plug.RequireAuthenticated,
-      error_handler: EmbersWeb.AuthErrorHandler
-    )
-
+    plug(EmbersWeb.Authenticate)
+    plug(EmbersWeb.Remember)
     plug(GetPermissions)
     plug(CheckPermissions, permission: "access_backoffice")
 
@@ -52,6 +38,8 @@ defmodule EmbersWeb.Router do
     plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:put_secure_browser_headers)
+    plug(EmbersWeb.Authenticate)
+    plug(EmbersWeb.Remember)
     plug(GetPermissions)
     plug(CheckPermissions, permission: "access_backoffice")
   end
@@ -59,18 +47,6 @@ defmodule EmbersWeb.Router do
   scope "/flags" do
     pipe_through(:flags)
     forward("/", FunWithFlags.UI.Router, namespace: "flags")
-  end
-
-  scope "/", EmbersWeb do
-    pipe_through([:browser, :not_authenticated])
-    get("/login", SessionController, :new, as: :login)
-    post("/login", SessionController, :create, as: :login)
-  end
-
-  scope "/", EmbersWeb do
-    pipe_through([:browser, :protected])
-
-    delete("/sessions", SessionController, :delete, as: :logout)
   end
 
   scope "/admin" do
@@ -124,6 +100,9 @@ defmodule EmbersWeb.Router do
     get("/static/faq", PageController, :faq)
     get("/static/acknowledgments", PageController, :acknowledgments)
 
+    get("/login", SessionController, :new)
+    post("/login", SessionController, :create)
+    delete("/sessions", SessionController, :delete)
     get("/confirm", ConfirmController, :index)
 
     get("/password_resets/new", PasswordResetController, :new)
@@ -141,7 +120,7 @@ defmodule EmbersWeb.Router do
 
     scope "/api" do
       scope "/v1" do
-        # post("/auth", SessionController, :create_api)
+        post("/auth", SessionController, :create_api)
 
         get("/users/:id", UserController, :show)
 

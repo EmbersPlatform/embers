@@ -1,6 +1,6 @@
 <div class="block" data-layout-type="form">
 
-  <%= form_for @changeset, account_path(@conn, :create), [], fn f -> %>
+  <%= form_for @changeset, account_path(@conn, :create), fn f -> %>
     <h3>Registrarse</h3>
 
     <%= error_tag f, :username %>

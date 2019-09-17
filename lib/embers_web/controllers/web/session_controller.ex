@@ -3,7 +3,10 @@ defmodule EmbersWeb.SessionController do
 
   import EmbersWeb.Authorize
 
+  alias Embers.Sessions
+  alias EmbersWeb.Auth.Login
   alias EmbersWeb.Router.Helpers, as: Routes
+  alias EmbersWeb.Remember
 
   plug(:guest_check when action in [:new, :create, :create_api])
   plug(:put_layout, "app_no_js.html")
@@ -14,128 +17,87 @@ defmodule EmbersWeb.SessionController do
   )
 
   def rate_limit_authentication(conn, options \\ []) do
-    id = get_in(conn.params, ["user", "id"])
-    options = Keyword.merge(options, bucket_name: "authorization:" <> id)
+    options = Keyword.merge(options, bucket_name: "authorization:" <> conn.params["id"])
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end
 
-  @spec new(Plug.Conn.t(), any) :: Plug.Conn.t()
-  def new(conn, _params) do
-    changeset = Pow.Plug.change_user(conn)
-
-    render(conn, "new.html", changeset: changeset)
+  def new(conn, _) do
+    render(conn, "new.html", page_title: "Iniciar sesión")
   end
 
-  def create(conn, %{"user" => user_params}) do
-    id = Map.get(user_params, "id")
+  # If you are using Argon2 or Pbkdf2, add crypto: Argon2
+  # or crypto: Pbkdf2 to Login.verify (after Accounts)
+  def create(conn, %{"id" => identifier, "password" => password}) do
+    # The identifier is setted to downcase to be compared with the canonical user value
+    identifier = String.downcase(identifier)
 
     user_params =
-      user_params
-      |> Map.drop(["id"])
-      |> Map.put("email", id_to_email(id))
+      case Regex.match?(~r/@/, identifier) do
+        true -> %{"email" => identifier, "password" => password}
+        false -> %{"canonical" => identifier, "password" => password}
+      end
 
-    conn
-    |> Pow.Plug.authenticate_user(user_params)
-    |> verify_user()
-    |> verify_login()
-    |> case do
-      {:ok, conn} ->
-        user = Pow.Plug.current_user(conn)
-
+    case Login.verify(user_params) do
+      {:ok, user} ->
         conn
-        |> PowPersistentSession.Plug.create(user)
+        |> Login.add_session(user, user_params)
+        |> Remember.add_rem_cookie(user.id)
+        |> put_flash(:info, gettext("User successfully logged in."))
         |> redirect(to: Routes.page_path(conn, :index))
 
-      {:error, {conn, reason}} ->
-        changeset = Pow.Plug.change_user(conn, conn.params["user"])
-        {:ok, conn} = Pow.Plug.clear_authenticated_user(conn)
-
+      {:error, message} ->
         conn
-        |> PowPersistentSession.Plug.delete()
-        |> put_flash(:error, reason)
-        |> render("new.html", changeset: changeset)
-
-      {:error, conn} ->
-        changeset = Pow.Plug.change_user(conn, conn.params["user"])
-        {:ok, conn} = Pow.Plug.clear_authenticated_user(conn)
-
-        conn
-        |> PowPersistentSession.Plug.delete()
-        |> put_flash(:error, gettext("invalid credentials"))
-        |> render("new.html", changeset: changeset)
+        |> put_flash(:login_error, message)
+        |> redirect(to: Routes.session_path(conn, :new))
     end
   end
 
-  def delete(conn, _params) do
-    {:ok, conn} = Pow.Plug.clear_authenticated_user(conn)
+  def delete(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, _params) do
+    session_id = get_session(conn, :phauxth_session_id)
+    session_id = if is_nil(session_id) do
+      get_session(conn, :session_id)
+    end || session_id
 
-    conn
-    |> PowPersistentSession.Plug.delete()
-    |> put_status(:no_content)
-    |> json(nil)
+    case session_id |> Sessions.get_session() |> Sessions.delete_session() do
+      {:ok, %{user_id: ^user_id}} ->
+        conn
+        |> delete_session(:phauxth_session_id)
+        |> Remember.delete_rem_cookie()
+        |> put_status(:no_content)
+        |> json(nil)
+
+      _ ->
+        conn
+        |> json(%{error: "unauthorized"})
+    end
   end
 
-  defp id_to_email(id) do
-    case Regex.match?(~r/@/, id) do
-      true ->
-        id
+  def create_api(conn, %{"id" => identifier, "password" => password}) do
+    case conn.assigns.current_user do
+      nil ->
+        user_params =
+          case Regex.match?(~r/@/, identifier) do
+            true -> %{"email" => identifier, "password" => password}
+            false -> %{"canonical" => identifier, "password" => password}
+          end
 
-      false ->
-        case Embers.Accounts.get_by_identifier(String.downcase(id)) do
-          %{email: email} ->
-            email
+        case Login.verify(user_params, crypto: Pbkdf2) do
+          {:ok, user} ->
+            conn
+            |> Login.add_session(user, user_params)
+            |> put_status(:no_content)
+            |> json(%{message: :success})
 
-          _ ->
-            nil
+          {:error, _message} ->
+            conn
+            |> put_status(:unauthorized)
+            |> json(%{error: :invalid_credentials})
         end
+
+      _user ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{error: :already_logged_in})
     end
-  end
-
-  defp verify_user({:ok, conn}) do
-    conn
-    |> Pow.Plug.current_user()
-    |> email_confirmed?
-    |> case do
-      true ->
-        {:ok, conn}
-
-      false ->
-        {:error, {conn, gettext("account unconfirmed")}}
-    end
-  end
-
-  defp verify_user({:error, conn}), do: {:error, conn}
-
-  defp verify_login({:error, conn}), do: {:error, conn}
-
-  defp verify_login({:ok, conn}) do
-    user = Pow.Plug.current_user(conn)
-
-    if Embers.Moderation.banned?(user) do
-      ban = Embers.Moderation.get_active_ban(user.id)
-
-      if Embers.Moderation.ban_expired?(ban) do
-        Embers.Moderation.unban_user(user.id)
-        {:ok, conn}
-      else
-        {:error, {conn, format_ban(ban)}}
-      end
-    else
-      {:ok, conn}
-    end
-  end
-
-  defp email_confirmed?(%{confirmed_at: confirmed?}), do: !is_nil(confirmed?)
-
-  defp format_ban(ban) do
-    formatted_duration =
-      if is_nil(ban.expires_at) do
-        "indefinidamente"
-      else
-        formatted_date = Timex.format!(ban.expires_at, "{D}/{0M}/{YYYY}")
-        "hasta el #{formatted_date}"
-      end
-
-    "Tu cuenta se encuentra baneada #{formatted_duration} con el motivo: #{ban.reason}"
   end
 end

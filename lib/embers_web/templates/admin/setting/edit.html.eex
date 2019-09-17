@@ -8,7 +8,7 @@
 </article>
 <% end %>
 
-<%= form_for @changeset, setting_path(@conn, :update, @changeset.data.name), [], fn f -> %>
+<%= form_for @changeset, setting_path(@conn, :update, @changeset.data.name), fn f -> %>
 <div class="field">
   <label class="label">
     Valor textual:

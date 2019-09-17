@@ -13,8 +13,6 @@ erl_crash.dump
 # Generated on crash by NPM
 npm-debug.log
 
-Mnesia.*
-
 # Static artifacts
 /assets/node_modules
 /assets/admin/node_modules

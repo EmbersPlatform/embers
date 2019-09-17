@@ -13,20 +13,20 @@ defmodule Embers.Subscriptions.Tags do
 
   import Ecto.Query
 
-  def create_subscription(attrs) do
+  def create_subscription(attrs \\ %{}) do
     subscription = TagSubscription.create_changeset(%TagSubscription{}, attrs)
     Repo.insert(subscription)
   end
 
-  def create_or_update_subscription(attrs) do
-    sub = Repo.get_by(TagSubscription, user_id: attrs.user_id, source_id: attrs.source_id)
+  def create_or_update_subscription(attrs \\ %{}) do
+    case Repo.get_by(TagSubscription, user_id: attrs.user_id, source_id: attrs.source_id) do
+      nil ->
+        subscription = TagSubscription.create_changeset(%TagSubscription{}, attrs)
+        Repo.insert(subscription)
 
-    if sub do
-      subscription = TagSubscription.create_changeset(sub, attrs)
-      Repo.update(subscription)
-    else
-      subscription = TagSubscription.create_changeset(%TagSubscription{}, attrs)
-      Repo.insert(subscription)
+      sub ->
+        subscription = TagSubscription.create_changeset(sub, attrs)
+        Repo.update(subscription)
     end
   end
 

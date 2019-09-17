@@ -39,22 +39,24 @@ defmodule Embers.Accounts.User do
   """
   use Ecto.Schema
 
-  use Pow.Ecto.Schema,
-    password_hash_methods: {&Pbkdf2.add_hash/1, &Pbkdf2.verify_pass/2}
-
   import Ecto.Changeset
   import Ecto.Query
 
   alias Embers.Accounts.User
+  alias Embers.Sessions.Session
 
   @type t() :: %__MODULE__{}
 
   schema "users" do
     field(:username, :string)
     field(:canonical, :string)
+    field(:email, :string)
+    field(:password, :string, virtual: true)
+    field(:password_hash, :string)
     field(:confirmed_at, :utc_datetime)
     field(:reset_sent_at, :utc_datetime)
     field(:banned_at, :utc_datetime)
+    has_many(:sessions, Session, on_delete: :delete_all)
 
     field(:following, :boolean, virtual: true, default: false)
     field(:follows_me, :boolean, virtual: true, default: false)
@@ -68,8 +70,6 @@ defmodule Embers.Accounts.User do
     has_many(:bans, Embers.Moderation.Ban)
 
     many_to_many(:roles, Embers.Authorization.Role, join_through: "role_user")
-
-    pow_user_fields()
 
     timestamps()
   end

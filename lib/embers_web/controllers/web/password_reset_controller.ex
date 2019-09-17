@@ -51,7 +51,7 @@ defmodule EmbersWeb.PasswordResetController do
     conn
     |> delete_session(:phauxth_session_id)
     |> put_flash(:info, "Your password has been reset")
-    |> redirect(to: Routes.login_path(conn, :new))
+    |> redirect(to: Routes.session_path(conn, :new))
   end
 
   defp update_password({:error, %Ecto.Changeset{} = changeset}, conn, params) do
