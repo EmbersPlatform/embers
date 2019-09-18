@@ -31,12 +31,11 @@ config :phauxth,
   token_module: EmbersWeb.Auth.Token,
   user_messages: EmbersWeb.UserMessages
 
-config :embers, :auth,
-  token_salt: "geDDVmqL"
+config :embers, :auth, token_salt: "geDDVmqL"
 
 # Mailer configuration
 config :embers, EmbersWeb.Mailer,
-  adapter: Bamboo.SendgridAdapter,
+  adapter: Swoosh.SendgridAdapter,
   api_key: "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"
 
 # Configures Elixir's Logger

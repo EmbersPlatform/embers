@@ -20,7 +20,7 @@ defmodule EmbersWeb.Email do
   4. Remove bamboo from the deps section in the mix.exs file
   """
 
-  import Bamboo.Email
+  import Swoosh.Email
 
   alias EmbersWeb.Mailer
 
@@ -33,7 +33,7 @@ defmodule EmbersWeb.Email do
     prep_mail(address)
     |> subject("Confirmar cuenta")
     |> text_body("Confirma tu cuenta en este enlace http://#{host}/confirm?key=#{key}")
-    |> Mailer.deliver_now()
+    |> Mailer.deliver()
   end
 
   @doc """
@@ -45,7 +45,7 @@ defmodule EmbersWeb.Email do
     |> text_body(
       "You requested a password reset, but no user is associated with the email you provided."
     )
-    |> Mailer.deliver_now()
+    |> Mailer.deliver()
   end
 
   def reset_request(address, key) do
@@ -58,7 +58,7 @@ defmodule EmbersWeb.Email do
         key
       }"
     )
-    |> Mailer.deliver_now()
+    |> Mailer.deliver()
   end
 
   @doc """
@@ -68,7 +68,7 @@ defmodule EmbersWeb.Email do
     prep_mail(address)
     |> subject("Cuenta confirmada")
     |> text_body("Tu cuenta ha sido confirmada.")
-    |> Mailer.deliver_now()
+    |> Mailer.deliver()
   end
 
   @doc """
@@ -78,11 +78,11 @@ defmodule EmbersWeb.Email do
     prep_mail(address)
     |> subject("Recuperar contraseña")
     |> text_body("Tu contraseña ha sido restablecida.")
-    |> Mailer.deliver_now()
+    |> Mailer.deliver()
   end
 
   defp prep_mail(address) do
-    new_email()
+    new()
     |> to(address)
     |> from("noreply@embers.pw")
   end
