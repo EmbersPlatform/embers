@@ -3,7 +3,7 @@ defmodule Embers.Profile.Uploads.Cover do
   alias Embers.Helpers.IdHasher
   alias Embers.Uploads
 
-  @path Keyword.get(Application.get_env(:embers, Embers.Profile), :cover_path, "/user/cover")
+  @path Keyword.get(Application.get_env(:embers, Embers.Profile), :cover_path, "user/cover")
 
   def upload(cover, %Embers.Accounts.User{} = user) do
     upload(cover, user.id)
@@ -16,9 +16,7 @@ defmodule Embers.Profile.Uploads.Cover do
       id = IdHasher.encode(user_id)
 
       with {:ok, _} <-
-             Uploads.upload(processed.path, get_bucket(), "#{@path}/#{id}.jpg",
-               content_type: "image/png"
-             ) do
+             Uploads.upload(processed.path, "#{@path}/#{id}.jpg", content_type: "image/png") do
         :ok
       else
         error -> error
@@ -35,11 +33,15 @@ defmodule Embers.Profile.Uploads.Cover do
   def delete(user_id) when is_integer(user_id) do
     id = IdHasher.encode(user_id)
 
-    with :ok <- Uploads.delete(get_bucket(), "#{@path}/#{id}.jpg") do
+    with :ok <- Uploads.delete("#{@path}/#{id}.jpg") do
       :ok
     else
       error -> error
     end
+  end
+
+  def fetch_path() do
+    @path
   end
 
   defp valid?(file) do
@@ -56,9 +58,5 @@ defmodule Embers.Profile.Uploads.Cover do
     |> Mogrify.extent("960x320")
     |> Mogrify.format("png")
     |> Mogrify.save()
-  end
-
-  defp get_bucket do
-    Keyword.get(Application.get_env(:embers, Embers.Profile), :bucket, "local")
   end
 end

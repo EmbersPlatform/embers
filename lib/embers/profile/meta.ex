@@ -48,7 +48,7 @@ defmodule Embers.Profile.Meta do
     id_hash = IdHasher.encode(meta.user_id)
 
     path =
-      Application.get_env(:embers, Embers.Profile) |> Keyword.get(:avatar_path, "/user/avatar")
+      Application.get_env(:embers, Embers.Profile) |> Keyword.get(:avatar_path, "user/avatar")
 
     base = get_base()
 
@@ -70,8 +70,7 @@ defmodule Embers.Profile.Meta do
   def cover(%Meta{cover_version: version} = meta) do
     id_hash = IdHasher.encode(meta.user_id)
 
-    path =
-      Application.get_env(:embers, Embers.Profile) |> Keyword.get(:cover_path, "/user/avatar")
+    path = Application.get_env(:embers, Embers.Profile) |> Keyword.get(:cover_path, "user/avatar")
 
     base = get_base()
 
@@ -92,23 +91,7 @@ defmodule Embers.Profile.Meta do
     |> load_avatar_map()
   end
 
-  defp get_bucket() do
-    Keyword.get(Application.get_env(:embers, Embers.Profile), :bucket, "local")
-  end
-
   defp get_base() do
-    case get_bucket() do
-      "local" ->
-        ""
-
-      bucket ->
-        %{
-          scheme: scheme,
-          region: region
-        } = s3_config = Application.get_env(:ex_aws, :s3)
-
-        host = s3_config.host[region]
-        scheme <> host <> "/" <> bucket
-    end
+    Embers.Uploads.base_path()
   end
 end

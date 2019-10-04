@@ -3,7 +3,7 @@ defmodule Embers.Profile.Uploads.Avatar do
   alias Embers.Helpers.IdHasher
   alias Embers.Uploads
 
-  @path Keyword.get(Application.get_env(:embers, Embers.Profile), :avatar_path, "/user/avatar")
+  @path Keyword.get(Application.get_env(:embers, Embers.Profile), :avatar_path, "user/avatar")
 
   def upload(avatar, %Embers.Accounts.User{} = user) do
     upload(avatar, user.id)
@@ -18,17 +18,11 @@ defmodule Embers.Profile.Uploads.Avatar do
       id = IdHasher.encode(user_id)
 
       with {:ok, _} <-
-             Uploads.upload(small.path, get_bucket(), "#{@path}/#{id}_small.png",
-               content_type: "image/png"
-             ),
+             Uploads.upload(small.path, "#{@path}/#{id}_small.png", content_type: "image/png"),
            {:ok, _} <-
-             Uploads.upload(medium.path, get_bucket(), "#{@path}/#{id}_medium.png",
-               content_type: "image/png"
-             ),
+             Uploads.upload(medium.path, "#{@path}/#{id}_medium.png", content_type: "image/png"),
            {:ok, _} <-
-             Uploads.upload(large.path, get_bucket(), "#{@path}/#{id}_large.png",
-               content_type: "image/png"
-             ) do
+             Uploads.upload(large.path, "#{@path}/#{id}_large.png", content_type: "image/png") do
         :ok
       else
         error -> error
@@ -44,14 +38,27 @@ defmodule Embers.Profile.Uploads.Avatar do
 
   def delete(user_id) when is_integer(user_id) do
     id = IdHasher.encode(user_id)
+    meta = Embers.Repo.get_by(Embers.Profile.Meta, user_id: user_id)
 
-    with :ok <- Uploads.delete(get_bucket(), "#{@path}/#{id}_small.png"),
-         :ok <- Uploads.delete(get_bucket(), "#{@path}/#{id}_medium.png"),
-         :ok <- Uploads.delete(get_bucket(), "#{@path}/#{id}_large.png") do
-      :ok
-    else
-      error -> error
+    case meta.avatar_version do
+      nil ->
+        :ok
+
+      _ ->
+        with :ok <- Uploads.delete("#{@path}/#{id}_small.png"),
+             :ok <- Uploads.delete("#{@path}/#{id}_medium.png"),
+             :ok <- Uploads.delete("#{@path}/#{id}_large.png"),
+             {:ok, _} <-
+               Embers.Profile.Meta.changeset(meta, %{avatar_version: nil}) |> Embers.Repo.update() do
+          :ok
+        else
+          error -> error
+        end
     end
+  end
+
+  def fetch_path() do
+    @path
   end
 
   defp valid?(file) do
@@ -92,9 +99,5 @@ defmodule Embers.Profile.Uploads.Avatar do
     |> Mogrify.extent("256x256")
     |> Mogrify.format("png")
     |> Mogrify.save()
-  end
-
-  defp get_bucket do
-    Keyword.get(Application.get_env(:embers, Embers.Profile), :bucket, "local")
   end
 end

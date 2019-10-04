@@ -20,9 +20,10 @@ config :embers, EmbersWeb.Endpoint,
 config :embers, Embers.Email, host: "localhost"
 
 config :embers, Embers.Profile,
-  bucket: "profile",
-  avatar_path: "/user/avatar",
-  cover_path: "/user/cover"
+  avatar_path: "user/avatar",
+  cover_path: "user/cover"
+
+config :embers, Embers.FileStorage, store: Embers.FileStorage.Store.Local
 
 # Phauxth authentication configuration
 config :phauxth,

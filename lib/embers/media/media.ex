@@ -67,7 +67,6 @@ defmodule Embers.Media do
          {:ok, res} <-
            Uploads.upload(
              processed_file.path,
-             get_bucket(),
              dest_path <> ".#{ext}",
              content_type: processed_file.content_type
            ),
@@ -144,13 +143,13 @@ defmodule Embers.Media do
   defp remove_url(%{type: "link"}), do: :ok
 
   defp remove_url(media) do
-    {bucket, path} = media.url |> Uploads.parse_url()
-    Uploads.delete(bucket, path)
+    path = media.url |> Uploads.parse_url()
+    Uploads.delete(path)
   end
 
   defp remove_preview(media) do
-    {bucket, path} = media.metadata["preview_url"] |> Uploads.parse_url()
-    Uploads.delete(bucket, path)
+    path = media.metadata["preview_url"] |> Uploads.parse_url()
+    Uploads.delete(path)
   end
 
   defp process_file(%{content_type: "image/gif"} = file) do
@@ -210,19 +209,13 @@ defmodule Embers.Media do
     preview_path = file.path <> ".preview.jpg"
     Thumbnex.create_thumbnail(file.path, preview_path, opts)
 
-    Uploads.upload(preview_path, get_bucket(), dest_path <> "_preview.jpg",
-      content_type: "image/jpg"
-    )
+    Uploads.upload(preview_path, dest_path <> "_preview.jpg", content_type: "image/jpg")
   end
 
   defp get_file_ext(file) do
     file.path
     |> Path.extname()
     |> String.slice(1..-1)
-  end
-
-  defp get_bucket do
-    Keyword.get(Application.get_env(:embers, Embers.Media), :bucket, "local")
   end
 
   defp process_video(video_path, output_path) do

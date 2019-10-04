@@ -22,6 +22,7 @@ defmodule Embers.Profile do
   alias Embers.Repo
 
   alias Embers.Profile.Meta
+  alias Embers.Uploads
 
   @doc """
   Returns the list of user_metas.
@@ -51,6 +52,7 @@ defmodule Embers.Profile do
 
   """
   def get_meta!(id), do: Repo.get!(Meta, id)
+  def get_meta_for(user_id), do: Repo.get_by(Meta, %{user_id: user_id})
   def get_meta_for!(user_id), do: Repo.get_by!(Meta, %{user_id: user_id})
 
   @doc """
@@ -103,6 +105,28 @@ defmodule Embers.Profile do
   """
   def delete_meta(%Meta{} = meta) do
     Repo.delete(meta)
+  end
+
+  def remove_avatar(%Meta{user_id: id} = meta) do
+    path = Embers.Profile.Uploads.Avatar.fetch_path()
+    id = Embers.Helpers.IdHasher.encode(id)
+
+    with :ok <- Uploads.delete("#{path}/#{id}_small.png"),
+         :ok <- Uploads.delete("#{path}/#{id}_medium.png"),
+         :ok <- Uploads.delete("#{path}/#{id}_large.png"),
+         {:ok, _} <- update_meta(meta, %{avatar_version: nil}) do
+      :ok
+    end
+  end
+
+  def remove_cover(%Meta{user_id: id} = meta) do
+    path = Embers.Profile.Uploads.Cover.fetch_path()
+    id = Embers.Helpers.IdHasher.encode(id)
+
+    with :ok <- Uploads.delete("#{path}/#{id}.jpg"),
+         {:ok, _} <- update_meta(meta, %{cover_version: nil}) do
+      :ok
+    end
   end
 
   @doc """
