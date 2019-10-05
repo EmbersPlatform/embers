@@ -140,6 +140,39 @@ defmodule Embers.Media do
     end
   end
 
+  @temporary_ttl 1
+  def expired_query do
+    from_date =
+      Timex.now()
+      |> Timex.shift(hours: -@temporary_ttl)
+
+    from(media in MediaItem,
+      where: media.temporary,
+      where: media.inserted_at <= ^from_date
+    )
+  end
+
+  def get_expired do
+    expired_query()
+    |> Repo.all()
+  end
+
+  def prune do
+    stream =
+      expired_query()
+      |> Repo.stream()
+
+    Repo.transaction(fn ->
+      stream
+      |> Stream.each(fn media ->
+        remove(media.id)
+      end)
+      |> Stream.run()
+    end)
+
+    :ok
+  end
+
   defp remove_url(%{type: "link"}), do: :ok
 
   defp remove_url(media) do
