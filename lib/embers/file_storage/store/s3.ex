@@ -18,7 +18,7 @@ defmodule Embers.FileStorage.Store.S3 do
 
     case res do
       {:ok, _} ->
-        {:ok, "#{base_path()}#{path}"}
+        {:ok, "#{base_path()}#{dest_path}"}
 
       {:error, reason} ->
         {:error, reason}
