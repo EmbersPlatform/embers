@@ -87,4 +87,16 @@
     </ul>
   </nav>
   <%= render @view_module, @view_template, assigns %>
+  <script type="text/javascript">
+    if ('serviceWorker' in navigator) {
+      //This is the service worker with the combined offline experience (Offline page + Offline copy of pages)
+      navigator.serviceWorker.register('/service-worker.js').then(function(registration){
+        console.log('Service worker has been registered for scope: '+ registration.scope);
+      }).catch(function(error) {
+        console.log('Service worker registration failed:', error);
+      });
+    }else{
+      console.log('Service workers are not supported.');
+    }
+  </script>
 </body>
