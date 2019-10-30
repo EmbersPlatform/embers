@@ -1,17 +1,12 @@
 <template>
   <div class="media-preview big" :class="{full_height: !overflowed}" @click="clicked">
     <div v-if="big" class="media-preview__image--big">
-      <img v-if="media.type == 'image'" :src="media.url" />
-      <img v-else :src="media.metadata.preview_url" />
+      <img v-if="media.type == 'image'" :src="preview_url" />
       <div v-if="overflowed" class="media-preview__overflowed-button">
         <span>Ampliar imagen</span>
       </div>
     </div>
-    <div
-      v-else
-      class="media-preview__image"
-      :style="{'background-image': `url(${(high_res && media.type == 'image') ? media.url : media.metadata.preview_url})`}"
-    />
+    <div v-else class="media-preview__image" :style="{'background-image': `url(${preview_url})`}" />
     <div v-if="media.type == 'video'" class="media-preview__play-button">
       <i class="fas fa-play" />
     </div>
@@ -22,6 +17,9 @@
 </template>
 
 <script>
+const cloudinary_url =
+  "https://res.cloudinary.com/embers-host/image/fetch/t_preview/";
+
 export default {
   name: "MediaPreview",
   props: {
@@ -44,6 +42,16 @@ export default {
         return false;
       if (this.media.metadata.height == "undefined") return false;
       return this.media.metadata.height > 500;
+    },
+    preview_url() {
+      const url = this.high_res
+        ? this.media.url
+        : this.media.metadata.preview_url;
+      if (/https?:\/\//.test(url)) {
+        return cloudinary_url + url;
+      } else {
+        return url;
+      }
     }
   },
   methods: {
