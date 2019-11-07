@@ -53,9 +53,9 @@ defmodule Embers.Profile.Meta do
     base = get_base()
 
     %{
-      small: Path.join("#{base}#{path}", "#{id_hash}_small.png?#{version}"),
-      medium: Path.join("#{base}#{path}", "#{id_hash}_medium.png?#{version}"),
-      big: Path.join("#{base}#{path}", "#{id_hash}_large.png?#{version}")
+      small: Path.join([base, path, "#{id_hash}_small.png?#{version}"]),
+      medium: Path.join([base, path, "#{id_hash}_medium.png?#{version}"]),
+      big: Path.join([base, path, "#{id_hash}_large.png?#{version}"])
     }
   end
 
