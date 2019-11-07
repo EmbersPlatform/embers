@@ -8,7 +8,7 @@ defmodule Embers.FileStorage.Store.S3 do
     acl = Keyword.get(opts, :acl, :public_read)
     opts = Keyword.put(opts, :acl, acl)
 
-    path = "#{root()}/#{dest_path}"
+    path = Path.join(root(), dest_path)
 
     res =
       file_path
@@ -18,7 +18,7 @@ defmodule Embers.FileStorage.Store.S3 do
 
     case res do
       {:ok, _} ->
-        {:ok, "#{base_path()}#{dest_path}"}
+        {:ok, Path.join(base_path(), dest_path)}
 
       {:error, reason} ->
         {:error, reason}
