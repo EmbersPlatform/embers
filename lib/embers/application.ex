@@ -16,7 +16,6 @@ defmodule Embers.Application do
       # worker(Embers.Worker, [arg1, arg2, arg3]),
       EmbersWeb.Presence,
       worker(Cachex, [:embers, []]),
-      worker(Embers.Media.Pruner, []),
       supervisor(Task.Supervisor, [[name: TaskSupervisor, restart: :transient]])
     ]
 
