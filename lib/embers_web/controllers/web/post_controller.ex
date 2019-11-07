@@ -40,12 +40,14 @@ defmodule EmbersWeb.PostController do
     parent_id = IdHasher.decode(parent_id)
     Map.put(params, "parent_id", parent_id)
   end
+
   defp maybe_put_parent_id(params), do: params
 
   defp maybe_put_related_to_id(%{"related_to_id" => related_to_id} = params) do
     related_to_id = IdHasher.decode(related_to_id)
     Map.put(params, "related_to_id", related_to_id)
   end
+
   defp maybe_put_related_to_id(params), do: params
 
   defp maybe_put_medias(%{"medias" => medias} = params) do
@@ -56,8 +58,10 @@ defmodule EmbersWeb.PostController do
           media = Embers.Media.get(id) do
         media
       end
+
     Map.put(params, "media", medias)
   end
+
   defp maybe_put_medias(params), do: params
 
   defp maybe_put_links(%{"links" => links} = params) do
@@ -68,8 +72,10 @@ defmodule EmbersWeb.PostController do
           link = Embers.Links.get_by(%{id: id}) do
         link
       end
+
     Map.put(params, "links", links)
   end
+
   defp maybe_put_links(params), do: params
 
   defp get_and_put_tags(params) do
@@ -94,17 +100,19 @@ defmodule EmbersWeb.PostController do
   def show(conn, %{"id" => id}) do
     post_id = IdHasher.decode(id)
 
-    post =
-      post_id
-      |> Posts.get_post!()
-      |> populate_user(conn)
+    with {:ok, post} <- Posts.get_post(post_id) do
+      post = populate_user(post, conn)
 
-    conn =
-      if is_nil(post) do
-        put_status(conn, :not_found)
-      end || conn
+      render(conn, "show.json", %{post: post})
+    else
+      {:error, :post_disabled} ->
+        conn |> json(:post_disabled)
 
-    render(conn, "show.json", %{post: post})
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> render("show.json", %{post: nil})
+    end
   end
 
   def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do

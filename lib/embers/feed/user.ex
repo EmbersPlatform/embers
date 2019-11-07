@@ -21,6 +21,7 @@ defmodule Embers.Feed.User do
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
         left_join: related in assoc(post, :related_to),
+        where: is_nil(related.deleted_at),
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
         preload: [

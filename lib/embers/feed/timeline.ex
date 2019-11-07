@@ -19,12 +19,12 @@ defmodule Embers.Feed.Timeline do
         left_join: post in assoc(activity, :post),
         where: is_nil(post.deleted_at),
         order_by: [desc: activity.id],
-        left_join: user in assoc(post, :user),
-        left_join: meta in assoc(user, :meta),
+        left_join: related_to in assoc(post, :related_to),
+        where: is_nil(related_to.deleted_at),
         preload: [
           post: {
             post,
-            user: {user, meta: meta}
+            related_to: related_to
           }
         ],
         preload: [
@@ -33,6 +33,7 @@ defmodule Embers.Feed.Timeline do
             :links,
             :tags,
             :reactions,
+            user: [:meta],
             related_to: [:media, :tags, :links, :reactions, user: :meta]
           ]
         ]

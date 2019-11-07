@@ -38,13 +38,19 @@ defmodule Embers.Posts do
     query =
       from(
         post in Post,
-        where: post.id == ^id and is_nil(post.deleted_at),
+        where: post.id == ^id,
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
         left_join: related in assoc(post, :related_to),
         left_join: related_user in assoc(related, :user),
         left_join: related_user_meta in assoc(related_user, :meta),
-        preload: [:media, :links, :tags, :reactions, related_to: [:media, :links, :tags, :reactions]],
+        preload: [
+          :media,
+          :links,
+          :tags,
+          :reactions,
+          related_to: [:media, :links, :tags, :reactions]
+        ],
         preload: [
           user: {user, meta: meta},
           related_to: {
@@ -60,8 +66,14 @@ defmodule Embers.Posts do
     res = Repo.one(query)
 
     case res do
-      nil -> {:error, :not_found}
-      post -> {:ok, post |> Post.fill_nsfw()}
+      nil ->
+        {:error, :not_found}
+
+      %{deleted_at: deleted_at} when not is_nil(deleted_at) ->
+        {:error, :post_disabled}
+
+      post ->
+        {:ok, post |> Post.fill_nsfw()}
     end
   end
 
@@ -83,9 +95,11 @@ defmodule Embers.Posts do
     with {:ok, post} <- Repo.insert(post_changeset) do
       {:ok, post} = get_post(post.id)
       emit_event? = Keyword.get(opts, :emit_event?, true)
+
       if emit_event? do
         Embers.Event.emit(:post_created, post)
       end
+
       {:ok, post}
     end
   end
