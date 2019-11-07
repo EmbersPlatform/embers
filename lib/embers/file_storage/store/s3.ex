@@ -36,7 +36,7 @@ defmodule Embers.FileStorage.Store.S3 do
   end
 
   def base_path do
-    "https://#{host()}/#{bucket()}/#{root()}/"
+    Path.join(["https://", host(), bucket(), root())
   end
 
   defp bucket() do
