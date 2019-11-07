@@ -9,6 +9,7 @@
           <div id="post" :class="{container: !user}">
             <p class="loading-comments" v-if="loading_context">Cargando..</p>
             <Card v-if="post" :post="post" @deleted="postDeleted"></Card>
+            <div class="post-disabled" v-if="post_disabled">El post no se encuentra disponible.</div>
             <template v-if="featured_comment">
               <div class="featured-comment" id="featured_comment">
                 <div
@@ -27,7 +28,11 @@
               @loadMore="loadComments"
               @comment_deleted="comment_deleted"
             ></CommentList>
-            <div v-if="user" class="new-comment" :class="{reply_box: is_comment || is_reply}">
+            <div
+              v-if="user && post && !post_disabled"
+              class="new-comment"
+              :class="{reply_box: is_comment || is_reply}"
+            >
               <div class="comment">
                 <header class="header">
                   <avatar v-if="$mq != 'sm'" :avatar="user.avatar.small"></avatar>
@@ -92,7 +97,8 @@ export default {
       post_context: null,
       comment_context: null,
       loading_context: false,
-      featured_comment: null
+      featured_comment: null,
+      post_disabled: false
     };
   },
 
@@ -139,6 +145,10 @@ export default {
     async get_post() {
       this.loading = true;
       let post = await postAPI.get(this.id);
+      if (post === "post_disabled") {
+        this.post_disabled = true;
+        return;
+      }
       if (post.nesting_level == 0) {
         this.post = post;
       }
@@ -268,6 +278,14 @@ export default {
 .featured-comment--title {
   font-size: 1.5em;
   font-weight: 500;
+}
+
+.post-disabled {
+  border: 1px solid #fff2;
+  padding: 1em;
+  border-radius: 2px;
+  background: #0002;
+  font-size: 1.2em;
 }
 </style>
 
