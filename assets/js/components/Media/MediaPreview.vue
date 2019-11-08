@@ -1,7 +1,7 @@
 <template>
   <div class="media-preview big" :class="{full_height: !overflowed}" @click="clicked">
     <div v-if="big" class="media-preview__image--big">
-      <img v-if="media.type == 'image'" :src="preview_url" />
+      <img v-if="'image gif video'.includes(media.type)" :src="preview_url" />
       <div v-if="overflowed" class="media-preview__overflowed-button">
         <span>Ampliar imagen</span>
       </div>
