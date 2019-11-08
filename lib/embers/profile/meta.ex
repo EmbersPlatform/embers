@@ -74,7 +74,7 @@ defmodule Embers.Profile.Meta do
 
     base = get_base()
 
-    "#{base}#{path}/#{id_hash}.jpg?#{version}"
+    Path.join([base, path, id_hash, ".jpg?#{version}"])
   end
 
   def load_avatar_map(%Meta{} = meta) do
