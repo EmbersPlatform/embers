@@ -49,6 +49,7 @@ export default {
           id: link.id,
           url: link.url,
           type: "image",
+          from_link: true,
           metadata: {
             preview_url: link.url
           }
@@ -100,7 +101,7 @@ export default {
   }
 }
 [data-card-size="little"] .link-item__oembed iframe {
-    max-height: 200px;
+  max-height: 200px;
 }
 
 .link-item__title {

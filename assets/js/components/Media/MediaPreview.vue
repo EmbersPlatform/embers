@@ -44,6 +44,7 @@ export default {
       return this.media.metadata.height > 500;
     },
     preview_url() {
+      if (this.media.from_link) return this.media.url;
       const url = this.high_res
         ? this.media.url
         : this.media.metadata.preview_url;

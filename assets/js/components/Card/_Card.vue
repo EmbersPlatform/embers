@@ -148,7 +148,12 @@
         </div>
       </header>
       <section class="card-wrapper-content" :class="{'big-text': (post.body && bigTextBody)}">
-        <p v-if="post.body" v-html="formattedBody" class="card-body" :class="{folded: (bodyTooLong && !unfolded)}"></p>
+        <p
+          v-if="post.body"
+          v-html="formattedBody"
+          class="card-body"
+          :class="{folded: (bodyTooLong && !unfolded)}"
+        ></p>
         <div v-if="post.body && bodyTooLong && !unfolded" class="controls">
           <button
             v-if="size != 'little'"
@@ -179,12 +184,7 @@
           />
         </div>
         <template v-if="with_related && post.related_to">
-          <card
-            :no_header="isShared"
-            :post="post.related_to"
-            :tools="false"
-            class="related"
-          />
+          <card :no_header="isShared" :post="post.related_to" :tools="false" class="related" />
         </template>
         <template v-if="post.attachment">
           <VideoEmbed :video="post.attachment" v-if="post.attachment.type === 'video'"></VideoEmbed>
@@ -260,12 +260,7 @@
           </li>
         </template>
         <li v-if="loggedUser">
-          <span
-            @click="share"
-            data-tip="Compartir post"
-            data-tip-position="bottom"
-            data-tip-text
-          >
+          <span @click="share" data-tip="Compartir post" data-tip-position="bottom" data-tip-text>
             {{(post.stats.shares > 0) ? post.stats.shares+'&nbsp;' : ''}}
             <svgicon name="s_share" class="emoji"></svgicon>
           </span>
@@ -716,6 +711,7 @@ export default {
             id: link.id,
             url: link.url,
             type: "image",
+            from_link: true,
             metadata: {
               preview_url: link.url
             },

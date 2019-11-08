@@ -41,6 +41,7 @@ export default {
   },
   computed: {
     preview_url() {
+      if (this.media.from_link) return this.media.url;
       const url = this.media.url;
       if (/https?:\/\//.test(url)) {
         return cloudinary_url + url;
