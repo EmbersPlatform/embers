@@ -17,9 +17,6 @@
 </template>
 
 <script>
-const cloudinary_url =
-  "https://res.cloudinary.com/embers-host/image/fetch/t_preview/";
-
 export default {
   name: "MediaPreview",
   props: {
@@ -48,11 +45,7 @@ export default {
       const url = this.high_res
         ? this.media.url
         : this.media.metadata.preview_url;
-      if (/https?:\/\//.test(url)) {
-        return cloudinary_url + url;
-      } else {
-        return url;
-      }
+      return url;
     }
   },
   methods: {

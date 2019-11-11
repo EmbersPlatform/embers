@@ -14,8 +14,6 @@
 
 <script>
 import OldVideo from "./OldVideo";
-const cloudinary_url =
-  "https://res.cloudinary.com/embers-host/image/fetch/t_optimize/";
 
 export default {
   name: "media-item",
@@ -41,13 +39,8 @@ export default {
   },
   computed: {
     preview_url() {
-      if (this.media.from_link) return this.media.url;
       const url = this.media.url;
-      if (/https?:\/\//.test(url)) {
-        return cloudinary_url + url;
-      } else {
         return url;
-      }
     }
   }
 };
