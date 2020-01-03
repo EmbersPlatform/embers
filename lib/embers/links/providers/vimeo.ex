@@ -24,18 +24,11 @@ defmodule Embers.Links.VimeoProvider do
         "<iframe src='https://player.vimeo.com/video/#{id}' width='100%' height='400' allowfullscreen></iframe>"
     }
 
-    case OpenGraph.fetch(url) do
-      {:error, _} ->
-        %{embed | title: url}
-
-      {:ok, og} ->
-        %{
-          embed
-          | title: og.title,
-            description: og.description,
-            thumbnail_url: og.image
-        }
-    end
+    %{
+      embed
+      | title: "Vimeo",
+        description: ""
+    }
   end
 
   defp get_id(url) do
