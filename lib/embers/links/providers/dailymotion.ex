@@ -1,4 +1,4 @@
-defmodule Embers.Links.YouTubeProvider do
+defmodule Embers.Links.DailymotionProvider do
   @moduledoc false
 
   @behaviour Embers.Links.Provider
@@ -8,7 +8,7 @@ defmodule Embers.Links.YouTubeProvider do
   @spec provides?(binary()) :: boolean()
   def provides?(url) do
     Regex.match?(
-      ~r/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|(?:embed|v)\/))([^\?&"'>]+)/i,
+      ~r/https?:\/\/(?:www\.)?(?:dai\.ly\/|dailymotion\.com\/(?:.+?video=|(?:video|hub)\/))([a-z0-9]+)/i,
       url
     )
   end
@@ -21,7 +21,7 @@ defmodule Embers.Links.YouTubeProvider do
       url: url,
       type: "video",
       html:
-        "<iframe src='https://www.youtube.com/embed/#{id}' width='100%' height='400' allowfullscreen></iframe>"
+        "<iframe src='https://www.dailymotion.com/embed/video/#{id}' width='100%' height='400' allowfullscreen></iframe>"
     }
 
     case OpenGraph.fetch(url) do
@@ -41,7 +41,7 @@ defmodule Embers.Links.YouTubeProvider do
   defp get_id(url) do
     [_, id] =
       Regex.run(
-        ~r/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|(?:embed|v)\/))([^\?&"'>]+)/i,
+        ~r/https?:\/\/(?:www\.)?(?:dai\.ly\/|dailymotion\.com\/(?:.+?video=|(?:video|hub)\/))([a-z0-9]+)/i,
         url
       )
 

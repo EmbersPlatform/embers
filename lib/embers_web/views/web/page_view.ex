@@ -3,7 +3,7 @@ defmodule EmbersWeb.PageView do
 
   def render("auth.json", %{conn: conn} = assigns) do
     user = conn.assigns.current_user |> Embers.Repo.preload([:meta, :settings])
-    settings = format_settings(user.settings)
+    settings = format_settings(user)
 
     %{
       logged_in: !is_nil(user),
@@ -25,7 +25,7 @@ defmodule EmbersWeb.PageView do
 
   defp handle_tags(_), do: []
 
-  defp format_settings(settings) do
+  defp format_settings(%{settings: settings}) do
     Map.drop(settings, [
       :__schema__,
       :__meta__,
@@ -36,5 +36,9 @@ defmodule EmbersWeb.PageView do
       :inserted_at,
       :updated_at
     ])
+  end
+
+  defp format_settings(_) do
+    %{}
   end
 end

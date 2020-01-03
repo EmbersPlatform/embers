@@ -29,14 +29,19 @@ defmodule Embers.Links.FacebookProvider do
       description: og.description,
       thumbnail_url: og.image
     }
+
     case og.type do
       "video.other" ->
-        %{schema | type: "video", html:
-          """
-            <video controls><source src="#{og.video}" type="video/mp4"></video>"
-          """
+        %{
+          schema
+          | type: "video",
+            html: """
+              <video controls><source src="#{og.video}" type="video/mp4"></video>"
+            """
         }
-      _ -> schema
+
+      _ ->
+        schema
     end
   end
 end

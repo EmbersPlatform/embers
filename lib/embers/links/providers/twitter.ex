@@ -34,7 +34,7 @@ defmodule Embers.Links.TwitterProvider do
             %{
               embed
               | html:
-                  "<iframe src='https://twitter.com/i/videos/#{id}' width='100%' height='400'></iframe>"
+                  "<iframe src='https://twitter.com/i/videos/#{id}' width='100%' height='400' allowfullscreen></iframe>"
             }
           end || embed
 

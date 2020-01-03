@@ -24,7 +24,7 @@ defmodule Embers.Links.TwitchProvider do
       title: title,
       description: desc,
       html:
-        "<iframe src='https://clips.twitch.tv/embed?clip=#{slug}&autoplay=false' 'frameborder='0' scrolling='no' allowfullscreen='true' height='360' width='640'></iframe>"
+        "<iframe src='https://clips.twitch.tv/embed?clip=#{slug}&autoplay=false' 'frameborder='0' allowfullscreen scrolling='no' allowfullscreen='true' height='360' width='640'></iframe>"
     }
   end
 end

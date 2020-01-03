@@ -25,7 +25,9 @@ defmodule Embers.Links do
     Embers.Links.TwitterProvider,
     Embers.Links.YouTubeProvider,
     Embers.Links.FacebookProvider,
-    Embers.Links.TwitchProvider
+    Embers.Links.TwitchProvider,
+    Embers.Links.VimeoProvider,
+    Embers.Links.DailymotionProvider
   ]
 
   def get_by(%{id: id}) do
@@ -119,7 +121,9 @@ defmodule Embers.Links do
     case og do
       %{type: "video." <> _} ->
         %{schema | type: "video", url: og.video}
-      _ -> schema
+
+      _ ->
+        schema
     end
   end
 end
