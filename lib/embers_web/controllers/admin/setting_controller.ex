@@ -1,4 +1,6 @@
 defmodule EmbersWeb.Admin.SettingController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   import EmbersWeb.Helpers

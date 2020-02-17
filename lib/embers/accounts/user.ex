@@ -40,7 +40,6 @@ defmodule Embers.Accounts.User do
   use Ecto.Schema
 
   import Ecto.Changeset
-  import Ecto.Query
 
   alias Embers.Accounts.User
   alias Embers.Sessions.Session
@@ -78,7 +77,7 @@ defmodule Embers.Accounts.User do
     user
     |> cast(attrs, [:email, :username])
     |> validate_required([:email, :username])
-    |> unique_email
+    |> validate_unique_email
     |> validate_username
     |> cast_assoc(:meta)
   end
@@ -89,120 +88,43 @@ defmodule Embers.Accounts.User do
     |> validate_required([:username, :email, :password])
     |> validate_confirmation(:password)
     |> validate_username
-    |> unique_email
+    |> validate_unique_email
     |> validate_password(:password)
     |> put_pass_hash
     |> put_canonical_username
   end
 
+  @doc """
+  Used when batch importing users
+  """
+  @deprecated "Batch user import should not be needed anymore"
   def create_changeset_raw(%User{} = user, attrs) do
     user
     |> cast(attrs, [:username, :email, :password_hash, :id])
     |> validate_required([:username, :email, :password_hash, :id])
-    |> unique_email
+    |> validate_unique_email
     |> put_canonical_username
   end
 
+  @doc """
+    Sets the `confirmed_at` field to the current date
+  """
   def confirm_changeset(user) do
-    change(user, %{confirmed_at: DateTime.utc_now() |> DateTime.truncate(:second)})
+    confirmation_date =
+      DateTime.utc_now()
+      |> DateTime.truncate(:second)
+
+    change(user, %{confirmed_at: confirmation_date})
   end
 
+  @doc """
+    Sets the `reset_sent_at` field to the provided date
+  """
   def password_reset_changeset(user, reset_sent_at) do
     change(user, %{reset_sent_at: reset_sent_at})
   end
 
-  def load_following_status(%User{} = user, follower_id) do
-    count =
-      Embers.Subscriptions.UserSubscription
-      |> where([s], s.user_id == ^follower_id)
-      |> where([s], s.source_id == ^user.id)
-      |> select([s], count(s.id))
-      |> Embers.Repo.one()
-
-    %{user | following: count > 0}
-  end
-
-  def load_follows_me_status(%User{} = user, follower_id) do
-    count =
-      Embers.Subscriptions.UserSubscription
-      |> where([s], s.source_id == ^follower_id)
-      |> where([s], s.user_id == ^user.id)
-      |> select([s], count(s.id))
-      |> Embers.Repo.one()
-
-    %{user | follows_me: count > 0}
-  end
-
-  def load_blocked_status(%User{} = user, follower_id) do
-    count =
-      Embers.Blocks.UserBlock
-      |> where([b], b.user_id == ^follower_id)
-      |> where([b], b.source_id == ^user.id)
-      |> select([b], count(b.id))
-      |> Embers.Repo.one()
-
-    %{user | blocked: count > 0}
-  end
-
-  def populate(%User{} = user) do
-    user
-    |> load_stats_map
-  end
-
-  def populate(nil), do: nil
-
-  def load_stats_map(%User{} = user) do
-    stats = %{
-      followers: get_followers_count(user),
-      friends: get_friends_count(user),
-      posts: get_posts_count(user),
-      comments: get_comments_count(user)
-    }
-
-    %{user | stats: stats}
-  end
-
-  def get_followers_count(%User{} = user) do
-    count =
-      Embers.Subscriptions.UserSubscription
-      |> where([s], s.source_id == ^user.id)
-      |> select([s], count(s.id))
-      |> Embers.Repo.one()
-
-    count
-  end
-
-  def get_friends_count(%User{} = user) do
-    count =
-      Embers.Subscriptions.UserSubscription
-      |> where([s], s.user_id == ^user.id)
-      |> select([s], count(s.id))
-      |> Embers.Repo.one()
-
-    count
-  end
-
-  def get_posts_count(%User{} = user) do
-    from(p in Embers.Posts.Post,
-      where: p.user_id == ^user.id,
-      where: is_nil(p.deleted_at),
-      where: p.nesting_level == 0,
-      select: count(p.id)
-    )
-    |> Embers.Repo.one()
-  end
-
-  def get_comments_count(%User{} = user) do
-    from(p in Embers.Posts.Post,
-      where: p.user_id == ^user.id,
-      where: is_nil(p.deleted_at),
-      where: p.nesting_level > 0,
-      select: count(p.id)
-    )
-    |> Embers.Repo.one()
-  end
-
-  defp unique_email(changeset) do
+  defp validate_unique_email(changeset) do
     changeset
     |> validate_format(:email, ~r/@/)
     |> validate_length(:email, max: 254)
@@ -248,10 +170,4 @@ defmodule Embers.Accounts.User do
   end
 
   defp put_canonical_username(changeset), do: changeset
-end
-
-defimpl FunWithFlags.Actor, for: Embers.Accounts.User do
-  def id(%{id: id}) do
-    "user:#{id}"
-  end
 end

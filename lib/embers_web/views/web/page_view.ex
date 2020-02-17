@@ -1,4 +1,6 @@
 defmodule EmbersWeb.PageView do
+  @moduledoc false
+
   use EmbersWeb, :view
 
   def render("auth.json", %{conn: conn} = assigns) do

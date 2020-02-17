@@ -1,4 +1,6 @@
 defmodule Embers.Media.Pruner do
+  # It gave an error on production that I didn't document, so this module
+  # should be reviewed and probably rewritten.
   use GenServer
 
   require Logger

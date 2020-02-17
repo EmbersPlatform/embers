@@ -1,4 +1,6 @@
 defmodule EmbersWeb.PasswordResetController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   alias Embers.Accounts

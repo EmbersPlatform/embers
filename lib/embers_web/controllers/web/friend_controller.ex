@@ -1,4 +1,5 @@
 defmodule EmbersWeb.FriendController do
+  @moduledoc false
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
@@ -23,7 +24,7 @@ defmodule EmbersWeb.FriendController do
       if not is_nil(conn.assigns.current_user) do
         friends.entries
         |> Enum.map(fn x ->
-          user = Embers.Accounts.User.load_following_status(x.user, conn.assigns.current_user.id)
+          user = Embers.Accounts.load_following_status(x.user, conn.assigns.current_user.id)
           %{x | user: user}
         end)
       end || friends.entries
@@ -115,7 +116,7 @@ defmodule EmbersWeb.FriendController do
       if not is_nil(conn.assigns.current_user) do
         friends.entries
         |> Enum.map(fn x ->
-          user = Embers.Accounts.User.load_following_status(x.user, conn.assigns.current_user.id)
+          user = Embers.Accounts.load_following_status(x.user, conn.assigns.current_user.id)
           %{x | user: user}
         end)
       end || friends.entries

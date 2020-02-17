@@ -1,4 +1,5 @@
 defmodule EmbersWeb.Admin.AuditView do
+  @moduledoc false
   use EmbersWeb, :view
   import Scrivener.HTML
 

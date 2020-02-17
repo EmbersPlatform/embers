@@ -1,8 +1,8 @@
 defmodule EmbersWeb.UserController do
+  @moduledoc false
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  import EmbersWeb.Helpers
   alias Embers.Accounts
 
   plug(:id_check when action in [:edit, :update, :delete])
@@ -16,9 +16,9 @@ defmodule EmbersWeb.UserController do
       user ->
         user =
           user
-          |> Accounts.User.load_following_status(current_user.id)
-          |> Accounts.User.load_follows_me_status(current_user.id)
-          |> Accounts.User.load_blocked_status(current_user.id)
+          |> Accounts.load_following_status(current_user.id)
+          |> Accounts.load_follows_me_status(current_user.id)
+          |> Accounts.load_blocked_status(current_user.id)
 
         render(conn, "show.json", user: user)
     end
@@ -32,24 +32,6 @@ defmodule EmbersWeb.UserController do
       user ->
         render(conn, "show.json", user: user)
     end
-  end
-
-  def update(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"user" => user_params}) do
-    case Accounts.update_user(user, user_params) do
-      {:ok, user} ->
-        success(conn, "User updated successfully", user_path(conn, :show, user))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "show.json", changeset: changeset)
-    end
-  end
-
-  def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, _) do
-    {:ok, _user} = Accounts.delete_user(user)
-
-    conn
-    |> delete_session(:phauxth_session_id)
-    |> success("User deleted successfully", session_path(conn, :new))
   end
 
   def reset_pass(conn, _params) do

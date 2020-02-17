@@ -1,4 +1,5 @@
 defmodule EmbersWeb.PostView do
+  @moduledoc false
   use EmbersWeb, :view
 
   alias Embers.Helpers.IdHasher

@@ -1,4 +1,5 @@
 defmodule EmbersWeb.PostWebController do
+  @moduledoc false
   use EmbersWeb, :controller
 
   alias Embers.Helpers.IdHasher
@@ -10,15 +11,17 @@ defmodule EmbersWeb.PostWebController do
   def show(%{assigns: %{current_user: nil}} = conn, %{"hash" => hash} = _params) do
     id = IdHasher.decode(hash)
 
-    with {:ok, post } = Posts.get_post(id) do
+    with {:ok, post} = Posts.get_post(id) do
       post = %{
-        post |
-        id: hash,
-        user: %{
-          post.user | meta: %{
-            post.user.meta | avatar: Meta.avatar_map(post.user.meta)
+        post
+        | id: hash,
+          user: %{
+            post.user
+            | meta: %{
+                post.user.meta
+                | avatar: Meta.avatar_map(post.user.meta)
+              }
           }
-        }
       }
 
       og_metatags = build_metatags(post)
@@ -27,6 +30,7 @@ defmodule EmbersWeb.PostWebController do
       |> render("show.html", post: post, og_metatags: og_metatags)
     end
   end
+
   def show(conn, _params) do
     conn
     |> render("index.html")

@@ -1,4 +1,6 @@
 defmodule EmbersWeb.UserView do
+  @moduledoc false
+
   use EmbersWeb, :view
   alias Embers.Helpers.IdHasher
   alias EmbersWeb.{MetaView, UserView}

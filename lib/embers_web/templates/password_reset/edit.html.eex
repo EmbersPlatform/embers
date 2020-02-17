@@ -1,5 +1,5 @@
 <div class="block" data-layout-type="form">
-  <h2>Recuperar contraseña</h2>
+  <h2><%= gettext("Reset password") %></h2>
 
   <%= form_for @conn, password_reset_path(@conn, :update), [as: :password_reset, method: :put], fn f -> %>
     <%= if error = get_flash(@conn, :error) do %>
@@ -20,6 +20,8 @@
 
     <%= hidden_input f, :key, value: @key %>
 
-    <button type="submit" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>Cambiar mi contraseña</button>
+    <button type="submit" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>
+      <%= gettext("Reset password") %>
+    </button>
   <% end %>
 </div>

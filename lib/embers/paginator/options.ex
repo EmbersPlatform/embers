@@ -1,4 +1,6 @@
 defmodule Embers.Paginator.Options do
+  @moduledoc false
+
   @type t() :: %__MODULE__{
           before: any(),
           after: any(),

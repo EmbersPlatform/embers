@@ -1,4 +1,6 @@
 defmodule EmbersWeb.MetaController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   alias Embers.Profile

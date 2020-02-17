@@ -1,4 +1,6 @@
 defmodule EmbersWeb.LinkController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   alias Embers.Links

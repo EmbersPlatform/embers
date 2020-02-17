@@ -1,4 +1,5 @@
 defmodule EmbersWeb.SessionController do
+  @moduledoc false
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
@@ -54,9 +55,11 @@ defmodule EmbersWeb.SessionController do
 
   def delete(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, _params) do
     session_id = get_session(conn, :phauxth_session_id)
-    session_id = if is_nil(session_id) do
-      get_session(conn, :session_id)
-    end || session_id
+
+    session_id =
+      if is_nil(session_id) do
+        get_session(conn, :session_id)
+      end || session_id
 
     case session_id |> Sessions.get_session() |> Sessions.delete_session() do
       {:ok, %{user_id: ^user_id}} ->
@@ -72,6 +75,7 @@ defmodule EmbersWeb.SessionController do
     end
   end
 
+  # Deprecate API session creation in favour of classic web login form?
   def create_api(conn, %{"id" => identifier, "password" => password}) do
     case conn.assigns.current_user do
       nil ->

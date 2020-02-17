@@ -1,30 +1,23 @@
 defmodule Embers.Feed.Activity do
   @moduledoc """
-  Una actividad es la unidad constitutiva de los feeds.
+  Activities are used to build each user's feeds.
 
-  Embers usa el método "fanout" para crear los feeds o timelines.
-  Cada vez que se crea un post, se genera la lista de usuarios que deben
-  recibir el post en su feed, y se crea una actividad por cada uno.
+  Embers uses a fanout method to create feeds/timelines.
+  Every time a post is created, the list of users that should receive it is
+  generated, and an `Activity` is created for each one of them.
 
-  Si bien se podria realizar una consulta para cada tipo de post en vez
-  de crear una actividad por cada feed, surgen los siguientes problemas:
+  A feed query for a timeline could be used, but we've hit some problems with
+  that approach before:
+  - The query gets progressively slower the more followers the user has. Joins
+  and where in clauses are expensive, so a simpler query is needed to get a
+  timeline *fast*.
+  - If a user wants to remove an activity from it's feed, it gets harder if the
+  feed is generated only with the posts table, usually involving extra tables.
 
-  - La consulta se vuelve lenta mientras mas seguidos tenga el usuario. Los
-  joins y where ins no son operaciones computacionalmente baratas, por lo cual
-  mantener la consulta lo más simple posible es fundamental para reducier los
-  tiempos.
-  - Hacer que un usuario pueda quitar un post de su feed se vuelve más
-  complicado, haciéndose necesarias tablas adicionales donde se guardan
-  los posts borrados. Es más difícil comprender el diseño.
-
-  Se puede pensar en los feeds y actividades como correos y suscripciones.
-  De hecho, la idea es la misma. Uno comienza a recibir posts desde el
-  momento en que se suscribe. Si un post no le gusta, lo deshecha. Puede
-  cancelar la suscripción en cualquier momento, pero los posts anteriores
-  siguen disponibles.
-
-  En el fondo, las actividades están implementadas como una tabla pivote
-  relacionando a usuarios con posts.
+  Feeds and activities could be thought of as newsletters and subscriptions.
+  It's the same idea, actually. You start receving posts from a user from the
+  moment you subscribe to it. You can cancel a subscription at any moment, but
+  you can keep the posts you've already received.
   """
   use Ecto.Schema
   import Ecto.Changeset

@@ -1,4 +1,6 @@
 defmodule EmbersWeb.MetaView do
+  @moduledoc false
+
   use EmbersWeb, :view
   alias EmbersWeb.MetaView
   alias Embers.Profile.Meta

@@ -1,4 +1,4 @@
-defmodule Embers.UserSearch do
+defmodule Embers.Search.UserSearch do
   import Ecto.Query
 
   alias Embers.Accounts.User

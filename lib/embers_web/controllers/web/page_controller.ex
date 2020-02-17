@@ -1,4 +1,6 @@
 defmodule EmbersWeb.PageController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   alias Embers.Accounts.User

@@ -1,4 +1,5 @@
 defmodule EmbersWeb.Admin.AuditController do
+  @moduledoc false
   use EmbersWeb, :controller
 
   alias Embers.Audit

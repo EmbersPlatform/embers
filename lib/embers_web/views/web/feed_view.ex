@@ -1,4 +1,6 @@
 defmodule EmbersWeb.FeedView do
+  @moduledoc false
+
   use EmbersWeb, :view
   alias EmbersWeb.PostView
 

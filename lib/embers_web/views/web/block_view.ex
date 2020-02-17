@@ -1,4 +1,6 @@
 defmodule EmbersWeb.BlockView do
+  @moduledoc false
+
   use EmbersWeb, :view
 
   alias EmbersWeb.UserView

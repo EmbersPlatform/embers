@@ -1,4 +1,6 @@
 defmodule EmbersWeb.Admin.UserController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   alias Embers.Accounts

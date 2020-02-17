@@ -1,7 +1,6 @@
 defmodule Embers.Sessions do
   @moduledoc """
-  Las sesiones son guardadas en la base de datos y este es el modulo para
-  interactuar con ellas.
+  The Sessions context
   """
 
   import Ecto.Query, warn: false
@@ -22,6 +21,7 @@ defmodule Embers.Sessions do
   Gets a single user.
   """
   def get_session(nil), do: nil
+
   def get_session(id) do
     now = DateTime.utc_now()
     Repo.one(from(s in Session, where: s.id == ^id and s.expires_at > ^now, limit: 1))
@@ -38,6 +38,7 @@ defmodule Embers.Sessions do
   Deletes a session.
   """
   def delete_session(nil), do: nil
+
   def delete_session(%Session{} = session) do
     Repo.delete(session)
   end

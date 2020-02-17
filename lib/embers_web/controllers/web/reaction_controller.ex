@@ -1,4 +1,6 @@
 defmodule EmbersWeb.ReactionController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize

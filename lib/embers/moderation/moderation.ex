@@ -1,5 +1,5 @@
 defmodule Embers.Moderation do
-  # TODO documentar
+  # TODO document
   alias Embers.Accounts.User
   alias Embers.Moderation.Ban
   alias Embers.Sessions

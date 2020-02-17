@@ -1,4 +1,6 @@
 defmodule EmbersWeb.ConfirmController do
+  @moduledoc false
+
   use EmbersWeb, :controller
   alias Embers.Accounts
   alias EmbersWeb.Email

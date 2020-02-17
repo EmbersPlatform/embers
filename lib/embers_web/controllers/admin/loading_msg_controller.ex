@@ -1,4 +1,6 @@
 defmodule EmbersWeb.Admin.LoadingMsgController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   alias Embers.LoadingMsg

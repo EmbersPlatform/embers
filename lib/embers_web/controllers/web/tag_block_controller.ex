@@ -1,4 +1,6 @@
 defmodule EmbersWeb.TagBlockController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize

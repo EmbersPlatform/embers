@@ -25,7 +25,7 @@ defmodule Embers.Reports.UserReport do
   end
 end
 
-defimpl Embers.Reportable, for: Embers.Accounts.User do
+defimpl Embers.Reports.Reportable, for: Embers.Accounts.User do
   alias Embers.Reports.UserReport
   import Ecto.Query, only: [from: 2]
 
@@ -47,14 +47,18 @@ defimpl Embers.Reportable, for: Embers.Accounts.User do
 
   def reports_for(user, opts \\ []) do
     resolved = Keyword.get(opts, :resolved, false)
-    query = from(report in UserReport,
-      where: report.user_id == ^user.id,
-      where: report.resolved == ^resolved)
+
+    query =
+      from(report in UserReport,
+        where: report.user_id == ^user.id,
+        where: report.resolved == ^resolved
+      )
+
     Embers.Repo.all(query)
   end
 end
 
-defimpl Embers.Report, for: Embers.Reports.UserReport do
+defimpl Embers.Reports.Report, for: Embers.Reports.UserReport do
   def resolve(report) do
     report
     |> Ecto.Changeset.change(resolved: true)

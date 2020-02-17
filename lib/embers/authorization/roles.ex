@@ -1,13 +1,9 @@
 defmodule Embers.Authorization.Roles do
   @moduledoc """
-  Los roles son los contenedores para los permisos. Sólo tienen un nombre y una
-  lista de permisos.
+  Roles(or groups) are permission containers. They're just a list of permissions
+  associated to a name.
 
-  Un usuario puede tener muchos roles, lo que hace más fácil definirlos.
-  Por ejemplo, un miembro tiene el set de permisos básicos. Para que sea
-  un moderador, en vez de volver a definir los permisos basta con definir
-  sólo los que son específicos a la moderación. Los permisos totales que posee
-  un usuario resultan de la suma de los permisos de todos sus roles.
+  Permissions are any arbitrary string, they're not checked.
   """
 
   alias Embers.Accounts.User
@@ -16,10 +12,17 @@ defmodule Embers.Authorization.Roles do
 
   import Ecto.Query, only: [from: 2]
 
+  @doc """
+    Returns a list with all the stored roles
+  """
   def list_all do
     Repo.all(Role)
   end
 
+  @doc """
+    Gets a role by it's name, nor `nil` if none is found
+  """
+  @spec get(String.t()) :: Role.t() | nil
   def get(name) do
     Repo.one(
       from(role in Role,
@@ -28,6 +31,10 @@ defmodule Embers.Authorization.Roles do
     )
   end
 
+  @doc """
+    Same as `get/1` but raises if no role was found
+  """
+  @spec get(String.t()) :: Role.t()
   def get!(name) do
     Repo.one!(
       from(role in Role,
@@ -36,22 +43,38 @@ defmodule Embers.Authorization.Roles do
     )
   end
 
+  @doc """
+    Creates a role with the `name` and `permissions`
+  """
+  @spec create(String.t(), [String.t()]) :: Role.t()
   def create(name, permissions \\ []) do
     changeset = Role.changeset(%Role{}, %{name: name, permissions: permissions})
     Repo.insert(changeset)
   end
 
+  @doc """
+    Updates the `name` role.
+  """
+  @spec update(String.t(), map()) :: Role.t()
   def update(name, attrs) do
     role = get(name)
     role = Role.changeset(role, attrs)
     Repo.update(role)
   end
 
+  @doc """
+  Deletes the role by it's `name`
+  """
+  @spec delete(String.t()) :: Role.t() | nil
   def delete(name) do
     role = get(name)
     Repo.delete(role)
   end
 
+  @doc """
+  Finds a user by it's `id` and returns the list of `Role`s associated to it.
+  """
+  @spec roles_for(integer()) :: [Role.t()]
   def roles_for(user_id) do
     Repo.all(
       from(ru in RoleUser,
@@ -62,15 +85,24 @@ defmodule Embers.Authorization.Roles do
     )
   end
 
+  @doc """
+  Attachs a role to a user.
+  Returns the `RoleUser` representing the association.
+  """
+  def attach_role(role, user)
+
+  @spec attach_role(integer(), integer()) :: RoleUser.t() | nil
   def attach_role(role_id, user_id) when is_integer(role_id) and is_integer(user_id) do
     changeset = RoleUser.changeset(%RoleUser{}, %{role_id: role_id, user_id: user_id})
     Repo.insert(changeset)
   end
 
+  @spec attach_role(Role.t(), User.t()) :: RoleUser.t() | nil
   def attach_role(%Role{} = role, %User{} = user) do
     attach_role(role.id, user.id)
   end
 
+  @spec attach_role(String.t(), integer()) :: RoleUser.t() | nil
   def attach_role(rolename, user_id) when is_binary(rolename) and is_integer(user_id) do
     case get(rolename) do
       nil -> nil
@@ -78,10 +110,15 @@ defmodule Embers.Authorization.Roles do
     end
   end
 
+  @spec attach_role(String.t(), User.t()) :: RoleUser.t() | nil
   def attach_role(rolename, %User{} = user) when is_binary(rolename) do
     attach_role(rolename, user.id)
   end
 
+  @doc """
+  Detachs the role form the user.
+  Returns the `RoleUser` that did represent the association.
+  """
   def detach_role(role_id, user_id) when is_integer(role_id) and is_integer(user_id) do
     case Repo.get_by(RoleUser, %{role_id: role_id, user_id: user_id}) do
       nil -> nil
@@ -104,6 +141,9 @@ defmodule Embers.Authorization.Roles do
     detach_role(rolename, user.id)
   end
 
+  @doc """
+  Updates the user roles by diffing the `new_roles` with the current roles.
+  """
   def update_roles(new_roles, user) when is_list(new_roles) do
     old_roles = user.roles |> Enum.map(fn role -> role.id end)
     Enum.each(new_roles -- old_roles, &attach_role(&1, user.id))

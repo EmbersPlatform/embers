@@ -1,7 +1,5 @@
 defmodule Embers.Paginator.Page do
-  @moduledoc """
-  Representa una página de los resultados de una consulta.
-  """
+  @moduledoc false
 
   @type t() :: %__MODULE__{
           entries: list(),

@@ -1,4 +1,6 @@
 defmodule EmbersWeb.TagBlockView do
+  @moduledoc false
+
   use EmbersWeb, :view
 
   alias Embers.Helpers.IdHasher

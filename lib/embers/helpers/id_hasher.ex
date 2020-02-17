@@ -1,26 +1,19 @@
 defmodule Embers.Helpers.IdHasher do
   @moduledoc """
-  Modulo para hashear Ids utilizando la librería `Hashids`.
+  A wrapper around the `Hashids` library.
 
-  Dado que Embers usa ids secuenciales, es facil hacer *ataques* de
-  enumeración de contenidos.
-  Por ejemplo, si un usuario tiene id 23, se puede deducir que existen otros 22
-  usuarios y que los siguientes seran 24, 25, 26... lo cual permite a un
-  tercero tener un listado de todos los usuarios existentes.
+  Embers uses sequential, autoincremented ids. To prevent enumeration *attacks*,
+  and avoid using UUIDs or Snowflakes, every id SHOULD be encoded before sending
+  it to the client. This might change in the future, when the need for UUIDs or
+  Snowflakes is properly addressed.
 
-  Esto es lo que se usaba en el archivo de posts eliminados de taringa, ya
-  que antes de la V7 usaban ids secuenciales encodeados en base64, como el
-  backend `fenix` de embers. Se anticipaban los ids de los posts aun sin
-  crear para revisar periodicamente la página y cachear los posts antes de
-  que sean eliminados.
-
-  Si el id no es secuencial y no revela información adicional a un tercero,
-  se puede evitar este *ataque*.
+  Refer to the `Hashids` library for the `encode` and `decode` functions docs.
   """
   @coder Hashids.new(
            salt: "HmPbtapoe1FGfTFbEEeZcWKuakIQp3L0",
            min_en: 2
          )
+
   def encode(data) do
     Hashids.encode(@coder, data)
   end
@@ -29,6 +22,9 @@ defmodule Embers.Helpers.IdHasher do
 
   def decode(data) do
     # Hashids returns decoded id as a list
+    # If the list has more than one element, the encoded id is malformed and
+    # must be discarded
+    # Maybe it should `raise` here?
     case Hashids.decode!(@coder, data) do
       [decoded] -> decoded
       [_h | _t] -> nil

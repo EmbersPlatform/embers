@@ -1,4 +1,6 @@
 defmodule EmbersWeb.Admin.RoleController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   import Ecto.Query

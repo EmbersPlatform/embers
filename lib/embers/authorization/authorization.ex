@@ -1,14 +1,19 @@
 defmodule Embers.Authorization do
   @moduledoc """
-  Módulo usado para checkear si un usuario es capaz de realizar una acción.
+  Holds utility functions to check if a user is able to perform an action based
+  on a set of permissions.
   """
   alias Embers.Accounts.User
   alias Embers.Authorization.Roles
 
   @doc """
-  Devuelve si el usuario posee el permiso indicado.
+  Extracts the permissions from a user and checks if it has a given `permission`.
+  Uses `check_permission/2` under the hood.
   """
-  @spec can?(String.t(), Embers.Accounts.User.t()) :: boolean()
+  @spec can?(User.t(), String.t()) :: boolean()
+  def can?(%User{} = user, permission), do: can?(permission, user)
+
+  @spec can?(String.t(), User.t()) :: boolean()
   def can?(permission, user) do
     permissions = extract_permissions(user)
 
@@ -19,7 +24,8 @@ defmodule Embers.Authorization do
   end
 
   @doc """
-  Checkea si el conjunto de permisos posee el permiso indicado.
+  Checks if the `permission` is present on the given `permissions`.
+  Returns `true` if the `"any"` permission is present.
   """
   @spec check_permission(Enum.t(), String.t()) :: atom()
   def check_permission(permissions, permission) do
@@ -31,7 +37,10 @@ defmodule Embers.Authorization do
   end
 
   @doc """
-  Devuelve la lista de permisos que posee un usuario basado en sus roles.
+  Returns the list of permissions associated to a user.
+
+  A user can have many roles, so the list os the result of merging and deduping
+  the permissions of it's roles.
   """
   @spec extract_permissions(Embers.Accounts.User.t()) :: [String.t()]
   def extract_permissions(user) do
@@ -42,10 +51,8 @@ defmodule Embers.Authorization do
   end
 
   @doc """
-  Devuelve si el usuario es propietario del recurso. Es útil, por ejemplo,
-  a la hora de checkear si el usuario puede eliminar un post.
-  Si no es moderador, no tendría permisos para hacerlo, pero como el post
-  es de su propiedad en realidad sí puede eliminarlo.
+  Checks if the user is the owner of a resource. This is useful when you want to
+  check if the user can delete a post.
   """
   def is_owner?(%User{} = user, %{user_id: user_id} = _resource) do
     user.id == user_id

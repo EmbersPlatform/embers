@@ -244,7 +244,7 @@ defmodule Embers.Posts do
   end
 
   @doc """
-  Devuelve las respuestas a un post.
+  Gets the replies of a post
   """
   def get_post_replies(parent_id, opts \\ []) do
     order = Keyword.get(opts, :order, :asc)

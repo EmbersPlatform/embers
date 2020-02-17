@@ -52,27 +52,27 @@
 				</li>
 				<li>
 					<a href="/faq">
-						faq
+						<%= gettext("faq") %>
 					</a>
 				</li>
 				<li>
 					<a href="/rules"">
-						reglas
+						<%= gettext("rules") %>
 					</a>
 				</li>
 				<li>
 					<a href="/acknowledgment">
-						agradecimientos
+						<%= gettext("acknowledgements") %>
 					</a>
 				</li>
 				<li>
 					<a href="/register" class="button" data-button-size="medium" data-button-font="medium" data-button-uppercase>
-						registrate
+						<%= gettext("register") %>
 					</a>
 				</li>
 				<li>
 					<a href="/login">
-						inicia sesion
+						<%= gettext("log in") %>
 					</a>
 				</li>
 			</ul>
@@ -80,53 +80,21 @@
 		<div data-layout-type="wide" class="block">
 			<img src="/images/logo.svg" id="logo">
 			<div id="messages-list" class="hidden">
-				<span>Cuna del shitposting</span>
-				<span>Hogar de la libre expresión</span>
-				<span>Donde nacen las berenjenas</span>
+				<span><%= gettext("Shitposting hive") %></span>
+				<span><%= gettext("Home of free speech") %></span>
+				<span><%= gettext("Where eggplants are born") %></span>
 			</div>
 			<h1>
 				<span class="typed"></span>
 			</h1>
-			<h3>Lo que pasa en Embers:</h3>
-			<div id="masonry">
-<!--
-				<article data-card-size="little" focusable="" tabindex="-1" class="card little" data-clear>
-					<div class="card-wrapper">
-						<header class="header" data-clear>
-							<div data-status="" class="avatar" data-clear>
-								<a href="{{ '/@' . $post->user->name }}" class="" data-clear>
-									<img src="{{ $post->user->avatar['small'] }}" data-clear>
-								</a>
-							</div>
-							<div class="header-content" data-clear>
-								<h4 data-clear>
-									<a href="{{ '/@' . $post->user->name }}" class="username" data-badge="undefined" data-clear>
-										{{ $post->user->name }}
-									</a>
-									<p data-clear>compartio:</p>
-								</h4>
-								<small data-clear>
-									{{ $post->created_at }}
-								</small>
-							</div>
-						</header>
-						<section class="card-wrapper-content" data-clear>
-							<div class="multimedia" data-clear>
-								<a href="{{$post->url}}" class="media image" data-clear>
-									<img src="{{$post->attachment_url}}" data-clear>
-								</a>
-							</div>
-						</section>
-					</div>
-				</article>
--->
-			</div>
+			<h3><%= gettext("What's happening in Embers:") %></h3>
+			<!-- Top posts go here -->
 		</div>
 		<footer id="footer">
 			<div data-layout-type="form" class="block">
-				<h3>Prueba Embers ahora, ¡Es gratis!</h3>
+				<h3><%= gettext("Try Embers now, it's free!") %></h3>
 				<a href="/register" class="button" data-button-size="big" data-button-font="big" data-button-uppercase data-button-dark data-button-unmask data-clear>
-					regístrate
+					<%= gettext("Register") %>
 				</a>
 			</div>
 		</footer>

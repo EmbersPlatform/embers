@@ -1,9 +1,10 @@
 defmodule EmbersWeb.SearchController do
+  @moduledoc false
   use EmbersWeb, :controller
 
   alias Embers.Helpers.IdHasher
   alias Embers.Search
-  alias Embers.UserSearch
+  alias Embers.Search.UserSearch
 
   def search(conn, params) do
     query = Map.get(params, "query", "")

@@ -1,4 +1,6 @@
 defmodule EmbersWeb.Admin.ReportController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   import Ecto.Query

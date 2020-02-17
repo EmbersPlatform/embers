@@ -1,23 +1,11 @@
 defmodule Embers.Media.MediaItem do
   @moduledoc """
-  Esta es la representacion del medio en la base de datos.
-
-  Un medio tiene al menos una url y un tipo. El tipo puede ser `image`, `gif`,
-  `video` o `link`.
-  También posee un campo `:temporary` para indicar si el medio es temporal
   o no.
+  A MediaItem has at least an url, a type and a `:temporary` flag. The type can
+  be any of `image`, `gif`, `video` or `link`.
 
-  El campo `:metadata` se utiliza para guardar informacion adicional
-  denormalizada. Ejemplos de esto serian el alto, ancho, tamaño, o cualquier
-  otra informacion que podria ser útil. Está pensado principalmente para que
-  los clientes puedan manejar mejor su representación, ya que el tipo de medio
-  no siempre es suficiente.
-  Lo ideal sería guardar siempre el ancho y alto del medio, la duracion si es
-  un video, y el titulo + descripcion si es un link.
-
-  El punto de que los metadatos sea denormalizado es para no tener que cambiar
-  la estructura de la base de datos cada vez que se decida manejarlos de manera
-  distinta.
+  The `:metadata` field is used to store additional data, like hight, width,
+  size, or any other data that might be useful. It's meant to be used by clients.
   """
 
   use Ecto.Schema

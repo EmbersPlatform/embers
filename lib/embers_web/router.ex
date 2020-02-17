@@ -34,21 +34,6 @@ defmodule EmbersWeb.Router do
     plug(:protect_from_forgery)
   end
 
-  pipeline :flags do
-    plug(:accepts, ["html"])
-    plug(:fetch_session)
-    plug(:put_secure_browser_headers)
-    plug(EmbersWeb.Authenticate)
-    plug(EmbersWeb.Remember)
-    plug(GetPermissions)
-    plug(CheckPermissions, permission: "access_backoffice")
-  end
-
-  scope "/flags" do
-    pipe_through(:flags)
-    forward("/", FunWithFlags.UI.Router, namespace: "flags")
-  end
-
   scope "/admin" do
     pipe_through([:admin])
 
@@ -100,16 +85,19 @@ defmodule EmbersWeb.Router do
     get("/static/faq", PageController, :faq)
     get("/static/acknowledgments", PageController, :acknowledgments)
 
+    # Authentication
     get("/login", SessionController, :new)
     post("/login", SessionController, :create)
     delete("/sessions", SessionController, :delete)
     get("/confirm", ConfirmController, :index)
 
+    # Password reset
     get("/password_resets/new", PasswordResetController, :new)
     post("/password_resets/new", PasswordResetController, :create)
     get("/password_resets/edit", PasswordResetController, :edit)
     put("/password_resets/edit", PasswordResetController, :update)
 
+    # Account creation
     get("/register", AccountController, :new)
     post("/register", AccountController, :create)
 
@@ -120,16 +108,21 @@ defmodule EmbersWeb.Router do
 
     scope "/api" do
       scope "/v1" do
+        # should be deprecated?
         post("/auth", SessionController, :create_api)
 
+        # User
         get("/users/:id", UserController, :show)
 
+        # Account settings
         put("/account/meta", MetaController, :update)
         post("/account/avatar", MetaController, :upload_avatar)
         post("/account/cover", MetaController, :upload_cover)
         put("/account/settings", SettingController, :update)
         post("/account/reset_pass", UserController, :reset_pass)
 
+        # Mod specific routes
+        # TODO move to an admin protected scope
         post("/moderation/ban", ModerationController, :ban_user)
         post("/moderation/post/update_tags", ModerationController, :update_tags)
 
@@ -169,8 +162,8 @@ defmodule EmbersWeb.Router do
         post("/posts/:post_id/reaction/:name", ReactionController, :create)
         delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
         post("/posts/:post_id/report", PostReportController, :create)
-        get("posts/:post_id/reactions/overview", ReactionController, :reactions_overview)
-        get("posts/:post_id/reactions/:reaction_name", ReactionController, :reactions_by_name)
+        get("/posts/:post_id/reactions/overview", ReactionController, :reactions_overview)
+        get("/posts/:post_id/reactions/:reaction_name", ReactionController, :reactions_by_name)
 
         get("/reactions/valid", ReactionController, :list_valid_reactions)
 

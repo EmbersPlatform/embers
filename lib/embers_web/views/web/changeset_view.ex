@@ -1,4 +1,6 @@
 defmodule EmbersWeb.ChangesetView do
+  @moduledoc false
+
   use EmbersWeb, :view
 
   @doc """

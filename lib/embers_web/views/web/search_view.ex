@@ -1,4 +1,6 @@
 defmodule EmbersWeb.SearchView do
+  @moduledoc false
+
   use EmbersWeb, :view
 
   def render("results.json", %{entries: posts} = metadata) do

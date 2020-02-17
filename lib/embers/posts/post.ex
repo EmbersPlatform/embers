@@ -1,42 +1,33 @@
 defmodule Embers.Posts.Post do
   @moduledoc """
-  Un post es la unidad mínima de contenido en Embers. Consiste de un
-  cuerpo de texto que no exceda los 1600 caracteres, y opcionalmente
-  hasta 4 medios asociados(imagen, video, etc).
+  A `Post` is the basic content published by users. It's made of a text body
+  no longer than 1600 characters and optional attachments such as `Media`s or
+  a Link.
 
-  De los posts se derivan los comentarios, respuestas, compartidos, que son
-  posts a los que se les da un distinto significado basandose en campos como
-  `:nesting_level`/`:parent_id` y `:related_to_id`.
+  A Post being a comment, a reply or a share depends on it's `:nesting_level`,
+  `:parent_id` and `:related_to_id`
 
-  ## Nivel de anidamiento
-  El `nesting_level` o nivel de anidamiento, representa qué tan profundo se
-  encuentra el post en la cadena de posts. De acuerdo a este nivel, se
-  considera a un post como:
+  ## Nesting level/Depth
+  The `nesting_level` is the depth of the post in a posts chain. Depending on
+  this level, a post is:
   - `0` - Post
-  - `1` - Comentario
-  - `2` - Respuesta (a un Comentario)
+  - `1` - Comment
+  - `2` - Reply(to a comment)
 
-  Esto permite reutilizar el post para varios escenarios, evitando la
-  duplicación de código en el backend y limitando la superficie expuesta a
-  fallos.
+  This way a Post can be reused for a variety of scenarios and simplifies logic:
+  we no longer have to maintain duplicate code for posts and comments.
 
-  Se eligió limitar el anidamiento para evitar lidiar con interfaces poco
-  amigables como es el caso de Reddit y HackerNews. Además hace que los
-  posts con un nivel de anidamiento muy alto acaben perdidos o que el se
-  vuelvan demasiado off-topic, al punto de ser molestos para el OP.
+  The nesting level is limited so conversations are easier to follow and content
+  doesn't end up buried in a very deep chain of comments as is the case in
+  Reddit or HackerNews.
 
-  ## Compartidos
-  A los posts que están relacionados a otros posts se los considera como
-  Compartidos.
-  Este tipo de post puede tener un cuerpo, pero no puede tener medios
-  asociados.
-
-  Para que un post sea un Compartido, debe tener asignado un valor en el campo
-  `related_to_id`. Si el post "padre" es eliminado, también son eliminados
-  todos los posts compartidos derivados de éste.
-  Se diseñó de esta forma para asegurar la integridad de la información usando
-  llaves foráneas con eliminación por cascada y evitar la existencia de
-  compartidos huérfanos.
+  ## Shares
+  Posts associated to other posts via `:related_to_id` are considered Shares.
+  This kind of posts can have a text body, but can't have attachments like
+  `Media` or `Link`
+  If the related post is deleted, all the posts that shared it will be deleted
+  too, so there won't be any orphan Share.
+  This might be reconsidered in the future.
   """
 
   use Ecto.Schema
@@ -74,30 +65,12 @@ defmodule Embers.Posts.Post do
   end
 
   @doc """
-  Valida y prepara un `Post` para su persistencia en la base de datos.
+  Validates and prepares a `Post` for it's insertion on the database.
+  In this step, the body is trimmed and the nesting level is calculated.
 
-  Los siguientes atributos son casteados a sus correspondientes tipos:
-  - :body
-  - :user_id
-  - :parent_id
-  - :related_to_id
+  It's also checked that the post has a max of 4 Media OR 1 Link.
 
   Realiza las siguientes validaciones:
-
-  - `:user_id` esta presente
-  - El `User` asociado debe existir
-  - Si `:parent_id` esta presente, debe existir
-  - Si `:related_to_id` esta presente, debe existir
-  - Solo pueden proveerse `:parent_id` o `:related_to_id`, no ambos
-  - El `:nesting_level` calculado en base al `:parent_id` no es mayor que 2
-  - Si se provee una lista de `MediaItem`s, deben ser maximo 4
-  - Si se provee una lista de `Link`s, debe ser maximo 1
-  - Luego de recortar el cuerpo del post, debe tener maximo 1600 caracteres
-
-  Ademas realiza las siguientes transformaciones:
-
-  - El `:body` es recortado
-  - El `:nesting_level` es calculado y asignado
   """
   def changeset(post, attrs) do
     post
@@ -117,38 +90,43 @@ defmodule Embers.Posts.Post do
   end
 
   @doc """
-  Hace lo mismo que `changeset/2`, pero agrega las siguientes acciones que se
-  realizaran en la misma transaccion y con el mismo repo que se conecta con la
-  base de datos:
-  - Si `:parent_id` esta presente y existe, incrementa su `:replies_count` en 1
-  - Si `:related_to_id` esta presente y existe, incrementa su `:shares_count`
-    en 1
+  Runs `changeset/2` and also:
+  - If `:parent_id` is present and exists, increments it's `:replies_count`
+  - If `:related_to_id` is present and exists, increments it's`:shares_count`
   """
   def create_changeset(post, attrs) do
     post
     |> changeset(attrs)
     |> prepare_changes(fn changeset ->
       repo = changeset.repo
+
       if parent_id = get_change(changeset, :parent_id) do
         repo.update_all(
           from(
             p in __MODULE__,
             where: p.id == ^parent_id,
             update: [inc: [replies_count: 1]]
-          ), [])
+          ),
+          []
+        )
       end
+
       changeset
     end)
     |> prepare_changes(fn changeset ->
       repo = changeset.repo
+
       if related_to_id = get_change(changeset, :related_to_id) do
         repo.update_all(
           from(
             p in __MODULE__,
             where: p.id == ^related_to_id,
             update: [inc: [shares_count: 1]]
-          ), [])
+          ),
+          []
+        )
       end
+
       changeset
     end)
   end
@@ -227,7 +205,8 @@ defmodule Embers.Posts.Post do
 
   defp trim_body(changeset) do
     body = get_change(changeset, :body)
-    unless is_nil body do
+
+    unless is_nil(body) do
       changeset
       |> change(body: String.trim(body))
     end || changeset
@@ -237,7 +216,9 @@ defmodule Embers.Posts.Post do
     parent_id = get_change(changeset, :parent_id)
     validate_parent_and_set_nesting_level(changeset, parent_id)
   end
+
   defp validate_parent_and_set_nesting_level(changeset, nil), do: changeset
+
   defp validate_parent_and_set_nesting_level(changeset, parent_id) do
     case Repo.get(Post, parent_id) do
       nil ->
@@ -290,7 +271,9 @@ defmodule Embers.Posts.Post do
       |> Timex.shift(minutes: -5)
 
     case related_id do
-      nil -> changeset
+      nil ->
+        changeset
+
       _ ->
         recently_shared? =
           Repo.exists?(
@@ -301,6 +284,7 @@ defmodule Embers.Posts.Post do
               where: post.inserted_at >= ^since_date
             )
           )
+
         if recently_shared? do
           changeset
           |> add_error(:related_to, "rate limited")
@@ -334,21 +318,21 @@ defmodule Embers.Posts.Post do
   end
 
   defp maybe_put_media(%{params: %{"media" => media}} = changeset)
-    when not is_nil(media)
-  do
+       when not is_nil(media) do
     changeset
     |> put_assoc(:media, media)
     |> validate_length(:media, max: 4)
   end
+
   defp maybe_put_media(changeset), do: changeset
 
   defp maybe_put_link(%{params: %{"links" => links}} = changeset)
-    when not is_nil(links)
-  do
+       when not is_nil(links) do
     changeset
     |> put_assoc(:links, links)
     |> validate_length(:links, max: 1)
   end
+
   defp maybe_put_link(changeset), do: changeset
 
   defp maybe_put_tags(%{params: %{"tags" => tags}} = changeset) do
@@ -358,5 +342,6 @@ defmodule Embers.Posts.Post do
     |> put_assoc(:tags, tags)
     |> validate_length(:tags, max: 10)
   end
+
   defp maybe_put_tags(changeset), do: changeset
 end

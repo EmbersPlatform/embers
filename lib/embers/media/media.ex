@@ -1,34 +1,26 @@
 defmodule Embers.Media do
   @moduledoc """
-  Los medios, o media, son archivos subidos por los usuarios, como las
-  imagenes o los videos.
+  Media are the user uploaded images and videos.
 
-  Los archivos son guardados en el almacenamiento definido en la configuracion,
-  y en la base de datos se guarda una entrada `Embers.Media.MediaItem` que
-  contiene el tipo y la url del archivo.
+  The actual files are stored via `Embers.Uploads`, the `MediaItem` holds
+  metadata about the file, such as it's url, path, or dimensions.
 
-  Para ver mas sobre como se guardan los archivos, ver el modulo
-  `Embers.Uploads`
+  ## Temporary Medias
+  When created, a the media is flagged as "temporary". A media is usually
+  uploaded by the client while editing a post. If the post is never submitted,
+  or the media is removed from it, it would be "orphaned" from it's associated
+  entity. When the post is submitted, the `:temporary` flag is set to false.
+  This design might change in the future, but in it's current form should allow
+  the implementation of more entities that can have medias a bit more
+  straightforward.
 
-  ## Medios temporales
-  Por defecto, al crear un medio, es marcado como temporal. El motivo es que
-  al crear un post(que es para lo cual se implementaron aunque se le pueden dar
-  mas usos), se devuelve al cliente un medio que podria no ser publicado con
-  ningun post.
+  There should be a process that looks for stale temporary medias and prune them.
 
-  Para evitar la existencia de medios sin usar, se marcan como temporales al
-  ser creados, y requieren que se los "confirme" quitando esta marca.
+  ## Image processing
+  `Media`s are processed before being saved so they fit the max dimensions and
+  format allowed by Embers.
 
-  Marcarlos como temporales permite correr alguna tarea que levante todos los
-  medios temporales que superen el tiempo de vida maximo permitido y los
-  elimine.
-
-  ## Manipulacion de imagenes
-  Los medios, antes de ser guardados, son modificados para asegurar que
-  cumplen con dimensiones maximas y formatos validos para Embers.
-
-  La manipulacion de imagenes se realiza mediante la libreria `Mogrify`,
-  que es una interfaz para utilizar la herramienta de ImageMagick.
+  `Mogrify` and `FFmpex` libraries are used.
   """
   use FFmpex.Options
 
@@ -44,7 +36,7 @@ defmodule Embers.Media do
   @supported_formats ~w(jpg jpeg png gif webm mp4)
 
   @doc """
-  Devuelve un medioo por su id
+  Gets a media by it's id
       iex> get(1)
       %MediaItem{}
   """
@@ -53,7 +45,7 @@ defmodule Embers.Media do
   end
 
   @doc """
-  Sube un medio al almacenamiento y crea una entrada en la base de datos.
+  Uploads a media and creates an entry in the database
       iex> upload(file, 1)
       %MediaItem{user_id: 1, ...}
   """
@@ -107,7 +99,7 @@ defmodule Embers.Media do
   end
 
   @doc """
-  Realiza un soft-delete sobre el medio
+  Soft deletes a media
   """
   def disable(id) do
     with {:ok, media} <- get(id) do
@@ -198,9 +190,6 @@ defmodule Embers.Media do
     end
   end
 
-  # Esta funcion se encarga de manipular el archivo para darle el formato
-  # esperado.
-  # En el caso de las imagenes, limita el tamaño a 1500x1500px.
   defp process_file(%{content_type: "image/" <> format} = file)
        when format in @supported_formats do
     processed_file =
@@ -236,8 +225,6 @@ defmodule Embers.Media do
     {:error, :file_not_supported}
   end
 
-  # Esta funcion usa la libreria Thumbnex para extraer la vista previa de un
-  # archivo. En el caso de los videos, seria el primer cuadro.
   defp make_preview(file, dest_path, opts) do
     preview_path = file.path <> ".preview.jpg"
     Thumbnex.create_thumbnail(file.path, preview_path, opts)

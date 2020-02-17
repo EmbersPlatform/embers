@@ -1,4 +1,5 @@
 defmodule EmbersWeb.PostController do
+  @moduledoc false
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
@@ -161,7 +162,7 @@ defmodule EmbersWeb.PostController do
        when not is_nil(current_user) do
     %{
       post
-      | user: Embers.Accounts.User.load_following_status(post.user, current_user.id)
+      | user: Embers.Accounts.load_following_status(post.user, current_user.id)
     }
   end
 

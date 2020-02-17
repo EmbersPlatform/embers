@@ -1,4 +1,6 @@
 defmodule EmbersWeb.SettingController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   alias Embers.Profile.Settings

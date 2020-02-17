@@ -1,4 +1,6 @@
 defmodule EmbersWeb.ActivitySubscriber do
+  @moduledoc false
+
   use Embers.EventSubscriber, topics: ~w(new_activity)
 
   alias Embers.Helpers.IdHasher

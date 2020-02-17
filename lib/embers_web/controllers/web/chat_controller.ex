@@ -1,4 +1,6 @@
 defmodule EmbersWeb.ChatController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   import Embers.Helpers.IdHasher

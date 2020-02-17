@@ -1,17 +1,13 @@
 defmodule Embers.Links do
   @moduledoc """
-  Los `Link`s son enlaces publicados por los usuarios, generalmente en un
-  `Post`.
+  `Link`s are user uploaded urls. They contain the URL and metadata about the
+  link to be used for clients to show it, such as title or thumbnail.
 
-  Los `Links` contienen la URL y metadatos sobre el enlace necesarios para su
-  representacion gráfica, tales como el título o una imagen de vista previa.
+  The main difference between a `Link` and an `Embers.Media` is that `Link`s do
+  not point to any file hosted by Embers, they only store metadata.
 
-  La principal diferencia entre un `Media` y un `Link` es que los Links no
-  apuntan  ningún archivo alojado por Embers, sino que almacenan metadatos.
-
-  El motivo por el cual existen como entidades separadas es que si bien los
-  `Media` almacenan metadatos, al ser representaciones de archivos *físicos*
-  se debe tener especial cuidado a la hora de almacenar/eliminar `Media`s.
+  In short: `Link`s store metadata only while `Embers.Media` can store actual
+  files.
   """
 
   alias Embers.Posts.Post

@@ -5,6 +5,10 @@ defmodule Embers.Profile.Uploads.Avatar do
 
   @path Keyword.get(Application.get_env(:embers, Embers.Profile), :avatar_path, "user/avatar")
 
+  @doc """
+    Converts the avatar to it's `small`, `medium` and `large` versions, and
+    saves it to the user's path
+  """
   def upload(avatar, %Embers.Accounts.User{} = user) do
     upload(avatar, user.id)
   end

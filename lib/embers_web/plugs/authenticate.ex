@@ -24,7 +24,9 @@ defmodule EmbersWeb.Authenticate do
 
       session_id ->
         case Accounts.get_by(%{"session_id" => session_id}) do
-          nil -> {:error, "no user found"}
+          nil ->
+            {:error, "no user found"}
+
           user ->
             {:ok, user}
         end
@@ -45,6 +47,7 @@ defmodule EmbersWeb.Authenticate do
 
   def set_user(user, conn) do
     token = Token.sign(%{"user_id" => user.id})
+
     conn
     |> assign(:current_user, user)
     |> assign(:user_token, token)

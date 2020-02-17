@@ -46,7 +46,7 @@ defmodule Embers.Reports.PostReport do
   end
 end
 
-defimpl Embers.Reportable, for: Embers.Posts.Post do
+defimpl Embers.Reports.Reportable, for: Embers.Posts.Post do
   alias Embers.Reports.PostReport
   import Ecto.Query, only: [from: 2]
 
@@ -79,7 +79,7 @@ defimpl Embers.Reportable, for: Embers.Posts.Post do
   end
 end
 
-defimpl Embers.Report, for: Embers.Reports.PostReport do
+defimpl Embers.Reports.Report, for: Embers.Reports.PostReport do
   def resolve(report) do
     report
     |> Ecto.Changeset.change(resolved: true)

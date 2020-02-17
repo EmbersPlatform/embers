@@ -1,4 +1,6 @@
 defmodule EmbersWeb.Admin.BanController do
+  @moduledoc false
+
   use EmbersWeb, :controller
 
   import EmbersWeb.Helpers

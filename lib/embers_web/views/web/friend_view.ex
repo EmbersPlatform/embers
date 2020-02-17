@@ -1,4 +1,6 @@
 defmodule EmbersWeb.FriendView do
+  @moduledoc false
+
   use EmbersWeb, :view
 
   alias Embers.Helpers.IdHasher

@@ -21,8 +21,7 @@ defmodule Embers.Accounts do
     Profile.Meta,
     Profile.Settings.Setting,
     Repo,
-    Sessions,
-    Sessions.Session
+    Sessions
   }
 
   @doc """
@@ -58,19 +57,27 @@ defmodule Embers.Accounts do
   """
   @spec list_users_paginated(keyword()) :: Embers.Paginator.Page.t()
   def list_users_paginated(opts \\ []) do
-    query = from(users in User)
-
     query =
-      if Keyword.has_key?(opts, :name) do
-        from(user in query, where: ilike(user.canonical, ^"%#{Keyword.get(opts, :name)}%"))
-      end || query
-
-    query =
-      if Keyword.has_key?(opts, :preload) do
-        from(user in query, preload: ^Keyword.get(opts, :preload))
-      end || query
+      from(users in User)
+      |> maybe_filter_by_name_query(opts)
+      |> maybe_preload_query(opts)
 
     Paginator.paginate(query, opts)
+  end
+
+  defp maybe_filter_by_name_query(query, opts) do
+    if Keyword.has_key?(opts, :name) do
+      name = Keyword.get(opts, :name)
+      from(user in query, where: ilike(user.canonical, ^"%#{name}%"))
+    end || query
+  end
+
+  defp maybe_preload_query(query, opts) do
+    preloads = Keyword.get(opts, :preload)
+
+    if Keyword.has_key?(opts, :preload) do
+      from(user in query, preload: ^preloads)
+    end || query
   end
 
   @doc """
@@ -95,7 +102,7 @@ defmodule Embers.Accounts do
       %User{}
   """
   def get_by_identifier(identifier) when is_binary(identifier) do
-    get_by(%{"canonical" => identifier})
+    get_by(canonical: identifier)
   end
 
   def get_by_identifier(identifier) when is_integer(identifier) do
@@ -103,7 +110,7 @@ defmodule Embers.Accounts do
   end
 
   @doc """
-  Similar a `get_by_identifier/1` pero devuelve al usuario con su `:meta`.
+  Similar a `get_by_identifier/1` pero devuelve al usuario con su `:meta` y `:settings`.
   """
   def get_populated(identifier, opts \\ []) do
     query =
@@ -128,7 +135,7 @@ defmodule Embers.Accounts do
         nil
 
       user ->
-        user = user |> User.populate()
+        user = user |> Embers.Accounts.load_stats_map()
         user = %{user | meta: user.meta |> Meta.populate()}
 
         user
@@ -139,7 +146,7 @@ defmodule Embers.Accounts do
   Devuelve al usuaro basado en el campo provisto.
   """
   def get_by(%{"session_id" => session_id}) do
-    with %Session{user_id: user_id} <- Sessions.get_session(session_id), do: get_user(user_id)
+    with %{user_id: user_id} <- Sessions.get_session(session_id), do: get_user(user_id)
   end
 
   def get_by(%{"email" => email}) do
@@ -147,10 +154,6 @@ defmodule Embers.Accounts do
   end
 
   def get_by(%{"user_id" => user_id}), do: Repo.get(User, user_id)
-
-  def get_by(%{"email" => email}) do
-    Repo.get_by(User, email: email)
-  end
 
   def get_by(%{"username" => username}) do
     Repo.get_by(User, username: username)
@@ -170,45 +173,44 @@ defmodule Embers.Accounts do
   Al realizarse dentro de una transacción, si alguna de las operaciones falla,
   se da marcha atrás a la operación completa y se devolverá el error ocurrido.
   """
-  def create_user(attrs, opts \\ []) do
-    raw = Keyword.get(opts, :raw, false)
-
-    user_changeset =
-      if raw do
-        User.create_changeset_raw(%User{}, attrs)
-      else
-        User.create_changeset(%User{}, attrs)
-      end
+  def create_user(attrs) do
+    user_changeset = User.create_changeset(%User{}, attrs)
 
     multi =
       Multi.new()
       |> Multi.insert(:user, user_changeset)
-      |> Multi.run(:role, fn _repo, %{user: user} ->
-        role = Roles.get!("member")
-        Roles.attach_role(role.id, user.id)
-      end)
-      |> Multi.run(:meta, fn repo, %{user: user} ->
-        meta_changeset =
-          %Meta{user_id: user.id}
-          |> Meta.changeset(%{})
+      |> Multi.run(:role, &multi_attach_role/2)
+      |> Multi.run(:meta, &multi_attach_meta/2)
+      |> Multi.run(:settings, &multi_attach_settings/2)
 
-        repo.insert(meta_changeset)
-      end)
-      |> Multi.run(:settings, fn repo, %{user: user} ->
-        settings_changeset =
-          %Setting{user_id: user.id}
-          |> Setting.changeset(%{})
-
-        repo.insert(settings_changeset)
-      end)
-
-    case Repo.transaction(multi) do
-      {:ok, results} ->
-        {:ok, results.user}
+    case Repo.transaction(multi) |> IO.inspect(label: "USER TRANSACTION") do
+      {:ok, %{user: user}} ->
+        {:ok, user}
 
       {:error, _failed_operation, failed_value, _changes_so_far} ->
         {:error, failed_value}
     end
+  end
+
+  defp multi_attach_role(_repo, %{user: user}) do
+    role = Roles.get!("member")
+    Roles.attach_role(role.id, user.id)
+  end
+
+  defp multi_attach_meta(repo, %{user: user}) do
+    meta_changeset =
+      %Meta{user_id: user.id}
+      |> Meta.changeset(%{})
+
+    repo.insert(meta_changeset)
+  end
+
+  defp multi_attach_settings(repo, %{user: user}) do
+    settings_changeset =
+      %Setting{user_id: user.id}
+      |> Setting.changeset(%{})
+
+    repo.insert(settings_changeset)
   end
 
   def update_user(%User{} = user, attrs, opts \\ []) do
@@ -271,5 +273,113 @@ defmodule Embers.Accounts do
 
   def change_user(%User{} = user) do
     User.changeset(user, %{})
+  end
+
+  @doc """
+  Loads the count of users following it in the `following` field
+  """
+  def load_following_status(%User{} = user, follower_id) do
+    count =
+      Embers.Subscriptions.UserSubscription
+      |> where([s], s.user_id == ^follower_id)
+      |> where([s], s.source_id == ^user.id)
+      |> select([s], count(s.id))
+      |> Embers.Repo.one()
+
+    %{user | following: count > 0}
+  end
+
+  @doc """
+  Loads the count of users that follow the user in the `following` field
+  """
+  def load_follows_me_status(%User{} = user, follower_id) do
+    count =
+      Embers.Subscriptions.UserSubscription
+      |> where([s], s.source_id == ^follower_id)
+      |> where([s], s.user_id == ^user.id)
+      |> select([s], count(s.id))
+      |> Embers.Repo.one()
+
+    %{user | follows_me: count > 0}
+  end
+
+  @doc """
+  If the following user has blocked the user, set the `blocked` field to `true`
+  """
+  def load_blocked_status(%User{} = user, follower_id) do
+    count =
+      Embers.Blocks.UserBlock
+      |> where([b], b.user_id == ^follower_id)
+      |> where([b], b.source_id == ^user.id)
+      |> select([b], count(b.id))
+      |> Embers.Repo.one()
+
+    %{user | blocked: count > 0}
+  end
+
+  @doc """
+    Loads the user stats
+  """
+  def load_stats_map(%User{} = user) do
+    stats = %{
+      followers: get_followers_count(user),
+      friends: get_friends_count(user),
+      posts: get_posts_count(user),
+      comments: get_comments_count(user)
+    }
+
+    %{user | stats: stats}
+  end
+
+  @doc """
+  Gets the count of users following the user
+  """
+  def get_followers_count(%User{} = user) do
+    count =
+      Embers.Subscriptions.UserSubscription
+      |> where([s], s.source_id == ^user.id)
+      |> select([s], count(s.id))
+      |> Embers.Repo.one()
+
+    count
+  end
+
+  @doc """
+  Gets the count of friends
+  """
+  def get_friends_count(%User{} = user) do
+    count =
+      Embers.Subscriptions.UserSubscription
+      |> where([s], s.user_id == ^user.id)
+      |> select([s], count(s.id))
+      |> Embers.Repo.one()
+
+    count
+  end
+
+  @doc """
+  Gets the count of posts made by the user
+  """
+  def get_posts_count(%User{} = user) do
+    from(p in Embers.Posts.Post,
+      where: p.user_id == ^user.id,
+      where: is_nil(p.deleted_at),
+      where: p.nesting_level == 0,
+      select: count(p.id)
+    )
+    |> Embers.Repo.one()
+  end
+
+  @doc """
+  Gets the count of comments made by the user
+  """
+  def get_comments_count(%User{} = user) do
+    from(p in Embers.Posts.Post,
+      where: p.user_id == ^user.id,
+      where: is_nil(p.deleted_at),
+      where: p.nesting_level > 0,
+      select: count(p.id)
+    )
+    |> Embers.Repo.one()
   end
 end

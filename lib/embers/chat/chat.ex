@@ -1,6 +1,6 @@
 defmodule Embers.Chat do
   @moduledoc """
-  El chat de Embers.
+  TODO document this
   """
   import Ecto.Query
 

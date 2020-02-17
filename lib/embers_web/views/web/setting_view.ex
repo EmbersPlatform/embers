@@ -1,4 +1,6 @@
 defmodule EmbersWeb.SettingView do
+  @moduledoc false
+
   use EmbersWeb, :view
   alias EmbersWeb.SettingView
 

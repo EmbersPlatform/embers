@@ -1,8 +1,9 @@
 defmodule Embers.Reactions do
   @moduledoc """
-  Las reacciones representan la emoción que un contenido provocó
-  en un usuario. Un usuario puede reaccionar a un contenido más de una vez,
-  siempre y cuando sea con distintas reacciones.
+  Reactions are used as a vote mechanism. Instead giving a numerical positive
+  or negative value to a post, they represent emotions, such as love, hate or
+  laught. A user can react with may reactions to the same resource, as long as
+  they're different reactions.
   """
   alias Embers.Reactions.Reaction
   alias Embers.Paginator

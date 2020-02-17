@@ -1,4 +1,6 @@
 defmodule EmbersWeb.ReactionView do
+  @moduledoc false
+
   use EmbersWeb, :view
 
   def render("reactions.json", %{entries: reactions} = metadata) do

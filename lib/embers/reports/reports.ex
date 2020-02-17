@@ -1,11 +1,11 @@
-defprotocol Embers.Reportable do
+defprotocol Embers.Reports.Reportable do
   @doc "Reporta a un reportable(ej: Post, User)"
   def report(reportable, reporter, params)
 
   def reports_for(reportable, opts \\ [])
 end
 
-defprotocol Embers.Report do
+defprotocol Embers.Reports.Report do
   @doc "Marca un reporte como resuelto"
   def resolve(report)
 
@@ -24,8 +24,8 @@ defmodule Embers.Reports do
   import Ecto.Query
 
   alias Embers.Repo
-  alias Embers.Report
-  alias Embers.Reportable
+  alias Embers.Reports.Report
+  alias Embers.Reports.Reportable
 
   def report(reportable, reporter, params) do
     Reportable.report(reportable, reporter, params)

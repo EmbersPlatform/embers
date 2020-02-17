@@ -16,7 +16,7 @@ defmodule Embers.Application do
       # worker(Embers.Worker, [arg1, arg2, arg3]),
       EmbersWeb.Presence,
       worker(Cachex, [:embers, []]),
-      supervisor(Task.Supervisor, [[name: TaskSupervisor, restart: :transient]])
+      {Task.Supervisor, name: TaskSupervisor, restart: :transient}
     ]
 
     Embers.Audit.Manager.register()

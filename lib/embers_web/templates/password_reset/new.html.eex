@@ -1,10 +1,10 @@
 <div class="block" data-layout-type="form">
-  <h2>Recuperar contraseña</h2>
+  <h2><%= gettext("Reset password") %></h2>
 
   <%= form_for @conn, password_reset_path(@conn, :create), [as: :password_reset], fn f -> %>
     <%= if f.errors != [] do %>
       <div class="error">
-        <p>Tuvimos algunos problemas:</p>
+        <p><%= gettext("There were problems resetting your password") %></p>
       </div>
     <% end %>
 
@@ -14,6 +14,8 @@
     <%= text_input f, :email, class: "form-control" %>
     <%= error_tag f, :email %>
 
-    <button type="submit" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>Recuperar contraseña</button>
+    <button type="submit" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>
+      <%= gettext("Reset password") %>
+    </button>
   <% end %>
 </div>

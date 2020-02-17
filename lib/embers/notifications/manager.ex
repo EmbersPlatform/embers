@@ -1,11 +1,5 @@
 defmodule Embers.Notifications.Manager do
-  @moduledoc """
-  Este es el modulo que se encarga de crear y enviar notificaciones a los
-  usuarios.
-
-  Basado en `Embers.EventSubscriber`, este módulo escucha a los eventos y
-  realiza las acciones necesarias.
-  """
+  @moduledoc false
 
   use Embers.EventSubscriber, topics: ~w(post_created post_comment user_mentioned user_followed)
 
@@ -119,6 +113,7 @@ defmodule Embers.Notifications.Manager do
   end
 
   defp handle_comment(%{parent_id: nil}), do: :noop
+
   defp handle_comment(post) do
     with {:ok, parent} <- Posts.get_post(post.parent_id) do
       if parent.user_id != post.user_id do
@@ -129,6 +124,7 @@ defmodule Embers.Notifications.Manager do
             recipient_id: parent.user_id,
             source_id: parent.id
           })
+
         notification = notification |> Embers.Repo.preload(from: :meta)
         Embers.Event.emit(:notification_created, notification)
       end

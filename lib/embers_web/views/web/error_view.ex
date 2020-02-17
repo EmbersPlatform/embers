@@ -1,4 +1,6 @@
 defmodule EmbersWeb.ErrorView do
+  @moduledoc false
+
   use EmbersWeb, :view
 
   # If you want to customize a particular status code

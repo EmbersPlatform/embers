@@ -1,4 +1,6 @@
 defmodule EmbersWeb.NotificationSubscriber do
+  @moduledoc false
+
   use Embers.EventSubscriber, topics: ~w(notification_created post_reacted comment_reacted)
 
   import Embers.Helpers.IdHasher
@@ -50,7 +52,10 @@ defmodule EmbersWeb.NotificationSubscriber do
 
     reaction = %{
       reaction
-      | user: %{reaction.user | meta: reaction.user.meta |> Meta.load_avatar_map()}
+      | user: %{
+          reaction.user
+          | meta: Meta.load_avatar_map(reaction.user.meta)
+        }
     }
 
     recipient = encode(reaction.post.user_id)

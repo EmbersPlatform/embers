@@ -78,8 +78,6 @@ defmodule Embers.Mixfile do
       {:event_bus, "~> 1.6"},
       {:corsica, "~> 1.0"},
       {:cachex, "~> 3.1"},
-      {:fun_with_flags, "~> 1.2.1"},
-      {:fun_with_flags_ui, "~> 0.7.1"},
       {:oembed, "~> 0.3.0"},
       {:fastimage, "~> 0.0.7"},
       {:benchee, "~> 1.0", only: :dev},
@@ -107,7 +105,38 @@ defmodule Embers.Mixfile do
   defp docs do
     [
       main: "readme",
-      extras: ["README.md", "docs/deletes.md"]
+      extras: ["README.md", "docs/deletes.md"],
+      groups_for_modules: [
+        Accounts: ~r/^Embers.Accounts/,
+        Audit: ~r/^Embers.Audit/,
+        Authorization: ~r/^Embers.Authorization/,
+        Blocks: ~r/^Embers.Blocks/,
+        Chat: ~r/^Embers.Chat/,
+        Events: ~r/^Embers.Events/,
+        Favorites: ~r/^Embers.Favorites/,
+        Feed: ~r/^Embers.Feed/,
+        "File Storage": ~r/^Embers.FileStorage/,
+        Helpers: ~r/^Embers.Helpers/,
+        Links: ~r/^Embers.Links/,
+        "Loading Messages": ~r/^Embers.LoadingMsg/,
+        Media: ~r/^Embers.Media/,
+        Moderation: ~r/^Embers.Moderation/,
+        Notifications: ~r/^Embers.Notifications/,
+        OpenGraph: ~r/^Embers.OpenGraph/,
+        Paginator: ~r/^Embers.Paginator/,
+        Posts: ~r/^Embers.Posts/,
+        Profile: ~r/^Embers.Profile/,
+        Reactions: ~r/^Embers.Reactions/,
+        Reports: ~r/^Embers.Reports/,
+        Search: ~r/^Embers.Search/,
+        Sessions: ~r/^Embers.Sessions/,
+        Settings: ~r/^Embers.Settings/,
+        Subscriptions: ~r/^Embers.Subscriptions/,
+        Tags: ~r/^Embers.Tags/,
+        Uploads: ~r/^Embers.Uploads/,
+        Plugs: ~r/^EmbersWeb.Plugs/,
+        "Web layer": ~r/^EmbersWeb/
+      ]
     ]
   end
 end

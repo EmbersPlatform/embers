@@ -1,7 +1,6 @@
 defmodule Embers.Profile.Meta do
   @moduledoc """
-  Los Meta son la informacion adicional de los perfiles de los usuarios, como
-  la descripcion del perfil y el avatar
+  `Meta`s are additional profile info, such as description and avatar.
   """
   use Ecto.Schema
   import Ecto.Changeset
@@ -48,7 +47,8 @@ defmodule Embers.Profile.Meta do
     id_hash = IdHasher.encode(meta.user_id)
 
     path =
-      Application.get_env(:embers, Embers.Profile) |> Keyword.get(:avatar_path, "user/avatar")
+      Application.get_env(:embers, Embers.Profile)
+      |> Keyword.get(:avatar_path, "user/avatar")
 
     base = get_base()
 
@@ -70,7 +70,9 @@ defmodule Embers.Profile.Meta do
   def cover(%Meta{cover_version: version} = meta) do
     id_hash = IdHasher.encode(meta.user_id)
 
-    path = Application.get_env(:embers, Embers.Profile) |> Keyword.get(:cover_path, "user/avatar")
+    path =
+      Application.get_env(:embers, Embers.Profile)
+      |> Keyword.get(:cover_path, "user/avatar")
 
     base = get_base()
 

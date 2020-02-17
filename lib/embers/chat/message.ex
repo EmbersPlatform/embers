@@ -1,7 +1,5 @@
 defmodule Embers.Chat.Message do
-  @moduledoc """
-  Mensaje de chat.
-  """
+  @moduledoc false
   use Ecto.Schema
 
   import Ecto.Changeset
