@@ -1,0 +1,32 @@
+input {
+  background: var(--input-background, var(--primary));
+  border-radius: 0.2em;
+  border: var(--border);
+  color: var(--text);
+  padding: 0.3em 0.5em;
+
+  &:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+}
+
+input.form-control {
+  height: 3em;
+  width: 100%;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  border-bottom: 4px solid rgba(0, 0, 0, .1);
+  padding: 0 1em;
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+
+  &:focus {
+    background: var(--primary);
+    outline: auto;
+  }
+}

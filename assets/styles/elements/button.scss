@@ -1,0 +1,131 @@
+button {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+button svg path {
+  fill: var(--text);
+}
+
+button *+* {
+  margin-left: 0.5em;
+}
+
+button.plain {
+  background: none;
+  border: none;
+}
+
+button.plain[disabled] {
+  opacity: 0.7;
+}
+
+button.plain.success {
+  color: var(--success);
+}
+
+button.plain.success svg path {
+  fill: var(--success);
+}
+
+button.plain.warning {
+  color: var(--warning);
+}
+
+button.plain.warning svg path {
+  fill: var(--warning);
+}
+
+button.plain.danger {
+  color: var(--danger);
+}
+
+button.plain.danger svg path {
+  fill: var(--danger);
+}
+
+button.button {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  height: 2em;
+  position: relative;
+  border-color: var(--button-border-background);
+  color: var(--button-foreground);
+  background: var(--button-background);
+  text-shadow: var(--button-text-shadow);
+}
+
+button.button,
+button.button::before {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--border-radius);
+  justify-content: center;
+}
+
+button.button:before {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-color: var(--button-border-foreground);
+  border-radius: var(--border-radius);
+  background: #fff2;
+  height: calc(100% - 3px);
+  width: calc(100% - 2px);
+  border-top-width: 0;
+}
+
+button.button:hover {
+  filter: var(--button-hover-filter);
+}
+
+button.button svg path {
+  fill: var(--a-alt);
+}
+
+button.button[disabled] {
+  filter: grayscale(0.8) brightness(0.5);
+  cursor: default;
+}
+
+button.button.primary {
+  color: var(--accent-foreground);
+  background: var(--accent);
+}
+
+button.button.primary svg path {
+  fill: var(--primary-alt);
+}
+
+button.button.danger {
+  color: var(--danger-alt);
+  background: var(--danger);
+}
+
+button.button.danger svg path {
+  fill: var(--danger-alt);
+}
+
+button.button.warning {
+  color: var(--warning-alt);
+  background: var(--warning);
+}
+
+button.button.warning svg path {
+  fill: var(--warning-alt);
+}
+
+button.button.success {
+  color: var(--success-alt);
+  background: var(--success);
+}
+
+button.button.success svg path {
+  fill: var(--success-alt);
+}

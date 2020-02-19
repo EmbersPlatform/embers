@@ -12,7 +12,6 @@ defmodule EmbersWeb.PageController do
 
   def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, params) do
     if is_nil(params["path"]) do
-      conn = put_layout(conn, false)
       render(conn, "landing.html")
     else
       render(conn, "index.html")

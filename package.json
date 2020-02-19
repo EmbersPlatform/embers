@@ -1,3 +1,15 @@
 {
-  "dependencies": {}
+  "scripts": {
+    "dev": "parcel watch assets/js/*.js assets/styles/*.scss --out-dir priv/static/ --public-url ./",
+    "build": "parcel build assets/js/*.js assets/styles/*.scss --out-dir priv/static/ --public-url ./"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.25.0"
+  },
+  "staticFiles": {
+    "staticPath": "assets/static",
+    "watcherGlob": "assets/static/**"
+  }
 }

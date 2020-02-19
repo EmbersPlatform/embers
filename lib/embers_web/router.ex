@@ -12,6 +12,7 @@ defmodule EmbersWeb.Router do
     plug(EmbersWeb.Authenticate)
     plug(EmbersWeb.Remember)
     plug(GetPermissions)
+    plug(EmbersWeb.Plugs.SelectLayout)
   end
 
   pipeline :admin do

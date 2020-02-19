@@ -1,0 +1,28 @@
+<nav id="navigation">
+  <a href="/" id="logo" aria-hidden="true">
+    E
+  </a>
+  <ul>
+    <li>
+      <%= svg_image("n_home") %>
+    </li>
+    <li>
+      D
+    </li>
+  </ul>
+  <e-separator></e-separator>
+  <ul>
+    <li>
+      N
+    </li>
+    <li>
+      M
+    </li>
+    <li>
+      A
+    </li>
+    <li>
+      C
+    </li>
+  </ul>
+</nav>
