@@ -30,17 +30,23 @@ defmodule EmbersWeb do
     quote do
       use Phoenix.View,
         root: "lib/embers_web/templates",
-        namespace: EmbersWeb
+        namespace: EmbersWeb,
+        pattern: "**/*"
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
 
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
+      use PhoenixInlineSvg.Helpers, otp_app: :embers
 
       import EmbersWeb.Router.Helpers
       import EmbersWeb.ErrorHelpers
       import EmbersWeb.Gettext
+
+      def render_shared(template, assigns \\ []) do
+        render(EmbersWeb.SharedView, template, assigns)
+      end
     end
   end
 

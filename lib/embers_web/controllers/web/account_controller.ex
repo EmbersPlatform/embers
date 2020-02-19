@@ -10,7 +10,6 @@ defmodule EmbersWeb.AccountController do
   alias EmbersWeb.Router.Helpers, as: Routes
 
   plug(:guest_check when action in [:new, :create])
-  plug(:put_layout, "app_no_js.html")
 
   def new(conn, _) do
     changeset = Accounts.change_user(%Accounts.User{})

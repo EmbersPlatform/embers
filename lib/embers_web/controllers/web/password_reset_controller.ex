@@ -8,8 +8,6 @@ defmodule EmbersWeb.PasswordResetController do
   alias EmbersWeb.Router.Helpers, as: Routes
   alias Phauxth.Confirm.PassReset
 
-  plug(:put_layout, "app_no_js.html")
-
   def new(conn, _params) do
     render(conn, "new.html")
   end

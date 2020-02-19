@@ -1,25 +1,44 @@
-<div class="block" data-layout-type="form">
+<section id="login">
+  <h1><%= gettext("Create account") %></h1>
 
   <%= form_for @changeset, account_path(@conn, :create), fn f -> %>
-    <h3>Registrarse</h3>
+    <%= if error = get_flash(@conn, :error) do %>
+      <div class="alert alert--danger">
+        <%= error %>
+      </div>
+    <% end %>
+    <%= if info = get_flash(@conn, :info) do %>
+      <div class="alert alert--info">
+        <%= info %>
+      </div>
+    <% end %>
 
-    <%= error_tag f, :username %>
-    <%= text_input f, :username, class: "form-control", placeholder: "nombre_de_usuario1", required: true %>
+    <fieldset>
+      <%= text_input f, :username, class: "form-control", placeholder: "nombre_de_usuario1", required: true %>
+      <%= error_tag f, :username %>
+    </fieldset>
 
-    <%= error_tag f, :email %>
-    <%= email_input f, :email, class: "form-control", placeholder: "micorreo@proveedor.dominio", required: true %>
+    <fieldset>
+      <%= email_input f, :email, class: "form-control", placeholder: "micorreo@proveedor.dominio", required: true %>
+      <%= error_tag f, :email %>
+    </fieldset>
 
-    <%= error_tag f, :password %>
-    <%= password_input f, :password, class: "form-control", placeholder: "mi clave secreta", required: true %>
+    <fieldset>
+      <%= password_input f, :password, class: "form-control", placeholder: "mi clave secreta", required: true %>
+      <%= error_tag f, :password %>
+    </fieldset>
 
-    <%= error_tag f, :password_confirmation %>
-    <%= password_input f, :password_confirmation, class: "form-control", placeholder: "mi clave secreta de nuevo", required: true %>
+
+    <fieldset>
+      <%= password_input f, :password_confirmation, class: "form-control", placeholder: "mi clave secreta de nuevo", required: true %>
+      <%= error_tag f, :password_confirmation %>
+    </fieldset>
 
     <%= raw Recaptcha.Template.display(size: "invisible") %>
-    <button type="submit" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>
-      ¡Registrarme!
+    <button type="submit" class="button primary">
+      <%= gettext("Create account") %>
     </button>
   <% end %>
-</div>
+</section>
 
 <script src="https://www.google.com/recaptcha/api.js"></script>

@@ -1,0 +1,25 @@
+#top-nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+  padding: 0 2em;
+  border-bottom: 4px solid hsla(0, 0%, 100%, .05);
+  background: var(--top-nav-background);
+}
+
+@import "./links_list.scss";
+
+#nav-logo svg {
+  width: 35px;
+  height: 35px;
+
+  * {
+    fill: var(--text);
+  }
+
+  &:hover * {
+    fill: var(--accent);
+  }
+}

@@ -1,0 +1,102 @@
+#navigation {
+  background: var(--navigation-background);
+  color: var(--navigation-foreground);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 5;
+  width: 100vw;
+  height: var(--navigation-width);
+
+  padding: 0 10px;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  e-separator {
+    flex-grow: 1;
+  }
+
+  ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  li {
+    width: 25px;
+    height: 25px;
+    box-sizing: border-box;
+    color: var(--navigation-foreground);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  li.free-size {
+    width: auto;
+    height: auto;
+  }
+
+  li.active:before {
+    content: "";
+    position: absolute;
+    bottom: -15px;
+    left: -10px;
+    width: 45px;
+    border-style: solid;
+    border-color: var(--navigation-accent);
+    border-width: 2px 0 0 0;
+  }
+
+  @media (min-width: $mobile-breakpoint) {
+    li+li {
+      margin-top: 30px;
+    }
+
+    li.active:before {
+      height: 45px;
+      width: auto;
+      top: -10px;
+      left: -15px;
+      border-width: 0 0 0 2px;
+    }
+  }
+
+  li>* {
+    max-width: 100%;
+    max-height: 100%;
+    text-align: center;
+  }
+
+  .nav-item svg path {
+    fill: var(--navigation-foreground);
+  }
+}
+
+@media (min-width: $mobile-breakpoint) {
+  #navigation {
+    background: var(--navigation-background);
+    color: var(--navigation-foreground);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    height: 100vh;
+    width: var(--navigation-width);
+
+    padding-bottom: 30px;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: inset -10px 0 20px -5px #00000080;
+  }
+}

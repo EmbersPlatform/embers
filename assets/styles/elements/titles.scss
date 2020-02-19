@@ -1,0 +1,7 @@
+@for $i from 1 through 6 {
+  h#{7 - $i} {
+    font-size: 2em / 6 * $i;
+    font-weight: 400;
+    margin-top: 0;
+  }
+}

@@ -10,7 +10,6 @@ defmodule EmbersWeb.SessionController do
   alias EmbersWeb.Remember
 
   plug(:guest_check when action in [:new, :create, :create_api])
-  plug(:put_layout, "app_no_js.html")
 
   plug(
     :rate_limit_authentication,

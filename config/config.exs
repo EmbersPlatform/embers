@@ -25,6 +25,16 @@ config :embers, Embers.Profile,
 
 config :embers, Embers.FileStorage, store: Embers.FileStorage.Store.Local
 
+config :embers, :auth, token_salt: "geDDVmqL"
+
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
+
+# Mailer configuration
+config :embers, EmbersWeb.Mailer,
+  adapter: Swoosh.SendgridAdapter,
+  api_key: "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"
+
 # Phauxth authentication configuration
 config :phauxth,
   token_salt: "geDDVmqL",
@@ -32,20 +42,10 @@ config :phauxth,
   token_module: EmbersWeb.Auth.Token,
   user_messages: EmbersWeb.UserMessages
 
-config :embers, :auth, token_salt: "geDDVmqL"
-
-# Mailer configuration
-config :embers, EmbersWeb.Mailer,
-  adapter: Swoosh.SendgridAdapter,
-  api_key: "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"
-
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:user_id]
-
-# Use Jason for JSON parsing in Phoenix
-config :phoenix, :json_library, Jason
 
 config :event_bus,
   topics: [
