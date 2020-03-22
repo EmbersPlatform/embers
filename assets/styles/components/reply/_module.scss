@@ -1,0 +1,125 @@
+.reply {
+  color: var(--text);
+  position: relative;
+
+  &>*+*:not(:empty) {
+    padding-bottom: 0.8em;
+  }
+
+  header {
+    display: flex;
+    padding: 0.8em;
+    align-items: center;
+  }
+
+  header a time {
+    font-size: 0.8em;
+    font-weight: 400;
+    color: var(--text-secondary);
+  }
+
+  header separator {
+    flex-grow: 1;
+  }
+
+  .reply-actions :global(ol > li button) {
+    opacity: 0.6;
+  }
+
+  .reply-actions>ol>li button:hover {
+    opacity: 1;
+  }
+
+  .reply-actions {
+    align-self: flex-start;
+  }
+
+  .reply-actions ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .reply-actions .hover-menu button {
+    width: 100%;
+    padding: 0.5em 1em;
+    opacity: 0.8;
+  }
+
+  .reply-actions .hover-menu button:hover {
+    opacity: 1;
+  }
+
+  .reply-actions svg {
+    width: 1em;
+    height: 1em;
+  }
+
+  .reply-details {
+    margin-left: 0.8em;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+  }
+
+  .reply-details .username {
+    color: var(--reply-username-color, var(--link));
+  }
+
+  .reply-details>*+* {
+    margin-top: 0.3em;
+  }
+
+  .reply-body {
+    padding: 0 0.8em;
+  }
+
+  footer>div>button,
+  footer>div>e-reaction-picker>button {
+    opacity: 0.6;
+  }
+
+  footer>div>button:hover,
+  footer>div>*>button:hover {
+    opacity: 1;
+  }
+
+  footer {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+
+  footer .stats {
+    display: flex;
+    flex-direction: row;
+  }
+
+  footer .reactions {
+    line-height: 2.3em;
+    margin-bottom: 0.5em;
+  }
+
+  footer .reactions .reaction:not(:last-child) {
+    margin-right: 0.3em;
+  }
+
+  footer .actions {
+    display: flex;
+  }
+
+  footer .actions svg {
+    height: 1.4em;
+  }
+
+  footer .actions svg * {
+    fill: var(--post-footer-foreground);
+  }
+
+  footer button a {
+    display: auto;
+  }
+}
+
+.reply+.reply {
+  border-top: var(--border);
+}

@@ -1,0 +1,36 @@
+.hover-menu-wrapper {
+  display: inline-block;
+  position: relative;
+
+  &:hover .hover-menu {
+    display: block;
+  }
+}
+
+.hover-menu {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  background: var(--dropdown-background, var(--primary));
+  border: var(--border);
+  box-shadow: var(--box-shadow);
+  border-radius: 0.2em;
+  width: max-content;
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  button {
+    width: 100%;
+    padding: 0.5em 1em;
+    opacity: 0.8;
+  }
+}
+
+.hover-menu.bottom-right {
+  top: 100%;
+  right: 0;
+}

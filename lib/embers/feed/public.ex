@@ -26,6 +26,7 @@ defmodule Embers.Feed.Public do
 
     query
     |> Paginator.paginate(opts)
+    |> load_avatars()
     |> fill_nsfw()
     |> remove_blocked_tags_posts(blocked_tags)
   end

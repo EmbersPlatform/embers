@@ -1,16 +1,14 @@
-defmodule EmbersWeb.PostController do
+defmodule EmbersWeb.Web.PostController do
   @moduledoc false
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  alias Embers.Posts
+
   alias Embers.Helpers.IdHasher
-  alias EmbersWeb.Plugs.CheckPermissions
+  alias Embers.Posts
+  alias Embers.Profile.Meta
 
-  action_fallback(EmbersWeb.FallbackController)
-
-  plug(:user_check when action in [:new, :create, :edit, :update, :delete])
-  plug(CheckPermissions, [permission: "create_post"] when action in [:create])
+  plug(:user_check when action in [:create])
 
   plug(
     :rate_limit_post_creation,
@@ -22,12 +20,20 @@ defmodule EmbersWeb.PostController do
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end
 
-  def index(conn, _params) do
-    posts = Posts.list_posts()
-    render(conn, "index.json", posts: posts)
+  def show(conn, %{"hash" => hash} = _params) do
+    id = IdHasher.decode(hash)
+
+    with {:ok, post} = Posts.get_post(id) do
+      post = put_in(post.user.meta.avatar, Meta.avatar_map(post.user.meta))
+      post = put_in(post.id, hash)
+
+      %{entries: replies} = Posts.get_post_replies(id)
+      conn
+      |> render(:show, post: post, replies: replies)
+    end
   end
 
-  def create(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
+  def create(%{assigns: %{current_user: user}} = conn, params) do
     params =
       params
       |> put_user_id(user.id)
@@ -38,8 +44,15 @@ defmodule EmbersWeb.PostController do
       |> get_and_put_tags()
 
     with {:ok, post} <- Posts.create_post(params) do
+      {view, key} =
+        cond do
+          not is_nil(post.parent_id) -> {:reply, :reply}
+          true -> {:post, :post}
+        end
+
       conn
-      |> render("show.json", post: post)
+      |> put_layout(false)
+      |> render(view, [{key, post}])
     end
   end
 
@@ -107,74 +120,4 @@ defmodule EmbersWeb.PostController do
 
     Map.put(params, "tags", tags)
   end
-
-  def show(conn, %{"id" => id}) do
-    post_id = IdHasher.decode(id)
-
-    with {:ok, post} <- Posts.get_post(post_id) do
-      post = populate_user(post, conn)
-
-      render(conn, "show.json", %{post: post})
-    else
-      {:error, :post_disabled} ->
-        conn |> json(:post_disabled)
-
-      {:error, :not_found} ->
-        conn
-        |> put_status(:not_found)
-        |> render("show.json", %{post: nil})
-    end
-  end
-
-  def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    id = IdHasher.decode(id)
-    post = Posts.get_post!(id)
-
-    case can_delete?(user, post) do
-      true ->
-        {:ok, _post} = Posts.delete_post(post, actor: user.id)
-
-      false ->
-        conn |> put_status(:forbidden) |> json(nil)
-    end
-
-    render(conn, "show.json", post: post)
-  end
-
-  def show_replies(conn, %{"id" => parent_id} = params) do
-    parent_id = IdHasher.decode(parent_id)
-
-    order =
-      case params["order"] do
-        "desc" -> :desc
-        "asc" -> :asc
-        _ -> :asc
-      end
-
-    results =
-      Posts.get_post_replies(parent_id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
-        limit: params["limit"],
-        order: order
-      )
-
-    render(conn, "show_replies.json", results)
-  end
-
-  defp can_delete?(user, post) do
-    Embers.Authorization.is_owner?(user, post) || Embers.Authorization.can?("delete_post", user)
-  end
-
-  defp populate_user(nil, _), do: nil
-
-  defp populate_user(post, %Plug.Conn{assigns: %{current_user: current_user}})
-       when not is_nil(current_user) do
-    %{
-      post
-      | user: Embers.Accounts.load_following_status(post.user, current_user.id)
-    }
-  end
-
-  defp populate_user(post, _), do: post
 end

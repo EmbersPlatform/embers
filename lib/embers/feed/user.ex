@@ -42,5 +42,6 @@ defmodule Embers.Feed.User do
     query
     |> Paginator.paginate(opts)
     |> fill_nsfw()
+    |> load_avatars()
   end
 end

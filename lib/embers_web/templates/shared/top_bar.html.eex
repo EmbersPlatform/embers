@@ -1,0 +1,3 @@
+<nav id="top-bar">
+  <input type="search" placeholder="<%= gettext("Search Embers") %>" />
+</nav>

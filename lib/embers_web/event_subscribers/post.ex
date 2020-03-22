@@ -13,7 +13,7 @@ defmodule EmbersWeb.ActivitySubscriber do
     |> Enum.each(fn recipient ->
       # Broadcast the good news to the recipients via Channels
       hashed_id = IdHasher.encode(recipient)
-      encoded_post = EmbersWeb.PostView.render("post.json", %{post: post})
+      encoded_post = EmbersWeb.Web.PostView.render("post.json", %{post: post})
       payload = %{post: encoded_post}
 
       EmbersWeb.Endpoint.broadcast!("feed:#{hashed_id}", "new_activity", payload)

@@ -39,6 +39,14 @@
     cursor: pointer;
   }
 
+  li>* {
+    max-width: 100%;
+    max-height: 100%;
+    text-align: center;
+    width: inherit;
+    height: inherit;
+  }
+
   li.free-size {
     width: auto;
     height: auto;
@@ -75,7 +83,7 @@
     text-align: center;
   }
 
-  .nav-item svg path {
+  li svg path {
     fill: var(--navigation-foreground);
   }
 }
@@ -99,4 +107,16 @@
     align-items: center;
     box-shadow: inset -10px 0 20px -5px #00000080;
   }
+}
+
+#navigation-logo {
+  margin: 0;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  width: 35px;
+  height: 35px;
+}
+
+#navigation-logo svg path {
+  fill: var(--logo-foreground);
 }

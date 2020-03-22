@@ -1,0 +1,1 @@
+<%= EmbersWeb.Web.PostView.render("post.html", conn: @conn, post: @post) %>

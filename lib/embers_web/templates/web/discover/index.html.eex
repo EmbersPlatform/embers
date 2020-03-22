@@ -1,0 +1,10 @@
+<div id="view" view="discover">
+  <%= render_shared("top_bar.html") %>
+  <main>
+    <div class="feed" data-controller="masonry">
+      <%= for post <- @posts.entries do %>
+        <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
+      <% end %>
+    </div>
+  </main>
+</div>

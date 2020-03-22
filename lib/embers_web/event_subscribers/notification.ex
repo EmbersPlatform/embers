@@ -5,7 +5,7 @@ defmodule EmbersWeb.NotificationSubscriber do
 
   import Embers.Helpers.IdHasher
 
-  alias EmbersWeb.NotificationView
+  alias EmbersWeb.Web.NotificationView
   alias Embers.Profile.Meta
 
   require Logger
@@ -19,7 +19,9 @@ defmodule EmbersWeb.NotificationSubscriber do
     EmbersWeb.Endpoint.broadcast!(
       "user:#{recipient}",
       "notification",
-      NotificationView.render("notification.json", %{notification: %{notification | status: 0}})
+      Web.NotificationView.render("notification.json", %{
+        notification: %{notification | status: 0}
+      })
     )
   end
 

@@ -1,0 +1,12 @@
+<nav id="sidebar"></nav>
+<div id="view" view="user">
+  <%= render_shared("top_bar.html") %>
+  <main>
+    <%= render("_profile_header.html", assigns) %>
+    <div class="feed">
+      <%= for activity <- @activities.entries do %>
+        <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: activity) %>
+      <% end %>
+    </div>
+  </main>
+</div>

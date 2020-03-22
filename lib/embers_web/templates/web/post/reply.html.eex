@@ -1,0 +1,61 @@
+<article
+  id="reply-<%= encode_id(@reply.id) %>"
+  data-id="<%= encode_id(@post.id) %>"
+  class="reply"
+>
+  <header>
+    <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: @reply.user.meta.avatar.small, size: "small") %>
+    <div class="reply-details">
+      <%= labeled_link(@reply.user.username,
+        to: user_path(@conn, :show, @reply.user.canonical),
+        label: @reply.user.username,
+        class: "username")
+      %>
+      <%= link(to: post_path(@conn, :show, encode_id(@reply.id)), itemprop: "url") do %>
+        <time
+          datetime="<%= @reply.inserted_at %>"
+          pubdate="<%= @reply.inserted_at %>"
+          itemprop="datePublished">
+          <%= time_ago(@reply.inserted_at) %>
+        </time>
+      <% end %>
+  </header>
+  <section class="reply-body" itemprop="articleBody">
+    <%= @reply.body %>
+  </section>
+  <%= if length(@reply.media) > 0 do %>
+    <section class="reply-medias">
+      <%= render("_media_group.html", medias: @reply.media) %>
+    </section>
+  <% end %>
+  <%= if length(@reply.links) > 0 do %>
+    <%= for link <- @reply.links do %>
+      <%= render("_link.html", link: link) %>
+    <% end %>
+  <% end %>
+  <footer>
+    <div class="stats">
+      <div class="reactions">
+        <%= build_reactions(@reply, assigns) %>
+      </div>
+      <e-spacer></e-spacer>
+      <%= if @reply.replies_count > 0 do %>
+        <span class="replies-stat">
+          <%= @reply.replies_count %> comments
+        </span>
+      <% end %>
+      <%= if @reply.shares_count > 0 do %>
+        <span class="shares-stat">
+          <%= @reply.shares_count %> times shared
+        </span>
+      <% end %>
+    </div>
+    <div class="actions">
+      <e-spacer></e-spacer>
+      <button class="plain">
+        <%= svg_image("reply") %>
+        <span>Responder</span>
+      </button>
+    </div>
+  </footer>
+</articleclass="reply">

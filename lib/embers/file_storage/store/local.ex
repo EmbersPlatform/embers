@@ -9,7 +9,7 @@ defmodule Embers.FileStorage.Store.Local do
 
   @impl Embers.FileStorage.Store
   def delete(file_path) do
-    Path.expand("./uploads/" <> file_path) |> IO.inspect()
+    Path.expand("./uploads/" <> file_path)
 
     case File.rm(Path.expand("./uploads/" <> file_path)) do
       :ok -> :ok

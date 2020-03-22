@@ -1,0 +1,33 @@
+.avatar {
+  border-radius: 50%;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.avatar[size="tiny"] {
+  width: 24px;
+  height: 24px;
+}
+
+.avatar[size="small"] {
+  width: 35px;
+  height: 35px;
+}
+
+.avatar[size="medium"] {
+  width: 45px;
+  height: 45px;
+}
+
+.avatar[size="big"] {
+  width: 64px;
+  height: 64px;
+}
+
+.avatar.bordered {
+  border: 2px solid var(--avatar-border);
+}

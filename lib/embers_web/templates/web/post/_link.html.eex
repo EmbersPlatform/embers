@@ -1,0 +1,16 @@
+<div class="link">
+  <%= if @link.embed.html do %>
+    <%= raw @link.embed.html %>
+  <% else %>
+    <div class="link-preview">
+      <img src="<%= @link.embed.thumbnail_url %>" />
+    </div>
+  <% end %>
+  <div class="link-description">
+    <%= link(to: @link.url, target: "_blank") do %>
+      <h3><%= @link.embed.title %></h3>
+      <p><%= @link.embed.description %></p>
+      <p><%= @link.url%></p>
+    <% end %>
+  </div>
+</div>

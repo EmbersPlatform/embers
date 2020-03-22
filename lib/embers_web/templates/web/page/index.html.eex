@@ -1,0 +1,48 @@
+<nav id="sidebar">
+  <h1>Inicio</h1>
+  <ul>
+    <li>
+      <a href="/">
+        <span>
+          <%= svg_image("activity") %>
+        </span>
+        <span>Actividad</span>
+      </a>
+    </li>
+    <li>
+      <a href="/favorites">
+        <span>
+          <%= svg_image("icons/star_outline") %>
+        </span>
+        <span>Favoritos</span>
+      </a>
+    </li>
+    <li>
+      <a href="/subs">
+        <span>
+          <%= svg_image("subs") %>
+        </span>
+        <span>Suscripciones</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+<div id="view" view="home" class="has-sidebar">
+  <%= render_shared("top_bar.html") %>
+  <main class="columns-layout">
+    <div id="timeline" class="main-content" data-controller="timeline">
+      <post-editor data-target="timeline.editor" data-action="publish->timeline#onNewActivity"></post-editor>
+      <div class="feed" data-target="timeline.feed">
+        <%= for post <- @timeline.entries do %>
+          <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
+        <% end %>
+      </div>
+      <button class="button" data-target="timeline.loadMoreButton" data-action="click->timeline#loadMore">Load more</button>
+    </div>
+    <aside>
+      <div class="content">
+        Related tags?
+      </div>
+    </aside>
+  </main>
+</div>

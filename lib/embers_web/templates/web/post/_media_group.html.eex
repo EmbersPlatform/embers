@@ -1,0 +1,39 @@
+<% count = length(@medias) %>
+<figure class="media-group" count="<%= count %>">
+
+  <%= if count == 1 do %>
+  <% [media] = @medias %>
+    <div class="media">
+      <img src="/<%= media.metadata["preview_url"] %>" alt="">
+    </div>
+  <% end %>
+
+  <%= if count == 2 do %>
+    <%= for media <- @medias do %>
+      <div class="media-preview">
+        <div class="media-preview_bg" style="background-image: url('/<%= media.metadata["preview_url"] %>');">
+          <img src="/<%= media.metadata["preview_url"] %>" alt="">
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <%= if count > 2 do %>
+    <% [media | aside_medias] = @medias %>
+    <div class="media-preview">
+      <div class="media-preview_bg" style="background-image: url('/<%= media.metadata["preview_url"] %>');">
+        <img src="/<%= media.metadata["preview_url"] %>" alt="">
+      </div>
+    </div>
+    <div class="medias-aside">
+      <%= for media <- aside_medias do %>
+        <div class="media-preview">
+          <div class="media-preview_bg" style="background-image: url('/<%= media.metadata["preview_url"] %>');">
+            <img src="/<%= media.metadata["preview_url"] %>" alt="">
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+</figure>

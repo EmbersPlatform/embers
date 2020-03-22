@@ -1,0 +1,52 @@
+<div class="post-actions">
+  <div class="hover-menu-wrapper">
+    <button class="plain">
+      <%= svg_image "icons/gavel" %>
+    </button>
+    <div class="hover-menu bottom-right">
+      <ol>
+        <li>
+          <button class="plain">
+            <span><%= gettext("Is NSFW") %></span>
+          </button>
+        </li>
+        <li>
+          <button class="plain">
+            <span>
+              <%= gettext("Disable") %>
+            </span>
+          </button>
+        </li>
+        <li>
+          <button class="plain">
+            <span>
+              <%= gettext("Ban user") %>
+            </span>
+          </button>
+        </li>
+      </ol>
+    </div>
+  </div>
+  <button class="plain">
+    <%= svg_image "icons/star_outline" %>
+  </button>
+  <div class="hover-menu-wrapper">
+    <button class="plain">
+      <%= svg_image "icons/ellipsis-v" %>
+    </button>
+    <div class="hover-menu bottom-right">
+      <ol>
+        <li>
+          <button class="plain">
+            <span><%= gettext("Reactions") %></span>
+          </button>
+        </li>
+        <li>
+          <button class="plain">
+            <span><%= gettext("Report") %></span>
+          </button>
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>

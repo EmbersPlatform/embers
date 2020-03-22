@@ -1,4 +1,4 @@
-defmodule EmbersWeb.AccountController do
+defmodule EmbersWeb.Web.AccountController do
   @moduledoc false
   use EmbersWeb, :controller
 

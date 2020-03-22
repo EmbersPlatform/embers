@@ -1,0 +1,68 @@
+<article
+  id="post-<%= encode_id(@post.id) %>"
+  data-id="<%= encode_id(@post.id) %>"
+  class="post"
+  itemscope
+  itemtype="https://schema.org/Article"
+  role="article">
+  <header>
+    <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: @post.user.meta.avatar.small, size: "medium") %>
+    <div class="post-details">
+      <%= labeled_link(@post.user.username,
+        to: user_path(Endpoint, :show, @post.user.canonical),
+        label: @post.user.username,
+        class: "username")
+      %>
+      <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), itemprop: "url") do %>
+        <time
+          datetime="<%= @post.inserted_at %>"
+          pubdate="<%= @post.inserted_at %>"
+          itemprop="datePublished">
+          <%= time_ago(@post.inserted_at) %>
+        </time>
+      <% end %>
+    </div>
+    <e-spacer></e-spacer>
+    <%= render("_post_actions.html", assigns) %>
+  </header>
+  <section class="post-body" itemprop="articleBody">
+    <%= @post.body %>
+  </section>
+  <%= if length(@post.media) > 0 do %>
+    <section class="post-medias">
+      <%= render("_media_group.html", medias: @post.media) %>
+    </section>
+  <% end %>
+  <%= if length(@post.links) > 0 do %>
+    <%= for link <- @post.links do %>
+      <%= render("_link.html", link: link) %>
+    <% end %>
+  <% end %>
+  <footer>
+    <div class="stats">
+      <div class="reactions">
+        <%= build_reactions(@post, assigns) %>
+      </div>
+      <e-spacer></e-spacer>
+      <%= if @post.replies_count > 0 do %>
+        <span class="replies-stat">
+          <%= @post.replies_count %> comments
+        </span>
+      <% end %>
+      <%= if @post.shares_count > 0 do %>
+        <span class="shares-stat">
+          <%= @post.shares_count %> times shared
+        </span>
+      <% end %>
+    </div>
+    <div class="actions">
+      <e-spacer></e-spacer>
+      <%= link(to: post_path(Endpoint, :show, encode_id(@post.id))) do %>
+        <%= svg_image("comment") %>
+      <% end %>
+      <button class="plain">
+        <%= svg_image("share") %>
+      </button>
+    </div>
+  </footer>
+</article>

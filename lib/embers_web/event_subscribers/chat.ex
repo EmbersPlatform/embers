@@ -4,7 +4,7 @@ defmodule EmbersWeb.ChatSubscriber do
 
   import Embers.Helpers.IdHasher
 
-  alias EmbersWeb.ChatView
+  alias EmbersWeb.Web.ChatView
 
   def handle_event(:chat_message_created, %{data: %{message: message} = data}) do
     %{sender_id: sender, receiver_id: receiver} = message
@@ -13,14 +13,14 @@ defmodule EmbersWeb.ChatSubscriber do
     EmbersWeb.Endpoint.broadcast!(
       "user:#{encode(sender)}",
       "new_chat_message",
-      ChatView.render("ws_message.json", message: message, temp_id: temp_id)
+      Web.ChatView.render("ws_message.json", message: message, temp_id: temp_id)
     )
 
     if sender != receiver do
       EmbersWeb.Endpoint.broadcast!(
         "user:#{encode(receiver)}",
         "new_chat_message",
-        ChatView.render("ws_message.json", message: message, temp_id: nil)
+        Web.ChatView.render("ws_message.json", message: message, temp_id: nil)
       )
     end
   end

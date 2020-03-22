@@ -4,7 +4,7 @@ defmodule EmbersWeb.Router do
   alias EmbersWeb.Plugs.{CheckPermissions, GetPermissions}
 
   pipeline :browser do
-    plug(:accepts, ["html"])
+    plug(:accepts, ["html", "json"])
     plug(:fetch_session)
     plug(:fetch_flash)
     plug(:protect_from_forgery)
@@ -77,7 +77,12 @@ defmodule EmbersWeb.Router do
     match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
   end
 
-  scope "/", EmbersWeb do
+  scope "/" do
+    pipe_through(:browser)
+    get("/auth_data", EmbersWeb.Api.PageController, :auth)
+  end
+
+  scope "/", EmbersWeb.Web do
     pipe_through(:browser)
 
     get("/", PageController, :index)
@@ -102,98 +107,107 @@ defmodule EmbersWeb.Router do
     get("/register", AccountController, :new)
     post("/register", AccountController, :create)
 
-    get("/auth_data", PageController, :auth)
+    get("/discover", DiscoverController, :index)
 
-    # get("/@:username", WebUserController, :show)
-    get("/post/:hash", PostWebController, :show)
+    get("/@:username", UserController, :show)
 
-    scope "/api" do
-      scope "/v1" do
-        # should be deprecated?
-        post("/auth", SessionController, :create_api)
+    post("/post", PostController, :create)
+    get("/post/:hash", PostController, :show)
+  end
 
-        # User
-        get("/users/:id", UserController, :show)
+  scope "/api/v1", EmbersWeb.Api, as: :api do
+    pipe_through(:browser)
+    # should be deprecated?
+    # post("/auth",SessionController, :create_api)
 
-        # Account settings
-        put("/account/meta", MetaController, :update)
-        post("/account/avatar", MetaController, :upload_avatar)
-        post("/account/cover", MetaController, :upload_cover)
-        put("/account/settings", SettingController, :update)
-        post("/account/reset_pass", UserController, :reset_pass)
+    # User
+    get("/users/:id", UserController, :show)
 
-        # Mod specific routes
-        # TODO move to an admin protected scope
-        post("/moderation/ban", ModerationController, :ban_user)
-        post("/moderation/post/update_tags", ModerationController, :update_tags)
+    # Account settings
+    put("/account/meta", MetaController, :update)
+    post("/account/avatar", MetaController, :upload_avatar)
+    post("/account/cover", MetaController, :upload_cover)
+    put("/account/settings", SettingController, :update)
+    post("/account/reset_pass", UserController, :reset_pass)
 
-        post("/friends", FriendController, :create)
-        post("/friends/name", FriendController, :create_by_name)
-        delete("/friends/:id", FriendController, :destroy)
-        delete("/friends/name/:name", FriendController, :destroy_by_name)
+    # Mod specific routes
+    # TODO move to an admin protected scope
+    post("/moderation/ban", ModerationController, :ban_user)
+    post("/moderation/post/update_tags", ModerationController, :update_tags)
 
-        get("/blocks/ids", BlockController, :list_ids)
-        get("/blocks/list", BlockController, :list)
-        post("/blocks", BlockController, :create)
-        delete("/blocks/:id", BlockController, :destroy)
+    post("/friends", FriendController, :create)
+    post("/friends/name", FriendController, :create_by_name)
+    delete("/friends/:id", FriendController, :destroy)
+    delete("/friends/name/:name", FriendController, :destroy_by_name)
 
-        get("/tag_blocks/ids", TagBlockController, :list_ids)
-        get("/tag_blocks/list", TagBlockController, :list)
-        post("/tag_blocks", TagBlockController, :create)
-        delete("/tag_blocks/:id", TagBlockController, :destroy)
+    get("/blocks/ids", BlockController, :list_ids)
+    get("/blocks/list", BlockController, :list)
+    post("/blocks", BlockController, :create)
+    delete("/blocks/:id", BlockController, :destroy)
 
-        get("/tags/popular", TagController, :popular)
-        get("/tags/hot", TagController, :hot)
+    get("/tag_blocks/ids", TagBlockController, :list_ids)
+    get("/tag_blocks/list", TagBlockController, :list)
+    post("/tag_blocks", TagBlockController, :create)
+    delete("/tag_blocks/:id", TagBlockController, :destroy)
 
-        get("/subscriptions/tags/ids", TagController, :list_ids)
-        get("/subscriptions/tags/list", TagController, :list)
-        post("/subscriptions/tags", TagController, :create)
-        delete("/subscriptions/tags/:id", TagController, :destroy)
+    get("/tags/popular", TagController, :popular)
+    get("/tags/hot", TagController, :hot)
 
-        get("/tags/:name", TagController, :show_tag)
-        get("/tags/:name/posts", TagController, :show_tag_posts)
+    get("/subscriptions/tags/ids", TagController, :list_ids)
+    get("/subscriptions/tags/list", TagController, :list)
+    post("/subscriptions/tags", TagController, :create)
+    delete("/subscriptions/tags/:id", TagController, :destroy)
 
-        get("/following/:id/ids", FriendController, :list_ids)
-        get("/following/:id/list", FriendController, :list)
-        get("/followers/:id/ids", FriendController, :list_followers_ids)
-        get("/followers/:id/list", FriendController, :list_followers)
+    get("/tags/:name", TagController, :show_tag)
+    get("/tags/:name/posts", TagController, :show_tag_posts)
 
-        resources("/posts", PostController, only: [:show, :create, :delete])
-        get("/posts/:id/replies", PostController, :show_replies)
-        post("/posts/:post_id/reaction/:name", ReactionController, :create)
-        delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
-        post("/posts/:post_id/report", PostReportController, :create)
-        get("/posts/:post_id/reactions/overview", ReactionController, :reactions_overview)
-        get("/posts/:post_id/reactions/:reaction_name", ReactionController, :reactions_by_name)
+    get("/following/:id/ids", FriendController, :list_ids)
+    get("/following/:id/list", FriendController, :list)
+    get("/followers/:id/ids", FriendController, :list_followers_ids)
+    get("/followers/:id/list", FriendController, :list_followers)
 
-        get("/reactions/valid", ReactionController, :list_valid_reactions)
+    resources("/posts", PostController, only: [:show, :create, :delete])
+    get("/posts/:id/replies", PostController, :show_replies)
+    post("/posts/:post_id/reaction/:name", ReactionController, :create)
+    delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
+    post("/posts/:post_id/report", PostReportController, :create)
 
-        get("/feed", FeedController, :timeline)
-        get("/feed/public", FeedController, :get_public_feed)
-        get("/feed/user/:id", FeedController, :user_statuses)
-        delete("/feed/activity/:id", FeedController, :hide_post)
+    get(
+      "/posts/:post_id/reactions/overview",
+      ReactionController,
+      :reactions_overview
+    )
 
-        get("/feed/favorites", FavoriteController, :list)
-        post("/feed/favorites/:post_id", FavoriteController, :create)
-        delete("/feed/favorites/:post_id", FavoriteController, :destroy)
+    get(
+      "/posts/:post_id/reactions/:reaction_name",
+      ReactionController,
+      :reactions_by_name
+    )
 
-        post("/media", MediaController, :upload)
-        post("/link", LinkController, :parse)
+    get("/reactions/valid", ReactionController, :list_valid_reactions)
 
-        get("/notifications", NotificationController, :index)
-        put("/notifications/:id", NotificationController, :read)
+    get("/feed", FeedController, :timeline)
+    get("/feed/public", FeedController, :get_public_feed)
+    get("/feed/user/:id", FeedController, :user_statuses)
+    delete("/feed/activity/:id", FeedController, :hide_post)
 
-        get("/search/:query", SearchController, :search)
-        get("/search_typeahead/user/:username", SearchController, :user_typeahead)
+    get("/feed/favorites", FavoriteController, :list)
+    post("/feed/favorites/:post_id", FavoriteController, :create)
+    delete("/feed/favorites/:post_id", FavoriteController, :destroy)
 
-        get("/chat/conversations", ChatController, :list_conversations)
-        post("/chat/conversations", ChatController, :create)
-        get("/chat/conversations/:id", ChatController, :list_messages)
-        put("/chat/conversations/:id", ChatController, :read)
-        get("/chat/unread", ChatController, :list_unread_conversations)
-      end
-    end
+    post("/media", MediaController, :upload)
+    post("/link", LinkController, :parse)
 
-    get("/*path", PageController, :index)
+    get("/notifications", NotificationController, :index)
+    put("/notifications/:id", NotificationController, :read)
+
+    get("/search/:query", SearchController, :search)
+    get("/search_typeahead/user/:username", SearchController, :user_typeahead)
+
+    get("/chat/conversations", ChatController, :list_conversations)
+    post("/chat/conversations", ChatController, :create)
+    get("/chat/conversations/:id", ChatController, :list_messages)
+    put("/chat/conversations/:id", ChatController, :read)
+    get("/chat/unread", ChatController, :list_unread_conversations)
   end
 end

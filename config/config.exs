@@ -73,7 +73,7 @@ config :event_bus,
   ]
 
 config :scrivener_html,
-  routes_helper: Embers.Router.Helpers,
+  routes_helper: EmbersWeb.Router.Helpers,
   view_style: :bulma
 
 # Import environment specific config. This must remain at the bottom

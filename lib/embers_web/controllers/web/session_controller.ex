@@ -1,4 +1,4 @@
-defmodule EmbersWeb.SessionController do
+defmodule EmbersWeb.Web.SessionController do
   @moduledoc false
   use EmbersWeb, :controller
 
