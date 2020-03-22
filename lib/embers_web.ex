@@ -43,6 +43,9 @@ defmodule EmbersWeb do
       import EmbersWeb.Router.Helpers
       import EmbersWeb.ErrorHelpers
       import EmbersWeb.Gettext
+      import EmbersWeb.ViewHelpers
+
+      alias EmbersWeb.Endpoint
 
       def render_shared(template, assigns \\ []) do
         render(EmbersWeb.SharedView, template, assigns)

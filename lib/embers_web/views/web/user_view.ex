@@ -1,17 +1,9 @@
-defmodule EmbersWeb.UserView do
+defmodule EmbersWeb.Web.UserView do
   @moduledoc false
-
   use EmbersWeb, :view
+
   alias Embers.Helpers.IdHasher
-  alias EmbersWeb.{MetaView, UserView}
-
-  def render("index.json", %{users: users}) do
-    %{data: render_many(users, UserView, "user.json")}
-  end
-
-  def render("show.json", %{user: user}) do
-    %{data: render_one(user, UserView, "user.json")}
-  end
+  alias EmbersWeb.Api.{MetaView, UserView}
 
   def render("user.json", %{user: user}) do
     view = %{
@@ -39,7 +31,7 @@ defmodule EmbersWeb.UserView do
 
     view =
       if Ecto.assoc_loaded?(user.meta) do
-        Map.merge(view, render_one(user.meta, MetaView, "meta.json"))
+        Map.merge(view, render_one(user.meta, MetaView, "meta.json", as: :meta))
       else
         view
       end

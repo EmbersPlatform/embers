@@ -187,7 +187,7 @@ defmodule Embers.Accounts do
       |> Multi.run(:meta, &multi_attach_meta/2)
       |> Multi.run(:settings, &multi_attach_settings/2)
 
-    case Repo.transaction(multi) |> IO.inspect(label: "USER TRANSACTION") do
+    case Repo.transaction(multi) do
       {:ok, %{user: user}} ->
         {:ok, user}
 

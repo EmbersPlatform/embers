@@ -3,10 +3,20 @@
     "dev": "parcel watch assets/js/*.js assets/styles/*.scss --out-dir priv/static/ --public-url ./",
     "build": "parcel build assets/js/*.js assets/styles/*.scss --out-dir priv/static/ --public-url ./"
   },
-  "dependencies": {},
+  "dependencies": {
+    "heresy": "^0.26.1",
+    "stimulus": "^1.1.1",
+    "turbolinks": "^5.2.0"
+  },
   "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "autoprefixer": "^9.7.4",
+    "node-sass": "^4.13.1",
     "parcel-bundler": "^1.12.4",
-    "sass": "^1.25.0"
+    "postcss-modules": "^1.5.0",
+    "sass": "^1.25.0",
+    "sass-loader": "^8.0.2"
   },
   "staticFiles": {
     "staticPath": "assets/static",

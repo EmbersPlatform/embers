@@ -4,7 +4,7 @@ defmodule EmbersWeb.Authenticate do
   alias EmbersWeb.Auth.Token
   alias Embers.Accounts
   import Plug.Conn
-  alias Phauxth.{Config, Log}
+  alias Phauxth.Log
 
   def init(opts) do
     {Keyword.get(opts, :log_meta, []), opts}
@@ -35,7 +35,8 @@ defmodule EmbersWeb.Authenticate do
 
   def report({:ok, user}, meta) do
     Log.info(%Log{user: user.id, message: "user authenticated", meta: meta})
-    Map.drop(user, Config.drop_user_keys())
+
+    Embers.Accounts.get_populated(user.id)
   end
 
   def report({:error, message}, meta) do

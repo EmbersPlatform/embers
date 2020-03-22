@@ -1,0 +1,37 @@
+@import "./navigation.scss";
+@import "./sidebar/_module.scss";
+@import "./top_bar.scss";
+
+#embers {
+  min-height: 100vh;
+}
+
+@media (min-width: $mobile-breakpoint) {
+  #view {
+    margin-left: var(--navigation-width);
+  }
+
+  #view.has-sidebar {
+    margin-left: calc(var(--navigation-width) + var(--sidebar-width));
+  }
+
+  main.columns-layout {
+    display: flex;
+    position: relative;
+
+    &>.main-content {
+      width: 66%;
+    }
+
+    &>aside {
+      width: 33%;
+      position: relative;
+      margin-left: 1em;
+
+      &>.content {
+        position: sticky;
+        top: 55px;
+      }
+    }
+  }
+}

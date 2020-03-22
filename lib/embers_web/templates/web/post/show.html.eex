@@ -1,0 +1,24 @@
+<nav id="sidebar"></nav>
+<div id="view" view="post" class="has-sidebar">
+  <%= render_shared("top_bar.html") %>
+  <main class="columns-layout">
+    <div class="main-content">
+      <%= render("post.html", conn: @conn, post: @post) %>
+      <section id="comments" data-controller="comments">
+        <div class="comment-list" data-target="comments.commentList">
+          <%= for reply <- @replies do %>
+            <%= render("reply.html", conn: @conn, reply: reply) %>
+          <% end %>
+        </div>
+        <post-editor data-target="comments.editor" data-parent_id="<%= @post.id %>"></post-editor>
+      </section>
+    </div>
+    <aside>
+      User info
+      <hr>
+      Related posts?
+      <hr>
+      What to put here???
+    </aside>
+  </main>
+</div>

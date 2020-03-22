@@ -1,4 +1,4 @@
-defmodule EmbersWeb.ChangesetView do
+defmodule EmbersWeb.Web.ChangesetView do
   @moduledoc false
 
   use EmbersWeb, :view

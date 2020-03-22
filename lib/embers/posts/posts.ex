@@ -94,6 +94,7 @@ defmodule Embers.Posts do
 
     with {:ok, post} <- Repo.insert(post_changeset) do
       {:ok, post} = get_post(post.id)
+      post = put_user_avatar(post)
       emit_event? = Keyword.get(opts, :emit_event?, true)
 
       if emit_event? do
@@ -268,6 +269,7 @@ defmodule Embers.Posts do
     query
     |> Paginator.paginate(opts)
     |> fill_nsfw()
+    |> load_avatars()
   end
 
   defp fill_nsfw(page) do
@@ -294,5 +296,17 @@ defmodule Embers.Posts do
     end
 
     Repo.delete_all(query)
+  end
+
+  defp put_user_avatar(post) do
+    put_in(post.user.meta.avatar, Embers.Profile.Meta.avatar_map(post.user.meta))
+  end
+
+  defp load_avatars(page) do
+    Map.update!(page, :entries, fn posts ->
+      Enum.map(posts, fn post ->
+        update_in(post.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
+      end)
+    end)
   end
 end

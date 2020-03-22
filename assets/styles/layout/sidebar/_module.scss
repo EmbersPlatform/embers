@@ -1,0 +1,104 @@
+#sidebar {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  left: var(--navigation-width);
+  width: var(--sidebar-width);
+  background: var(--sidebar-background);
+  color: var(--sidebar-foreground);
+  border-right: 1px solid #0003;
+  z-index: 10;
+  padding: 0 1em;
+  box-sizing: border-box;
+
+  @media (max-width: $mobile-breakpoint) {
+    height: 100vh;
+    position: fixed;
+    left: calc(var(--sidebar-width) * -1);
+    top: 0;
+    transition: transform 100ms ease;
+    z-index: 10;
+  }
+
+  h1 {
+    margin: 0;
+    display: block;
+    font-size: 0.8em;
+    line-height: 0.8em;
+    color: var(--sidebar-title-color);
+    text-transform: uppercase;
+    padding: 1.2em;
+    font-weight: 400;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+
+  ul:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 2.6em;
+    width: 4px;
+    height: calc(100% + 5px);
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.1);
+  }
+
+  ul>li>a {
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+    z-index: 0;
+    background: transparent;
+    transition: all 0.3s ease-out;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 3px;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-weight: 400;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: var(--sidebar-foreground);
+  }
+
+  ul>li>a:hover {
+    background: var(--sidebar-background-hover);
+    color: var(--sidebar-foreground-hover);
+  }
+
+  ul>li>a.active {
+    background: var(--sidebar-background-accent);
+    color: var(--sidebar-foreground-accent);
+  }
+
+  ul>li+li {
+    margin-top: 0.3em;
+  }
+
+  ul>li>a svg {
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 1.8em;
+  }
+
+  ul>li>a svg * {
+    fill: var(--sidebar-foreground);
+  }
+
+  ul>li>a:hover svg * {
+    fill: var(--sidebar-foreground-hover);
+  }
+
+  ul>li>a.active svg * {
+    fill: var(--sidebar-foreground-accent);
+  }
+}

@@ -1,15 +1,19 @@
 @import "./variables.scss";
 @import "./themes.scss";
 
-@import "./elements/elements.scss";
-@import "./components/components.scss";
+@import "./mixins/module";
 
-@import "./landing/landing.scss";
-@import "./top_nav/top_nav.scss";
+@import "./turbolinks.scss";
 
-@import "./layout/layout.scss";
+@import "./elements/module";
+@import "./components/module";
 
-@import "./pages/pages.scss";
+@import "./landing/module";
+@import "./top_nav/module";
+
+@import "./layout/module";
+
+@import "./pages/module";
 
 body {
   margin: 0;
@@ -23,4 +27,9 @@ body {
   box-sizing: border-box;
   background: var(--background);
   color: var(--text);
+}
+
+#view main {
+  max-width: 960px;
+  margin: 0 auto;
 }

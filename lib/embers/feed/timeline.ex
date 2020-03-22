@@ -42,6 +42,7 @@ defmodule Embers.Feed.Timeline do
     query
     |> Paginator.paginate(opts)
     |> activities_to_posts()
+    |> load_avatars()
     |> fill_nsfw()
   end
 

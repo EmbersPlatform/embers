@@ -1,76 +1,25 @@
-defmodule EmbersWeb.PageController do
+defmodule EmbersWeb.Web.PageController do
   @moduledoc false
 
   use EmbersWeb, :controller
 
-  alias Embers.Accounts.User
-  alias Embers.Subscriptions
-  alias Embers.LoadingMsg
-  alias Embers.Notifications
-  alias Embers.Profile.Meta
-  alias Embers.Repo
+  alias Embers.Helpers.IdHasher
+  alias Embers.Feed.Timeline
 
-  def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, params) do
-    if is_nil(params["path"]) do
-      render(conn, "landing.html")
-    else
-      render(conn, "index.html")
-    end
+  def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, _params) do
+    render(conn, "landing.html")
   end
 
-  def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
-    user =
-      User
-      |> Repo.get(current_user.id)
-      |> Repo.preload([:meta, :settings])
-
-    tags = Subscriptions.Tags.list_subscribed_tags(user.id)
-
-    tags =
-      EmbersWeb.TagView.render(
-        "tags.json",
-        %{tags: tags}
+  def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, params) do
+    timeline =
+      Timeline.get(
+        user_id: current_user.id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
       )
 
-    notifications = Notifications.list_notifications_paginated(user.id)
-
-    notifications =
-      EmbersWeb.NotificationView.render(
-        "notifications.json",
-        notifications
-      )
-
-    user = %{
-      user
-      | meta:
-          user.meta
-          |> Meta.load_avatar_map()
-          |> Meta.load_cover()
-    }
-
-    unread_conversations =
-      Embers.Chat.list_unread_conversations(user.id)
-      |> Enum.map(fn x ->
-        %{x | party: Embers.Helpers.IdHasher.encode(x.party)}
-      end)
-
-    render(conn, "index.html",
-      user: user,
-      tags: tags,
-      notifications: notifications.items,
-      loading_msg: LoadingMsg.get_random(),
-      unread_conversations: unread_conversations
-    )
-  end
-
-  def auth(%Plug.Conn{assigns: %{current_user: user}} = conn, _params) when not is_nil(user) do
-    tags = Subscriptions.Tags.list_subscribed_tags(user.id)
-
-    render(conn, "auth.json", conn: conn, tags: tags, user: user)
-  end
-
-  def auth(conn, _params) do
-    render(conn, "auth.json", conn: conn)
+    render(conn, "index.html", timeline: timeline)
   end
 
   def rules(conn, _params) do

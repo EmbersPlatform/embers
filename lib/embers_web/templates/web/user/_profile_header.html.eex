@@ -1,0 +1,32 @@
+<section class="profile-header">
+  <div class="profile-cover">
+    <img src="<%= @user.meta.cover %>" class="profile-cover-image" />
+    <div class="profile-user">
+      <%= render("avatar.html", avatar: @user.meta.avatar.medium, size: "medium") %>
+      <div class="profile-username">
+        <span class="at">@</span>
+        <span class="username"><%= @user.username %></span>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <%= Enum.map(@user.stats, fn {stat, value} -> %>
+        <div class="stat">
+          <span class="stat-value"><%= value %></span>
+          <span class="stat-name"><%= stat %></span>
+        </div>
+      <% end) %>
+    </div>
+  </div>
+  <div class="profile-details">
+    <div class="profile-bio">
+      <%= @user.meta.bio %>
+    </div>
+    <div class="profile-following">
+      <%= for follower <- @followers do %>
+        <%= labeled_link(to: "/@#{follower.canonical}", label: follower.canonical) do %>
+          <%= render("avatar.html", avatar: follower.meta.avatar.small, bordered: true) %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</section>

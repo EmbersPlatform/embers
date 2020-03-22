@@ -1,0 +1,18 @@
+.link {
+  .link-preview {
+    max-height: 600px;
+    overflow: hidden;
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  .link-description {
+    padding: 1em;
+
+    h3 {
+      color: var(--link);
+    }
+  }
+}
