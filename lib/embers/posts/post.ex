@@ -129,26 +129,34 @@ defmodule Embers.Posts.Post do
     |> changeset(attrs)
     |> prepare_changes(fn changeset ->
       repo = changeset.repo
+
       if parent_id = get_change(changeset, :parent_id) do
         repo.update_all(
           from(
             p in __MODULE__,
             where: p.id == ^parent_id,
             update: [inc: [replies_count: 1]]
-          ), [])
+          ),
+          []
+        )
       end
+
       changeset
     end)
     |> prepare_changes(fn changeset ->
       repo = changeset.repo
+
       if related_to_id = get_change(changeset, :related_to_id) do
         repo.update_all(
           from(
             p in __MODULE__,
             where: p.id == ^related_to_id,
             update: [inc: [shares_count: 1]]
-          ), [])
+          ),
+          []
+        )
       end
+
       changeset
     end)
   end
@@ -227,7 +235,8 @@ defmodule Embers.Posts.Post do
 
   defp trim_body(changeset) do
     body = get_change(changeset, :body)
-    unless is_nil body do
+
+    unless is_nil(body) do
       changeset
       |> change(body: String.trim(body))
     end || changeset
@@ -237,7 +246,9 @@ defmodule Embers.Posts.Post do
     parent_id = get_change(changeset, :parent_id)
     validate_parent_and_set_nesting_level(changeset, parent_id)
   end
+
   defp validate_parent_and_set_nesting_level(changeset, nil), do: changeset
+
   defp validate_parent_and_set_nesting_level(changeset, parent_id) do
     case Repo.get(Post, parent_id) do
       nil ->
@@ -264,6 +275,11 @@ defmodule Embers.Posts.Post do
   defp check_if_can_reply(changeset, parent) do
     user_id = get_change(changeset, :user_id)
 
+    parent_owner =
+      Embers.Accounts.get_user(parent.user_id)
+      |> Repo.preload([:settings])
+      |> Embers.Accounts.User.load_follows_me_status(user_id)
+
     is_blocked? =
       Repo.exists?(
         from(
@@ -273,11 +289,33 @@ defmodule Embers.Posts.Post do
         )
       )
 
-    if is_blocked? do
-      changeset
-      |> Ecto.Changeset.add_error(:blocked, "parent post owner has blocked the post creator")
-    else
-      changeset
+    IO.inspect(parent_owner, label: "OWNER")
+
+    is_trusted? =
+      cond do
+        parent_owner.settings.privacy_trust_level == "everyone" ->
+          true
+
+        parent_owner.settings.privacy_trust_level == "followers" and !parent_owner.follows_me ->
+          false
+
+        true ->
+          true
+      end
+
+    cond do
+      is_blocked? ->
+        Ecto.Changeset.add_error(
+          changeset,
+          :blocked,
+          "parent post owner has blocked the post creator"
+        )
+
+      !is_trusted? ->
+        Ecto.Changeset.add_error(changeset, :blocked, "can't comment to this user posts")
+
+      true ->
+        changeset
     end
   end
 
@@ -290,7 +328,9 @@ defmodule Embers.Posts.Post do
       |> Timex.shift(minutes: -5)
 
     case related_id do
-      nil -> changeset
+      nil ->
+        changeset
+
       _ ->
         recently_shared? =
           Repo.exists?(
@@ -301,6 +341,7 @@ defmodule Embers.Posts.Post do
               where: post.inserted_at >= ^since_date
             )
           )
+
         if recently_shared? do
           changeset
           |> add_error(:related_to, "rate limited")
@@ -334,21 +375,21 @@ defmodule Embers.Posts.Post do
   end
 
   defp maybe_put_media(%{params: %{"media" => media}} = changeset)
-    when not is_nil(media)
-  do
+       when not is_nil(media) do
     changeset
     |> put_assoc(:media, media)
     |> validate_length(:media, max: 4)
   end
+
   defp maybe_put_media(changeset), do: changeset
 
   defp maybe_put_link(%{params: %{"links" => links}} = changeset)
-    when not is_nil(links)
-  do
+       when not is_nil(links) do
     changeset
     |> put_assoc(:links, links)
     |> validate_length(:links, max: 1)
   end
+
   defp maybe_put_link(changeset), do: changeset
 
   defp maybe_put_tags(%{params: %{"tags" => tags}} = changeset) do
@@ -358,5 +399,6 @@ defmodule Embers.Posts.Post do
     |> put_assoc(:tags, tags)
     |> validate_length(:tags, max: 10)
   end
+
   defp maybe_put_tags(changeset), do: changeset
 end

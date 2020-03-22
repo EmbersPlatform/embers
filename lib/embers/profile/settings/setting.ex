@@ -12,6 +12,7 @@ defmodule Embers.Profile.Settings.Setting do
 
     field(:privacy_show_status, :boolean, default: true)
     field(:privacy_show_reactions, :boolean, default: true)
+    field(:privacy_trust_level, :string, default: "everyone")
 
     belongs_to(:user, Embers.Accounts.User)
 
@@ -26,7 +27,8 @@ defmodule Embers.Profile.Settings.Setting do
       :content_lowres_images,
       :content_collapse_media,
       :privacy_show_status,
-      :privacy_show_reactions
+      :privacy_show_reactions,
+      :privacy_trust_level
     ])
     |> validate_required([:user_id])
   end

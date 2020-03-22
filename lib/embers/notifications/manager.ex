@@ -79,6 +79,10 @@ defmodule Embers.Notifications.Manager do
       recipients
       |> Enum.reject(fn recipient -> recipient == post.user_id end)
 
+    # don't notify recipients that blocked the user
+    blocking_users = Embers.Blocks.list_users_ids_that_blocked(post.user_id)
+    recipients = Enum.reject(recipients, fn recipient -> recipient in blocking_users end)
+
     recipients = remove_self_from_recipients(recipients, post)
 
     create_mention_notifications(recipients, post)
@@ -119,6 +123,7 @@ defmodule Embers.Notifications.Manager do
   end
 
   defp handle_comment(%{parent_id: nil}), do: :noop
+
   defp handle_comment(post) do
     with {:ok, parent} <- Posts.get_post(post.parent_id) do
       if parent.user_id != post.user_id do
@@ -129,6 +134,7 @@ defmodule Embers.Notifications.Manager do
             recipient_id: parent.user_id,
             source_id: parent.id
           })
+
         notification = notification |> Embers.Repo.preload(from: :meta)
         Embers.Event.emit(:notification_created, notification)
       end
