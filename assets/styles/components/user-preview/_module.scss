@@ -1,0 +1,42 @@
+.user-preview {
+  @include box;
+  background: var(--primary);
+  border-color: var(--border-color);
+  border-radius: 0.2em;
+  position: relative;
+
+  .cover {
+    max-width: 100%;
+    margin: 0;
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  .user-avatar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: -25%;
+    transform: translateY(-50%);
+
+    img {
+      display: block;
+      width: 40%;
+      height: auto;
+      border-radius: 50%;
+      border: 5px solid var(--primary);
+    }
+  }
+
+  .username {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .bio {
+    padding: 0 1em;
+    word-break: break-word;
+  }
+}

@@ -2,8 +2,11 @@
   display: inline-block;
   position: relative;
 
-  &:hover .hover-menu {
-    display: block;
+  &:hover,
+  &:focus-within {
+    .hover-menu {
+      display: block;
+    }
   }
 }
 

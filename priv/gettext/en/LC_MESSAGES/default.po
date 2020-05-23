@@ -27,32 +27,34 @@ msgid "Invalid image file"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/views/web/notification_view.ex:48
+#: lib/embers_web/views/api/notification_view.ex:42
 msgid "mentioned you in a"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/views/web/notification_view.ex:45
+#: lib/embers_web/views/api/notification_view.ex:39
 msgid "commented in your"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/views/web/notification_view.ex:51
+#: lib/embers_web/views/api/notification_view.ex:45
 msgid "is following you"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/controllers/web/link_controller.ex:21
+#: lib/embers_web/controllers/api/link_controller.ex:21
+#: lib/embers_web/controllers/web/link_controller.ex:29
 msgid "Couldn't process link"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/controllers/web/link_controller.ex:27
+#: lib/embers_web/controllers/api/link_controller.ex:27
+#: lib/embers_web/controllers/web/link_controller.ex:35
 msgid "Internal error"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/controllers/web/session_controller.ex:46
+#: lib/embers_web/controllers/web/session_controller.ex:45
 msgid "User successfully logged in."
 msgstr ""
 
@@ -67,91 +69,96 @@ msgid "invalid credentials"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/session/new.html.eex:23
+#: lib/embers_web/templates/web/session/new.html.eex:32
 msgid "Forgot my password"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:84
+#: lib/embers_web/templates/web/page/landing.html.eex:55
 msgid "Home of free speech"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/session/new.html.eex:4
-#: lib/embers_web/templates/session/new.html.eex:20
+#: lib/embers_web/templates/web/session/new.html.eex:2
+#: lib/embers_web/templates/web/session/new.html.eex:28
 msgid "Log in"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/session/new.html.eex:16
+#: lib/embers_web/templates/web/session/new.html.eex:22
 msgid "Password"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:97
+#: lib/embers_web/templates/web/page/landing.html.eex:67
 msgid "Register"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/password_reset/edit.html.eex:2
-#: lib/embers_web/templates/password_reset/edit.html.eex:24
-#: lib/embers_web/templates/password_reset/new.html.eex:2
-#: lib/embers_web/templates/password_reset/new.html.eex:18
+#: lib/embers_web/templates/web/password_reset/edit.html.eex:2
+#: lib/embers_web/templates/web/password_reset/edit.html.eex:24
+#: lib/embers_web/templates/web/password_reset/new.html.eex:2
+#: lib/embers_web/templates/web/password_reset/new.html.eex:18
 msgid "Reset password"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:83
+#: lib/embers_web/templates/web/page/landing.html.eex:54
 msgid "Shitposting hive"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/password_reset/new.html.eex:7
+#: lib/embers_web/templates/web/password_reset/new.html.eex:7
 msgid "There were problems resetting your password"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:95
+#: lib/embers_web/templates/web/page/landing.html.eex:65
 msgid "Try Embers now, it's free!"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/session/new.html.eex:13
+#: lib/embers_web/templates/web/session/new.html.eex:17
 msgid "Username or email"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:90
+#: lib/embers_web/templates/web/page/landing.html.eex:61
 msgid "What's happening in Embers:"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:85
+#: lib/embers_web/templates/web/page/landing.html.eex:56
 msgid "Where eggplants are born"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:65
+#: lib/embers_web/templates/shared/top_nav.html.eex:21
+#: lib/embers_web/templates/web/page/landing.html.eex:36
 msgid "acknowledgements"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:55
+#: lib/embers_web/templates/shared/top_nav.html.eex:11
+#: lib/embers_web/templates/web/page/landing.html.eex:26
 msgid "faq"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:75
+#: lib/embers_web/templates/shared/top_nav.html.eex:31
+#: lib/embers_web/templates/web/page/landing.html.eex:46
 msgid "log in"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:70
+#: lib/embers_web/templates/shared/top_nav.html.eex:26
+#: lib/embers_web/templates/web/page/landing.html.eex:41
 msgid "register"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/page/landing.html.eex:60
+#: lib/embers_web/templates/shared/top_nav.html.eex:16
+#: lib/embers_web/templates/web/page/landing.html.eex:31
 msgid "rules"
 msgstr ""
 
@@ -163,4 +170,101 @@ msgstr ""
 #, elixir-format
 #: lib/embers_web/controllers/web/account_controller.ex:79
 msgid "You have to wait a few days before creating another account"
+msgstr ""
+
+#: lib/embers_web/templates/web/post/post.html.eex:103
+msgid "1 comment"
+msgid_plural "%{count} comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/post.html.eex:108
+msgid "1 time shared"
+msgid_plural "%{count} times shared"
+msgstr[0] ""
+msgstr[1] ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/_post_actions.html.eex:25
+msgid "Ban user"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/account/new.html.eex:2
+#: lib/embers_web/templates/web/account/new.html.eex:39
+msgid "Create account"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/_post_actions.html.eex:18
+msgid "Disable"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/layout/logged_in/navigation.html.eex:12
+#: lib/embers_web/templates/layout/logged_in/navigation.html.eex:49
+msgid "Discover"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/layout/logged_in/navigation.html.eex:7
+#: lib/embers_web/templates/layout/logged_in/navigation.html.eex:44
+msgid "Home"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/_post_actions.html.eex:12
+msgid "Is NSFW"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/_post_actions.html.eex:44
+msgid "Reactions"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/_post_actions.html.eex:49
+msgid "Report"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/shared/top_bar.html.eex:2
+msgid "Search Embers"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/_post_actions.html.eex:55
+#: lib/embers_web/templates/web/post/post.html.eex:146
+msgid "Delete"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/reply.html.eex:54
+msgid "Reply"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/post.html.eex:140
+msgid "Reply..."
+msgstr ""
+
+#, elixir-format, fuzzy
+#: lib/embers_web/templates/web/post/post.html.eex:147
+msgid "Delete post?"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/post.html.eex:31
+msgid "Show"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/_post_tombstone.html.eex:2
+msgid "This post is no longer available"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/post.html.eex:148
+msgid "This will permanently delete this post"
 msgstr ""

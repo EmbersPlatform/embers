@@ -1,0 +1,3 @@
+<div class="post-tombstone">
+  <%= gettext("This post is no longer available") %>
+</div>

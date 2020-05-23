@@ -1,0 +1,141 @@
+.reply-thread {
+
+  post-editor {
+    border: 1px solid var(--secondary-accent);
+    margin-bottom: 1em;
+    background: var(--primary);
+  }
+  @include media(">=tablet") {
+    post-editor {
+      margin-left: 3em;
+    }
+  }
+
+  .reply-thread-list {
+    .load-more-button {
+      padding-left: 4.2em;
+      border: 1px solid var(--border-color);
+      border-top: 0;
+      position: relative;
+      text-align: left;
+      width: 100%;
+
+      @include media(">=tablet") {
+        margin-left: 3.2em;
+        padding-left: 4.5em;
+        width: calc(100% - 3.2em);
+      }
+
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 2.1em;
+        bottom: -1px;
+        height: calc(100% + 2px);
+        width: 2px;
+        background: var(--accent);
+
+        @include media(">=tablet") {
+          left: 26px;
+        }
+      }
+
+      svg {
+        transform: rotate(90deg);
+        margin-right: 0.5em;
+        width: 1.5em;
+        height: 1.5em;
+      }
+    }
+
+    loading-indicator {
+      display: block;
+      width: 100%;
+      padding-left: 4.2em;
+      border-left: 1px solid var(--border-color);
+      position: relative;
+      text-align: left;
+
+      @include media(">=tablet") {
+        margin-left: 3.2em;
+        padding-left: 4.5em;
+      }
+
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 2em;
+        bottom: 0;
+        height: calc(100% + 1px);
+        width: 2px;
+        background: var(--accent);
+
+        @include media(">=tablet") {
+          left: 1.7em;
+        }
+      }
+    }
+
+    @include media(">=tablet") {
+      .reply:not(:first-child) {
+        margin-left: 3em;
+        border-left: 1px solid var(--border-color);
+      }
+
+      .reply:first-child::after,
+      .reply:nth-child(2)::before {
+        display: none!important;
+      }
+    }
+
+    .reply:nth-child(2) {
+      border-top: none;
+    }
+
+    .reply:first-child,
+    .reply:last-child {
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .reply {
+      border-left: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+    }
+
+    .reply:not(:first-child)::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: -1px;
+      left: 2em;
+      height: 0.6em;
+      width: 2px;
+      background: var(--accent);
+
+      @include media(">=tablet") {
+        left: 1.9em;
+      }
+    }
+
+    .reply:not(:last-child)::after {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 2em;
+      height: calc(100% - 3.6em);
+      width: 2px;
+      background: var(--accent);
+
+      @include media(">=tablet") {
+        left: 1.9em;
+      }
+    }
+  }
+}
+
+.reply-thread + .reply-thread {
+  border-top: 0.1em solid var(--border-color);
+}

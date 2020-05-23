@@ -10,9 +10,18 @@
   flex-flow: row nowrap;
   align-items: center;
   border: 2px solid var(--reaction-border);
+  color: var(--text);
 }
 
-.reaction.reacted {
+.reaction[disabled] {
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 0.5 !important;
+  }
+}
+
+.reaction[reacted] {
   background: var(--reaction-reacted-background);
   color: var(--reaction-reacted-foreground);
   border-color: var(--reaction-reacted-border);
@@ -26,4 +35,8 @@
   font-size: inherit;
   user-select: none;
   touch-action: manipulation;
+}
+
+.reaction>* {
+  margin-left: 0;
 }

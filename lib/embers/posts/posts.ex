@@ -69,11 +69,13 @@ defmodule Embers.Posts do
       nil ->
         {:error, :not_found}
 
-      %{deleted_at: deleted_at} when not is_nil(deleted_at) ->
-        {:error, :post_disabled}
-
       post ->
-        {:ok, post |> Post.fill_nsfw()}
+        post =
+          post
+          |> Post.fill_nsfw()
+          |> put_user_avatar()
+
+        {:ok, post}
     end
   end
 
@@ -251,6 +253,8 @@ defmodule Embers.Posts do
   """
   def get_post_replies(parent_id, opts \\ []) do
     order = Keyword.get(opts, :order, :asc)
+    replies = Keyword.get(opts, :replies)
+    replies_order = Keyword.get(opts, :replies_order, {:asc, :inserted_at})
 
     query =
       from(
@@ -259,19 +263,32 @@ defmodule Embers.Posts do
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
         preload: [user: {user, meta: meta}],
-        preload: [:reactions, :media, :links, :tags]
+        preload: [:reactions, :media, :links, :tags],
+        order_by: [{^order, post.inserted_at}]
       )
 
-    query =
-      case order do
-        :desc -> from(post in query, order_by: [desc: post.inserted_at])
-        :asc -> from(post in query, order_by: [asc: post.inserted_at])
-      end
+    maybe_load_replies = fn page ->
+      if is_integer(replies) do
+
+        entries =
+          page.entries
+          |> Repo.preload_lateral(
+              :replies,
+              limit: replies,
+              assocs: [:reactions, :media, :links, :tags, user: [:meta]],
+              order_by: replies_order,
+              reverse: elem(replies_order, 0) == :desc
+            )
+          |> Embers.Feed.Utils.load_avatars()
+        put_in(page.entries, entries)
+      end || page
+    end
 
     query
     |> Paginator.paginate(opts)
     |> fill_nsfw()
     |> load_avatars()
+    |> maybe_load_replies.()
   end
 
   defp fill_nsfw(page) do
@@ -301,7 +318,14 @@ defmodule Embers.Posts do
   end
 
   defp put_user_avatar(post) do
-    put_in(post.user.meta.avatar, Embers.Profile.Meta.avatar_map(post.user.meta))
+    post = put_in(post.user.meta.avatar, Embers.Profile.Meta.avatar_map(post.user.meta))
+
+    if Ecto.assoc_loaded?(post.related_to) and not is_nil(post.related_to) do
+      avatar = Embers.Profile.Meta.avatar_map(post.related_to.user.meta)
+      put_in(post.related_to.user.meta.avatar, avatar)
+    else
+      post
+    end
   end
 
   defp load_avatars(page) do

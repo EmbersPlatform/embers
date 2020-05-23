@@ -1,0 +1,13 @@
+{
+  "": {
+    "language": "es",
+    "plural-forms": "nplurals = 2; plural = (n != 1);"
+  },
+  "Share something with your followers!": "¡Comparte algo con tus seguidores!",
+  "Tags, separated by spaces": "Tags, separados por espacios",
+  "Publish": "Publicar",
+  "Cancel": "Cancelar",
+  "Retry": "Volver a intentar",
+  "Add image": "Agregar imagen",
+  "Remove multimedia": "Quitar"
+}

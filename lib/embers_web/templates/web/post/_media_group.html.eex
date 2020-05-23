@@ -1,18 +1,30 @@
 <% count = length(@medias) %>
-<figure class="media-group" count="<%= count %>">
+<figure
+  class="media-group" count="<%= count %>"
+>
 
   <%= if count == 1 do %>
   <% [media] = @medias %>
-    <div class="media">
-      <img src="/<%= media.metadata["preview_url"] %>" alt="">
+    <div
+      class="media"
+      itemscope
+      itemtype="https://schema.org/ImageObject"
+      data-action="click->medias#show_at" data-id="<%= encode_id media.id %>"
+    >
+      <img src="<%= Embers.Media.format_url(media.metadata["preview_url"]) %>" alt="" itemprop="thumbnailUrl">
+      <link itemprop="contentUrl" href="<%= Embers.Media.format_url(media.url) %>" />
     </div>
   <% end %>
 
   <%= if count == 2 do %>
     <%= for media <- @medias do %>
-      <div class="media-preview">
-        <div class="media-preview_bg" style="background-image: url('/<%= media.metadata["preview_url"] %>');">
-          <img src="/<%= media.metadata["preview_url"] %>" alt="">
+      <div class="media-preview"
+        itemscope
+        itemtype="https://schema.org/ImageObject"
+        data-action="click->medias#show_at" data-id="<%= encode_id media.id %>">
+        <div class="media-preview_bg" style="background-image: url('<%= Embers.Media.format_url(media.metadata["preview_url"]) %>');">
+          <img src="<%= Embers.Media.format_url(media.metadata["preview_url"]) %>" alt="" itemprop="thumbnailUrl">
+          <link itemprop="contentUrl" href="<%= Embers.Media.format_url(media.url) %>" />
         </div>
       </div>
     <% end %>
@@ -20,16 +32,16 @@
 
   <%= if count > 2 do %>
     <% [media | aside_medias] = @medias %>
-    <div class="media-preview">
-      <div class="media-preview_bg" style="background-image: url('/<%= media.metadata["preview_url"] %>');">
-        <img src="/<%= media.metadata["preview_url"] %>" alt="">
+    <div class="media-preview" data-action="click->medias#show_at" data-id="<%= encode_id media.id %>">
+      <div class="media-preview_bg" style="background-image: url('<%= Embers.Media.format_url(media.metadata["preview_url"]) %>');">
+        <img src="<%= Embers.Media.format_url(media.metadata["preview_url"]) %>" alt="">
       </div>
     </div>
     <div class="medias-aside">
       <%= for media <- aside_medias do %>
-        <div class="media-preview">
-          <div class="media-preview_bg" style="background-image: url('/<%= media.metadata["preview_url"] %>');">
-            <img src="/<%= media.metadata["preview_url"] %>" alt="">
+        <div class="media-preview" data-action="click->medias#show_at" data-id="<%= encode_id media.id %>">
+          <div class="media-preview_bg" style="background-image: url('<%= Embers.Media.format_url(media.metadata["preview_url"]) %>');">
+            <img src="<%= Embers.Media.format_url(media.metadata["preview_url"]) %>" alt="">
           </div>
         </div>
       <% end %>

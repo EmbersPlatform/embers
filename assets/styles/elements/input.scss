@@ -30,3 +30,18 @@ input.form-control {
     outline: auto;
   }
 }
+
+textarea {
+  font-family: $font-family;
+  font-size: 1em;
+  background: var(--input-background, var(--primary));
+  border-radius: 0.2em;
+  border: var(--border);
+  color: var(--text);
+  padding: 0.3em 0.5em;
+
+  &:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
+}

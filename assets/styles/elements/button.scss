@@ -1,56 +1,33 @@
-button {
+.button,
+.plain-button,
+.button-link {
+  font-family: $font-family;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
   color: var(--text);
+  box-sizing: border-box;
 }
 
-button svg path {
-  fill: var(--text);
+.button,
+.plain-button,
+.button-link {
+  svg path {
+    fill: var(--text);
+  }
 }
 
-button *+* {
+.button *+*,
+.plain-button *+*,
+.button-link *+* {
   margin-left: 0.5em;
 }
 
-button.plain {
-  background: none;
-  border: none;
-}
-
-button.plain[disabled] {
-  opacity: 0.7;
-}
-
-button.plain.success {
-  color: var(--success);
-}
-
-button.plain.success svg path {
-  fill: var(--success);
-}
-
-button.plain.warning {
-  color: var(--warning);
-}
-
-button.plain.warning svg path {
-  fill: var(--warning);
-}
-
-button.plain.danger {
-  color: var(--danger);
-}
-
-button.plain.danger svg path {
-  fill: var(--danger);
-}
-
-button.button {
+.button {
   padding-right: 0.6em;
   padding-left: 0.6em;
-  height: 2em;
+  height: 2rem;
   position: relative;
   border-color: var(--button-border-background);
   color: var(--button-foreground);
@@ -58,15 +35,15 @@ button.button {
   text-shadow: var(--button-text-shadow);
 }
 
-button.button,
-button.button::before {
+.button,
+.button::before {
   border-width: 1px;
   border-style: solid;
   border-radius: var(--border-radius);
   justify-content: center;
 }
 
-button.button:before {
+.button:before {
   display: block;
   content: "";
   position: absolute;
@@ -81,51 +58,98 @@ button.button:before {
   border-top-width: 0;
 }
 
-button.button:hover {
+.button:hover {
   filter: var(--button-hover-filter);
 }
 
-button.button svg path {
-  fill: var(--a-alt);
+.button svg path {
+  fill: var(--text);
 }
 
-button.button[disabled] {
+.button[disabled] {
   filter: grayscale(0.8) brightness(0.5);
   cursor: default;
 }
 
-button.button.primary {
+.button.primary {
   color: var(--accent-foreground);
   background: var(--accent);
 }
 
-button.button.primary svg path {
+.button.primary svg path {
   fill: var(--primary-alt);
 }
 
-button.button.danger {
+.button.danger {
   color: var(--danger-alt);
   background: var(--danger);
 }
 
-button.button.danger svg path {
+.button.danger svg path {
   fill: var(--danger-alt);
 }
 
-button.button.warning {
+.button.warning {
   color: var(--warning-alt);
   background: var(--warning);
 }
 
-button.button.warning svg path {
+.button.warning svg path {
   fill: var(--warning-alt);
 }
 
-button.button.success {
+.button.success {
   color: var(--success-alt);
   background: var(--success);
 }
 
-button.button.success svg path {
+.button.success svg path {
   fill: var(--success-alt);
+}
+
+.button-small {
+  font-size: 0.8em;
+  height: 1.8em;
+  padding: 0 0.4em;
+}
+
+.plain-button {
+  background: none;
+  border: none;
+}
+
+.plain-button[disabled] {
+  opacity: 0.7;
+}
+
+.plain-button.success {
+  color: var(--success);
+}
+
+.plain-button.success svg path {
+  fill: var(--success);
+}
+
+.plain-button.warning {
+  color: var(--warning);
+}
+
+.plain-button.warning svg path {
+  fill: var(--warning);
+}
+
+.plain-button.danger {
+  color: var(--danger);
+}
+
+.plain-button.danger svg path {
+  fill: var(--danger);
+}
+
+.button,
+.plain-button,
+.button-link {
+  svg {
+    height: 1.4em;
+  }
 }

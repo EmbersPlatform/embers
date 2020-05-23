@@ -1,0 +1,30 @@
+<% replies = get_replies(@reply) %>
+<div
+  class="reply-thread"
+  data-controller="replyable post-replies"
+  data-id="<%= encode_id(@reply.id) %>"
+  <%= if length(replies) > 0 && @reply.replies_count > 2 do %>
+    data-next="<%= encode_id List.first(replies).id %>"
+  <% end %>
+>
+  <div class="reply-thread-list" data-target="post-replies.list">
+    <%= render("reply.html", conn: @conn, reply: @reply) %>
+    <%= if length(replies) > 0 && @reply.replies_count > 2 do %>
+      <button class="plain-button load-more-button" data-target="replyable.loadMoreButton" data-action="click->replyable#load_older_replies">
+        <%= svg_image("icons/level-up") %>
+        <span><%= gettext("Load more replies") %></span>
+      </button>
+      <loading-indicator data-target="replyable.loadingIndicator replyable.insertionPoint"></loading-indicator>
+    <% end %>
+    <%= for reply <- replies do
+      render("reply.html", conn: @conn, reply: reply)
+    end %>
+  </div>
+  <post-editor
+    class="hidden"
+    data-parent_id="<%= encode_id(@reply.id) %>"
+    compact
+    data-target="replyable.replyEditor"
+    data-action="publish->post-replies#addReply"
+  ></post-editor>
+</div>

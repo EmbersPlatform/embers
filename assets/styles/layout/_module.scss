@@ -4,15 +4,18 @@
 
 #embers {
   min-height: 100vh;
+  // overflow-x: hidden;
 }
 
-@media (min-width: $mobile-breakpoint) {
+@include media(">=tablet") {
   #view {
     margin-left: var(--navigation-width);
   }
 
   #view.has-sidebar {
-    margin-left: calc(var(--navigation-width) + var(--sidebar-width));
+    @include media(">=desktop") {
+      margin-left: calc(var(--navigation-width) + var(--sidebar-width));
+    }
   }
 
   main.columns-layout {
@@ -21,6 +24,7 @@
 
     &>.main-content {
       width: 66%;
+      margin-right: 1em;
     }
 
     &>aside {
@@ -33,5 +37,13 @@
         top: 55px;
       }
     }
+  }
+}
+
+main.padded {
+  padding: 0.4em;
+
+  @include media(">=tablet") {
+    padding: 1.4em;
   }
 }

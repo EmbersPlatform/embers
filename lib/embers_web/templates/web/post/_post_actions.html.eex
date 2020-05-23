@@ -1,52 +1,63 @@
+<%= if authenticated?(@conn) do %>
 <div class="post-actions">
-  <div class="hover-menu-wrapper">
-    <button class="plain">
-      <%= svg_image "icons/gavel" %>
-    </button>
-    <div class="hover-menu bottom-right">
-      <ol>
-        <li>
-          <button class="plain">
-            <span><%= gettext("Is NSFW") %></span>
-          </button>
-        </li>
-        <li>
-          <button class="plain">
-            <span>
-              <%= gettext("Disable") %>
-            </span>
-          </button>
-        </li>
-        <li>
-          <button class="plain">
-            <span>
-              <%= gettext("Ban user") %>
-            </span>
-          </button>
-        </li>
-      </ol>
+  <%= if Embers.Authorization.can?(@conn.assigns.current_user, "access_mod_tools") do %>
+    <div class="hover-menu-wrapper">
+      <button class="plain-button">
+        <%= svg_image "icons/gavel" %>
+      </button>
+        <div class="hover-menu bottom-right">
+          <ol>
+            <li>
+              <button class="plain-button">
+                <span><%= gettext("Is NSFW") %></span>
+              </button>
+            </li>
+            <li>
+              <button class="plain-button danger">
+                <span>
+                  <%= gettext("Disable") %>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="plain-button danger">
+                <span>
+                  <%= gettext("Ban user") %>
+                </span>
+              </button>
+            </li>
+          </ol>
+        </div>
     </div>
-  </div>
-  <button class="plain">
+  <% end %>
+  <button class="plain-button">
     <%= svg_image "icons/star_outline" %>
   </button>
   <div class="hover-menu-wrapper">
-    <button class="plain">
+    <button class="plain-button">
       <%= svg_image "icons/ellipsis-v" %>
     </button>
     <div class="hover-menu bottom-right">
       <ol>
         <li>
-          <button class="plain">
+          <button class="plain-button" data-action="click->post#show_reactions_modal">
             <span><%= gettext("Reactions") %></span>
           </button>
         </li>
         <li>
-          <button class="plain">
+          <button class="plain-button">
             <span><%= gettext("Report") %></span>
           </button>
         </li>
+        <%= if is_owner?(@conn, @post) do %>
+          <li>
+            <button class="plain-button danger" data-action="click->post#confirm_delete">
+              <span><%= gettext("Delete") %></span>
+            </button>
+          </li>
+        <% end %>
       </ol>
     </div>
   </div>
 </div>
+<% end %>

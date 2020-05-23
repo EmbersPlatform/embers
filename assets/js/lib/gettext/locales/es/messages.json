@@ -1,0 +1,15 @@
+{
+  "": {
+    "language": "es",
+    "plural-forms": "nplurals = 2; plural = (n != 1);"
+  },
+  "Accept": "Aceptar",
+  "Cancel": "Cancelar",
+  "Processing link": "Procesando enlace",
+  "Remove link": "Quitar enlace",
+  "Could not process the link": "No se pudo procesar el enlace",
+  "Share post": "Compartir publicacion",
+  "Show": "Mostrar",
+  "Hide": "Ocultar",
+  "Loading...": "Cargando..."
+}

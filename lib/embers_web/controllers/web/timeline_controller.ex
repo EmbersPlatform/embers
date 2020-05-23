@@ -12,16 +12,25 @@ defmodule EmbersWeb.Web.TimelineController do
   action_fallback(EmbersWeb.FallbackController)
 
   def index(conn, params) do
-    user_id = get_in(conn, [:assigns, :current_user])
+    user = conn.assigns.current_user
 
     results =
       Timeline.get(
-        user_id: user_id,
+        user_id: user.id,
+        with_replies: 2,
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
         limit: params["limit"]
       )
 
-    render(conn, "timeline.json", results)
+    {:ok, page_metadata} =
+      Map.from_struct(results)
+      |> Map.drop([:entries])
+      |> Jason.encode()
+
+    conn
+    |> put_layout(false)
+    |> Plug.Conn.put_resp_header("embers-page-metadata", page_metadata)
+    |> render(:index, results: results)
   end
 end

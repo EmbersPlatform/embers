@@ -78,4 +78,19 @@ defmodule Embers.Paginator do
 
     %Page{entries: entries, next: next, last_page: last_page}
   end
+
+  @doc """
+  Adds the `embers-page-metadata` header to a given `Plug.Conn`.
+  It contains a json encoded map with the page's `next` and `last_page`.
+  """
+  @spec put_page_headers(Plug.Conn.t(), Embers.Paginator.Page.t()) :: Plug.Conn.t()
+  def put_page_headers(conn, page) do
+    {:ok, page_metadata} =
+      Map.from_struct(page)
+      |> Map.drop([:entries])
+      |> Jason.encode()
+
+    conn
+    |> Plug.Conn.put_resp_header("embers-page-metadata", page_metadata)
+  end
 end

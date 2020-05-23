@@ -1,1 +1,1 @@
-<%= EmbersWeb.Web.PostView.render("post.html", conn: @conn, post: @post) %>
+<%= EmbersWeb.Web.PostView.render("post.html", conn: @conn, post: @activity, replies: @activity.replies) %>

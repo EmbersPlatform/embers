@@ -20,6 +20,10 @@ defmodule EmbersWeb.Web.ErrorView do
     %{errors: %{detail: "Page not found"}}
   end
 
+  def render("413.json", _assigns) do
+    %{errors: %{detail: "Request too large"}}
+  end
+
   def render("422.json", %{changeset: changeset}) do
     %{errors: Ecto.Changeset.traverse_errors(changeset, &translate_error/1)}
   end

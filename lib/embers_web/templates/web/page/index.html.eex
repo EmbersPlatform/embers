@@ -1,4 +1,4 @@
-<nav id="sidebar">
+<%= sidebar do %>
   <h1>Inicio</h1>
   <ul>
     <li>
@@ -26,18 +26,19 @@
       </a>
     </li>
   </ul>
-</nav>
+<% end %>
 <div id="view" view="home" class="has-sidebar">
   <%= render_shared("top_bar.html") %>
-  <main class="columns-layout">
-    <div id="timeline" class="main-content" data-controller="timeline">
-      <post-editor data-target="timeline.editor" data-action="publish->timeline#onNewActivity"></post-editor>
+  <main class="padded columns-layout">
+    <div id="timeline" class="main-content" data-controller="timeline" data-next="<%= @timeline.next %>">
+      <post-editor class="boxed" data-target="timeline.editor" data-action="publish->timeline#onNewActivity"></post-editor>
       <div class="feed" data-target="timeline.feed">
         <%= for post <- @timeline.entries do %>
-          <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
+          <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post, with_replies: true) %>
         <% end %>
       </div>
-      <button class="button" data-target="timeline.loadMoreButton" data-action="click->timeline#loadMore">Load more</button>
+      <intersection-observer data-action="intersect->timeline#loadMore"></intersection-observer>
+      <loading-indicator data-target="timeline.loadingIndicator"></loading-indicator>
     </div>
     <aside>
       <div class="content">

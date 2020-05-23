@@ -1,0 +1,15 @@
+.responsive-embed {
+  position: relative;
+  padding-bottom: 56.25%;
+  padding-top: 2em; height: 0; overflow: hidden;
+}
+
+.responsive-embed iframe,
+.responsive-embed object,
+.responsive-embed embed {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+}

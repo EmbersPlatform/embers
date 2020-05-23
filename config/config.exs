@@ -8,7 +8,7 @@ use Mix.Config
 # General application configuration
 config :embers, ecto_repos: [Embers.Repo]
 
-config :embers, EmbersWeb.Gettext, default_locale: "es"
+config :embers, EmbersWeb.Gettext, default_locale: "en"
 
 # Configures the endpoint
 config :embers, EmbersWeb.Endpoint,

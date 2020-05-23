@@ -132,8 +132,6 @@ defmodule EmbersWeb.Api.PostView do
         |> handle_reactions(post.related_to, assigns)
       )
     end || view
-
-    Embers.Paginator.paginate(queryable, opts \\ [])
   end
 
   defp handle_reactions(view, post, assigns) do

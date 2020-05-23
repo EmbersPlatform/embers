@@ -4,7 +4,7 @@ defmodule EmbersWeb.Router do
   alias EmbersWeb.Plugs.{CheckPermissions, GetPermissions}
 
   pipeline :browser do
-    plug(:accepts, ["html", "json"])
+    plug(:accepts, ["html"])
     plug(:fetch_session)
     plug(:fetch_flash)
     plug(:protect_from_forgery)
@@ -107,12 +107,31 @@ defmodule EmbersWeb.Router do
     get("/register", AccountController, :new)
     post("/register", AccountController, :create)
 
+    # Feeds
+    get("/timeline", TimelineController, :index)
     get("/discover", DiscoverController, :index)
 
+    # User profile
     get("/@:username", UserController, :show)
 
+    # Posts
     post("/post", PostController, :create)
+    delete("/post/:id", PostController, :delete)
     get("/post/:hash", PostController, :show)
+    # Post replies
+    get("/post/:hash/replies", PostController, :show_replies)
+    # Post Reactions
+    post("/post/:hash/reactions", PostController, :add_reaction)
+    delete("/post/:hash/reactions/:name", PostController, :remove_reaction)
+
+    get("/post/:hash/reactions/overview", ReactionController, :reactions_overview)
+    get("/post/:hash/reactions/:reaction_name", ReactionController, :reactions_by_name)
+
+    # Medias
+    post("/medias", MediaController, :upload)
+
+    # Links
+    post("/links", LinkController, :process)
   end
 
   scope "/api/v1", EmbersWeb.Api, as: :api do

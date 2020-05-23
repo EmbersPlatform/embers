@@ -1,0 +1,8 @@
+share-post-dialog {
+  .post {
+    max-width: 100%;
+    @include media(">=tablet") {
+      width: 600px;
+    }
+  }
+}

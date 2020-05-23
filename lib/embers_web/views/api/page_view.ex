@@ -9,7 +9,6 @@ defmodule EmbersWeb.Api.PageView do
     %{
       logged_in: !is_nil(user),
       csrf_token: Plug.CSRFProtection.get_csrf_token(),
-      permissions: conn.assigns.permissions,
       user: render_one(user, EmbersWeb.Api.UserView, "user.json", as: :user),
       user_token: handle_token(assigns),
       followed_tags: handle_tags(assigns),

@@ -47,8 +47,4 @@ defmodule Embers.AccountsTest do
 
     assert {:ok, %User{}} = Accounts.create_user(@user_attrs)
   end
-
-  test "wea" do
-    IO.inspect("TEST")
-  end
 end

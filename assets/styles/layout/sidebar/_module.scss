@@ -1,22 +1,24 @@
 #sidebar {
-  position: fixed;
-  top: 0;
-  height: 100vh;
-  left: var(--navigation-width);
   width: var(--sidebar-width);
   background: var(--sidebar-background);
   color: var(--sidebar-foreground);
   border-right: 1px solid #0003;
-  z-index: 10;
   padding: 0 1em;
   box-sizing: border-box;
+  height: 100vh;
+  position: fixed;
+  left: calc(var(--sidebar-width) * -1);
+  top: 0;
+  transition: transform 100ms ease;
+  z-index: 10;
 
-  @media (max-width: $mobile-breakpoint) {
-    height: 100vh;
-    position: fixed;
-    left: calc(var(--sidebar-width) * -1);
-    top: 0;
-    transition: transform 100ms ease;
+  @include media(">=tablet") {
+    left: calc(var(--navigation-width) - var(--sidebar-width));
+    z-index: 4;
+  }
+
+  @include media(">=desktop") {
+    left: var(--navigation-width);
     z-index: 10;
   }
 
@@ -100,5 +102,20 @@
 
   ul>li>a.active svg * {
     fill: var(--sidebar-foreground-accent);
+  }
+}
+
+.sidebar-overlay {
+  opacity: 0;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.5);
+
+  @include media(">=desktop") {
+    display: none;
   }
 }

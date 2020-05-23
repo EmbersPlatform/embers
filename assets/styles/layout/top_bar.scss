@@ -21,7 +21,7 @@
   color: var(--color);
 }
 
-@media (min-width: $mobile-breakpoint) {
+@include media("<tablet") {
   #top-bar {
     padding: 0 2em;
     height: 45px;

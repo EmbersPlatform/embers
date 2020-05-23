@@ -5,11 +5,11 @@ defmodule EmbersWeb.Plugs.GetPermissions do
   def init(default), do: default
 
   def call(%Plug.Conn{assigns: %{current_user: user}} = conn, _default) when not is_nil(user) do
-    permissions = Authorization.extract_permissions(user)
-    assign(conn, :permissions, permissions)
+    user = put_in(user.permissions, Authorization.extract_permissions(user))
+    assign(conn, :current_user, user)
   end
 
   def call(conn, _default) do
-    assign(conn, :permissions, [])
+    conn
   end
 end
