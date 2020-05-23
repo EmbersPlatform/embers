@@ -5,6 +5,10 @@ defmodule EmbersWeb.Api.LinkView do
 
   alias Embers.Helpers.IdHasher
 
+  def render("show.json", assigns) do
+    render("link.json", assigns)
+  end
+
   def render("link.json", %{link: link}) do
     embed =
       link.embed

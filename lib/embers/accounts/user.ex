@@ -69,6 +69,7 @@ defmodule Embers.Accounts.User do
     has_many(:bans, Embers.Moderation.Ban)
 
     many_to_many(:roles, Embers.Authorization.Role, join_through: "role_user")
+    field(:permissions, {:array, :string}, virtual: true)
 
     timestamps()
   end

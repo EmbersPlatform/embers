@@ -1,0 +1,7 @@
+<%= labeled_link(to: decoded_path(:user_path, Endpoint, :show, @reaction.user.canonical), class: "reaction-user") do %>
+  <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: @reaction.user.meta.avatar.small) %>
+  <span class="reaction-icon">
+    <img src="/svg/reactions/<%= @reaction.name %>.svg" alt="">
+  </span>
+  <strong><%= @reaction.user.username %></strong>
+<% end %>

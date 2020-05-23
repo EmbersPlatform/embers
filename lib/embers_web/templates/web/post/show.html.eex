@@ -1,20 +1,34 @@
-<nav id="sidebar"></nav>
+<%= sidebar do %>
+  Post sidebar!
+<% end %>
 <div id="view" view="post" class="has-sidebar">
   <%= render_shared("top_bar.html") %>
-  <main class="columns-layout">
+  <main class="padded columns-layout">
     <div class="main-content">
       <%= render("post.html", conn: @conn, post: @post) %>
       <section id="comments" data-controller="comments">
+        <h2><%= ngettext("1 comment", "%{count} comments", @post.replies_count) %></h2>
         <div class="comment-list" data-target="comments.commentList">
           <%= for reply <- @replies do %>
-            <%= render("reply.html", conn: @conn, reply: reply) %>
+            <%= render("reply_thread.html", conn: @conn, reply: reply) %>
           <% end %>
         </div>
-        <post-editor data-target="comments.editor" data-parent_id="<%= @post.id %>"></post-editor>
+        <post-editor as_thread notags data-action="publish->comments#onpublish" data-parent_id="<%= @post.id %>"></post-editor>
       </section>
     </div>
     <aside>
-      User info
+      <section class="user-preview mobile-hidden">
+        <figure class="cover">
+          <img src="<%= @post.user.meta.cover %>">
+        </figure>
+        <div class="user-avatar">
+          <img src="<%= @post.user.meta.avatar.medium %>">
+        </div>
+        <p class="username"><%= @post.user.username %></p>
+        <p class="bio">
+          <%= @post.user.meta.bio %>
+        </p>
+      </section>
       <hr>
       Related posts?
       <hr>

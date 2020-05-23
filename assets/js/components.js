@@ -1,6 +1,8 @@
 import { define } from "heresy";
-import PostEditor from "./components/editor";
+import components from "./components/*/index.js";
 
 export function init() {
-  define(PostEditor);
+  for(let name in components) {
+    define(components[name].default);
+  }
 }

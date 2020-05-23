@@ -98,6 +98,15 @@ defmodule Embers.Media do
     end
   end
 
+  def format_url(url) when is_binary(url) do
+    uri = URI.parse(url)
+    if is_nil(uri.host) do
+      "/#{uri.path}"
+    else
+      URI.to_string(uri)
+    end
+  end
+
   @doc """
   Soft deletes a media
   """

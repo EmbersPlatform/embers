@@ -1,130 +1,259 @@
 .post {
-  @include box;
-  color: var(--text);
-  background: var(--primary);
-  border-color: var(--border-color);
-  border-radius: 0.2em;
-  position: relative;
+  section.post-wrapper {
+    color: var(--text);
+    position: relative;
+    @include box;
+    background: var(--primary);
+    border-color: var(--border-color);
+    border-radius: 0.2em;
 
-  &>*+*:not(:empty) {
-    padding-bottom: 0.8em;
+    &>footer>div>button,
+    &>footer>div>e-reaction-picker>button {
+      opacity: 0.6;
+    }
+
+    &>footer>div>button:hover,
+    footer>div>*>button:hover {
+      opacity: 1;
+    }
+
+    &>header {
+      display: flex;
+      padding: 0.8em;
+      align-items: center;
+    }
+
+    &>header a time {
+      font-size: 0.8em;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    &>header separator {
+      flex-grow: 1;
+    }
+
+    .post-actions ol > li button {
+      opacity: 0.6;
+    }
+
+    .post-actions>ol>li button:hover {
+      opacity: 1;
+    }
+
+    .post-actions {
+      align-self: flex-start;
+    }
+
+    .post-actions ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .post-actions .hover-menu button {
+      width: 100%;
+      padding: 0.5em 1em;
+      opacity: 0.8;
+    }
+
+    .post-actions .hover-menu button:hover {
+      opacity: 1;
+    }
+
+    .post-actions svg {
+      width: 1em;
+      height: 1em;
+    }
+
+    .post-details {
+      margin-left: 0.8em;
+      display: flex;
+      flex-direction: column;
+      justify-items: center;
+    }
+
+    .post-details .username {
+      color: var(--post-username-color, var(--link));
+    }
+
+    .post-details>*+* {
+      margin-top: 0.3em;
+    }
+
+    .post-body {
+      word-break: break-word;
+    }
+
+    .post-body:not(:empty) {
+      padding: 0.3em 0.8em;
+    }
+
+    .post-medias {
+      padding-left: 1em;
+      padding-right: 1em;
+      padding-bottom: 0.8em;
+    }
+
+    .post-tags {
+      padding: 0.5em;
+    }
+
+    &>footer {
+      margin-left: 1em;
+      margin-right: 1em;
+      padding-bottom: 0.8em;
+
+      a {
+        opacity: 0.6;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+
+    &>footer .stats {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+
+      .stat {
+        opacity: 0.6;
+      }
+
+      .stat+.stat:before {
+        content: ", "
+      }
+    }
+
+    &>footer .reactions {
+      line-height: 2.3em;
+      margin-bottom: 0.5em;
+    }
+
+    &>footer .reactions .reaction:not(:last-child) {
+      margin-right: 0.3em;
+    }
+
+    &>footer .actions {
+      display: flex;
+    }
+
+    &>footer {
+
+      svg {
+        height: 1.4em;
+      }
+    }
+
+    &>footer {
+
+      svg * {
+        fill: var(--post-footer-foreground);
+      }
+    }
+
+    &>footer button a {
+      display: auto;
+    }
   }
 
-  footer>div>button,
-  footer>div>e-reaction-picker>button {
-    opacity: 0.6;
+  section.replies {
+    @include box;
+    background: var(--secondary);
+    margin: 0 auto;
+    width: 95%;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: none;
+    box-sizing: border-box;
+
+    @include media("<tablet") {
+      width: 100%;
+
+      .replies-list {
+        display: none;
+      }
+
+      post-editor {
+        padding: 0;
+      }
+    }
+
+    @include media(">=tablet") {
+      .replies-list:not(:empty) {
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .media img {
+        max-height: 200px;
+      }
+    }
+
+    post-editor {
+      background: var(--primary);
+    }
+
+    .media-group {
+      max-width: 50%;
+      margin: 0 auto;
+    }
   }
 
-  footer>div>button:hover,
-  footer>div>*>button:hover {
-    opacity: 1;
+  &[nsfw] {
+    .post-wrapper {
+      overflow: hidden;
+    }
+    .post-content {
+      filter: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'><filter%20id='blur'><feGaussianBlur%20stdDeviation='2'/></filter></svg>#blur");
+      filter: blur(2em);
+      pointer-events: none;
+    }
   }
 
-  header {
-    display: flex;
-    padding: 0.8em;
-    align-items: center;
+  .content-warnings {
+    z-index: 1;
+    margin: 0 5px;
+
+    &>.content-warning {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5em 1em;
+      width: auto;
+      border-bottom: 0;
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+
+      span {
+        font-size: 0.9em;
+        margin-right: 1em;
+      }
+
+      & + * {
+        margin-left: 1em;
+      }
+    }
+
+    .warning-nsfw {
+      background-color: var(--warning-nsfw-background);
+      color: var(--warning-nsfw-foreground);
+    }
   }
 
-  header a time {
+  .post-id-link {
+    opacity: 0.4;
     font-size: 0.8em;
-    font-weight: 400;
-    color: var(--text-secondary);
   }
 
-  header separator {
-    flex-grow: 1;
-  }
-
-  .post-actions :global(ol > li button) {
-    opacity: 0.6;
-  }
-
-  .post-actions>ol>li button:hover {
-    opacity: 1;
-  }
-
-  .post-actions {
-    align-self: flex-start;
-  }
-
-  .post-actions ol {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .post-actions .hover-menu button {
-    width: 100%;
-    padding: 0.5em 1em;
-    opacity: 0.8;
-  }
-
-  .post-actions .hover-menu button:hover {
-    opacity: 1;
-  }
-
-  .post-actions svg {
-    width: 1em;
-    height: 1em;
-  }
-
-  .post-details {
-    margin-left: 0.8em;
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-  }
-
-  .post-details .username {
-    color: var(--post-username-color, var(--link));
-  }
-
-  .post-details>*+* {
-    margin-top: 0.3em;
-  }
-
-  .post-body {
-    padding: 0.3em 0.8em;
-  }
-
-  .post-medias {
-    margin-left: 1em;
-    margin-right: 1em;
-  }
-
-  footer {
-    margin-left: 1em;
-    margin-right: 1em;
-  }
-
-  footer .stats {
-    display: flex;
-    flex-direction: row;
-  }
-
-  footer .reactions {
-    line-height: 2.3em;
-    margin-bottom: 0.5em;
-  }
-
-  footer .reactions .reaction:not(:last-child) {
-    margin-right: 0.3em;
-  }
-
-  footer .actions {
-    display: flex;
-  }
-
-  footer .actions svg {
-    height: 1.4em;
-  }
-
-  footer .actions svg * {
-    fill: var(--post-footer-foreground);
-  }
-
-  footer button a {
-    display: auto;
+  .related-link {
+    opacity: 0.4;
+    font-size: 0.8em;
   }
 }
+
+@import "./post-preview.scss";
+@import "./post-embedded.scss";
+@import "./post-tombstone.scss";

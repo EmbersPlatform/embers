@@ -1,7 +1,11 @@
 @import "./variables.scss";
 @import "./themes.scss";
 
+@import "~include-media/dist/_include-media.scss";
+
 @import "./mixins/module";
+
+@import "./utils/module";
 
 @import "./turbolinks.scss";
 
@@ -17,7 +21,7 @@
 
 body {
   margin: 0;
-  font-family: 'Work Sans', sans-serif;
+  font-family: $font-family;
   font-size: var(--font-size);
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -32,4 +36,26 @@ body {
 #view main {
   max-width: 960px;
   margin: 0 auto;
+}
+
+.mobile-hidden {
+  @include media("<tablet") {
+    display: none !important;
+  }
+}
+
+.desktop-hidden {
+  @include media(">=tablet") {
+    display: none !important;
+  }
+}
+
+.tablet-only {
+  @include media("<tablet") {
+    display: none !important;
+  }
+
+  @include media(">=desktop") {
+    display: none !important;
+  }
 }

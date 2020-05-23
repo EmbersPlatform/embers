@@ -1,0 +1,27 @@
+.post[embedded] {
+  padding: 0 2.5em;
+  box-sizing: border-box;
+
+  @include media("<tablet") {
+    padding: 1em;
+  }
+
+  .post-wrapper {
+    background: var(--primary);
+    // border: none;
+    box-shadow: none;
+  }
+
+  .post-actions {
+    display: none;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .replies {
+    display: none;
+  }
+}

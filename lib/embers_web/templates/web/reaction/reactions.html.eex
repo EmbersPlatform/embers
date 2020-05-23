@@ -1,0 +1,3 @@
+<%= for reaction <- @page.entries do %>
+  <%= render("_reaction.html", reaction: reaction) %>
+<% end %>

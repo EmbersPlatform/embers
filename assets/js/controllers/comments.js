@@ -1,7 +1,9 @@
 import { Controller } from "stimulus"
 
+export const name = "comments"
+
 export default class extends Controller {
-  static targets = ["editor", "commentList"]
+  static targets = ["commentList"]
 
   handleEvent(event) {
     switch (event.type) {
@@ -15,11 +17,7 @@ export default class extends Controller {
     this.commentListTarget.insertAdjacentHTML("beforeend", comment)
   }
 
-  connect() {
-    this.editorTarget.addEventListener("publish", this)
-  }
-
-  disconnect() {
-    this.editorTarget.removeEventListener("publish", this)
+  onpublish({ detail: comment }) {
+    this.addComment(comment)
   }
 }

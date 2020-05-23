@@ -7,8 +7,11 @@ defmodule EmbersWeb.Web.PostController do
   alias Embers.Helpers.IdHasher
   alias Embers.Posts
   alias Embers.Profile.Meta
+  alias Embers.Reactions
 
-  plug(:user_check when action in [:create])
+  action_fallback(EmbersWeb.Web.FallbackController)
+
+  plug(:user_check when action in [:create, :delete, :add_reaction, :remove_reaction])
 
   plug(
     :rate_limit_post_creation,
@@ -25,18 +28,21 @@ defmodule EmbersWeb.Web.PostController do
 
     with {:ok, post} = Posts.get_post(id) do
       post = put_in(post.user.meta.avatar, Meta.avatar_map(post.user.meta))
+      post = put_in(post.user.meta.cover, Meta.cover(post.user.meta))
       post = put_in(post.id, hash)
 
-      %{entries: replies} = Posts.get_post_replies(id)
+      %{entries: replies} = Posts.get_post_replies(id, replies: 2, replies_order: {:desc, :inserted_at})
+
+      title = post.body || gettext("@%{username}'s post", username: post.user.username)
       conn
-      |> render(:show, post: post, replies: replies)
+      |> render(:show, page_title: title, post: post, replies: replies)
     end
   end
 
   def create(%{assigns: %{current_user: user}} = conn, params) do
     params =
       params
-      |> put_user_id(user.id)
+      |> Map.put("user_id", user.id)
       |> maybe_put_parent_id()
       |> maybe_put_related_to_id()
       |> maybe_put_medias()
@@ -44,8 +50,10 @@ defmodule EmbersWeb.Web.PostController do
       |> get_and_put_tags()
 
     with {:ok, post} <- Posts.create_post(params) do
+      IO.inspect(params["as_thread"])
       {view, key} =
         cond do
+          not is_nil(post.parent_id) and params["as_thread"] -> {:reply_thread, :reply}
           not is_nil(post.parent_id) -> {:reply, :reply}
           true -> {:post, :post}
         end
@@ -54,10 +62,6 @@ defmodule EmbersWeb.Web.PostController do
       |> put_layout(false)
       |> render(view, [{key, post}])
     end
-  end
-
-  defp put_user_id(params, id) do
-    Map.put(params, "user_id", id)
   end
 
   defp maybe_put_parent_id(%{"parent_id" => parent_id} = params) do
@@ -119,5 +123,104 @@ defmodule EmbersWeb.Web.PostController do
       end
 
     Map.put(params, "tags", tags)
+  end
+
+  def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
+    id = IdHasher.decode(id)
+    post = Posts.get_post!(id)
+
+    case can_delete?(user, post) do
+      true ->
+        {:ok, _post} = Posts.delete_post(post, actor: user.id)
+        conn
+        |> put_status(:no_content)
+        |> json(nil)
+
+      false ->
+        conn |> put_status(:forbidden) |> json(nil)
+    end
+  end
+
+  defp can_delete?(user, post) do
+    Embers.Authorization.is_owner?(user, post) || Embers.Authorization.can?("delete_post", user)
+  end
+
+  def show_replies(conn, %{"hash" => hash} = params) do
+    parent_id = IdHasher.decode(hash)
+    limit = Map.get(params, "limit", 2)
+
+    skip_first? = Map.get(params, "skip_first", false)
+
+    limit = if skip_first? do
+      String.to_integer(limit) + 1
+    end || limit
+
+    order =
+      case params["order"] do
+        "desc" -> :desc
+        "asc" -> :asc
+        _ -> :asc
+      end
+
+    results =
+      Posts.get_post_replies(parent_id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: limit,
+        order: order
+      )
+
+    results = update_in(results.entries, &Enum.reverse/1)
+
+    results = if skip_first? do
+      entries = results.entries |> Enum.reverse() |> tl() |> Enum.reverse()
+      put_in(results.entries, entries)
+    end || results
+
+    {:ok, page_metadata} =
+      Map.from_struct(results)
+      |> Map.drop([:entries])
+      |> Jason.encode()
+
+    conn
+    |> put_layout(false)
+    |> Plug.Conn.put_resp_header("embers-page-metadata", page_metadata)
+    |> render(:show_replies, replies: results)
+  end
+
+  def add_reaction(conn, %{"name" => name, "hash" => hash}) do
+    user_id = conn.assigns.current_user.id
+    post_id = IdHasher.decode(hash)
+
+    case Reactions.create_reaction(%{"name" => name, "user_id" => user_id, "post_id" => post_id}) do
+      {:ok, _reaction} ->
+        post = Posts.get_post!(post_id)
+
+        conn
+        |> put_layout(false)
+        |> render("reactions.html", post: post, conn: conn)
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(EmbersWeb.Web.ErrorView, "422.json", changeset: changeset)
+    end
+  end
+
+  def remove_reaction(conn, %{"name" => name, "hash" => hash}) do
+    user_id = conn.assigns.current_user.id
+    post_id = IdHasher.decode(hash)
+
+    Reactions.delete_reaction(%{
+      "name" => name,
+      "post_id" => post_id,
+      "user_id" => user_id
+    })
+
+    post = Posts.get_post!(post_id)
+
+    conn
+    |> put_layout(false)
+    |> render("reactions.html", post: post, conn: conn)
   end
 end

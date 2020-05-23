@@ -7,7 +7,7 @@ defmodule EmbersWeb.Plugs.CheckPermissions do
   def init(default), do: default
 
   def call(
-        %Plug.Conn{assigns: %{permissions: permissions}} = conn,
+        %{assigns: %{current_user: %{permissions: permissions}}} = conn,
         options
       ) do
     permission = Keyword.get(options, :permission)

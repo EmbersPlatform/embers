@@ -14,12 +14,13 @@ defmodule EmbersWeb.Web.PageController do
     timeline =
       Timeline.get(
         user_id: current_user.id,
+        with_replies: 2,
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
         limit: params["limit"]
       )
 
-    render(conn, "index.html", timeline: timeline)
+    render(conn, "index.html", page_title: gettext("Home"), timeline: timeline)
   end
 
   def rules(conn, _params) do

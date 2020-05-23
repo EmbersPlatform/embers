@@ -15,7 +15,9 @@ defmodule EmbersWeb.Web.UserController do
       %{entries: followers} = Subscriptions.list_following_paginated(user.id, limit: 10)
       activities = Feed.User.get(user_id: user.id)
       followers = subs_to_user(followers)
-      render(conn, "show.html", user: user, followers: followers, activities: activities)
+
+      title = gettext("@%{username}'s profile", username: user.username)
+      render(conn, "show.html", page_title: title, user: user, followers: followers, activities: activities)
     end
   end
 

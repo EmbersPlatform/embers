@@ -1,3 +1,0 @@
-const Intersector = {
-  name: "Intersec"
-}

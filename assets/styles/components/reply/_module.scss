@@ -1,125 +1,146 @@
 .reply {
   color: var(--text);
   position: relative;
+  display: flex;
+
+  &>.avatar {
+    padding-left: 0.8em;
+    padding-top: 0.8em;
+    flex-shrink: 0;
+  }
 
   &>*+*:not(:empty) {
     padding-bottom: 0.8em;
   }
 
-  header {
-    display: flex;
-    padding: 0.8em;
-    align-items: center;
-  }
-
-  header a time {
-    font-size: 0.8em;
-    font-weight: 400;
-    color: var(--text-secondary);
-  }
-
-  header separator {
+  .reply-content {
     flex-grow: 1;
+
+    header {
+      display: flex;
+      padding: 0.8em;
+      align-items: center;
+    }
+
+    header a time {
+      font-size: 0.8em;
+      font-weight: 400;
+      color: var(--text-secondary);
+    }
+
+    header separator {
+      flex-grow: 1;
+    }
   }
 
-  .reply-actions :global(ol > li button) {
-    opacity: 0.6;
-  }
+  .reply-content {
 
-  .reply-actions>ol>li button:hover {
-    opacity: 1;
-  }
+    .reply-actions :global(ol > li button) {
+      opacity: 0.6;
+    }
 
-  .reply-actions {
-    align-self: flex-start;
-  }
+    .reply-actions>ol>li button:hover {
+      opacity: 1;
+    }
 
-  .reply-actions ol {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+    .reply-actions {
+      align-self: flex-start;
+    }
 
-  .reply-actions .hover-menu button {
-    width: 100%;
-    padding: 0.5em 1em;
-    opacity: 0.8;
-  }
+    .reply-actions ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
 
-  .reply-actions .hover-menu button:hover {
-    opacity: 1;
-  }
+    .reply-actions .hover-menu button {
+      width: 100%;
+      padding: 0.5em 1em;
+      opacity: 0.8;
+    }
 
-  .reply-actions svg {
-    width: 1em;
-    height: 1em;
-  }
+    .reply-actions .hover-menu button:hover {
+      opacity: 1;
+    }
 
-  .reply-details {
-    margin-left: 0.8em;
-    display: flex;
-    flex-direction: column;
-    justify-items: center;
-  }
+    .reply-actions {
+      svg {
+        width: 1em;
+        height: 1em;
+      }
+    }
 
-  .reply-details .username {
-    color: var(--reply-username-color, var(--link));
-  }
+    .reply-details {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
 
-  .reply-details>*+* {
-    margin-top: 0.3em;
-  }
+      &>*+* {
+        margin-left: 0.5em;
+      }
+    }
 
-  .reply-body {
-    padding: 0 0.8em;
-  }
+    .reply-details .username {
+      color: var(--reply-username-color, var(--link));
+    }
 
-  footer>div>button,
-  footer>div>e-reaction-picker>button {
-    opacity: 0.6;
-  }
+    .reply-body {
+      padding: 0 0.8em;
+      margin-bottom: 0.8em;
+      word-break: break-word;
+    }
 
-  footer>div>button:hover,
-  footer>div>*>button:hover {
-    opacity: 1;
-  }
+    footer>div>button,
+    footer>div>e-reaction-picker>button {
+      opacity: 0.6;
+    }
 
-  footer {
-    margin-left: 1em;
-    margin-right: 1em;
-  }
+    footer>div>button:hover,
+    footer>div>*>button:hover {
+      opacity: 1;
+    }
 
-  footer .stats {
-    display: flex;
-    flex-direction: row;
-  }
+    footer {
+      margin-left: 1em;
+      margin-right: 1em;
+    }
 
-  footer .reactions {
-    line-height: 2.3em;
-    margin-bottom: 0.5em;
-  }
+    footer .stats {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
 
-  footer .reactions .reaction:not(:last-child) {
-    margin-right: 0.3em;
-  }
+      .stat {
+        opacity: 0.6;
+      }
+    }
 
-  footer .actions {
-    display: flex;
-  }
+    footer .reactions:not(:empty) {
+      line-height: 2.3em;
+      padding: 0.5em 0;
+    }
 
-  footer .actions svg {
-    height: 1.4em;
-  }
+    footer .reactions .reaction:not(:last-child) {
+      margin-right: 0.3em;
+    }
 
-  footer .actions svg * {
-    fill: var(--post-footer-foreground);
-  }
+    footer .actions {
+      display: flex;
+    }
 
-  footer button a {
-    display: auto;
+    footer .actions svg * {
+      fill: var(--post-footer-foreground);
+    }
+
+    footer button a {
+      display: auto;
+    }
   }
 }
 
 .reply+.reply {
-  border-top: var(--border);
+  border-top: var(--border-color);
 }
+
+@import "./reply-thread.scss";

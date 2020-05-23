@@ -72,6 +72,18 @@ defmodule Embers.Authorization.Roles do
   end
 
   @doc """
+  Gets the roles for the user, or fetchs them from db if not loaded
+  """
+  @spec roles_for(User.t()) :: [Role.t()]
+  def roles_for(%User{} = user) do
+    if Ecto.assoc_loaded?(user.roles) do
+      user.roles
+    else
+      roles_for(user.id)
+    end
+  end
+
+  @doc """
   Finds a user by it's `id` and returns the list of `Role`s associated to it.
   """
   @spec roles_for(integer()) :: [Role.t()]

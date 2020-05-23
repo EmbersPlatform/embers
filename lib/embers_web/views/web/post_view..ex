@@ -3,6 +3,8 @@ defmodule EmbersWeb.Web.PostView do
 
   use EmbersWeb, :view
 
+  alias Embers.Posts.Post
+
   # alias Embers.Helpers.IdHasher
   alias EmbersWeb.Web.UserView
 
@@ -27,30 +29,33 @@ defmodule EmbersWeb.Web.PostView do
     }
   end
 
-  def render()
-
-  def build_reactions(post, assigns) do
-    reactions = get_reactions(post, assigns)
+  def build_reactions(post, conn) do
+    reactions = get_reactions(post, conn)
 
     for reaction <- reactions do
-      classes = ["reaction"]
-      classes = if reaction.reacted, do: ["reacted" | classes], else: classes
+      reaction_image = static_path(Endpoint, "/svg/reactions/#{reaction.name}.svg")
 
-      content_tag(:div, class: Enum.join(classes, " ")) do
-        [
-          img_tag(static_path(assigns.conn, "/svg/reactions/#{reaction.name}.svg")),
-          content_tag(:span, reaction.total)
-        ]
-      end
+      ~E"""
+      <button
+        class="reaction"
+        data-name="<%= reaction.name %>"
+        data-total="<%= reaction.total %>"
+        data-action="click->reactable#onToggleReaction"
+        <%= if reaction.reacted, do: "reacted" %>
+      >
+        <img src="<%= reaction_image %>">
+        <span class="reaction-total"><%= reaction.total %></span>
+      </button>
+      """
     end
   end
 
-  defp get_reactions(post, assigns) do
+  defp get_reactions(post, conn) do
     if Ecto.assoc_loaded?(post.reactions) do
       my_reactions =
-        if Map.has_key?(assigns.conn.assigns, :current_user) do
+        if Map.has_key?(conn.assigns, :current_user) do
           post.reactions
-          |> Enum.filter(fn r -> r.user_id == assigns.conn.assigns.current_user.id end)
+          |> Enum.filter(fn r -> r.user_id == conn.assigns.current_user.id end)
           |> Enum.map(fn r -> r.name end)
         end || []
 
@@ -70,5 +75,15 @@ defmodule EmbersWeb.Web.PostView do
         reacted: Enum.member?(my_reactions, k)
       }
     end)
+  end
+
+  def get_replies(post) do
+    if Ecto.assoc_loaded?(post.replies) do
+      post.replies
+    end || []
+  end
+
+  def has_related?(post) do
+    match?(%Post{}, post.related_to)
   end
 end

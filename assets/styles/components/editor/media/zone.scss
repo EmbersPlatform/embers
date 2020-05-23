@@ -1,0 +1,7 @@
+.media-zone {
+  display: flex;
+
+  &>*+* {
+    margin-left: 0.5em;
+  }
+}

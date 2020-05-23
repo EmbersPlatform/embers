@@ -1,0 +1,3 @@
+<%= for reply <- @replies.entries do %>
+  <%= render("reply.html", conn: @conn, reply: reply) %>
+<% end %>

@@ -1,0 +1,4 @@
+.boxed {
+  @include box;
+  background: var(--primary);
+}

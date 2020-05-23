@@ -1,0 +1,19 @@
+.post[preview] {
+  .post-wrapper {
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  .post-actions {
+    display: none;
+  }
+
+  footer {
+    display: none;
+  }
+
+  .replies {
+    display: none;
+  }
+}

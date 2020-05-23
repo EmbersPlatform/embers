@@ -1,8 +1,8 @@
-<nav id="navigation">
-  <a href="/" id="navigation-logo" aria-hidden="true">
+<nav id="navigation" is="embers-navigation">
+  <a href="/" id="navigation-logo" class="mobile-hidden" aria-hidden="true">
     <%= svg_image("logo") %>
   </a>
-  <ul>
+  <ul class="mobile-hidden">
     <li>
       <%= labeled_link(to: page_path(@conn, :index), label: gettext("Home")) do %>
         <%= svg_image("home") %>
@@ -13,9 +13,14 @@
         <%= svg_image("discover") %>
       <% end %>
     </li>
+    <li class="tablet-only">
+      <button class="sidebar-button">
+        <%= svg_image("hamburger") %>
+      </button>
+    </li>
   </ul>
-  <e-separator></e-separator>
-  <ul>
+  <e-separator class="mobile-hidden"></e-separator>
+  <ul class="mobile-hidden">
     <li>
       <%= svg_image("bell") %>
     </li>
@@ -27,6 +32,29 @@
     </li>
     <li>
       <%= svg_image("settings") %>
+    </li>
+  </ul>
+  <ul class="desktop-hidden">
+    <li>
+      <button class="sidebar-button">
+        <%= svg_image("hamburger") %>
+      </button>
+    </li>
+    <li>
+      <%= labeled_link(to: page_path(@conn, :index), label: gettext("Home")) do %>
+        <%= svg_image("home") %>
+      <% end %>
+    </li>
+    <li>
+      <%= labeled_link(to: "/discover", label: gettext("Discover")) do %>
+        <%= svg_image("discover") %>
+      <% end %>
+    </li>
+    <li>
+      <%= svg_image("bell") %>
+    </li>
+    <li>
+      <%= svg_image("inbox") %>
     </li>
   </ul>
 </nav>
