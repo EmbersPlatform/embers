@@ -34,6 +34,30 @@
     </div>
   <% end %>
   <section class="post-wrapper">
+    <%= if !is_nil(assigns[:sharers]) and length(@sharers) > 0 do %>
+      <% sharers = Enum.uniq(@sharers) %>
+      <%
+        sharers_avatars =
+          Enum.take(sharers, 3)
+          |> Enum.map(fn x -> x.meta.avatar.small end)
+      %>
+      <div>
+      <%= for avatar <- sharers_avatars do %>
+        <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: avatar, size: "medium") %>
+      <% end %>
+      <%= case length(sharers) do
+        1 ->
+          [user1] = sharers
+          gettext("Shared by %{user1}", user1: user1.username)
+        2 ->
+          [user1, user2] = sharers
+          gettext("Shared by %{user1} and %{user2}", user1: user1.username, user2: user2.username)
+        _ ->
+          [user1, user2 | _rest] = sharers
+          gettext("Shared by %{user1}, %{user2} and %{rest} more", user1: user1.username, user2: user2.username, rest: length(sharers) - 2)
+      end %>
+      </div>
+    <% end %>
     <header>
       <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: @post.user.meta.avatar.small, size: "medium") %>
       <div class="post-details">
