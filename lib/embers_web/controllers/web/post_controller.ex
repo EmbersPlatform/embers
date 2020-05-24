@@ -94,8 +94,7 @@ defmodule EmbersWeb.Web.PostController do
 
   defp maybe_put_links(%{"links" => links} = params) do
     links =
-      for link <- links,
-          %{"id" => id_hash} = link,
+      for id_hash <- links,
           id = IdHasher.decode(id_hash),
           link = Embers.Links.get_by(%{id: id}) do
         link
