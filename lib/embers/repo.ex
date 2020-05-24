@@ -37,13 +37,14 @@ defmodule Embers.Repo do
     - `:limit` (default: `2`) How many items to preload
     - `:order_by` A `{direction, field}` tuple to order the results
     - `:assocs` What to preload after items have been retrieved. It is directly passed to `Repo.preload`.
+    - `:with_deleted?` When `true`, loads soft deleted records
   """
   def preload_lateral(entities, assoc, opts \\ [])
   def preload_lateral([], _, _), do: []
   def preload_lateral([%source_queryable{} | _] = entities, assoc, opts) do
     limit = Keyword.get(opts, :limit, 2)
     {order_direction, order_field} = Keyword.get(opts, :order_by, {:desc, :inserted_at})
-    reverse? = Keyword.get(opts, :reverse, false)
+    with_deleted? = Keyword.get(opts, :with_deleted?, false)
 
     fields = source_queryable.__schema__(:fields)
     %{
@@ -64,6 +65,10 @@ defmodule Embers.Repo do
         )
       }
     )
+
+    sub = unless with_deleted? do
+      from(q in sub, where: is_nil(q.deleted_at))
+    end || sub
 
     query =
       from(
