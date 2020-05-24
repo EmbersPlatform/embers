@@ -7,5 +7,10 @@
       padding: 0.5em;
       border: var(--border);
     }
+
+    &>.load-more-button {
+      margin: 1em auto;
+      display: block;
+    }
   }
 }

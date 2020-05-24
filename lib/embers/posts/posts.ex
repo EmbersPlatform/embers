@@ -249,7 +249,15 @@ defmodule Embers.Posts do
   @doc """
   Gets the replies of a post
   """
-  def get_post_replies(parent_id, opts \\ []) do
+  def get_post_replies(parent_id, opts \\ [])
+  def get_post_replies(nil, _) do
+    %Paginator.Page{
+      entries: [],
+      next: nil,
+      last_page: true
+    }
+  end
+  def get_post_replies(parent_id, opts) do
     order = Keyword.get(opts, :order, :asc)
     replies = Keyword.get(opts, :replies)
     replies_order = Keyword.get(opts, :replies_order, {:asc, :inserted_at})

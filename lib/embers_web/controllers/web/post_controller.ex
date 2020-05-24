@@ -31,11 +31,11 @@ defmodule EmbersWeb.Web.PostController do
       post = put_in(post.user.meta.cover, Meta.cover(post.user.meta))
       post = put_in(post.id, hash)
 
-      %{entries: replies} = Posts.get_post_replies(id, replies: 2, replies_order: {:desc, :inserted_at})
+      replies_page = Posts.get_post_replies(id, limit: 20, replies: 2, replies_order: {:desc, :inserted_at})
 
       title = post.body || gettext("@%{username}'s post", username: post.user.username)
       conn
-      |> render(:show, page_title: title, post: post, replies: replies)
+      |> render(:show, page_title: title, post: post, replies_page: replies_page)
     end
   end
 
@@ -50,7 +50,6 @@ defmodule EmbersWeb.Web.PostController do
       |> get_and_put_tags()
 
     with {:ok, post} <- Posts.create_post(params) do
-      IO.inspect(params["as_thread"])
       {view, key} =
         cond do
           not is_nil(post.parent_id) and params["as_thread"] -> {:reply_thread, :reply}
@@ -147,8 +146,11 @@ defmodule EmbersWeb.Web.PostController do
   def show_replies(conn, %{"hash" => hash} = params) do
     parent_id = IdHasher.decode(hash)
     limit = Map.get(params, "limit", 2)
-
     skip_first? = Map.get(params, "skip_first", false)
+    replies = if is_binary(params["replies"]) do
+      String.to_integer(params["replies"])
+    end || false
+    as_thread? = Map.get(params, "as_thread", false)
 
     limit = if skip_first? do
       String.to_integer(limit) + 1
@@ -166,10 +168,10 @@ defmodule EmbersWeb.Web.PostController do
         after: IdHasher.decode(params["after"]),
         before: IdHasher.decode(params["before"]),
         limit: limit,
-        order: order
+        order: order,
+        replies: replies,
+        replies_order: {:asc, :inserted_at}
       )
-
-    results = update_in(results.entries, &Enum.reverse/1)
 
     results = if skip_first? do
       entries = results.entries |> Enum.reverse() |> tl() |> Enum.reverse()
@@ -184,7 +186,7 @@ defmodule EmbersWeb.Web.PostController do
     conn
     |> put_layout(false)
     |> Plug.Conn.put_resp_header("embers-page-metadata", page_metadata)
-    |> render(:show_replies, replies: results)
+    |> render(:show_replies, replies: results, as_thread?: as_thread?)
   end
 
   def add_reaction(conn, %{"name" => name, "hash" => hash}) do
