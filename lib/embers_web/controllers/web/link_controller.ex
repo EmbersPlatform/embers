@@ -6,6 +6,7 @@ defmodule EmbersWeb.Web.LinkController do
   import EmbersWeb.Authorize
 
   alias Embers.Links
+  alias Embers.Helpers.IdHasher
   alias EmbersWeb.Plugs.CheckPermissions
 
   action_fallback(EmbersWeb.Web.FallbackController)
@@ -19,6 +20,7 @@ defmodule EmbersWeb.Web.LinkController do
     with {:ok, embed} <- Links.fetch(url),
          {:ok, link} <- Links.save(%{user_id: user.id, embed: embed}) do
       conn
+      |> put_resp_header("embers-link-id", IdHasher.encode(link.id))
       |> put_layout(false)
       |> render(:link, link: link)
     else
