@@ -62,6 +62,7 @@ const PostEditor = {
         this.tag_input.current.value = "";
       this.textarea.current.update();
       this.media_zone.current.reset();
+      this.link_zone.current.reset();
     }
 
     this.cancel = () => {

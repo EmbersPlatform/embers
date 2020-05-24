@@ -1,3 +1,7 @@
 <%= for reply <- @replies.entries do %>
-  <%= render("reply.html", conn: @conn, reply: reply) %>
+  <%= if @as_thread? do %>
+    <%= render("reply_thread.html", conn: @conn, reply: reply) %>
+  <% else %>
+    <%= render("reply.html", conn: @conn, reply: reply) %>
+  <% end %>
 <% end %>
