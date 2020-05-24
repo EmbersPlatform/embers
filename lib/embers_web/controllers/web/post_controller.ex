@@ -50,16 +50,24 @@ defmodule EmbersWeb.Web.PostController do
       |> get_and_put_tags()
 
     with {:ok, post} <- Posts.create_post(params) do
-      {view, key} =
-        cond do
-          not is_nil(post.parent_id) and params["as_thread"] -> {:reply_thread, :reply}
-          not is_nil(post.parent_id) -> {:reply, :reply}
-          true -> {:post, :post}
-        end
+      if not is_nil(post.related_to) and is_nil(post.body) do
+        activity = Embers.Feed.FeedActivity.of(post.related_to, post.user)
+        conn
+        |> put_layout(false)
+        |> put_view(EmbersWeb.Web.TimelineView)
+        |> render("activity.html", activity: activity, with_replies: true)
+      else
+        {view, key} =
+          cond do
+            not is_nil(post.parent_id) and params["as_thread"] -> {:reply_thread, :reply}
+            not is_nil(post.parent_id) -> {:reply, :reply}
+            true -> {:post, :post}
+          end
 
-      conn
-      |> put_layout(false)
-      |> render(view, [{key, post}])
+        conn
+        |> put_layout(false)
+        |> render(view, [{key, post}])
+      end
     end
   end
 
