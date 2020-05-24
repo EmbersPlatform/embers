@@ -24,19 +24,25 @@ export default {
     this.status = States.Idle;
   },
 
-  add_link(url) {
+  async add_link(url) {
     if(!this.status.is(States.Idle)) return;
 
     this.status = States.Processing(url);
-    Links.process(url)
-      .then(link => {
+    const res = await Links.process(url);
+    res.match({
+      Success: link => {
+        console.log("link?", link)
         this.status = States.Success(link);
-        this.dispatch("process", link);
-      })
-      .catch(error => {
+        this.dispatch("process", link.id);
+      },
+      Error: error => {
         this.status = States.Error(error);
         throw error;
-      })
+      },
+      NetworkError: () => {
+        this.status = States.Error("Network Error");
+      }
+    })
   },
 
   reset() {
@@ -62,7 +68,7 @@ export default {
       Success: () => {
         this.html`
           <button class="plain-button remove-link-button" onclick=${this}>${i18n.gettext("Remove link")}</button>
-          ${{html: this.status.link}}
+          ${{html: this.status.link.html}}
         `;
       },
       Error: () => {
