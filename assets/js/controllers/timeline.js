@@ -18,6 +18,12 @@ export default class extends Controller {
   connect() {
     this.state = States.Idle;
     this.next = this.element.dataset.next;
+    if(!this.next) {
+      this.state = States.Finished;
+      this.appendActivity(`
+        <p>${i18n.gettext("You reached the bottom!")}</p>
+      `)
+    }
   }
 
   addActivity(activity) {
@@ -46,7 +52,7 @@ export default class extends Controller {
             this.last_page = last_page;
             this.feedTarget.insertAdjacentHTML("beforeend", activities);
             if(this.last_page) {
-              this.addActivity(`
+              this.appendActivity(`
                 <p>${i18n.gettext("You reached the bottom!")}</p>
               `)
             }
