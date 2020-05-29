@@ -20,13 +20,12 @@ defmodule Embers.Feed.Timeline do
     query =
       from(
         activity in Activity,
-        where: activity.user_id == ^user_id,
-        left_join: post in assoc(activity, :post),
-        as: :post,
-        where: is_nil(post.deleted_at),
-        order_by: [desc: activity.id],
+        inner_join: post in assoc(activity, :post),
+        on: is_nil(post.deleted_at),
         left_join: related_to in assoc(post, :related_to),
-        where: is_nil(related_to.deleted_at) or (not is_nil(related_to.deleted_at) and not is_nil(post.body)),
+        where: activity.user_id == ^user_id,
+        where: is_nil(related_to.deleted_at) or not is_nil(post.body),
+        order_by: [desc: activity.id],
         preload: [
           post: {
             post,
