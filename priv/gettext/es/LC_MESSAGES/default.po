@@ -43,13 +43,13 @@ msgstr "te está siguiendo"
 
 #, elixir-format
 #: lib/embers_web/controllers/api/link_controller.ex:21
-#: lib/embers_web/controllers/web/link_controller.ex:29
+#: lib/embers_web/controllers/web/link_controller.ex:31
 msgid "Couldn't process link"
 msgstr "No se pudo procesar el enlace"
 
 #, elixir-format
 #: lib/embers_web/controllers/api/link_controller.ex:27
-#: lib/embers_web/controllers/web/link_controller.ex:35
+#: lib/embers_web/controllers/web/link_controller.ex:37
 msgid "Internal error"
 msgstr "Error interno"
 
@@ -174,13 +174,15 @@ msgstr "Tienes que esperar unos días antes de crear otra cuenta"
 
 
 #: lib/embers_web/templates/web/post/post.html.eex:103
+#: lib/embers_web/templates/web/post/post.html.eex:129
+#: lib/embers_web/templates/web/post/show.html.eex:15
 msgid "1 comment"
 msgid_plural "%{count} comments"
 msgstr[0] "1 comentario"
 msgstr[1] "%{count} comentarios"
 
 #, elixir-format
-#: lib/embers_web/templates/web/post/post.html.eex:108
+#: lib/embers_web/templates/web/post/post.html.eex:134
 msgid "1 time shared"
 msgid_plural "%{count} times shared"
 msgstr[0] "1 vez compartido"
@@ -188,6 +190,7 @@ msgstr[1] "%{count} veces compartido"
 
 #, elixir-format
 #: lib/embers_web/templates/web/post/_post_actions.html.eex:25
+#: lib/embers_web/templates/web/post/_reply_actions.html.eex:25
 msgid "Ban user"
 msgstr "Suspender usuario"
 
@@ -199,6 +202,7 @@ msgstr "Crear cuenta"
 
 #, elixir-format
 #: lib/embers_web/templates/web/post/_post_actions.html.eex:18
+#: lib/embers_web/templates/web/post/_reply_actions.html.eex:18
 msgid "Disable"
 msgstr "Deshabilitar"
 
@@ -209,6 +213,7 @@ msgid "Discover"
 msgstr "Descubre"
 
 #, elixir-format
+#: lib/embers_web/controllers/web/page_controller.ex:23
 #: lib/embers_web/templates/layout/logged_in/navigation.html.eex:7
 #: lib/embers_web/templates/layout/logged_in/navigation.html.eex:44
 msgid "Home"
@@ -216,16 +221,19 @@ msgstr "Inicio"
 
 #, elixir-format
 #: lib/embers_web/templates/web/post/_post_actions.html.eex:12
+#: lib/embers_web/templates/web/post/_reply_actions.html.eex:12
 msgid "Is NSFW"
 msgstr "Es NSFW"
 
 #, elixir-format
 #: lib/embers_web/templates/web/post/_post_actions.html.eex:44
+#: lib/embers_web/templates/web/post/_reply_actions.html.eex:41
 msgid "Reactions"
 msgstr "Reacciones"
 
 #, elixir-format
 #: lib/embers_web/templates/web/post/_post_actions.html.eex:49
+#: lib/embers_web/templates/web/post/_reply_actions.html.eex:46
 msgid "Report"
 msgstr "Reportar"
 
@@ -236,22 +244,24 @@ msgstr "Buscar en Embers"
 
 #, elixir-format
 #: lib/embers_web/templates/web/post/_post_actions.html.eex:55
-#: lib/embers_web/templates/web/post/post.html.eex:146
+#: lib/embers_web/templates/web/post/_reply_actions.html.eex:52
+#: lib/embers_web/templates/web/post/post.html.eex:172
+#: lib/embers_web/templates/web/post/reply.html.eex:85
 msgid "Delete"
 msgstr "Eliminar"
 
 #, elixir-format
-#: lib/embers_web/templates/web/post/reply.html.eex:54
+#: lib/embers_web/templates/web/post/reply.html.eex:77
 msgid "Reply"
 msgstr "Responder"
 
 #, elixir-format
-#: lib/embers_web/templates/web/post/post.html.eex:140
+#: lib/embers_web/templates/web/post/post.html.eex:166
 msgid "Reply..."
 msgstr "Responder"
 
-#, elixir-format, fuzzy
-#: lib/embers_web/templates/web/post/post.html.eex:147
+#, elixir-format
+#: lib/embers_web/templates/web/post/post.html.eex:173
 msgid "Delete post?"
 msgstr "Eliminar"
 
@@ -266,6 +276,58 @@ msgid "This post is no longer available"
 msgstr "Esta publicación no está disponible"
 
 #, elixir-format
-#: lib/embers_web/templates/web/post/post.html.eex:148
+#: lib/embers_web/templates/web/post/post.html.eex:174
 msgid "This will permanently delete this post"
+msgstr "La publicación de eliminará de forma permanentemente"
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/reply.html.eex:58
+msgid "1 reply"
+msgid_plural "%{count} replies"
+msgstr[0] "1 respuesta"
+msgstr[1] "%{count} respuestas"
+
+#, elixir-format
+#: lib/embers_web/controllers/web/post_controller.ex:26
+msgid "@%{username}'s post"
+msgstr "Publicación de @%{username}"
+
+#, elixir-format
+#: lib/embers_web/controllers/web/user_controller.ex:19
+msgid "@%{username}'s profile"
+msgstr "Perfil de @%{username}"
+
+#, elixir-format, fuzzy
+#: lib/embers_web/templates/web/post/reply.html.eex:86
+msgid "Delete reply?"
+msgstr "Eliminar"
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/show.html.eex:26
+msgid "Load more comments"
+msgstr "Cargar más comentarios"
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/reply_thread.html.eex:15
+msgid "Load more replies"
+msgstr "Cargar más respuestas"
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/post.html.eex:52
+msgid "Shared by %{user1}"
+msgstr "Compartido por %{user1}"
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/post.html.eex:55
+msgid "Shared by %{user1} and %{user2}"
+msgstr "Compartido por %{user1} y  %{user2}"
+
+#, elixir-format
+#: lib/embers_web/templates/web/post/post.html.eex:58
+msgid "Shared by %{user1}, %{user2} and %{rest} more"
+msgstr "Compartido por %{user1}, %{user2} y %{rest} más"
+
+#, elixir-format, fuzzy
+#: lib/embers_web/templates/web/post/reply.html.eex:87
+msgid "This will permanently delete this reply"
 msgstr "La publicación de eliminará de forma permanentemente"

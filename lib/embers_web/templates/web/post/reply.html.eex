@@ -7,7 +7,8 @@
   data-controller="<%= attr_list([
     "reply",
     "reactable",
-    "medias"
+    "medias",
+    {"content-warning", @reply.nsfw}
   ]) %>"
   <%= if @reply.nsfw, do: "nsfw" %>
 >
@@ -46,40 +47,47 @@
           <%= EmbersWeb.Web.LinkView.render("link.html", link: link) %>
         <% end %>
       <% end %>
-      <footer>
-        <div class="stats">
-          <div class="reactions" data-target="reactable.reactions">
-            <%= build_reactions(@reply, @conn) %>
-          </div>
-          <e-spacer></e-spacer>
-          <div>
-            <%= if @reply.replies_count > 0 do %>
-              <a href="<%= post_path(@conn, :show, encode_id(@reply.id)) %>" class="stat replies-stat">
-                <%= ngettext("1 reply", "%{count} replies", @reply.replies_count) %>
-              </a>
-            <% end %>
-          </div>
-        </div>
-        <%= if authenticated?(@conn) do %>
-          <div class="actions">
-            <%= unless is_owner?(@conn, @reply) do %>
-              <%= render("reaction_picker.html") %>
-            <% end %>
-            <e-spacer></e-spacer>
-            <button
-              class="plain-button"
-              data-action="click->replyable#reply"
-              <%= if @reply.nesting_level >= 2 do %>
-                data-author="<%= @reply.user.canonical %>"
-              <% end %>
-            >
-              <%= svg_image("reply") %>
-              <span><%= gettext("Reply") %></span>
-            </button>
-          </div>
-        <% end %>
-      </footer>
     </section>
+    <footer>
+      <div class="stats">
+        <div class="reactions" data-target="reactable.reactions">
+          <%= build_reactions(@reply, @conn) %>
+        </div>
+        <e-spacer></e-spacer>
+        <div>
+          <%= if @reply.replies_count > 0 do %>
+            <a href="<%= post_path(@conn, :show, encode_id(@reply.id)) %>" class="stat replies-stat">
+              <%= ngettext("1 reply", "%{count} replies", @reply.replies_count) %>
+            </a>
+          <% end %>
+        </div>
+      </div>
+      <%= if authenticated?(@conn) do %>
+        <div class="actions">
+          <%= unless is_owner?(@conn, @reply) do %>
+            <%= render("reaction_picker.html") %>
+          <% end %>
+          <e-spacer></e-spacer>
+          <button
+            class="plain-button content-warning-button"
+            data-target="content-warning.button"
+            data-action="content-warning#toggle"
+          >
+            <%= gettext("Show") %>
+          </button>
+          <button
+            class="plain-button"
+            data-action="click->replyable#reply"
+            <%= if @reply.nesting_level >= 2 do %>
+              data-author="<%= @reply.user.canonical %>"
+            <% end %>
+          >
+            <%= svg_image("reply") %>
+            <span><%= gettext("Reply") %></span>
+          </button>
+        </div>
+      <% end %>
+    </footer>
   </section>
   <confirm-dialog padded data-target="reply.deleteDialog" data-action="accept->reply#delete"
     data-accept-text="<%= gettext("Delete") %>" pending>

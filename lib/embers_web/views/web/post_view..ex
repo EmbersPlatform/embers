@@ -29,8 +29,15 @@ defmodule EmbersWeb.Web.PostView do
     }
   end
 
-  def build_reactions(post, conn) do
-    reactions = get_reactions(post, conn)
+  def build_reactions(post, viewer \\ nil)
+  def build_reactions(post, %{assigns: %{current_user: user}}) do
+    build_reactions(post, user.id)
+  end
+  def build_reactions(post, %{}) do
+    build_reactions(post, nil)
+  end
+  def build_reactions(post, viewer_id) do
+    reactions = get_reactions(post, viewer_id)
 
     for reaction <- reactions do
       reaction_image = static_path(Endpoint, "/svg/reactions/#{reaction.name}.svg")
@@ -50,12 +57,12 @@ defmodule EmbersWeb.Web.PostView do
     end
   end
 
-  defp get_reactions(post, conn) do
+  defp get_reactions(post, viewer_id) do
     if Ecto.assoc_loaded?(post.reactions) do
       my_reactions =
-        if Map.has_key?(conn.assigns, :current_user) do
+        unless is_nil(viewer_id) do
           post.reactions
-          |> Enum.filter(fn r -> r.user_id == conn.assigns.current_user.id end)
+          |> Enum.filter(fn r -> r.user_id == viewer_id end)
           |> Enum.map(fn r -> r.name end)
         end || []
 

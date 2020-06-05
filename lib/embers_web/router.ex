@@ -118,6 +118,7 @@ defmodule EmbersWeb.Router do
     post("/post", PostController, :create)
     delete("/post/:id", PostController, :delete)
     get("/post/:hash", PostController, :show)
+
     # Post replies
     get("/post/:hash/replies", PostController, :show_replies)
     # Post Reactions
@@ -132,6 +133,15 @@ defmodule EmbersWeb.Router do
 
     # Links
     post("/links", LinkController, :process)
+
+    # Favorites
+    get("/favorites", FavoriteController, :list)
+    post("/favorites/:post_id", FavoriteController, :create)
+    delete("/favorites/:post_id", FavoriteController, :destroy)
+
+    scope "/moderation", Moderation do
+      post("/post/update_tags", TagController, :update_tags)
+    end
   end
 
   scope "/api/v1", EmbersWeb.Api, as: :api do

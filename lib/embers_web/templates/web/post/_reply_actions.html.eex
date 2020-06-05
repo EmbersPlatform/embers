@@ -8,8 +8,9 @@
         <div class="hover-menu bottom-right">
           <ol>
             <li>
-              <button class="plain-button">
-                <span><%= gettext("Is NSFW") %></span>
+              <button class="plain-button" data-action="click->reply#toggle_nsfw">
+                <span class="is-nsfw"><%= gettext("Is NSFW") %></span>
+                <span class="isnt-nsfw"><%= gettext("Isn't NSFW") %></span>
               </button>
             </li>
             <li>

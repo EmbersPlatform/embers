@@ -31,6 +31,10 @@ body {
   box-sizing: border-box;
   background: var(--background);
   color: var(--text);
+
+  @include media("<tablet") {
+    padding-bottom: var(--navigation-width);
+  }
 }
 
 #view main {

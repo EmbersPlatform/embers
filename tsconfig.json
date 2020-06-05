@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "target": "es2015",
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "~*": ["./assets/*"]
+    },
+    "noEmit": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "assets",
+    "assets/js/types/svg.d.ts",
+    "assets/js/components/hook.d.ts"
+  ],
+  "exclude": ["priv/static"]
+}

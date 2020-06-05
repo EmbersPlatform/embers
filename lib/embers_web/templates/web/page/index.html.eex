@@ -37,7 +37,7 @@
           <%= render(EmbersWeb.Web.TimelineView, "activity.html", conn: @conn, activity: activity, with_replies: true) %>
         <% end %>
       </div>
-      <intersection-observer data-action="intersect->timeline#loadMore"></intersection-observer>
+      <intersect-observer data-action="intersect->timeline#loadMore"></intersect-observer>
       <loading-indicator data-target="timeline.loadingIndicator"></loading-indicator>
     </div>
     <aside>

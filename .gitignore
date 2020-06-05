@@ -47,5 +47,6 @@ npm-debug.log
 
 # Documentation
 /doc
+/jsdocs
 
 /Mnesia*

@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "parcel watch assets/js/index.js assets/styles/main.scss --out-dir priv/static/ --public-url ./",
-    "build": "parcel build assets/js/index.js assets/styles/main.scss --out-dir priv/static/ --public-url ./"
+    "build": "parcel build assets/js/index.js assets/styles/main.scss --out-dir priv/static/ --public-url ./",
+    "docs": "typedoc --options typedoc.json --allowJs --ignoreCompilerErrors"
   },
   "dependencies": {
     "autosize": "^4.0.2",
@@ -11,18 +12,22 @@
     "hammerjs": "^2.0.8",
     "heresy": "^0.27.0",
     "include-media": "^1.4.9",
+    "phoenix": "^1.5.3",
     "pubsub-js": "^1.8.0",
-    "stags": "^1.0.0-rc27",
     "stimulus": "^1.1.1",
-    "turbolinks": "^5.2.0"
+    "turbolinks": "^5.2.0",
+    "unionize": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/plugin-transform-async-to-generator": "^7.8.3",
     "@babel/plugin-transform-runtime": "^7.9.0",
+    "@types/hammerjs": "^2.0.36",
     "autoprefixer": "^9.7.4",
     "babel-plugin-module-resolver": "^4.0.0",
+    "better-docs": "^2.0.1",
+    "jsdoc": "^3.6.4",
     "minimist": "^1.2.5",
     "node-sass": "^4.13.1",
     "parcel-bundler": "^1.12.4",
@@ -31,6 +36,8 @@
     "postcss-modules": "^1.5.0",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
+    "typedoc": "^0.17.7",
+    "typescript": "^3.9.3",
     "yargs-parser": "^18.1.3"
   },
   "staticFiles": {
@@ -45,5 +52,8 @@
   "resolutions": {
     "minimist": "^1.2.5",
     "yargs-parser": "^18.1.3"
+  },
+  "compilerOptions": {
+    "target": "es6"
   }
 }
