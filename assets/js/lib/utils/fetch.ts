@@ -15,7 +15,7 @@ const default_headers = {
   'x-csrf-token': window["csrf_token"],
 }
 
-// Currently it just wraps the response in a FetchResult type
+// Currently it just wraps the response in a NetResult type
 const infer_result = (response: Response): NetResult<Response, Response> => {
   if(response.ok) {
     return FetchResults.Success(response);
@@ -67,7 +67,7 @@ const perform_fetch = async (path: string, method: string, options: Object = {})
   }
 }
 
-export const get = async (url, options?) => {
+export const get = async (url: string, options?: Object) => {
   return await perform_fetch(url, "GET", options);
 }
 
@@ -75,7 +75,7 @@ export const post = async (url, body, options?) => {
   return await perform_fetch(url, "POST", { body, ...options });
 }
 
-export const delet = async (url, options?) => {
+export const delet = async (url: string, options?: Object) => {
   return await perform_fetch(url, "DELETE", options);
 }
 
