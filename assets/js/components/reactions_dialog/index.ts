@@ -6,20 +6,11 @@ import ModalDialog from "../dialog";
 
 import i18n from "~js/lib/gettext";
 
-import {unionize, ofType} from "unionize";
-
 import * as Posts from "~js/lib/posts";
 
 import back_icon from "/static/svg/generic/icons/angle-left.svg";
 
-const RStates = unionize({
-  Initializing: {},
-  Idle: {},
-  Loading: {},
-  Error: {},
-  Finished: {},
-  Empty: {}
-}, {tag: "tag", value: "value"});
+enum States {Initializing, Idle, Loading, Error, Finished, Empty};
 
 export default class ReactionsDialog extends ModalDialog {
 
@@ -30,12 +21,12 @@ export default class ReactionsDialog extends ModalDialog {
     "list"
   ];
 
-  r_state = RStates.Initializing()
+  r_state = States.Initializing;
   selected_reaction
   list: string
   last_page: boolean
   next: string
-  overview: Array<{name: string, count: number}>
+  overview: Posts.ReactionOverview[];
 
   oninit() {
     super.oninit();
@@ -43,24 +34,24 @@ export default class ReactionsDialog extends ModalDialog {
     this.selected_reaction = "all";
     this.addEventListener("click", this.on_click.bind(this));
 
-    this.r_state = RStates.Idle();
+    this.r_state = States.Idle;
   }
 
   on_click(event) {
     const target = event.target.closest("button.reaction");
     if(!target) return;
     if(target.dataset.name == this.selected_reaction) return;
-    this.r_state = RStates.Idle();
+    this.r_state = States.Idle;
     this.selected_reaction = target.dataset.name;
   }
 
   onselected_reaction() {
-    if(RStates.is.Initializing(this.r_state)) return;
+    if(States.Initializing === this.r_state) return;
     this._fetch_reactions();
   }
 
   onr_state() {
-    if(RStates.is.Initializing(this.r_state)) return;
+    if(States.Initializing === this.r_state) return;
     this.render();
   }
 
@@ -69,8 +60,8 @@ export default class ReactionsDialog extends ModalDialog {
   }
 
   async _fetch_reactions(after?: string) {
-    if(RStates.is.Loading((this.r_state))) return;
-    this.r_state = RStates.Loading();
+    if(States.Loading === this.r_state) return;
+    this.r_state = States.Loading;
     if(!after) this.list = "";
 
     const res = await Posts.get_reactions(this.dataset.postId, this.selected_reaction, after)
@@ -82,18 +73,18 @@ export default class ReactionsDialog extends ModalDialog {
           this.next = page.next;
           this.r_state =
             this.list == ""
-              ? RStates.Empty()
+              ? States.Empty
               : this.last_page
-                ? RStates.Finished()
-                : RStates.Idle();
+                ? States.Finished
+                : States.Idle;
         break;
       }
       case "Error": {
-        this.r_state = RStates.Error()
+        this.r_state = States.Error
         break;
       }
       case "NetworkError": {
-        this.r_state = RStates.Error()
+        this.r_state = States.Error
         break;
       }
     }
@@ -124,7 +115,7 @@ export default class ReactionsDialog extends ModalDialog {
   render() {
     const close = () => this.close();
     const load_more = () => {
-      if(RStates.is.Finished((this.r_state))) return;
+      if(States.Finished === this.r_state) return;
       this._fetch_reactions(this.next);
     }
 
@@ -162,24 +153,32 @@ export default class ReactionsDialog extends ModalDialog {
         </div>
         <div class="reactions-list">
           ${{html: this.list}}
-          ${RStates.match(this.r_state, {
-            Initializing: () => ``,
-            Idle: () => ``,
-            Loading: () => html`
-              <p>${i18n.dgettext("reactions-dialog", "Fetching reactions...")}</p>
-            `,
-            Error: () => html`
-              <p>${i18n.dgettext("reactions-dialog", "There was an error loading reactions.")}</p>
-            `,
-            Finished: () => ``,
-            Empty: () => html`
-              <p>${i18n.dgettext("reactions-dialog", "This post has no reactions :(")}</p>
-            `
-          })}
+          ${get_status_text(this.r_state)}
           <intersect-observer onintersect=${load_more} />
         </div>
       </section>
     `
     this.html`${this.render_dialog(contents)}`
+  }
+}
+
+function get_status_text(state: States) {
+  switch(state) {
+    case States.Initializing:
+    case States.Idle:
+    case States.Finished:
+      return ``;
+    case States.Loading:
+      return html`
+        <p>${i18n.dgettext("reactions-dialog", "Fetching reactions...")}</p>
+      `;
+    case States.Error:
+      return html`
+        <p>${i18n.dgettext("reactions-dialog", "There was an error loading reactions.")}</p>
+      `;
+    case States.Empty:
+      return html`
+        <p>${i18n.dgettext("reactions-dialog", "This post has no reactions :(")}</p>
+      `;
   }
 }

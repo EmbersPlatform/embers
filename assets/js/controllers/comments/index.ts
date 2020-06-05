@@ -1,24 +1,26 @@
-import { Controller } from "stimulus"
+import { BaseController } from "~js/lib/controller";
 
-import union from "~js/lib/utils/union";
 import * as Posts from "~js/lib/posts";
 
 export const name = "comments"
 
-const States = union("States", {
-  Idle: [],
-  Loading: [],
-  Finished: []
-})
+enum States {Idle, Loading, Finished};
 
-export default class extends Controller {
-  static targets = ["commentList", "load_more_button"]
+export default class extends BaseController {
+  static targets = ["commentList", "load_more_button"];
+
+  element: HTMLElement;
+
+  state = States.Idle;
+  post_id: string;
+  next: string;
+  last_page: boolean;
 
   connect() {
     this.state = States.Idle;
     this.post_id = this.element.dataset.post_id;
     this.next = this.element.dataset.next;
-    this.last_page = this.element.dataset.last_page;
+    this.last_page = (this.element.dataset.last_page == "true");
   }
 
   handleEvent(event) {
@@ -30,7 +32,7 @@ export default class extends Controller {
   }
 
   addComment(comment) {
-    this.commentListTarget.insertAdjacentHTML("beforeend", comment)
+    this.get_target("commentList").insertAdjacentHTML("beforeend", comment)
   }
 
   onpublish({ detail: comment }) {
@@ -39,27 +41,33 @@ export default class extends Controller {
 
   async load_more() {
     console.log("load more comments!")
-    if(!States.Idle.is(this.state)) return;
+    if(this.state !== States.Idle) return;
 
-    this.states = States.Loading;
-    this.load_more_buttonTarget.disabled = true;
+    this.state = States.Loading;
+    this.get_target<HTMLButtonElement>("load_more_button").disabled = true;
 
     const res = await Posts.get_replies(this.post_id, {after: this.next, order: "asc", limit: 10, as_thread: true, replies: 2});
-    res.match({
-      Success: page => {
+    switch(res.tag) {
+      case "Success": {
+        const page = res.value;
         this.next = page.next;
         this.last_page = page.last_page;
         this.addComment(page.body);
-
-
-      },
-      Error: console.error,
-      NetworkError: console.error
-    })
+        break;
+      }
+      case "Error": {
+        console.error(res.value);
+        break;
+      }
+      case "NetworkError": {
+        console.error("Could not connect with server.")
+        break;
+      }
+    }
 
     this.state = this.last_page ? States.Finished : States.Idle;
-    this.load_more_buttonTarget.disabled = false;
-    if(States.Finished.is(this.state))
-          this.load_more_buttonTarget.remove();
+    this.get_target<HTMLButtonElement>("load_more_button").disabled = false;
+    if(this.state === States.Finished)
+      this.get_target<HTMLButtonElement>("load_more_button").remove();
   }
 }

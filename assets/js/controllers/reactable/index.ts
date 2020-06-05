@@ -31,26 +31,40 @@ export default class extends BaseController {
     this.get_target("reactions").innerHTML = html;
   }
 
-  add_reaction(reaction) {
-    add_reaction(this.element.dataset.id, reaction)
-    .then(res => {
-      res.match({
-        Success: html => this.set_reactions(html),
-        Error: error => console.log(error),
-        NetworkError: () => console.error("Error contacting server")
-      })
-    })
+  async add_reaction(reaction) {
+    const res = await add_reaction(this.element.dataset.id, reaction);
+    switch(res.tag) {
+      case "Success": {
+        this.set_reactions(res.value);
+        break;
+      }
+      case "Error": {
+        console.log(res.value);
+        break;
+      }
+      case "NetworkError": {
+        console.error("Error contacting server");
+        break;
+      }
+    }
   }
 
-  remove_reaction(reaction) {
-    remove_reaction(this.element.dataset.id, reaction)
-    .then(res => {
-      res.match({
-      Success: html => this.set_reactions(html),
-        Error: error => console.log(error),
-        NetworkError: () => console.error("Error contacting server")
-      })
-    })
+  async remove_reaction(reaction) {
+    const res = await remove_reaction(this.element.dataset.id, reaction)
+    switch(res.tag) {
+      case "Success": {
+        this.set_reactions(res.value);
+        break;
+      }
+      case "Error": {
+        console.log(res.value);
+        break;
+      }
+      case "NetworkError": {
+        console.error("Error contacting server");
+        break;
+      }
+    }
   }
 
   has_reaction(reaction) {

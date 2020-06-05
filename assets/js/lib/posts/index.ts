@@ -40,7 +40,17 @@ export async function delet(post_id): Promise<NetResult<void, Object>> {
   }
 }
 
-export async function get_replies(post_id, params) {
+
+export interface GetRepliesParams {
+  after?: string,
+  before?: string,
+  limit?: number,
+  order?: string,
+  skip_first?: boolean,
+  as_thread?: boolean,
+  replies?: number
+}
+export async function get_replies(post_id: string, params: GetRepliesParams): Promise<NetResult<PaginationPage, Object>> {
   let res = await Fetch.get(`/post/${post_id}/replies`, { type: "json", params })
   switch(res.tag) {
     case "Success": {
@@ -104,7 +114,11 @@ export async function get_reactions(post_id, reaction, after): Promise<NetResult
   }
 }
 
-export async function get_reactions_overview(post_id) {
+export type ReactionOverview = {
+  name: string,
+  count: number
+}
+export async function get_reactions_overview(post_id: string): Promise<NetResult<ReactionOverview[], Object>> {
   let res = await Fetch.get(`/post/${post_id}/reactions/overview`, {type: "json"})
   switch(res.tag) {
     case "Success": {
