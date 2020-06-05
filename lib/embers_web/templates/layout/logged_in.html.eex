@@ -46,6 +46,10 @@
 
   <script>
     window.csrf_token = "<%= Phoenix.Controller.get_csrf_token %>"
+    <%= if not is_nil(@conn.assigns.current_user) do %>
+      window.user_id = "<%= encode_id @conn.assigns.current_user.id %>"
+      window.user_token = <%= raw Jason.encode!(@conn.assigns.user_token) %>
+    <% end %>
   </script>
   <script src="<%= static_path(@conn, "/js/index.js") %>" defer></script>
 </head>

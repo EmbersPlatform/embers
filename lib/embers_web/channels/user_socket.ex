@@ -45,6 +45,8 @@ defmodule EmbersWeb.UserSocket do
 
   channel("user:*", EmbersWeb.UserChannel)
 
+  channel("post:*", EmbersWeb.PostChannel)
+
   # "user_presence:*" is not meant to be joined, added here to clarify that the topic prefix is used be the UserChannel
   channel("user_presence:*", EmbersWeb.UserChannel)
 end

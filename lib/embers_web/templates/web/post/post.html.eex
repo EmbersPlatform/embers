@@ -9,6 +9,7 @@
   itemscope
   itemtype="https://schema.org/SocialMediaPosting"
   role="article"
+  data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>"
   data-controller="<%= attr_list [
     "post",
     "reactable",
@@ -18,46 +19,19 @@
   ] %>"
   <%= if @post.nsfw, do: "nsfw" %>
   >
-
-  <%= if @post.nsfw do %>
-    <div class="content-warnings">
-      <div class="content-warning warning-nsfw">
-        <span>NSFW: </span>
-        <button
-          class="button danger button-small"
-          data-target="content-warning.button"
-          data-action="content-warning#toggle"
-        >
-          <%= gettext("Show") %>
-        </button>
-      </div>
+  <div class="content-warnings">
+    <div class="content-warning warning-nsfw">
+      <span>NSFW: </span>
+      <button
+        class="button danger button-small"
+        data-target="content-warning.button"
+        data-action="content-warning#toggle"
+      >
+        <%= gettext("Show") %>
+      </button>
     </div>
-  <% end %>
+  </div>
   <section class="post-wrapper">
-    <%= if !is_nil(assigns[:sharers]) and length(@sharers) > 0 do %>
-      <% sharers = Enum.uniq(@sharers) %>
-      <%
-        sharers_avatars =
-          Enum.take(sharers, 3)
-          |> Enum.map(fn x -> x.meta.avatar.small end)
-      %>
-      <div>
-      <%= for avatar <- sharers_avatars do %>
-        <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: avatar, size: "medium") %>
-      <% end %>
-      <%= case length(sharers) do
-        1 ->
-          [user1] = sharers
-          gettext("Shared by %{user1}", user1: user1.username)
-        2 ->
-          [user1, user2] = sharers
-          gettext("Shared by %{user1} and %{user2}", user1: user1.username, user2: user2.username)
-        _ ->
-          [user1, user2 | _rest] = sharers
-          gettext("Shared by %{user1}, %{user2} and %{rest} more", user1: user1.username, user2: user2.username, rest: length(sharers) - 2)
-      end %>
-      </div>
-    <% end %>
     <header>
       <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: @post.user.meta.avatar.small, size: "medium") %>
       <div class="post-details">
@@ -85,6 +59,47 @@
       <e-spacer></e-spacer>
       <%= render("_post_actions.html", assigns) %>
     </header>
+    <%= if !is_nil(assigns[:sharers]) and length(@sharers) > 0 do %>
+      <% sharers = Enum.uniq(@sharers) %>
+      <%
+        sharers_avatars =
+          Enum.take(sharers, 3)
+          |> Enum.map(fn x -> x.meta.avatar.small end)
+      %>
+      <div class="post-sharers">
+        <%= for avatar <- sharers_avatars do %>
+          <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: avatar, size: "medium") %>
+        <% end %>
+        <span>
+        <%
+          build_user_link = fn user ->
+            labeled_link(user.username,
+              to: decoded_path(:user_path, Endpoint, :show, user.canonical)
+            )
+            |> safe_to_string()
+          end
+        %>
+        <%= case length(sharers) do
+          1 ->
+            [user1] = sharers
+            user1 = build_user_link.(user1)
+            raw gettext("Shared by %{user1}", user1: user1)
+          2 ->
+            [user1, user2] = sharers
+            user1 = build_user_link.(user1)
+            user2 = build_user_link.(user2)
+            raw gettext("Shared by %{user1} and %{user2}",
+              user1: user1, user2: user2)
+          _ ->
+            [user1, user2 | _rest] = sharers
+            user1 = build_user_link.(user1)
+            user2 = build_user_link.(user2)
+            raw gettext("Shared by %{user1}, %{user2} and %{rest} more",
+              user1: user1, user2: user2, rest: length(sharers) - 2)
+        end %>
+        </span>
+      </div>
+    <% end %>
     <section class="post-content">
       <section class="post-body" itemprop="articleBody">
         <%= @post.body %>
@@ -108,13 +123,11 @@
         <%= render("post.html", conn: @conn, post: @post.related_to, embedded: true) %>
       <% end %>
     </section>
-    <%= if length(@post.tags) > 0 do %>
-      <section class="post-tags">
+    <post-tags data-post_id="<%= encode_id(@post.id) %>">
       <%= for tag <- @post.tags do %>
-        <%= render("tag.html", conn: @conn, tag: tag) %>
+        <post-tag><%= tag.name %></post-tag>
       <% end %>
-      </section>
-    <% end %>
+    </post-tags>
     <footer>
       <div class="stats">
         <div data-target="reactable.reactions" class="reactions">

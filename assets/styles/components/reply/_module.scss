@@ -137,6 +137,34 @@
       display: auto;
     }
   }
+
+  &[nsfw] {
+    .reply-content {
+      overflow: hidden;
+    }
+    .reply-contents {
+      filter: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'><filter%20id='blur'><feGaussianBlur%20stdDeviation='2'/></filter></svg>#blur");
+      filter: blur(2em);
+      pointer-events: none;
+    }
+  }
+
+  .isnt-nsfw {
+    display: none;
+  }
+  &[data-controller*="content-warning"] {
+    .is-nsfw {
+      display: none;
+    }
+    .isnt-nsfw {
+      display: block;
+    }
+  }
+  &:not([data-controller*="content-warning"]) {
+    .content-warning-button {
+      display: none;
+    }
+  }
 }
 
 .reply+.reply {

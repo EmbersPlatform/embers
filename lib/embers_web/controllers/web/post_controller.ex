@@ -138,6 +138,13 @@ defmodule EmbersWeb.Web.PostController do
     case can_delete?(user, post) do
       true ->
         {:ok, _post} = Posts.delete_post(post, actor: user.id)
+
+        EmbersWeb.Endpoint.broadcast!(
+          "post:#{IdHasher.encode(post.id)}",
+          "deleted",
+          %{}
+        )
+
         conn
         |> put_status(:no_content)
         |> json(nil)
@@ -204,6 +211,13 @@ defmodule EmbersWeb.Web.PostController do
     case Reactions.create_reaction(%{"name" => name, "user_id" => user_id, "post_id" => post_id}) do
       {:ok, _reaction} ->
         post = Posts.get_post!(post_id)
+        EmbersWeb.Endpoint.broadcast!(
+          "post:#{IdHasher.encode(post.id)}",
+          "reactions_updated",
+          %{user_id: user_id,
+            added: [name]
+          }
+        )
 
         conn
         |> put_layout(false)
@@ -227,6 +241,13 @@ defmodule EmbersWeb.Web.PostController do
     })
 
     post = Posts.get_post!(post_id)
+    EmbersWeb.Endpoint.broadcast!(
+      "post:#{IdHasher.encode(post.id)}",
+      "reactions_updated",
+      %{user_id: user_id,
+        removed: [name]
+      }
+    )
 
     conn
     |> put_layout(false)

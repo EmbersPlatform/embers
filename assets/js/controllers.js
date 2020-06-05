@@ -1,6 +1,8 @@
 import { Application } from "stimulus";
 
-import controllers from "./controllers/*.js";
+import controllers from "./controllers/*/index.ts";
+
+console.log(controllers)
 
 export function init() {
   const application = Application.start();
