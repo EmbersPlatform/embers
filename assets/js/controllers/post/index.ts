@@ -51,19 +51,22 @@ export default class extends BaseController {
 
   async delete() {
     const res = await Posts.delet(this.element.dataset.id)
-    res.match({
-      Success: () => {
+    switch(res.tag) {
+      case "Success": {
         // this.element.remove();
         const dialog = this.get_target<ModalDialog>("deleteDialog");
         dialog.close();
-      },
-      Error: err => {
-        alert("Hubo un error al borrar el post")
-      },
-      NetworkError: () => {
-        alert("Hubo un error al conectar con el servidor")
+        break;
       }
-    })
+      case "Error": {
+        alert("Hubo un error al borrar el post");
+        break;
+      }
+      case "NetworkError": {
+        alert("Hubo un error al conectar con el servidor");
+        break;
+      }
+    }
   }
 
   show_reactions_modal() {
@@ -94,14 +97,10 @@ export default class extends BaseController {
     const tag_names = Sets.to_array(tags);
 
     let res = await Posts.update_tags({post_id: id, tag_names})
-    res.match({
-      Success: post => {
-        console.log(tags)
-        PubSub.publish(`post:${id}.updated_tags`, tags);
-      },
-      Error: () => {},
-      NetworkError: () => {}
-    })
+    if(res.tag === "Success") {
+      console.log(tags)
+      PubSub.publish(`post:${id}.updated_tags`, tags);
+    }
   }
 
   update_tags(_topic, new_tags) {

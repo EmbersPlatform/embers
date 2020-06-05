@@ -1,74 +1,79 @@
-import { Controller } from "stimulus";
-import union from "~js/lib/utils/union";
+import { BaseController } from "~js/lib/controller";
 
 import * as Posts from "~js/lib/posts";
 import * as Window from "~js/lib/utils/window";
+import PostEditor from "~js/components/editor";
+import LoadingIndicator from "~js/components/loading_indicator";
 
 export const name = "replyable";
 
-const States = union("States", {
-  Idle: [],
-  Loading: [],
-  Finished: []
-})
+enum States {Idle, Loading, Finished}
 
-export default class extends Controller {
+export default class extends BaseController {
   static targets = ["replyEditor", "loadMoreButton", "insertionPoint", "loadingIndicator"]
 
+  state = States.Idle;
+  next: string;
+  first_load: boolean;
+  last_page: boolean;
+
   connect() {
-    this.state = States.Idle;
     this.next = this.element.dataset.next;
     this.first_load = true;
   }
 
   reply(event) {
-    if(!this.hasReplyEditorTarget) return;
-    this.replyEditorTarget.show();
+    if(!this.has_target("replyEditor")) return;
+    this.get_target<PostEditor>("replyEditor").show();
     let author =
       event.target.closest("button").dataset.author;
-    this.replyEditorTarget.addReply(author);
+    this.get_target<PostEditor>("replyEditor").addReply(author);
   }
 
   async load_older_replies() {
-    if(!this.hasInsertionPointTarget) return;
-    this.state.match({
-      Idle: async () => {
-        this.state = States.Loading;
-        this.loadMoreButtonTarget.classList.add("hidden");
-        this.loadingIndicatorTarget.show();
-        const params = { before: this.next, limit: 10, order: "desc" }
-        if(this.first_load)
-          params.skip_first = true;
+    if(!this.has_target("insertionPoint")) return;
+    if(this.state === States.Idle) {
+      this.state = States.Loading;
+      this.get_target("loadMoreButton").classList.add("hidden");
+      this.get_target<LoadingIndicator>("loadingIndicator").show();
 
-        const response = await Posts.get_replies(this.element.dataset.id, params)
+      const params: Posts.GetRepliesParams = { before: this.next, limit: 10, order: "desc" }
+      if(this.first_load)
+        params.skip_first = true;
 
-        response.match({
-          Success: ({ last_page, next, body }) => {
-            this.first_load = false;
-            this.next = next;
-            this.last_page = last_page;
-            this.insertionPointTarget.insertAdjacentHTML("afterend", body);
-            Window.scroll_into_view(this.insertionPointTarget);
-          },
-          Error: errors => console.error("Error retrieving replies", errors),
-          NetworkError: () => console.error("Could not connect to server")
-        })
+      const res = await Posts.get_replies(this.element.dataset.id, params);
+      switch(res.tag) {
+        case "Success": {
+          const {next, last_page, body} = res.value;
+          this.first_load = false;
+          this.next = next;
+          this.last_page = last_page;
+          this.get_target("insertionPoint").insertAdjacentHTML("afterend", body);
+          Window.scroll_into_view(this.get_target("insertionPoint"));
+          break;
+        }
+        case "Error": {
+          console.error("Error retrieving replies", res.value);
+          break;
+        }
+        case "NetworkError": {
+          console.error("Could not connect to server");
+        }
+      }
 
-        this.state = (this.last_page) ? States.Finished : States.Idle;
-        this.loadingIndicatorTarget.hide();
+      this.state = (this.last_page) ? States.Finished : States.Idle;
+      this.get_target<LoadingIndicator>("loadingIndicator").hide();
 
-        this.state.match({
-          Idle: () => {
-            this.loadMoreButtonTarget.classList.remove("hidden")
-          },
-          Loading: () => {},
-          Finished: () => {
-            this.loadMoreButtonTarget.remove();
-          }
-        })
-      },
-      Loading: () => {},
-      Finished: () => {}
-    })
+      switch(this.state) {
+        case States.Idle: {
+          this.get_target("loadMoreButton").classList.remove("hidden");
+          break;
+        }
+        case States.Finished: {
+          this.get_target("loadMoreButton").remove();
+          break;
+        }
+      }
+    }
   }
 }

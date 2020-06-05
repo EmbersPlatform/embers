@@ -15,8 +15,7 @@
     "phoenix": "^1.5.3",
     "pubsub-js": "^1.8.0",
     "stimulus": "^1.1.1",
-    "turbolinks": "^5.2.0",
-    "unionize": "^3.1.0"
+    "turbolinks": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.7",

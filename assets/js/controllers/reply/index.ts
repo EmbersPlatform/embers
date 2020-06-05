@@ -16,18 +16,21 @@ export default class extends BaseController {
 
   async delete() {
     const res = await Posts.delet(this.element.dataset.id)
-    res.match({
-      Success: () => {
+    switch(res.tag) {
+      case "Success": {
         this.element.remove();
         this.get_target<ModalDialog>("deleteDialog").close();
-      },
-      Error: err => {
-        alert("Hubo un error al borrar el post")
-      },
-      NetworkError: () => {
-        alert("Hubo un error al conectar con el servidor")
+        break;
       }
-    })
+      case "Error": {
+        alert("Hubo un error al borrar el post")
+        break;
+      }
+      case "NetworkError": {
+        alert("Hubo un error al conectar con el servidor")
+        break;
+      }
+    }
   }
 
   show_reactions_modal() {
