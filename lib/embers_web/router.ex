@@ -139,6 +139,10 @@ defmodule EmbersWeb.Router do
     post("/favorites/:post_id", FavoriteController, :create)
     delete("/favorites/:post_id", FavoriteController, :destroy)
 
+    # Notifications
+    get("/notifications", NotificationController, :index)
+    # put("/notifications/:id", NotificationController, :read)
+
     scope "/moderation", Moderation do
       post("/post/update_tags", TagController, :update_tags)
     end

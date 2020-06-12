@@ -1,0 +1,20 @@
+pop-up {
+  position: relative;
+
+  &:not([open]) {
+    [pop-up-content] {
+      display: none!important;
+    }
+  }
+
+  [pop-up-content] {
+    padding: 0.5em;
+    position: absolute;
+    left: 100%;
+    bottom: 0;
+    border: var(--border);
+    box-shadow: var(--box-shadow);
+    background: var(--primary);
+    border-radius: var(--border-radius);
+  }
+}

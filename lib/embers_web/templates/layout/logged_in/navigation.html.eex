@@ -1,4 +1,4 @@
-<nav id="navigation" is="embers-navigation">
+<nav id="navigation" is="embers-navigation" data-turbolinks-permanent>
   <a href="/" id="navigation-logo" class="mobile-hidden" aria-hidden="true">
     <%= svg_image("logo") %>
   </a>
@@ -20,15 +20,45 @@
     </li>
   </ul>
   <e-separator class="mobile-hidden"></e-separator>
+  <% notifications = Embers.Notifications.list_notifications_paginated(@conn.assigns.current_user.id, limit: 20) %>
+  <nav is="notifications-panel"
+    data-next="<%= notifications.next %>"
+    data-last_page="<%= notifications.last_page %>"
+  >
+    <header><%= gettext "Notifications" %></header>
+    <section>
+      <%= render(EmbersWeb.Web.NotificationView, "notifications.html",
+        notifications: notifications.entries
+      ) %>
+    </section>
+    <loading-indicator></loading-indicator>
+    <intersect-observer data-height="10"></intersect-observerr>
+  </nav>
   <ul class="mobile-hidden">
     <li>
-      <%= svg_image("bell") %>
+      <button class="plain-button" notifications-panel-trigger>
+        <%= svg_image("bell") %>
+      </button>
     </li>
     <li>
       <%= svg_image("inbox") %>
     </li>
     <li>
-      <img src="<%= assigns.current_user.meta.avatar.small %>"/>
+      <pop-up class="nav-user-menu" data-controller="user-menu">
+        <img src="<%= assigns.current_user.meta.avatar.small %>" class="user-avatar" pop-up-trigger/>
+        <ul pop-up-content>
+          <li>
+            <%= link("My profile",
+                to: decoded_path(:user_path, Endpoint, :show, @conn.assigns.current_user.canonical),
+                class: "button-link"
+              )
+            %>
+          </li>
+          <li>
+            <button class="plain-button" data-action="user-menu#log_out">Log out</button>
+          </li>
+        </ul>
+      </pop-up>
     </li>
     <li>
       <%= svg_image("settings") %>
@@ -51,7 +81,9 @@
       <% end %>
     </li>
     <li>
-      <%= svg_image("bell") %>
+      <button class="plain-button" notifications-panel-trigger>
+        <%= svg_image("bell") %>
+      </button>
     </li>
     <li>
       <%= svg_image("inbox") %>

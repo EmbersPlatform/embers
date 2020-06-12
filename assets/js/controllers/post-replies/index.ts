@@ -1,11 +1,11 @@
-import { Controller } from "stimulus"
+import { BaseController } from "~js/lib/controller"
 
 export const name = "post-replies"
 
-export default class extends Controller {
+export default class extends BaseController {
   static targets = ["list"]
 
   addReply({detail: reply}) {
-    this.listTarget.insertAdjacentHTML("beforeend", reply)
+    this.get_target("list").insertAdjacentHTML("beforeend", reply)
   }
 }

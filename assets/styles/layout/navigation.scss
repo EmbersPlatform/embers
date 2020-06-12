@@ -15,11 +15,11 @@
   flex-direction: row;
   align-items: center;
 
-  e-separator {
+  &>e-separator {
     flex-grow: 1;
   }
 
-  ul {
+  &>ul {
     padding: 0;
     margin: 0;
     display: flex;
@@ -34,7 +34,7 @@
     }
   }
 
-  li {
+  &>ul>li {
     width: 25px;
     height: 25px;
     box-sizing: border-box;
@@ -46,7 +46,7 @@
     cursor: pointer;
   }
 
-  li>* {
+  &>ul>li>* {
     max-width: 100%;
     max-height: 100%;
     text-align: center;
@@ -54,12 +54,12 @@
     height: inherit;
   }
 
-  li.free-size {
+  &>ul>li.free-size {
     width: auto;
     height: auto;
   }
 
-  li.active:before {
+  &>ul>li.active:before {
     content: "";
     position: absolute;
     bottom: -15px;
@@ -71,11 +71,11 @@
   }
 
   @include media(">=tablet") {
-    li+li {
+    &>ul>li+li {
       margin-top: 30px;
     }
 
-    li.active:before {
+    &>ul>li.active:before {
       height: 45px;
       width: auto;
       top: -10px;
@@ -84,17 +84,17 @@
     }
   }
 
-  li>* {
+  &>ul>li>* {
     max-width: 100%;
     max-height: 100%;
     text-align: center;
   }
 
-  li svg path {
+  &>ul>li svg path {
     fill: var(--navigation-foreground);
   }
 
-  button {
+  &>ul>li>button {
     background: none;
     border: none;
     width: 25px;
@@ -115,6 +115,10 @@
 
     svg path {
       fill: var(--navigation-foreground);
+    }
+
+    &.active svg path {
+      fill: var(--navigation-accent);
     }
   }
 }
@@ -139,7 +143,7 @@
     align-items: center;
     box-shadow: inset -10px 0 20px -5px #00000080;
 
-    ul {
+    &>ul {
       flex-direction: column;
     }
   }
@@ -157,8 +161,51 @@
   fill: var(--logo-foreground);
 }
 
+.nav-user-menu{
+  .user-avatar {
+    max-width: 100%;
+    max-height: 100%;
+    border: 2px solid var(--navigation-foreground);
+    border-radius: 50%;
+
+    &.pop-up-active {
+      border-color: var(--navigation-accent);
+    }
+  }
+
+  [pop-up-content] {
+    cursor: auto;
+    width: 12em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    li {
+      width: 100%;
+      background: #0003;
+      text-align: left;
+
+      &:hover {
+        background: #fff1;
+      }
+
+      &>button, &>a {
+        width: 100%;
+        padding: 0.5em;
+        border-radius: var(--border-radius);
+      }
+    }
+
+    li + li {
+      margin-top: 0.5em;
+    }
+  }
+}
+
 @include media("<tablet") {
   #navigation.input-focus {
     display: none;
   }
 }
+
+@import "./notifications.scss";

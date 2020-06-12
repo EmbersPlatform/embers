@@ -1,4 +1,4 @@
-<nav id="sidebar"></nav>
+<%= EmbersWeb.LayoutView.sidebar assigns %>
 <div id="view" view="user" class="has-sidebar">
   <%= render_shared("top_bar.html") %>
   <%= render("_profile_header.html", assigns) %>

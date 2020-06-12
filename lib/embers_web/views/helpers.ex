@@ -2,7 +2,6 @@ defmodule EmbersWeb.ViewHelpers do
   use Phoenix.HTML
 
   alias EmbersWeb.Router.Helpers
-
   alias Embers.Helpers.IdHasher
 
   def get_locale(conn) do
@@ -52,10 +51,6 @@ defmodule EmbersWeb.ViewHelpers do
       |> Keyword.get(:default_locale, "en")
 
     Timex.from_now(date, locale)
-  end
-
-  def sidebar(do: content) do
-    content_tag(:nav, content, id: "sidebar", is: "embers-sidebar")
   end
 
   def attr_list(attrs, joiner \\ " ") when is_list(attrs) do

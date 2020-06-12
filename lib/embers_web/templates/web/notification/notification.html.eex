@@ -1,0 +1,7 @@
+<e-notification
+  data-image="<%= @notification.from.meta.avatar.small %>"
+  data-type="<%= @notification.type %>"
+  data-from="<%= @notification.from.username %>"
+  data-source="<%= encode_id(@notification.source_id) %>"
+  data-text="<%= @notification.text %>"
+></e-notification>

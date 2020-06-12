@@ -1,12 +1,12 @@
 import { Component } from "../component";
 
 export default class IntersectObserver extends Component(HTMLElement) {
-  static tagName = "element";
-
   observer: IntersectionObserver;
 
   oninit() {
-    this.style.height = this.offsetHeight + "px" || "20px";
+    this.style.height = this.offsetHeight > 0
+      ? this.offsetHeight + "px"
+      : "20px";
 
     this.observer = new IntersectionObserver(([entry]) => {
       if (entry.intersectionRatio > 0) {

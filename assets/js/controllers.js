@@ -1,8 +1,7 @@
 import { Application } from "stimulus";
 
+// @ts-ignore
 import controllers from "./controllers/*/index.ts";
-
-console.log(controllers)
 
 export function init() {
   const application = Application.start();

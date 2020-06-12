@@ -3,7 +3,6 @@
   background: var(--sidebar-background);
   color: var(--sidebar-foreground);
   border-right: 1px solid #0003;
-  padding: 0 1em;
   box-sizing: border-box;
   height: 100vh;
   position: fixed;
@@ -11,6 +10,8 @@
   top: 0;
   transition: transform 100ms ease;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
 
   @include media(">=tablet") {
     left: calc(var(--navigation-width) - var(--sidebar-width));
@@ -19,10 +20,14 @@
 
   @include media(">=desktop") {
     left: var(--navigation-width);
-    z-index: 10;
+    z-index: auto;
   }
 
-  h1 {
+  &>* {
+    padding: 0 1em;
+  }
+
+  &>h1 {
     margin: 0;
     display: block;
     font-size: 0.8em;
@@ -33,13 +38,13 @@
     font-weight: 400;
   }
 
-  ul {
+  &>ul {
     margin: 0;
     padding: 0;
     position: relative;
   }
 
-  ul:before {
+  &>ul:before {
     content: "";
     display: block;
     position: absolute;
@@ -51,7 +56,7 @@
     background: rgba(0, 0, 0, 0.1);
   }
 
-  ul>li>a {
+  &>ul>li>a {
     width: 100%;
     height: 40px;
     padding: 0 10px;
@@ -72,36 +77,65 @@
     color: var(--sidebar-foreground);
   }
 
-  ul>li>a:hover {
+  &>ul>li>a:hover {
     background: var(--sidebar-background-hover);
     color: var(--sidebar-foreground-hover);
   }
 
-  ul>li>a.active {
+  &>ul>li>a.active {
     background: var(--sidebar-background-accent);
     color: var(--sidebar-foreground-accent);
   }
 
-  ul>li+li {
+  &>ul>li+li {
     margin-top: 0.3em;
   }
 
-  ul>li>a svg {
+  &>ul>li>a svg {
     width: 1.1em;
     height: 1.1em;
     margin-right: 1.8em;
   }
 
-  ul>li>a svg * {
+  &>ul>li>a svg * {
     fill: var(--sidebar-foreground);
   }
 
-  ul>li>a:hover svg * {
+  &>ul>li>a:hover svg * {
     fill: var(--sidebar-foreground-hover);
   }
 
-  ul>li>a.active svg * {
+  &>ul>li>a.active svg * {
     fill: var(--sidebar-foreground-accent);
+  }
+
+  &>footer {
+    @include media(">=tablet") {
+      display: none;
+    }
+
+    margin-top: auto;
+    height: var(--navigation-width);
+    background: var(--navigation-background);
+    color: var(--navigation-foreground);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
+  .nav-user-menu {
+    .user-avatar {
+      width: 2.8em;
+      height: 2.8em;
+    }
+
+    [pop-up-content] {
+      bottom: 100%;
+      top: auto;
+      margin: 0;
+      transform: translateX(-60%);
+    }
   }
 }
 
