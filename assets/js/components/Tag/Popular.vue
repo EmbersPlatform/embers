@@ -7,8 +7,8 @@
         #{{tag.tag.name}}
         <span>
           {{tag.count}}
-          <template v-if="tag.count == 1">usuario</template>
-          <template v-else>usuarios</template>
+          <template v-if="tag.count == 1">post</template>
+          <template v-else>posts</template>
         </span>
       </p>
     </router-link>
@@ -27,7 +27,7 @@ export default {
   methods: {
     async get_hot_tags() {
       this.loading_hot_tags = true;
-      const { data: res } = await axios.get(`/api/v1/tags/popular`);
+      const { data: res } = await axios.get(`/api/v1/tags/hot`);
       this.tags = res;
       this.loading_hot_tags = false;
     }
