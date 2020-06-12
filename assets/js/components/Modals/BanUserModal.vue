@@ -2,27 +2,20 @@
   <div class="ban-user-modal">
     <form>
       <p>Motivo de la suspension:</p>
-      <template v-for="(reason_text, index) in reasons">
-        <div class="_line" :key="index">
-          <label>
-            <input v-model="radio_reason" type="radio" :value="reason_text">
-            <span>{{reason_text}}</span>
-          </label>
-        </div>
-      </template>
-      <div class="_line">
-        <label>
-          <input v-model="radio_reason" type="radio" value="other">
-          <span>Otra</span>
-        </label>
-      </div>
-      <div v-show="show_other_reason" class="_line">
-        <textarea v-model="other_reason" placeholder="Especifica el motivo de la suspension"></textarea>
-      </div>
+        <textarea v-model="reason" placeholder="Especifica el motivo de la suspension"></textarea>
       <p>Duracion de la suspension(dias)</p>
       <div class="_line">
         <input v-model="duration" type="number" :disabled="infinite_duration">
         <input type="checkbox" v-model="infinite_duration"> Indefinida
+      </div>
+      <div class="_line">
+        <label>Eliminar publicaciones</label>
+        <select v-model="delete_since">
+          <option value="" selected>No eliminar nada</option>
+          <option value="1">Ultimas 24 horas</option>
+          <option value="7">Ultimos 7 dias</option>
+          <option value="-1">TODOS</option>
+        </select>
       </div>
     </form>
     <div v-if="error" class="report-error" v-text="error"></div>
@@ -52,33 +45,14 @@ export default {
   props: ["user_id"],
   data() {
     return {
-      reasons: [
-        "Publicar contenido pornográfico",
-        "Realizar spam",
-        "Publicar contenido que infringe derechos de autor",
-        "Publica contenido con archivos maliciosos",
-        "Realiza politica partidaria",
-        "Publica representaciones sexuales de menores",
-        "Crear multiples cuentas sin autorizacion",
-        "No utilizar la herramienta NSFW reiteradas veces"
-      ],
-      radio_reason: null,
-      other_reason: null,
+      reason: null,
       duration: 7,
+      delete_since: null,
       infinite_duration: false,
       error: null
     };
   },
   computed: {
-    show_other_reason() {
-      return this.radio_reason === "other";
-    },
-    reason() {
-      if (this.radio_reason === "other") {
-        return this.other_reason;
-      }
-      return this.radio_reason;
-    },
     get_duration() {
       if (this.infinite_duration) return -1;
       return this.duration;
@@ -87,11 +61,17 @@ export default {
   methods: {
     async handle() {
       try {
-        await axios.post(`/api/v1/moderation/ban`, {
+        let params = {
           user_id: this.user_id,
           reason: this.reason,
           duration: this.get_duration
-        });
+        }
+
+        if(this.delete_since) {
+          params.delete_content_since = this.delete_since
+        }
+
+        await axios.post(`/api/v1/moderation/ban`, params);
         this.$notify({
           group: "top",
           text: `El usuario ha sido suspendido por ${this.duration}`,
