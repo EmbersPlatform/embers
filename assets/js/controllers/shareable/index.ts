@@ -1,11 +1,12 @@
-import { Controller } from "stimulus";
+import { BaseController } from "~js/lib/controller";
+import type SharePostDialog from "~js/components/share_post_dialog";
 
 export const name = "shareable"
 
-export default class extends Controller {
+export default class extends BaseController {
   static targets = ["dialog"];
 
   showDialog() {
-    this.dialogTarget.open();
+    this.get_target<SharePostDialog>("dialog").open();
   }
 }

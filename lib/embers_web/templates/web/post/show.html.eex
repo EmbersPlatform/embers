@@ -1,4 +1,4 @@
-<%= sidebar do %>
+<%= EmbersWeb.LayoutView.sidebar assigns do %>
   Post sidebar!
 <% end %>
 <div id="view" view="post" class="has-sidebar">

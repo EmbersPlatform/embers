@@ -1,6 +1,6 @@
 import * as Fetch from "~js/lib/utils/fetch";
 const {FetchResults} = Fetch;
-import type {NetResult, PaginationPage} from "~js/lib/utils/fetch"
+import type {NetResult, PaginationPage} from "~js/lib/utils/fetch";
 import * as Validations from "./validations";
 
 export {Validations};

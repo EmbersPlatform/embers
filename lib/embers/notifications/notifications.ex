@@ -137,6 +137,7 @@ defmodule Embers.Notifications do
       )
 
     results = Paginator.paginate(query, opts)
+    results = update_in(results.entries, &load_avatars/1)
 
     mark_as_read = Keyword.get(opts, :mark_as_read, false)
 
@@ -152,6 +153,12 @@ defmodule Embers.Notifications do
       end || results
 
     results
+  end
+
+  defp load_avatars(notifications) do
+    Enum.map(notifications, fn notif ->
+      update_in(notif.from.meta, &Embers.Profile.Meta.load_avatar_map/1)
+    end)
   end
 
   @doc """

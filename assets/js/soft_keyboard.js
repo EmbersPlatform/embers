@@ -14,12 +14,14 @@ const input_types = ["INPUT", "TEXTAREA"];
 
 document.addEventListener("focusin", function (event) {
   if (event.target && input_types.includes(event.target.nodeName)) {
-    window.navigation.hide();
+    if(window.navigation) {
+      window.navigation.hide();
+    };
   }
 })
 
 document.addEventListener("focusout", function (event) {
-  if (event.target && input_types.includes(event.target.nodeName)) {
+  if (window.navigation && event.target && input_types.includes(event.target.nodeName)) {
     window.navigation.show();
   }
 })

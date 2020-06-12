@@ -1,0 +1,72 @@
+[is="notifications-panel"]  {
+  &:not([open]) {
+    display: none;
+  }
+
+  display: flex;
+  flex-direction: column;
+  border: var(--border);
+  box-shadow: var(--box-shadow);
+  background: var(--secondary);
+  border-radius: var(--border-radius);
+  left: var(--navigation-width);
+  width: var(--sidebar-width);
+  max-height: calc(100vh - 3em);
+  bottom: 1em;
+  position: fixed;
+  overflow: auto;
+  min-height: 20em;
+
+  @include media("<tablet") {
+    bottom: var(--navigation-width);
+    right: 0;
+    left: auto;
+    width: 25em;
+    max-width: 80vw;
+    height: calc(80vh - var(--navigation-width));
+  }
+
+  &>header {
+    color: var(--notifications-header-foreground, var(--text));
+    font-weight: 600;
+    position: sticky;
+    top:0;
+    background: var(--primary);
+    padding: 0.5em;
+    border-bottom: var(--border);
+  }
+
+  &>section {
+    padding: 0.5em;
+    display: flex;
+    flex-direction: column;
+  }
+
+  e-notification {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 0.6em;
+    border-radius: 0.2em;
+    box-sizing: border-box;
+    width: 100%;
+
+    a {
+      display: flex;
+      align-items: center;
+    }
+
+    img {
+      border-radius: 50%;
+      width: 2em;
+      height: 2em;
+      margin-right: 0.5em;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+  e-notification + e-notification {
+    margin-top: 0.3em;
+  }
+}
