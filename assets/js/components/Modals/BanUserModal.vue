@@ -72,9 +72,13 @@ export default {
         }
 
         await axios.post(`/api/v1/moderation/ban`, params);
+        const duration_text = this.get_duration === -1
+          ? `El usuario ha sido suspendido indefinidamente`
+          : `El usuario ha sido suspendido por ${this.duration}`
+
         this.$notify({
           group: "top",
-          text: `El usuario ha sido suspendido por ${this.duration}`,
+          text: duration_text,
           type: "success"
         });
         this.$emit("close");
