@@ -31,7 +31,7 @@
         <div class="tool" v-if="has_errors">
           <div class="status-text error">
             <p>Hubo un error al publicar el post:</p>
-            <p v-for="error in status.errors" :key="error" v-text="error[0]"/>
+            <p v-for="error in status.errors" :key="error" v-text="translate_error(error[0])"/>
           </div>
         </div>
 
@@ -428,6 +428,9 @@ export default {
             case 422:
               this.status.errors = error.res.errors;
               break;
+            case 429:
+              this.status.errors = {server: ["has estado publicando demasiado, espera un momento y vuelve a intentar"]}
+              break;
             case 500:
               this.status.errors =
                 {server: ["hay un error en el servidor, por favor intenta en unos minutos o contacta con un administrador."]};
@@ -463,6 +466,26 @@ export default {
         ],
         adaptive: true
       });
+    },
+    translate_error(error) {
+      switch(error) {
+        case "parent post does not exist": {
+          return "El post al que intentas responder no existe"
+        }
+        case "too similar to previous posts": {
+          return "Ya publicaste algo muy similar hace un momento, intenta más tarde"
+        }
+        case "can't comment to this user posts": {
+          return "El dueño de este post ha habilitado los comentarios solo a sus seguidores"
+        }
+        case "parent post owner has blocked the post creator": {
+          return this.parent_id
+            ? "El dueño de este comentario te ha bloqueado"
+            : "El dueño de este post te ha bloqueado"
+        }
+        default:
+          return error;
+      }
     }
   },
   created() {

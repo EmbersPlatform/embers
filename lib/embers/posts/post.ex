@@ -198,8 +198,41 @@ defmodule Embers.Posts.Post do
       |> validate_required([:body])
       |> validate_length(:body, min: 1)
       |> validate_length(:body, max: @max_body_len)
+      |> validate_similarity()
     else
       changeset
+    end
+  end
+
+  defp validate_similarity(changeset) do
+    body = get_change(changeset, :body)
+    user_id = get_change(changeset, :user_id)
+
+    max_time =
+      Timex.now()
+      |> Timex.shift(minutes: -5)
+
+    prev_post_query =
+      from(
+        post in Post,
+        where: post.user_id == ^user_id,
+        where: post.inserted_at >= ^max_time,
+        order_by: [desc: post.inserted_at],
+        limit: 1
+      )
+
+    with(
+      false <- is_nil(body),
+      prev_post <- Repo.one(prev_post_query),
+      IO.inspect(prev_post),
+      IO.inspect(max_time),
+      false <- is_nil(prev_post),
+      true <- String.jaro_distance(prev_post.body, body) > 0.8
+    ) do
+      changeset
+      |> add_error(:body, "too similar to previous posts")
+    else
+      _ -> changeset
     end
   end
 

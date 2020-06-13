@@ -12,6 +12,16 @@ defmodule EmbersWeb.PostController do
   plug(:user_check when action in [:new, :create, :edit, :update, :delete])
   plug(CheckPermissions, [permission: "create_post"] when action in [:create])
 
+  plug(
+    :rate_limit_post_creation,
+    [max_requests: 10, interval_seconds: 60] when action in [:create]
+  )
+
+  def rate_limit_post_creation(conn, options \\ []) do
+    options = Keyword.merge(options, bucket_name: "post_creation:#{conn.assigns.current_user.id}")
+    EmbersWeb.RateLimit.rate_limit(conn, options)
+  end
+
   def index(conn, _params) do
     posts = Posts.list_posts()
     render(conn, "index.json", posts: posts)
