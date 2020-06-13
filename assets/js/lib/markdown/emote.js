@@ -20,7 +20,8 @@ const emotesList = [
   'lala',
   'love',
   'mario',
-  'globo'
+  'globo',
+  'corona'
 ]
 
 const EMOTE_REGEX = new RegExp(':(' + emotesList.join('|') + '):')

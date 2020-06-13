@@ -87,6 +87,12 @@ export default [{
     imageUrl: "/img/emotes/bob.png"
   },
   {
+    name: "corona",
+    short_names: ["corona"],
+    keywords: ["corona"],
+    imageUrl: "/img/emotes/corona.png"
+  },
+  {
     name: "Comfy",
     short_names: ["comfy"],
     keywords: ["comfy"],
