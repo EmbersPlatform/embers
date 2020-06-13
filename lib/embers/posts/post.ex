@@ -248,7 +248,7 @@ defmodule Embers.Posts.Post do
     parent_owner =
       Embers.Accounts.get_user(parent.user_id)
       |> Repo.preload([:settings])
-      |> Embers.Accounts.User.load_follows_me_status(user_id)
+      |> Embers.Accounts.load_follows_me_status(user_id)
 
     is_blocked? =
       Repo.exists?(
@@ -258,8 +258,6 @@ defmodule Embers.Posts.Post do
           where: b.user_id == ^parent.user_id
         )
       )
-
-    IO.inspect(parent_owner, label: "OWNER")
 
     is_trusted? =
       cond do
