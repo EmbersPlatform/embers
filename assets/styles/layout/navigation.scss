@@ -161,12 +161,18 @@
   fill: var(--logo-foreground);
 }
 
+#navigation >ul>li.nav-user-menu-li {
+  width: 2.5em;
+  height: 2.5em;
+}
+
 .nav-user-menu{
   .user-avatar {
     max-width: 100%;
     max-height: 100%;
     border: 2px solid var(--navigation-foreground);
     border-radius: 50%;
+    box-sizing: border-box;
 
     &.pop-up-active {
       border-color: var(--navigation-accent);
