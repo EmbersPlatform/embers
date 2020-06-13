@@ -57,8 +57,12 @@ defmodule Embers.Accounts do
   """
   @spec list_users_paginated(keyword()) :: Embers.Paginator.Page.t()
   def list_users_paginated(opts \\ []) do
+    order = Keyword.get(opts, :order, :asc)
     query =
-      from(users in User)
+      from(
+        users in User,
+        order_by: [{^order, users.inserted_at}]
+      )
       |> maybe_filter_by_name_query(opts)
       |> maybe_preload_query(opts)
 

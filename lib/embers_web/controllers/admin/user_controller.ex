@@ -14,7 +14,8 @@ defmodule EmbersWeb.Admin.UserController do
   def index(conn, params) do
     page =
       Accounts.list_users_paginated(
-        after: IdHasher.decode(params["after"]),
+        order: :desc,
+        before: IdHasher.decode(params["before"]),
         limit: params["limit"],
         name: params["name"],
         preload: [:roles, :meta]
