@@ -84,7 +84,9 @@ defmodule Embers.Tags do
         tag_post in TagPost,
         where: tag_post.inserted_at >= ^since_date,
         left_join: tag in assoc(tag_post, :tag),
+        left_join: post in assoc(tag_post, :post),
         where: not ilike(tag.name, "nsfw"),
+        where: is_nil(post.deleted_at),
         group_by: tag.id,
         select: %{
           tag: tag,

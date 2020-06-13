@@ -5,8 +5,8 @@ defmodule Embers.Mixfile do
   def project do
     [
       app: :embers,
-      version: "0.2.5",
-      elixir: "~> 1.4",
+      version: "0.2.10",
+      elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,

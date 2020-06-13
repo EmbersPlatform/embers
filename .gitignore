@@ -36,6 +36,9 @@ npm-debug.log
 /.elixir_ls
 /.vscode
 /.sobelow
+/.cache
+/node_modules
+/Mnesia.*
 
 /.env
 

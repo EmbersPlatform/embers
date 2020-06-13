@@ -245,6 +245,11 @@ defmodule Embers.Posts.Post do
   defp check_if_can_reply(changeset, parent) do
     user_id = get_change(changeset, :user_id)
 
+    parent_owner =
+      Embers.Accounts.get_user(parent.user_id)
+      |> Repo.preload([:settings])
+      |> Embers.Accounts.User.load_follows_me_status(user_id)
+
     is_blocked? =
       Repo.exists?(
         from(
@@ -254,11 +259,33 @@ defmodule Embers.Posts.Post do
         )
       )
 
-    if is_blocked? do
-      changeset
-      |> Ecto.Changeset.add_error(:blocked, "parent post owner has blocked the post creator")
-    else
-      changeset
+    IO.inspect(parent_owner, label: "OWNER")
+
+    is_trusted? =
+      cond do
+        parent_owner.settings.privacy_trust_level == "everyone" ->
+          true
+
+        parent_owner.settings.privacy_trust_level == "followers" and !parent_owner.follows_me ->
+          false
+
+        true ->
+          true
+      end
+
+    cond do
+      is_blocked? ->
+        Ecto.Changeset.add_error(
+          changeset,
+          :blocked,
+          "parent post owner has blocked the post creator"
+        )
+
+      !is_trusted? ->
+        Ecto.Changeset.add_error(changeset, :blocked, "can't comment to this user posts")
+
+      true ->
+        changeset
     end
   end
 

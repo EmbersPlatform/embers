@@ -73,6 +73,10 @@ defmodule Embers.Notifications.Manager do
       recipients
       |> Enum.reject(fn recipient -> recipient == post.user_id end)
 
+    # don't notify recipients that blocked the user
+    blocking_users = Embers.Blocks.list_users_ids_that_blocked(post.user_id)
+    recipients = Enum.reject(recipients, fn recipient -> recipient in blocking_users end)
+
     recipients = remove_self_from_recipients(recipients, post)
 
     create_mention_notifications(recipients, post)

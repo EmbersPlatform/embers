@@ -276,4 +276,23 @@ defmodule Embers.Posts do
       | entries: Enum.map(page.entries, fn post -> Post.fill_nsfw(post) end)
     }
   end
+
+  def bulk_delete_after_date(user_id, after_days \\ 0) do
+    after_date =
+      Timex.now()
+      |> Timex.shift(days: -after_days)
+
+    query = from(
+      post in Post,
+      where: post.user_id == ^user_id
+    )
+
+    query = if after_days == -1 do
+      query
+    else
+      from(post in query, where: post.inserted_at >= ^after_date)
+    end
+
+    Repo.delete_all(query)
+  end
 end
