@@ -43,7 +43,7 @@
     <li>
       <%= svg_image("inbox") %>
     </li>
-    <li>
+    <li class="nav-user-menu-li">
       <pop-up class="nav-user-menu" data-controller="user-menu">
         <img src="<%= assigns.current_user.meta.avatar.small %>" class="user-avatar" pop-up-trigger/>
         <ul pop-up-content>
