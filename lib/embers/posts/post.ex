@@ -227,6 +227,7 @@ defmodule Embers.Posts.Post do
       IO.inspect(prev_post),
       IO.inspect(max_time),
       false <- is_nil(prev_post),
+      false <- is_nil(prev_post.body),
       true <- String.jaro_distance(prev_post.body, body) > 0.8
     ) do
       changeset
