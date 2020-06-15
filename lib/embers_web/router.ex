@@ -113,6 +113,7 @@ defmodule EmbersWeb.Router do
 
     # User profile
     get("/@:username", UserController, :show)
+    get("/user/:user_id/timeline", UserController, :timeline)
 
     # Posts
     post("/post", PostController, :create)

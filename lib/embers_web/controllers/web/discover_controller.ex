@@ -28,6 +28,16 @@ defmodule EmbersWeb.Web.DiscoverController do
         blocked_tags: blocked_tags
       )
 
-    render(conn, "index.html", posts: posts)
+    IO.inspect(params)
+
+    if params["entries"] == "true" do
+      conn
+      |> put_layout(false)
+      |> Embers.Paginator.put_page_headers(posts)
+      |> render("entries.html", posts: posts)
+    else
+      conn
+      |> render("index.html", posts: posts)
+    end
   end
 end

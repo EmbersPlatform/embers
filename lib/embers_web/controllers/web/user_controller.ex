@@ -5,6 +5,7 @@ defmodule EmbersWeb.Web.UserController do
   alias Embers.Accounts
   alias Embers.Accounts.User
   alias Embers.Feed
+  alias Embers.Helpers.IdHasher
   alias Embers.Profile.Meta
   alias Embers.Subscriptions
 
@@ -19,6 +20,21 @@ defmodule EmbersWeb.Web.UserController do
       title = gettext("@%{username}'s profile", username: user.username)
       render(conn, "show.html", page_title: title, user: user, followers: followers, activities: activities)
     end
+  end
+
+  def timeline(conn, %{"user_id" => user_id} = params) do
+    posts =
+      Feed.User.get(
+        user_id: IdHasher.decode(user_id),
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
+
+    conn
+    |> put_layout(false)
+    |> Embers.Paginator.put_page_headers(posts)
+    |> render("timeline.html", posts: posts)
   end
 
   defp subs_to_user(subs) do
