@@ -15,14 +15,15 @@
     flex-direction: column;
     color: #fff;
     overflow: hidden;
+    background-position: center;
   }
 
-  .profile-cover-image {
+  /* .profile-cover-image {
     width: 960px;
     height: 320px;
     position: absolute;
     border-radius: inherit;
-  }
+  } */
 
   .profile-user {
     display: flex;
