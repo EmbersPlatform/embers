@@ -1,10 +1,25 @@
-<div id="view" view="discover">
+<%= EmbersWeb.LayoutView.sidebar(assigns) %>
+<div id="view" view="discover" class="has-sidebar">
   <%= render_shared("top_bar.html") %>
-  <main>
-    <div class="feed" data-controller="masonry">
-      <%= for post <- @posts.entries do %>
-        <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
-      <% end %>
+  <main class="padded columns-layout">
+    <div
+      id="discover"
+      class="main-content"
+      data-controller="discover"
+      data-next="<%= @posts.next %>"
+    >
+      <div class="feed" data-target="discover.feed">
+        <%= for post <- @posts.entries do %>
+          <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
+        <% end %>
+      </div>
+      <intersect-observer data-action="intersect->discover#loadMore"></intersect-observer>
+      <loading-indicator data-target="discover.loadingIndicator"></loading-indicator>
     </div>
+    <aside>
+      <div class="content">
+        Related tags?
+      </div>
+    </aside>
   </main>
 </div>
