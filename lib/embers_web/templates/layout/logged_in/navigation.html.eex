@@ -20,7 +20,12 @@
     </li>
   </ul>
   <e-separator class="mobile-hidden"></e-separator>
+
   <% notifications = Embers.Notifications.list_notifications_paginated(@conn.assigns.current_user.id, limit: 20) %>
+  <% unread_notifications_count = Enum.count(notifications.entries, fn n ->
+    n.status == 0
+  end) %>
+
   <nav is="notifications-panel"
     data-next="<%= notifications.next %>"
     data-last_page="<%= notifications.last_page %>"
@@ -36,8 +41,14 @@
   </nav>
   <ul class="mobile-hidden">
     <li>
-      <button class="plain-button" notifications-panel-trigger>
+      <button
+        is="notifications-bell"
+        class="plain-button"
+        notifications-panel-trigger
+        data-unread-count="<%= unread_notifications_count %>"
+      >
         <%= svg_image("bell") %>
+        <span class="counter"></span>
       </button>
     </li>
     <li>

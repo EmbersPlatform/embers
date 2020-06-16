@@ -70,3 +70,15 @@
     margin-top: 0.3em;
   }
 }
+
+[is=notifications-bell] > .counter {
+  position: absolute;
+  background: var(--accent);
+  display: block;
+  padding: 0.2em 0.4em;
+  border-radius: 2em;
+  bottom: -0.3em;
+  border: 0.2em solid var(--navigation-background);
+  box-sizing: border-box;
+  font-size: 0.8em;
+}

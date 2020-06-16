@@ -4,9 +4,9 @@ import type {NetResult, PaginationPage} from "~js/lib/utils/fetch";
 interface GetTimelineOptions {
   before?: string
 }
-export async function get_timeline(username: string, options: GetTimelineOptions = {}): Promise<NetResult<PaginationPage, Object>>{
+export async function get_timeline(user_id: string, options: GetTimelineOptions = {}): Promise<NetResult<PaginationPage, Object>>{
   const params = {before: options.before, entries: true}
-  const res = await Fetch.get(`/user/${username}/timeline`, {params})
+  const res = await Fetch.get(`/user/${user_id}/timeline`, {params})
   switch(res.tag) {
     case "Success": {
       const page = await Fetch.parse_pagination(res.value)
