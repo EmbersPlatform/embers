@@ -16,6 +16,7 @@ npm-debug.log
 
 # Static artifacts
 /node_modules
+node_modules/.yarn-integrity
 /old_assets
 /assets/node_modules
 /assets/admin/node_modules
