@@ -5,7 +5,7 @@ defmodule Embers.Mixfile do
   def project do
     [
       app: :embers,
-      version: "0.2.17",
+      version: "0.2.18",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),

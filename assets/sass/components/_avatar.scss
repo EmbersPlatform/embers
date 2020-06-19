@@ -8,13 +8,12 @@
     height: inherit;
     display: block;
     overflow: visible;
-    // @include border-radius(50%);
+    @include border-radius(50%);
     @include box-sizing(border-box);
     img {
       width: 100%;
       height: 100%;
-      // @include border-radius(50%);
-      clip-path: polygon(50% 100%, 0 0, 100% 0);
+      @include border-radius(50%);
     }
     svg {
       width: 100%;
