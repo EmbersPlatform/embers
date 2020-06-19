@@ -1,8 +1,10 @@
+import * as Application from "~js/lib/application";
+
 import Socket from './socket';
 import Feed from './channels/feed';
 import User from './channels/user';
 
-let user_id = (window.user_id) ? window.user_id : null;
+let user_id = Application.get_user().id;
 
 const socket = Socket();
 const feed_channel = Feed.init(socket, user_id);

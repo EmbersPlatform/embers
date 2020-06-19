@@ -26,5 +26,6 @@
     compact
     data-target="replyable.replyEditor"
     data-action="publish->post-replies#addReply"
+    placeholder="<%= gettext("Reply to @%{username}'s post", username: @reply.user.username) %>"
   ></post-editor>
 </div>

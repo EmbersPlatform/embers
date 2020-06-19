@@ -1125,6 +1125,11 @@
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@ungap/create-content/-/create-content-0.1.4.tgz#e30b40c527d40dbac598672fc2ad497f912b30c6"
 
+"@ungap/element-matches@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@ungap/element-matches/-/element-matches-0.2.0.tgz#b6f48b78967a1e9ddbbf947d650d6133622b6471"
+  integrity sha512-oWxfMBPNXBFnispNrrngOtavbs2UopUvgE91pmkp8qFxrCufL1nS+RXnw9Fm705ZW79se8bpsdxPQApHJJ2REA==
+
 "@ungap/event@^0.1.4":
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/@ungap/event/-/event-0.1.4.tgz#44a8f1f6fbbfaf8d4e3d61c22e165bdf833ec4e5"
@@ -1132,6 +1137,11 @@
 "@ungap/import-node@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@ungap/import-node/-/import-node-0.1.0.tgz#9ad7d3af37c2454504b2bd0b63580063c297d5f1"
+
+"@ungap/node-contains@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@ungap/node-contains/-/node-contains-0.2.0.tgz#946e45b3b0ca084ac21c1715c165f4aa203072cd"
+  integrity sha512-GGzOz7bVgbcscVdXGCgi0XAwyTE9Zhr20y+BlwLhNaIAbAQMrEIMyFEsRvPiB4XLUcMWo+ztUCKSo8jciB/9uQ==
 
 "@ungap/template-literal@^0.4.1":
   version "0.4.1"
@@ -1398,6 +1408,14 @@ atob@^2.1.2:
 augmentor@^2.1.6:
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/augmentor/-/augmentor-2.1.6.tgz#992c1fc23f1e6a168e6903c0bc0f2f2dc95abede"
+  dependencies:
+    reraf "^1.1.1"
+    umap "^1.0.2"
+
+augmentor@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/augmentor/-/augmentor-2.2.0.tgz#e639e0696d88a74caed840b5ee08671bab225a27"
+  integrity sha512-BEQAG1w74b794ec4FpWpu9AZZUZngKy5zGgb8OIhU2hcVhm8F5Y/VS0/3EAA+ExgtJDCTR+L2rvnjtIt2oo1xQ==
   dependencies:
     reraf "^1.1.1"
     umap "^1.0.2"
@@ -3172,6 +3190,14 @@ hmac-drbg@^1.0.0:
     hash.js "^1.0.3"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
+
+hooked-elements@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/hooked-elements/-/hooked-elements-1.1.0.tgz#81376af77abeaddba8c1041d8aef4080dcfd91c6"
+  integrity sha512-bWr9lt08CnvvVK2W3raCgsDJusJ7C4HHcLoAe5EcSi2AGEWgugAkQgO4mXdeskODdT0NzJ72rcn3IOFiFjWRUA==
+  dependencies:
+    augmentor "^2.2.0"
+    wicked-elements "^2.1.0"
 
 hosted-git-info@^2.1.4:
   version "2.8.5"
@@ -6646,6 +6672,14 @@ which@1, which@^1.2.9:
   resolved "https://registry.yarnpkg.com/which/-/which-1.3.1.tgz#a45043d54f5805316da8d62f9f50918d3da70b0a"
   dependencies:
     isexe "^2.0.0"
+
+wicked-elements@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/wicked-elements/-/wicked-elements-2.1.0.tgz#5320a6a722005a0ce9d5517cded7e3b9b9dc4d7a"
+  integrity sha512-IOIwCOClxP8Iz4F111fPFjM43cNXGawJUKwlkNWTbjIGhaALYuG00hbrecjXZ+K2MmrpsHvD8epxW3WSWBghFA==
+  dependencies:
+    "@ungap/element-matches" "^0.2.0"
+    "@ungap/node-contains" "^0.2.0"
 
 wide-align@^1.1.0:
   version "1.1.3"

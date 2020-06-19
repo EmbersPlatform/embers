@@ -44,19 +44,14 @@
   <script>this.customElements||document.write('<script src="//unpkg.com/document-register-element"><\x2fscript>');</script>
   <script src="//unpkg.com/@ungap/custom-elements-builtin"></script>
 
-  <script>
-    window.csrf_token = "<%= Phoenix.Controller.get_csrf_token %>"
-    <%= if not is_nil(@conn.assigns.current_user) do %>
-      window.user_id = "<%= encode_id @conn.assigns.current_user.id %>"
-      window.user_token = <%= raw Jason.encode!(@conn.assigns.user_token) %>
-    <% end %>
-  </script>
+  <%= render("_context_data.html", assigns) %>
   <script src="<%= static_path(@conn, "/js/index.js") %>" defer></script>
 </head>
 <body class="theme-dark">
   <div id="embers">
     <%= render "logged_in/navigation.html", assigns %>
     <%= render @view_module, @view_template, assigns %>
+    <fabs-zone></fabs-zone>
   </div>
 </body>
 </html>

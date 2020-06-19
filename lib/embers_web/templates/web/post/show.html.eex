@@ -1,7 +1,9 @@
-<%= EmbersWeb.LayoutView.sidebar assigns do %>
-  Post sidebar!
+<%= if authenticated?(@conn) do %>
+  <%= EmbersWeb.LayoutView.sidebar assigns do %>
+    Post sidebar!
+  <% end %>
 <% end %>
-<div id="view" view="post" class="has-sidebar">
+<div id="view" view="post" class="<%= attr_list([{"has-sidebar", authenticated?(@conn)}]) %>">
   <%= render_shared("top_bar.html") %>
   <main class="padded columns-layout">
     <div class="main-content">
@@ -25,7 +27,12 @@
             data-target="comments.load_more_button"
           ><%= gettext("Load more comments") %></button>
         <% end %>
-        <post-editor as_thread notags data-action="publish->comments#onpublish" data-parent_id="<%= @post.id %>"></post-editor>
+        <post-editor
+          as_thread
+          notags
+          data-action="publish->comments#onpublish" data-parent_id="<%= @post.id %>"
+          placeholder="<%= gettext "Add a reply!" %>"
+        ></post-editor>
       </section>
     </div>
     <aside>

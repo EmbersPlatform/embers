@@ -11,7 +11,7 @@ const callbacks = {
    */
   new_activity(payload) {
     const post = payload.post;
-    post.new = true;
+    // post.new = true;
     PubSub.publish("new_activity", post);
   }
 }

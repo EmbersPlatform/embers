@@ -9,7 +9,6 @@ export default class NotificationsBell extends Component(HTMLButtonElement) {
   counter_element: HTMLElement;
 
   onconnected() {
-    console.log(this, this.dataset.unreadCount);
     this.counter_element = this.querySelector(".counter");
     this.unread_count = parseInt(this.dataset.unreadCount) || 0;
   }

@@ -1,15 +1,25 @@
-<nav id="navigation" is="embers-navigation" data-turbolinks-permanent>
+<nav id="navigation" is="embers-navigation">
   <a href="/" id="navigation-logo" class="mobile-hidden" aria-hidden="true">
     <%= svg_image("logo") %>
   </a>
   <ul class="mobile-hidden">
     <li>
-      <%= labeled_link(to: page_path(@conn, :index), label: gettext("Home")) do %>
+      <%= active_link(@conn,
+        to: page_path(@conn, :index),
+        active: :exact,
+        "aria-label": gettext("Home"),
+        title: gettext("Home")
+      ) do %>
         <%= svg_image("home") %>
       <% end %>
     </li>
     <li>
-      <%= labeled_link(to: "/discover", label: gettext("Discover")) do %>
+      <%= active_link(@conn,
+        to: "/discover",
+        active: :exact,
+        "aria-label": gettext("Discover"),
+        title: gettext("Discover")
+      ) do %>
         <%= svg_image("discover") %>
       <% end %>
     </li>
@@ -27,8 +37,10 @@
   end) %>
 
   <nav is="notifications-panel"
+    id="notifications-panel"
     data-next="<%= notifications.next %>"
     data-last_page="<%= notifications.last_page %>"
+    data-turbolinks-permanent
   >
     <header><%= gettext "Notifications" %></header>
     <section>
@@ -43,6 +55,8 @@
     <li>
       <button
         is="notifications-bell"
+        id="notifications-bell-desktop"
+        data-turbolinks-permanent
         class="plain-button"
         notifications-panel-trigger
         data-unread-count="<%= unread_notifications_count %>"
@@ -82,18 +96,36 @@
       </button>
     </li>
     <li>
-      <%= labeled_link(to: page_path(@conn, :index), label: gettext("Home")) do %>
+      <%= active_link(@conn,
+        to: page_path(@conn, :index),
+        active: :exact,
+        title: gettext("Home"),
+        "aria-label": gettext("Home")
+      ) do %>
         <%= svg_image("home") %>
       <% end %>
     </li>
     <li>
-      <%= labeled_link(to: "/discover", label: gettext("Discover")) do %>
+      <%= active_link(@conn,
+        to: "/discover",
+        active: :exact,
+        title: gettext("Discover"),
+        "aria-label":  gettext("Discover")
+      ) do %>
         <%= svg_image("discover") %>
       <% end %>
     </li>
     <li>
-      <button class="plain-button" notifications-panel-trigger>
+      <button
+        is="notifications-bell"
+        class="plain-button"
+        notifications-panel-trigger
+        id="notifications-bell-mobile"
+        data-turbolinks-permanent
+        data-unread-count="<%= unread_notifications_count %>"
+      >
         <%= svg_image("bell") %>
+        <span class="counter"></span>
       </button>
     </li>
     <li>

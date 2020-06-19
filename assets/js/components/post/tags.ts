@@ -4,17 +4,24 @@ import PubSub from "pubsub-js";
 import { Component } from "../component";
 import * as Sets from "~js/lib/utils/sets";
 
+/**
+ * Shows the post tags, and updates them whenever a post:<id>.updated_tags
+ * pubsub event is fired.
+ *
+ * It must be a descendant of a `.post` element with a `data-tags` attribute.
+ */
 class PostTags extends Component(HTMLElement) {
   static tagName = "element";
 
-  pubsub_tokens: string[] = []
-  tags: Set<string>
-  post_id: string
+  pubsub_tokens: string[] = [];
+  tags: Set<string>;
+  post_id: string;
 
   oninit() {
-    const tag_nodes = this.querySelectorAll("post-tag");
-    const tag_nodes_set = Sets.from(tag_nodes);
-    const tag_names = Sets.map(tag_nodes_set, elem => elem.textContent);
+    const tag_nodes = this.closest<HTMLElement>(".post").dataset.tags;
+    const tag_names = tag_nodes
+      ? new Set(tag_nodes.split(" "))
+      : new Set<string>();
 
     this.tags = tag_names;
     this.post_id = this.dataset.post_id;
@@ -24,12 +31,7 @@ class PostTags extends Component(HTMLElement) {
     )
   }
 
-  /**
-   *
-   * @param {string} _topic
-   * @param {Set<string>} new_tags
-   */
-  update_tags(_topic, new_tags) {
+  update_tags(_topic: string, new_tags: Set<string>) {
     this.tags = new_tags;
     this.render();
   }
@@ -41,12 +43,12 @@ class PostTags extends Component(HTMLElement) {
   }
 
   render() {
+    const tags = Sets.map(this.tags, tag => html`
+      <span class="tag">#${tag}</span>
+    `)
+
     this.html`
-      ${Sets.to_array(
-          Sets.map(this.tags, tag => html`
-            <span class="tag">#${tag}</span>
-          `)
-        )}
+      ${Array.from(tags)}
     `
   }
 }

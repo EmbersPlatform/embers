@@ -98,7 +98,6 @@ export default class extends BaseController {
 
     let res = await Posts.update_tags({post_id: id, tag_names})
     if(res.tag === "Success") {
-      console.log(tags)
       PubSub.publish(`post:${id}.updated_tags`, tags);
     }
   }
