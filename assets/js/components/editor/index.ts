@@ -67,7 +67,7 @@ export default class PostEditor extends Component(HTMLElement) {
     const post_attrs = {
       body,
       tags,
-      medias,
+      medias: medias.map(m => m.value),
       links,
       parent_id: this.dataset.parent_id,
       related_to_id: this.dataset.related_to_id

@@ -8,6 +8,7 @@
       data-controller="discover"
       data-next="<%= @posts.next %>"
     >
+      <h1><%= gettext "Most recent posts" %></h1>
       <div class="feed" data-target="discover.feed">
         <%= for post <- @posts.entries do %>
           <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
@@ -19,6 +20,14 @@
     <aside>
       <div class="content">
         Related tags?
+        <a href="https://discord.gg/uADqWPs" class="join-discord-notice" target="_blank">
+          <span><%= gettext "Join our discord!" %></span>
+          <img src="https://www.embers.pw/img/external/discord_logo.svg" alt="discord logo">
+        </a>
+        <a href="https://ko-fi.com/A1482YS9" class="donate-kofi-notice" target="_blank">
+          <img src="https://www.embers.pw/img/external/ko-fi.svg" alt="ko-fi logo">
+          <span><%= gettext "Donate on ko-fi" %></span>
+        </a>
       </div>
     </aside>
   </main>

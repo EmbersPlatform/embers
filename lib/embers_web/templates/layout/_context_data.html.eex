@@ -1,0 +1,3 @@
+<script>
+  window.embers = <%= raw get_context_data(@conn) %>
+</script>

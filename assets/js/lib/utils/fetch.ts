@@ -1,4 +1,5 @@
 import * as Url from "~js/lib/url";
+import * as Application from "~js/lib/application";
 
 export type NetResult<S, E> =
   | {tag: "Success", value: S}
@@ -12,7 +13,7 @@ export const FetchResults = {
 }
 
 const default_headers = {
-  'x-csrf-token': window["csrf_token"],
+  'x-csrf-token': Application.get_data().csrf_token,
 }
 
 // Currently it just wraps the response in a NetResult type
@@ -26,16 +27,20 @@ const infer_result = (response: Response): NetResult<Response, Response> => {
 const build_headers = (options) => {
   let headers = default_headers;
 
-  let content_type = {
-    "json": "application/json",
-  }[options.type];
-  if(content_type) headers["Content-Type"] = content_type;
+  if(options.type) {
+    let content_type = {
+      "json": "application/json",
+    }[options.type];
+    if(content_type) headers["Content-Type"] = content_type;
+  }
 
- let accept = {
+  let accept = {
     "json": "application/json",
     "html": "text/html",
   }[options.accept];
   if(accept) headers["Accept"] = accept;
+
+  console.log(headers)
 
   return headers;
 }

@@ -9,6 +9,7 @@
     "paths": {
       "~*": ["./assets/*"]
     },
+    "lib": ["es7", "dom", "DOM.Iterable"],
     "noEmit": true,
     "allowSyntheticDefaultImports": true
   },

@@ -4,16 +4,28 @@ import * as Timeline from "~js/lib/timeline";
 import { gettext } from "~js/lib/gettext";
 import LoadingIndicator from "~js/components/loading_indicator";
 
+import PubSub from "pubsub-js";
+import ActivitiesCache from "./activities_cache";
+
 enum States {Idle, Loading, Finished};
 
 export const name = "timeline";
 
 export default class extends BaseController {
-  static targets = ["editor", "feed", "loadingIndicator"];
+  static targets = [
+    "editor",
+    "feed",
+    "loadingIndicator",
+    "newActivityAlert"
+  ];
 
   state: States;
   next: string;
   last_page: boolean;
+
+  unread_activities: ActivitiesCache;
+
+  pubsub_feed_token: string;
 
   connect() {
     this.state = States.Idle;
@@ -24,6 +36,16 @@ export default class extends BaseController {
         <p>${gettext("You reached the bottom!")}</p>
       `)
     }
+
+    this.unread_activities = new ActivitiesCache(this);
+
+    this.pubsub_feed_token = PubSub.subscribe("new_activity", (_, post) => {
+      this.unread_activities.add(post);
+    })
+  }
+
+  disconnect() {
+    PubSub.unsubscribe(this.pubsub_feed_token);
   }
 
   addActivity(activity) {
@@ -70,4 +92,23 @@ export default class extends BaseController {
     this.state = (this.last_page) ? States.Finished : States.Idle;
     this.get_target<LoadingIndicator>("loadingIndicator").hide();
   }
+
+  flush_activities() {
+    let posts = this.unread_activities.flush();
+    for(let post of posts) {
+      this.get_target("feed").prepend(post)
+    }
+  }
+
+  _update_alert() {
+    const count = this.unread_activities.length;
+    console.log(count)
+    if(count < 1) {
+      this.get_target("newActivityAlert").textContent = "";
+    } else {
+      this.get_target("newActivityAlert").textContent = count.toString();
+    }
+  }
 }
+
+

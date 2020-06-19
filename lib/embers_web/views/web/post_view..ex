@@ -30,7 +30,7 @@ defmodule EmbersWeb.Web.PostView do
   end
 
   def build_reactions(post, viewer \\ nil)
-  def build_reactions(post, %{assigns: %{current_user: user}}) do
+  def build_reactions(post, %{assigns: %{current_user: user}}) when not is_nil(user) do
     build_reactions(post, user.id)
   end
   def build_reactions(post, %{}) do

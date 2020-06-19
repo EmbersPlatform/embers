@@ -85,7 +85,8 @@ defmodule Embers.Mixfile do
       {:scrivener_ecto, "~> 2.0"},
       {:scrivener_html, "~> 1.8"},
       {:ex_rated, "~> 1.2"},
-      {:phoenix_inline_svg, "~> 1.3"}
+      {:phoenix_inline_svg, "~> 1.3"},
+      {:phoenix_active_link, "~> 0.3.0"}
     ]
   end
 

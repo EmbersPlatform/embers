@@ -10,6 +10,7 @@
   itemtype="https://schema.org/SocialMediaPosting"
   role="article"
   data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>"
+  data-author-id="<%= encode_id @post.user.id %>"
   data-controller="<%= attr_list [
     "post",
     "reactable",
@@ -18,6 +19,7 @@
     {"content-warning", @post.nsfw}
   ] %>"
   <%= if @post.nsfw, do: "nsfw" %>
+  <%= if @post.faved, do: "faved" %>
   >
   <div class="content-warnings">
     <div class="content-warning warning-nsfw">
@@ -57,7 +59,8 @@
         </div>
       </div>
       <e-spacer></e-spacer>
-      <%= render("_post_actions.html", assigns) %>
+      <post-actions></post-actions>
+      <%# <%= render("_post_actions.html", assigns) %>
     </header>
     <%= if !is_nil(assigns[:sharers]) and length(@sharers) > 0 do %>
       <% sharers = Enum.uniq(@sharers) %>

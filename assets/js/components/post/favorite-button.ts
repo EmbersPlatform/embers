@@ -17,18 +17,14 @@ export default class PostFavButton extends Component(HTMLButtonElement) {
   faved
 
   oninit() {
-    const onclick = () => {
-      switch(this.state) {
-        case States.Idle: {
-          this.toggle_favorite()
-        }
-        case States.Idle: {}
-      }
-    }
-    this.addEventListener("click", onclick);
+    this.toggle_favorite = this.toggle_favorite.bind(this);
+
+    this.addEventListener("click", this.toggle_favorite);
   }
 
   async toggle_favorite() {
+    console.log(this)
+    if(this.state !== States.Idle) return;
     this.state = States.Pending;
 
     const post_id = this.dataset.post_id;
@@ -59,10 +55,12 @@ export default class PostFavButton extends Component(HTMLButtonElement) {
   onstate() {
     switch(this.state) {
       case States.Idle: {
-        this.removeAttribute("disabled")
+        this.removeAttribute("disabled");
+        break;
       }
       case States.Pending: {
         this.setAttribute("disabled", "true")
+        break;
       }
     }
   }

@@ -59,7 +59,7 @@
     height: auto;
   }
 
-  &>ul>li.active:before {
+  &>ul>li>a.active:before {
     content: "";
     position: absolute;
     bottom: -15px;
@@ -75,7 +75,7 @@
       margin-top: 30px;
     }
 
-    &>ul>li.active:before {
+    &>ul>li>a.active:before {
       height: 45px;
       width: auto;
       top: -10px;

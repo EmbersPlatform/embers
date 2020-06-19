@@ -5,7 +5,10 @@
     &>h2 {
       margin: 0;
       padding: 0.5em;
-      border: var(--border);
+    }
+
+    &>.comment-list {
+      border-top: var(--border);
     }
 
     &>.load-more-button {
