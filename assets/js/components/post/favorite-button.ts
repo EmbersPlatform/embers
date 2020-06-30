@@ -8,6 +8,8 @@ import star_filled from "/static/svg/generic/icons/star.svg";
 enum States {Idle, Pending}
 
 export default class PostFavButton extends Component(HTMLButtonElement) {
+  static component = "PostFavButton";
+
   static tagName = "button";
 
   static booleanAttributes = ["faved"];
@@ -23,7 +25,6 @@ export default class PostFavButton extends Component(HTMLButtonElement) {
   }
 
   async toggle_favorite() {
-    console.log(this)
     if(this.state !== States.Idle) return;
     this.state = States.Pending;
 

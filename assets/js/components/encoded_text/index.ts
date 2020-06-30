@@ -1,6 +1,8 @@
 import { Component } from "~js/components/component";
 
 export default class EncodedText extends Component(HTMLElement) {
+  static component = "EncodedText";
+
   static tagName = "element";
 
   onconnected() {

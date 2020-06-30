@@ -22,10 +22,10 @@ defmodule Embers.Paginator do
   * `after` - Fetch the records after this id
   * `before` - Fetch the records before this id
   * `limit` - Limits the number of records returned per page. Note that this number
-    will be capped by `:max_limit`. Defaults to 50
+    will be capped by `:max_limit`. Defaults to 20
   * `max_limit` - Sets a maximum cap for `:limit`. This option can be useful when `:limit`
     is set dynamically (e.g from a URL param set by a user) but you still want to
-    enforce a maximum. Defaults to `500`.
+    enforce a maximum. Defaults to `100`.
 
   ## Usage
 

@@ -1,6 +1,8 @@
 import { Component } from "../component";
 
 export default class IntersectObserver extends Component(HTMLElement) {
+  static component = "IntersectObserver";
+
   observer: IntersectionObserver;
 
   oninit() {

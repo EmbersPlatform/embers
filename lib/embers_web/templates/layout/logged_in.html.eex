@@ -13,8 +13,9 @@
 	-->
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-	<link rel="manifest" href="/manifest.json">
+	<!-- <link rel="manifest" href="/manifest.json"> -->
 	<meta name="mobile-web-app-capable" content="yes">
 
 	<meta name="theme-color" content="#26272b">
@@ -39,19 +40,22 @@
 	<link rel="icon" href="/favicon.ico?v=3" />
 
   <link href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<%= static_path(@conn, "/styles/main.css") %>">
+  <link rel="stylesheet" href="<%= static_path(@conn, "/dist/styles/main.css") %>">
 
   <script>this.customElements||document.write('<script src="//unpkg.com/document-register-element"><\x2fscript>');</script>
   <script src="//unpkg.com/@ungap/custom-elements-builtin"></script>
 
   <%= render("_context_data.html", assigns) %>
-  <script src="<%= static_path(@conn, "/js/index.js") %>" defer></script>
+  <script src="<%= static_path(@conn, "/dist/js/index.js") %>" defer></script>
 </head>
 <body class="theme-dark">
   <div id="embers">
     <%= render "logged_in/navigation.html", assigns %>
-    <%= render @view_module, @view_template, assigns %>
+    <div id="board">
+      <%= render @view_module, @view_template, assigns %>
+    </div>
     <fabs-zone></fabs-zone>
+    <post-viewer-modal></post-viewer-modal>
   </div>
 </body>
 </html>

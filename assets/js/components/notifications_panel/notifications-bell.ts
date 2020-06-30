@@ -1,6 +1,8 @@
 import { Component } from "../component";
 
 export default class NotificationsBell extends Component(HTMLButtonElement) {
+  static component = "NotificationsBell";
+
   static tagName = "button";
 
   static mappedAttributes = ["unread_count"];

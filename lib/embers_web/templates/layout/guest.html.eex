@@ -23,9 +23,9 @@
 	<link rel="icon" href="/favicon.ico?v=3" />
 
   <link href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="<%= static_path(@conn, "/styles/main.css") %>">
+  <link rel="stylesheet" href="<%= static_path(@conn, "/dist/styles/main.css") %>">
 
-  <script src="<%= static_path(@conn, "/js/index.js") %>"></script>
+  <script src="<%= static_path(@conn, "/dist/js/index.js") %>"></script>
 </head>
 <body class="theme-dark">
   <%= render_shared("top_nav.html") %>

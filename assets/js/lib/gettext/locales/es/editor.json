@@ -9,5 +9,9 @@
   "Cancel": "Cancelar",
   "Retry": "Volver a intentar",
   "Add image": "Agregar imagen",
-  "Remove multimedia": "Quitar"
+  "Remove multimedia": "Quitar",
+
+  "too similar to previous posts": "Ya publicaste algo muy similar hace un momento, intenta más tarde",
+  "can't comment to this user posts": "El dueño de este post ha habilitado los comentarios solo a sus seguidores",
+  "parent post owner has blocked the post creator": "La persona a quien intentas responder te ha bloqueado"
 }

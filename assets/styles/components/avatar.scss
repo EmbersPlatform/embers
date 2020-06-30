@@ -12,21 +12,41 @@
 .avatar[size="tiny"] {
   width: 24px;
   height: 24px;
+
+  @include media("<tablet") {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .avatar[size="small"] {
   width: 35px;
   height: 35px;
+
+  @include media("<tablet") {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .avatar[size="medium"] {
   width: 45px;
   height: 45px;
+
+  @include media("<tablet") {
+    width: 35px;
+    height: 35px;
+  }
 }
 
 .avatar[size="big"] {
   width: 64px;
   height: 64px;
+
+  @include media("<tablet") {
+    width: 45px;
+    height: 45px;
+  }
 }
 
 .avatar.bordered {

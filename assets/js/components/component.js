@@ -57,6 +57,13 @@ export const Component = (superclass) => {
    * @extends {superclass}
    */
   return class extends superclass {
+
+    _in_preview = false;
+
+    initialize() {
+      this._in_preview = document.documentElement.hasAttribute("data-turbolinks-preview");
+    }
+
     /**
      * Dispatchs a `CustomEvent` with `data` as it's `detail` property.
      * Returns true if either event's cancelable attribute value is false or its
@@ -101,5 +108,10 @@ export const Component = (superclass) => {
     handleEvent(event) {
       this[`on${event.type}`](event);
     }
+
+    /**
+     * @param {Hooks} [hooks]
+     */
+    render(hooks) {}
   }
 }

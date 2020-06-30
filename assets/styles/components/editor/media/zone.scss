@@ -1,7 +1,8 @@
 .media-zone {
   display: flex;
+  flex-wrap: wrap;
 
-  &>*+* {
-    margin-left: 0.5em;
+  &>* {
+    margin: 0.25em;
   }
 }

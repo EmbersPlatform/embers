@@ -13,23 +13,25 @@ type State =
   | {tag: "Error", value: Object}
 
 export default class LinkZone extends Component(HTMLDivElement) {
+  static component = "LinkZone";
+
   static tagName = "div";
 
-  static mappedAttributes = ["state"]
+  static mappedAttributes = ["state"];
 
-  state: State = {tag: "Idle"}
+  state: State = {tag: "Idle"};
 
   async add_link(url) {
-    if(this.state.tag === "Idle") return
+    if(this.state.tag !== "Idle") return
 
     this.state = {tag: "Processing", value: url};
     const res = await Links.process(url);
     switch(res.tag) {
       case "Success": {
         const link = res.value;
-        console.log(link)
         this.state = {tag: "Success", value: link};
         this.dispatch("process", link.id);
+        break;
       }
       case "Error": {
         const error = res.value;
@@ -38,6 +40,7 @@ export default class LinkZone extends Component(HTMLDivElement) {
       }
       case "NetworkError": {
         this.state = {tag: "Error", value: "Network Error"};
+        break;
       }
     }
   }
@@ -46,12 +49,12 @@ export default class LinkZone extends Component(HTMLDivElement) {
     this.state = {tag: "Idle"};
   }
 
-  onstatus() {
+  onstate() {
     this.render();
   }
 
   render() {
-    const reset = this.reset();
+    const reset = () => this.reset();
 
     switch(this.state.tag) {
       case "Idle": {

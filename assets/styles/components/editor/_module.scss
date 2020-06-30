@@ -84,4 +84,12 @@ post-editor {
   .remove-link-button {
     margin-left: 5%;
   }
+
+  .editor-errors {
+    color: var(--danger);
+    padding: 0;
+  }
+  .editor-errors:empty {
+      display: none;
+  }
 }

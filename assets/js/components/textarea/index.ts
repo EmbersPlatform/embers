@@ -1,7 +1,8 @@
 import autosize from "autosize";
 import { Component } from "~js/components/component";
 
-class AutosizeTextarea extends Component(HTMLTextAreaElement) {
+export default class AutosizeTextarea extends Component(HTMLTextAreaElement) {
+  static component = "AutosizeTextarea";
   static tagName = "textarea";
 
   onconnected() {
@@ -17,4 +18,3 @@ class AutosizeTextarea extends Component(HTMLTextAreaElement) {
   }
 }
 
-export default AutosizeTextarea;

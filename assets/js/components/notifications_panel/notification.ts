@@ -11,6 +11,8 @@ interface Notification {
 }
 
 export default class ENotification extends Component(HTMLElement) {
+  static component = "ENotification";
+
 
   notification: Notification = {};
 

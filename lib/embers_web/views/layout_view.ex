@@ -19,6 +19,8 @@ defmodule EmbersWeb.LayoutView do
   defp maybe_add_user_data(data, %{assigns: %{current_user: nil}}), do: data
   defp maybe_add_user_data(data, conn) do
     user = conn.assigns.current_user
+    settings = Embers.Profile.Settings.get_setting!(user.id)
+
     data
     |> Map.put(:user, %{
       id: IdHasher.encode(user.id),
@@ -28,6 +30,14 @@ defmodule EmbersWeb.LayoutView do
       cover: user.meta.cover
     })
     |> Map.put(:permissions, user.permissions)
+    |> Map.put(:settings,%{
+      content_nsfw: settings.content_nsfw,
+      content_lowres_images: settings.content_lowres_images,
+      content_collapse_media: settings.content_collapse_media,
+      privacy_show_status: settings.privacy_show_status,
+      privacy_show_reactions: settings.privacy_show_reactions,
+      privacy_trust_level: settings.privacy_trust_level
+    })
     |> Map.put(:ws_token, conn.assigns.user_token)
   end
 

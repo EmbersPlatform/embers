@@ -38,13 +38,11 @@ export default class UserProfile extends BaseController {
   }
 
   async loadMore() {
-    console.log("loading more", this)
     if(this.state !== States.Idle) return;
     this.state = States.Loading;
     this.get_target<LoadingIndicator>("loadingIndicator").show();
 
     const response = await Users.get_timeline(this.user, { before: this.next })
-    console.log(response)
     switch(response.tag) {
       case "Success": {
         let {next, last_page, body: activities} = response.value

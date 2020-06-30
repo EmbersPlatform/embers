@@ -1,0 +1,41 @@
+<div class="post-preview-modal">
+  <header>
+    <button class="plain-button" up-close>
+      <%= svg_image("icons/angle-left") %>
+    </button>
+    <span><%= gettext("@%{username}'s post", username: @post.user.username) %></span>
+  </header>
+  <div view="post">
+    <main>
+      <div class="main-content">
+        <%= render("post.html", conn: @conn, post: @post) %>
+        <section id="comments"
+          data-controller="comments"
+          data-post_id="<%= encode_id(@post.id) %>"
+          data-next="<%= @replies_page.next %>"
+          data-last_page="<%= @replies_page.last_page %>"
+        >
+          <h2><%= ngettext("1 comment", "%{count} comments", @post.replies_count) %></h2>
+          <div class="comment-list" data-target="comments.commentList">
+            <%= for reply <- @replies_page.entries do %>
+              <%= render("reply_thread.html", conn: @conn, reply: reply) %>
+            <% end %>
+          </div>
+          <%= unless @replies_page.last_page do %>
+            <button
+              class="button load-more-button"
+              data-action="comments#load_more"
+              data-target="comments.load_more_button"
+            ><%= gettext("Load more comments") %></button>
+          <% end %>
+          <post-editor
+            as_thread
+            notags
+            data-action="publish->comments#onpublish" data-parent_id="<%= @post.id %>"
+            placeholder="<%= gettext "Add a reply!" %>"
+          ></post-editor>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>

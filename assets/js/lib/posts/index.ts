@@ -10,7 +10,12 @@ export interface CreatePostOptions {
     as_thread?: boolean
   }
 }
-export async function create(attrs, options: CreatePostOptions): Promise<NetResult<string, Object>> {
+export interface CreatePostError {
+  errors: {
+    body?: string[]
+  }
+}
+export async function create(attrs, options: CreatePostOptions): Promise<NetResult<string, CreatePostError>> {
   let res = await Fetch.post("/post", attrs, { type: "json", accept: "html", ...options });
   switch(res.tag) {
     case "Success": {

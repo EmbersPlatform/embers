@@ -5,7 +5,7 @@
     <div id="timeline" class="main-content" data-controller="timeline" data-next="<%= @timeline.next %>">
       <post-editor class="boxed" data-target="timeline.editor" data-action="publish->timeline#onNewActivity"></post-editor>
       <button
-        class="newActivityAlert"
+        class="new-activity-alert"
         data-target="timeline.newActivityAlert"
         data-action="timeline#flush_activities"
       ></button>

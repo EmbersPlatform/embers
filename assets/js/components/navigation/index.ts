@@ -1,7 +1,8 @@
 import {Component} from "~js/components/component";
 import type EmbersSidebar from "~js/components/sidebar";
 
-class EmbersNavigation extends Component(HTMLElement) {
+export default class EmbersNavigation extends Component(HTMLElement) {
+  static component = "EmbersNavigation";
   static tagName = "nav";
 
   _display_mode
@@ -30,5 +31,3 @@ class EmbersNavigation extends Component(HTMLElement) {
     this.classList.remove("input-focus");
   }
 }
-
-export default EmbersNavigation;

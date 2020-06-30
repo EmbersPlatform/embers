@@ -13,6 +13,8 @@ import back_icon from "/static/svg/generic/icons/angle-left.svg";
 enum States {Initializing, Idle, Loading, Error, Finished, Empty};
 
 export default class ReactionsDialog extends ModalDialog {
+  static component = "ReactionsDialog";
+
 
   static mappedAttributes = [
     ...ModalDialog.mappedAttributes,

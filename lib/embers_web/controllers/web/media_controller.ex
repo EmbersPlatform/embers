@@ -16,7 +16,7 @@ defmodule EmbersWeb.Web.MediaController do
   def upload(%Plug.Conn{assigns: %{current_user: user}} = conn, %{
         "file" => file
       }) do
-    case Media.upload(file, user.id) do
+    case Media.upload(file, user.id)do
       {:ok, media} ->
         conn
         |> render("media.json", %{media: media})
@@ -28,6 +28,7 @@ defmodule EmbersWeb.Web.MediaController do
         |> render("422.json", error: "Invalid image file")
 
       {:error, _error} ->
+        IO.puts(_error |> elem(0))
         conn
         |> put_status(500)
         |> put_view(EmbersWeb.Web.ErrorView)

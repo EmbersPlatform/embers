@@ -10,6 +10,8 @@ import { Component } from "../component";
  * bultin extends can't be used with them.
  */
 export default class ModalDialog extends Component(HTMLElement) {
+  static component = "ModalDialog";
+
   static tagName =  "element";
 
   static booleanAttributes = ["focusable"];
