@@ -1,0 +1,19 @@
+.new-activity-alert {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 2em;
+  padding: 0.5em 1em;
+  margin-bottom: 1em;
+  position: sticky;
+  top: 5em;
+  z-index: 1;
+  margin: 0 auto;
+  display: block;
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+
+  &:empty {
+    display: none;
+  }
+}

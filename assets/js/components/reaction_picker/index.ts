@@ -1,6 +1,8 @@
 import {Component} from "~js/components/component";
 
 export default class ReactionPicker extends Component(HTMLElement) {
+  static component = "ReactionPicker";
+
   static tagName = "element";
 
   trigger
@@ -10,6 +12,8 @@ export default class ReactionPicker extends Component(HTMLElement) {
   is_hovering
 
   oninit() {
+    super.initialize();
+    if(this._in_preview) return;
     const children = Array.from(this.children) as HTMLElement[]
     this.trigger = children.find(x => x.hasAttribute("trigger"))
     this.list = children.find(x => x.hasAttribute("list"))

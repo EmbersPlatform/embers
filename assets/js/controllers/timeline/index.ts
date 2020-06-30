@@ -11,7 +11,7 @@ enum States {Idle, Loading, Finished};
 
 export const name = "timeline";
 
-export default class extends BaseController {
+export default class TimelineController extends BaseController {
   static targets = [
     "editor",
     "feed",
@@ -46,6 +46,7 @@ export default class extends BaseController {
 
   disconnect() {
     PubSub.unsubscribe(this.pubsub_feed_token);
+    this.unread_activities.flush();
   }
 
   addActivity(activity) {
@@ -98,15 +99,18 @@ export default class extends BaseController {
     for(let post of posts) {
       this.get_target("feed").prepend(post)
     }
+    window.scrollTo({top: 0, behavior: "smooth"});
   }
 
   _update_alert() {
     const count = this.unread_activities.length;
-    console.log(count)
+
     if(count < 1) {
       this.get_target("newActivityAlert").textContent = "";
     } else {
-      this.get_target("newActivityAlert").textContent = count.toString();
+      this
+        .get_target("newActivityAlert")
+        .textContent = gettext(`${count.toString()} new posts`);
     }
   }
 }

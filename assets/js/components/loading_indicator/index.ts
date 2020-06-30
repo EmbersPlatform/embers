@@ -2,6 +2,8 @@ import { Component } from "../component";
 import i18n from "~js/lib/gettext";
 
 export default class LoadingIndicator extends Component(HTMLElement) {
+  static component = "LoadingIndicator";
+
   static tagName = "element";
 
   loading_text: string;

@@ -12,6 +12,8 @@ export default class extends BaseController {
   channel_ref: number
 
   connect() {
+    super.connect();
+    if(this._in_preview) return;
     Channel.subscribe(`post:${this.element.dataset.id}`, "reactions_updated",
       ({added, removed}) => {
         if(added)
@@ -24,6 +26,7 @@ export default class extends BaseController {
   }
 
   disconnect() {
+    if(this._in_preview) return;
     Channel.unsubscribe(`post:${this.element.dataset.id}`, this.channel_ref);
   }
 
@@ -39,7 +42,7 @@ export default class extends BaseController {
         break;
       }
       case "Error": {
-        console.log(res.value);
+        // console.log(res.value);
         break;
       }
       case "NetworkError": {
@@ -57,7 +60,7 @@ export default class extends BaseController {
         break;
       }
       case "Error": {
-        console.log(res.value);
+        // console.log(res.value);
         break;
       }
       case "NetworkError": {

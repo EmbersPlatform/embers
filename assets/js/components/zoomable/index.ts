@@ -2,6 +2,8 @@ import Hammer from "hammerjs";
 import { Component } from "~js/components/component";
 
 export default class ZoomableImage extends Component(HTMLImageElement) {
+  static component = "ZoomableImage";
+
   static tagName = "img";
 
   onconnected() {

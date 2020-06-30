@@ -7,14 +7,16 @@ import ModalDialog from "~js/components/dialog";
 import i18n from "~js/lib/gettext";
 
 export default class SharePostDialog extends ModalDialog {
+  static component = "SharePostDialog";
 
   editor
   post
   post_content
 
-  oninit() {
-    super.oninit();
-    this.editor = ref();
+  onconnected() {
+    super.initialize();
+    if(this._in_preview) return;
+
     this.post = this.closest("article.post");
     this.post_content = this.post
       .querySelector(".post-wrapper")
@@ -22,14 +24,12 @@ export default class SharePostDialog extends ModalDialog {
     this.post_content.removeAttribute("embedded");
     this.post_content.removeAttribute("preview");
 
+    this.editor = ref();
+
     let embedded_post = this.post_content.querySelector("article.post")
     if(embedded_post) {
       embedded_post.remove();
     }
-  }
-
-  open() {
-    this.showModal();
   }
 
   /**
@@ -41,6 +41,8 @@ export default class SharePostDialog extends ModalDialog {
   }
 
   render() {
+    if(this._in_preview || !this.post) return;
+
     const cancel = () => {
       this.editor.current.cancel();
       this.close();

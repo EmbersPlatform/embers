@@ -1,4 +1,9 @@
 share-post-dialog {
+  dialog-box {
+    width: 660px;
+    padding: 1em;
+    box-sizing: border-box;
+  }
   .post {
     max-width: 100%;
     @include media(">=tablet") {

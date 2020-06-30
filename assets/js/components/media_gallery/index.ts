@@ -9,6 +9,8 @@ import arrow_right from "/static/svg/generic/icons/arrow-right.svg";
 import Zoomable from "~js/components/zoomable";
 
 export default class MediaGallery extends Component(HTMLElement) {
+  static component = "MediaGallery";
+
   static tagName = "element";
 
   static includes = {Zoomable};
@@ -136,7 +138,9 @@ export default class MediaGallery extends Component(HTMLElement) {
           ? this.medias.map((media, i) => html`
             <div class="media-gallery-item" onclick=${handle_click_on_media}>
               ${current == i
-                ? html`<Zoomable src=${media.url} />`
+                ? (media.type === "video")
+                  ? html`<video src=${media.url} autoplay muted controls></video>`
+                  : html`<Zoomable src=${media.url} />`
                 : ``
               }
             </div>

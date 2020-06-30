@@ -6,6 +6,12 @@ const capitalize = string =>
 export class BaseController extends Controller {
   element: HTMLElement
 
+  _in_preview = false;
+
+  connect() {
+    this._in_preview = document.documentElement.hasAttribute("data-turbolinks-preview");
+  }
+
   get_target<T = HTMLElement>(target: string): T | undefined {
     return this[`${target}Target`];
   }

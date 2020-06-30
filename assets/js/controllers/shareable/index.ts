@@ -7,6 +7,6 @@ export default class extends BaseController {
   static targets = ["dialog"];
 
   showDialog() {
-    this.get_target<SharePostDialog>("dialog").open();
+    this.get_target<SharePostDialog>("dialog").showModal();
   }
 }

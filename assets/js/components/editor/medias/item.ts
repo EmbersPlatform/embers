@@ -10,6 +10,13 @@ import type {FileOrMedia, UploadedMedia} from "./zone";
 
 import redo_icon from "/static/svg/generic/icons/redo.svg";
 import remove_icon from "/static/svg/generic/icons/times.svg";
+import video_icon from "~static/svg/generic/icons/play.svg";
+
+const media_icons = {
+  image: ``,
+  gif: `GIF`,
+  video: {html: video_icon}
+}
 
 class MediaItem extends Component(HTMLDivElement) {
   static tagName = "div";
@@ -42,6 +49,15 @@ class MediaItem extends Component(HTMLDivElement) {
 
     this.html`
     <div class="media-preview" style="background-image: url(${this.preview});"/>
+    ${
+      (this.media.tag === "Media" && this.media.value.type !== "image")
+      ? html`
+        <span class="media-type">
+          ${media_icons[this.media.value.type]}
+        </span>
+      `
+      : ``
+    }
     ${
       (this.dataset.status === "error")
       ? html`<p class="error">
@@ -85,7 +101,9 @@ class MediaItem extends Component(HTMLDivElement) {
         const media = res.value;
         this.dataset.status = "success";
         this.media = {tag: "Media", id: this.media.id, value: media}
+        this.preview = media.metadata.preview_url;
         this.dispatch("upload", this.media);
+        this.render();
         break;
       }
       case "Error": {

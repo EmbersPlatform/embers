@@ -9,7 +9,7 @@ defmodule Embers.Paginator.Options do
         }
   defstruct before: nil,
             after: nil,
-            limit: 50,
+            limit: 20,
             max_limit: 100
 
   @spec build(keyword()) :: Embers.Paginator.Options.t()
@@ -28,7 +28,7 @@ defmodule Embers.Paginator.Options do
 
     opts =
       if is_nil(opts.limit) do
-        %{opts | limit: 50}
+        %{opts | limit: 20}
       end || opts
 
     opts =

@@ -93,4 +93,14 @@ defmodule EmbersWeb.Web.PostView do
   def has_related?(post) do
     match?(%Post{}, post.related_to)
   end
+
+  def ask_nsfw?(%{assigns: %{current_user: user}}, post) do
+    if is_nil(user) do
+      true
+    else
+      %{content_nsfw: nsfw_setting} = Embers.Profile.Settings.get_setting!(user.id)
+      post.nsfw && nsfw_setting != "show"
+    end
+  end
+  def ask_nsfw?(_, _), do: true
 end

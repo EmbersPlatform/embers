@@ -16,9 +16,9 @@
     "reactable",
     "shareable",
     "medias",
-    {"content-warning", @post.nsfw}
+    {"content-warning", ask_nsfw?(@conn, @post) }
   ] %>"
-  <%= if @post.nsfw, do: "nsfw" %>
+  <%= if ask_nsfw?(@conn, @post), do: "nsfw" %>
   <%= if @post.faved, do: "faved" %>
   >
   <div class="content-warnings">
@@ -41,7 +41,9 @@
           <%= labeled_link(@post.user.username,
             to: decoded_path(:user_path, Endpoint, :show, @post.user.canonical),
             label: @post.user.username,
-            class: "username")
+            class: "username",
+            "up-preload": true
+          )
           %>
         </div>
         <div class="details-bottom">
@@ -58,7 +60,6 @@
           <% end %>
         </div>
       </div>
-      <e-spacer></e-spacer>
       <post-actions></post-actions>
       <%# <%= render("_post_actions.html", assigns) %>
     </header>
@@ -156,7 +157,9 @@
             <%= render("reaction_picker.html") %>
           <% end %>
           <e-spacer></e-spacer>
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), class: "button-link") do %>
+          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), class: "button-link",
+            "data-post-modal": encode_id(@post.id)
+          ) do %>
             <%= svg_image("comment") %>
           <% end %>
           <button class="plain-button" data-action="shareable#showDialog">

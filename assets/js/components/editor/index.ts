@@ -22,6 +22,8 @@ import LinkZone from "./link_zone";
 import type {FileOrMedia} from "./medias/zone"
 
 export default class PostEditor extends Component(HTMLElement) {
+  static component = "PostEditor";
+
   static tagName = "element";
 
   static includes = { AutosizeTextarea, TagInput, MediaZone, LinkZone };
@@ -39,6 +41,7 @@ export default class PostEditor extends Component(HTMLElement) {
   tag_input
   media_zone
   link_zone
+  nsfw_switch
 
   cancel
   publish
@@ -46,11 +49,15 @@ export default class PostEditor extends Component(HTMLElement) {
   hide
   addReply
 
-  oninit() {
+  onconnected() {
+    super.initialize();
+    if(this._in_preview) return;
+
     this.textarea = ref();
     this.tag_input = ref();
     this.media_zone = ref();
     this.link_zone = ref();
+    this.nsfw_switch = ref();
 
     this.placeholder =
       this.getAttribute("placeholder")
@@ -58,11 +65,14 @@ export default class PostEditor extends Component(HTMLElement) {
   }
 
   render({useState}: Hooks) {
+    if(this._in_preview) return;
     const [body, setBody] = useState("");
     const [tags, setTags] = useState<string[]>([]);
     const [medias, setMedias] = useState<FileOrMedia[]>([]);
     const [links, setLinks] = useState([]);
-    const [publishing, setPublishing] = useState<boolean>(false)
+    const [publishing, setPublishing] = useState<boolean>(false);
+    const [nsfw, setNsfw] = useState(false);
+    const [errors, setErrors] = useState<string[]>([]);
 
     const post_attrs = {
       body,
@@ -85,6 +95,7 @@ export default class PostEditor extends Component(HTMLElement) {
       this.textarea.current.update();
       this.media_zone.current.reset();
       this.link_zone.current.reset();
+      this.nsfw_switch.current.reset();
     }
 
     this.cancel = () => {
@@ -101,7 +112,12 @@ export default class PostEditor extends Component(HTMLElement) {
         options.params.as_thread = true;
       }
 
+      if(nsfw && !post_attrs.tags.includes("nsfw")) {
+        post_attrs.tags.push("nsfw");
+      }
+
       setPublishing(true);
+      setErrors([]);
       const res = await Posts.create(post_attrs, options)
       setPublishing(false)
       switch(res.tag) {
@@ -112,7 +128,11 @@ export default class PostEditor extends Component(HTMLElement) {
           break;
         }
         case "Error": {
-          alert("Error al publicar el post");
+          let errs = [];
+          for(let e in res.value.errors) {
+            errs = [...errs, ...res.value.errors[e]]
+          }
+          setErrors(errs);
           break;
         }
         case "NetworkError": {
@@ -179,9 +199,18 @@ export default class PostEditor extends Component(HTMLElement) {
         `
       : ``
 
+    const toggle_nsfw = event => {
+      setNsfw(event.detail);
+    }
+
     const publish_buttons = (!this.compact && !this.noactions)
       ? html`
         <div class="editor-actions">
+          <switch-input
+            class="vertical"
+            onchange=${toggle_nsfw}
+            ref=${this.nsfw_switch}
+          >NSFW</switch-input>
           ${!this.nomedia
             ? html`
               <label class="plain-button" tabindex="0" title=${dgettext("editor", "Add image")}>
@@ -218,31 +247,31 @@ export default class PostEditor extends Component(HTMLElement) {
 
     const compact_buttons = this.compact
       ? html`
-          ${!this.nomedia
-            ? html`
-              <label class="plain-button" tabindex="0" title=${dgettext("editor", "Add image")}>
-                ${{ html: add_image_icon }}
-                <input
-                  type="file"
-                  style="display: none;"
-                  onchange=${select_media}
-                  multiple
-                  disabled=${publishing}
-                >
-              </label>
-              `
-            : ``}
-          <button
-            class="plain-button"
-            onclick=${this.publish}
-            ontouchend=${this.publish}
-            disabled=${!can_publish}
-            title=${dgettext("editor", "Publish")}
-            aria-label=${dgettext("editor", "Publish")}
-            tabindex="0"
-          >
-            ${{ html: publish_icon }}
-          </button>
+        ${!this.nomedia
+          ? html`
+            <label class="plain-button" tabindex="0" title=${dgettext("editor", "Add image")}>
+              ${{ html: add_image_icon }}
+              <input
+                type="file"
+                style="display: none;"
+                onchange=${select_media}
+                multiple
+                disabled=${publishing}
+              >
+            </label>
+            `
+          : ``}
+        <button
+          class="plain-button"
+          onclick=${this.publish}
+          ontouchend=${this.publish}
+          disabled=${!can_publish}
+          title=${dgettext("editor", "Publish")}
+          aria-label=${dgettext("editor", "Publish")}
+          tabindex="0"
+        >
+          ${{ html: publish_icon }}
+        </button>
         `
       : ``
 
@@ -263,6 +292,15 @@ export default class PostEditor extends Component(HTMLElement) {
       <LinkZone ref=${this.link_zone} onprocess=${e => setLinks([e.detail])} />
       ${tag_input}
       ${publish_buttons}
+      ${(errors.length > 0)
+        ? html`
+          <ul class="editor-errors">
+            ${errors.map(error => html`<li>${dgettext("editor", error)}</li>`)}
+          </ul>
+          `
+        : ``
+      }
+
     </form>
     `;
   }

@@ -6,6 +6,8 @@ import LoadingIndicator from "../loading_indicator";
 enum State {Idle, Loading, Finished}
 
 export default class NotificationsPanel extends Component(HTMLElement) {
+  static component = "NotificationsPanel";
+
   static tagName = "nav";
 
   static booleanAttributes = ["open"];

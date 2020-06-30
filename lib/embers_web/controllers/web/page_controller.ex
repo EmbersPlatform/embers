@@ -22,7 +22,7 @@ defmodule EmbersWeb.Web.PageController do
           with_replies: 2,
           after: IdHasher.decode(params["after"]),
           before: IdHasher.decode(params["before"]),
-          limit: params["limit"]
+          limit: 20
         )
       rescue
         _ -> %Embers.Paginator.Page{entries: [], last_page: true, next: nil}

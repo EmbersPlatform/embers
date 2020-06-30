@@ -40,7 +40,6 @@ export default class extends BaseController {
   }
 
   async load_more() {
-    console.log("load more comments!")
     if(this.state !== States.Idle) return;
 
     this.state = States.Loading;

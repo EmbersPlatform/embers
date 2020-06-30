@@ -1,6 +1,8 @@
 defmodule EmbersWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :embers
 
+  plug(Unpoly)
+
   socket("/socket", EmbersWeb.UserSocket)
 
   # Serve at "/" the static files from "priv/static" directory.
@@ -13,7 +15,7 @@ defmodule EmbersWeb.Endpoint do
     from: :embers,
     gzip: true,
     only:
-      ~w(css styles fonts uploads img svg images emoji js favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
+      ~w(dist fonts uploads img svg images emoji favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
   )
 
   plug(Plug.Static, at: "/user/avatar", from: Path.expand('./uploads/user/avatar'), gzip: true)

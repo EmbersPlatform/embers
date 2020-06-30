@@ -1,4 +1,4 @@
-<nav id="navigation" is="embers-navigation">
+<nav id="navigation" is="embers-navigation" class="soft-kw-hide">
   <a href="/" id="navigation-logo" class="mobile-hidden" aria-hidden="true">
     <%= svg_image("logo") %>
   </a>
@@ -8,7 +8,8 @@
         to: page_path(@conn, :index),
         active: :exact,
         "aria-label": gettext("Home"),
-        title: gettext("Home")
+        title: gettext("Home"),
+        "up-preload": true
       ) do %>
         <%= svg_image("home") %>
       <% end %>
@@ -40,7 +41,7 @@
     id="notifications-panel"
     data-next="<%= notifications.next %>"
     data-last_page="<%= notifications.last_page %>"
-    data-turbolinks-permanent
+    up-keep
   >
     <header><%= gettext "Notifications" %></header>
     <section>
@@ -56,7 +57,7 @@
       <button
         is="notifications-bell"
         id="notifications-bell-desktop"
-        data-turbolinks-permanent
+        up-keep
         class="plain-button"
         notifications-panel-trigger
         data-unread-count="<%= unread_notifications_count %>"
@@ -121,7 +122,7 @@
         class="plain-button"
         notifications-panel-trigger
         id="notifications-bell-mobile"
-        data-turbolinks-permanent
+        up-keep
         data-unread-count="<%= unread_notifications_count %>"
       >
         <%= svg_image("bell") %>

@@ -34,7 +34,6 @@ export default class extends BaseController {
   }
 
   show_reactions_modal() {
-    console.log("show reactions modal")
     if(this.has_target("reactionsDialog"))
       this.get_target<ModalDialog>("reactionsDialog").showModal();
   }

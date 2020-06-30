@@ -45,7 +45,10 @@
     &>header {
       display: flex;
       padding: 0.8em;
-      align-items: center;
+    }
+
+    &>header .avatar {
+      flex-shrink: 0;
     }
 
     &>header a time {
@@ -54,8 +57,9 @@
       color: var(--text-secondary);
     }
 
-    &>header separator {
-      flex-grow: 1;
+    .post-actions>*>button,
+    .post-actions>button {
+      padding: 0.2em;
     }
 
     .post-actions ol > li button {
@@ -66,8 +70,8 @@
       opacity: 1;
     }
 
-    .post-actions {
-      align-self: flex-start;
+    post-actions {
+      flex-shrink: 0;
     }
 
     .post-actions ol {
@@ -96,6 +100,7 @@
       display: flex;
       flex-direction: column;
       justify-items: center;
+      flex-grow: 1;
     }
 
     .post-details .username {

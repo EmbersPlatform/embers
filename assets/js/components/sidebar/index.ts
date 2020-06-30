@@ -3,7 +3,8 @@ import Hammer from "hammerjs";
 import {Component} from "~js/components/component";
 // Should this be extracted into it's own dragger component?
 
-class EmbersSidebar extends Component(HTMLElement) {
+export default class EmbersSidebar extends Component(HTMLElement) {
+  static component = "EmbersSidebar";
   static tagName = "nav";
 
   static mappedAttributes = ["sidebar_x"];
@@ -49,6 +50,7 @@ class EmbersSidebar extends Component(HTMLElement) {
   onpanstart(event) {
     if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) return;
     if (event.target.nodeName.toLowerCase() == "input") return;
+    if (event.target.closest(".custom-dialog")) return;
     if (
       !this.panning_sidebar &&
       this.sidebar_x < this.offsetWidth &&
@@ -130,5 +132,3 @@ class EmbersSidebar extends Component(HTMLElement) {
     return new_overlay;
   }
 }
-
-export default EmbersSidebar;

@@ -5,6 +5,7 @@ import PubSub from "pubsub-js";
 
 import * as Sets from "~js/lib/utils/sets";
 import * as Posts from "~js/lib/posts";
+import * as PostsDOM from "~js/components/post/dom";
 import * as Channel from "~js/lib/socket/channel";
 import {gettext} from "~js/lib/gettext";
 
@@ -19,10 +20,13 @@ export default class extends BaseController {
 
   pubsub_tokens: string[] = [];
 
-  channel_topic: string
+  channel_topic: string;
   channel_refs: number[] = [];
 
   connect() {
+    super.connect();
+    if(this._in_preview) return;
+
     let {id} = this.element.dataset;
     this.id = id;
     this.channel_topic = `post:${id}`;
@@ -35,6 +39,7 @@ export default class extends BaseController {
   }
 
   disconnect() {
+    if(this._in_preview) return;
     for(let token of this.pubsub_tokens) {
       PubSub.unsubscribe(token);
     }
@@ -103,24 +108,15 @@ export default class extends BaseController {
   }
 
   update_tags(_topic, new_tags) {
-    this.element.dataset.tags = Sets.join(new_tags, " ");
-
-    let controllers = new Set(this.element.dataset.controller.split(" "))
-
-    if(Sets.has_insensitive(new_tags, "nsfw")) {
-      controllers.add("content-warning");
-      this.element.setAttribute("nsfw", "true");
-    } else {
-      controllers.delete("content-warning")
-      this.element.removeAttribute("nsfw");
-    }
-
-    this.element.dataset.controller = Sets.join(controllers, " ")
+    PostsDOM.update_tags(this.element, new_tags);
   }
 
   _join_post_channel() {
     Channel.subscribe(this.channel_topic, "deleted",
-      () => this._replace_with_tombstone()
+      () => {
+        // this._replace_with_tombstone()
+        this.element.remove();
+      }
     ).then(ref => this.channel_refs.push(ref));
 
     Channel.subscribe(this.channel_topic, "tags_updated",
@@ -135,10 +131,21 @@ export default class extends BaseController {
   }
 
   _replace_with_tombstone() {
-    this.element.outerHTML = `
-      <div class="post-tombstone">
-        ${gettext("This post is no longer available")}
-      </div>
-    `
+    PostsDOM.replace_with_tombstone(this.element);
   }
 }
+
+document.addEventListener("click", async (event: MouseEvent) => {
+  const target = event.target as Element;
+  const anchor = target.closest("a[data-post-modal]") as HTMLElement;
+  if(!anchor || anchor.closest("dialog, [view=post]")) return;
+  event.preventDefault()
+
+  const post_url = `/post/${anchor.dataset.postModal}`;
+  const url = `/post/${anchor.dataset.postModal}/modal`;
+  const content_res = await fetch(url);
+  const content_str = await content_res.text();
+
+  // @ts-ignore
+  window.up.modal.extract(".post-preview-modal", content_str, {url: post_url, history: post_url})
+})

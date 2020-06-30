@@ -7,6 +7,7 @@ import ModalDialog from "../dialog";
 import { gettext } from "~js/lib/gettext";
 
 export default class ConfirmDialog extends ModalDialog {
+  static component = "ConfirmDialog";
   static mappedAttributes = [...ModalDialog.mappedAttributes, "disabled"];
 
   disabled: boolean

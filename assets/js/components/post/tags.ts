@@ -11,6 +11,7 @@ import * as Sets from "~js/lib/utils/sets";
  * It must be a descendant of a `.post` element with a `data-tags` attribute.
  */
 class PostTags extends Component(HTMLElement) {
+  static component = "PostTags";
   static tagName = "element";
 
   pubsub_tokens: string[] = [];

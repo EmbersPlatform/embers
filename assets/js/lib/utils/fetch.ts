@@ -40,8 +40,6 @@ const build_headers = (options) => {
   }[options.accept];
   if(accept) headers["Accept"] = accept;
 
-  console.log(headers)
-
   return headers;
 }
 
@@ -65,6 +63,8 @@ const perform_fetch = async (path: string, method: string, options: Object = {})
 
   try {
     const res = await fetch(url.toString(), {method, headers, ...options})
+    // @ts-ignore clear Unpoly cache
+    // window.up.proxy.clear()
     return infer_result(res);
   }
   catch(_e) {

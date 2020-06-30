@@ -39,6 +39,23 @@ defmodule EmbersWeb.Web.PostController do
     end
   end
 
+  def show_modal(conn, %{"hash" => hash} = _params) do
+    id = IdHasher.decode(hash)
+
+    with {:ok, post} = Posts.get_post(id) do
+      post = put_in(post.user.meta.avatar, Meta.avatar_map(post.user.meta))
+      post = put_in(post.user.meta.cover, Meta.cover(post.user.meta))
+      post = put_in(post.id, hash)
+
+      replies_page = Posts.get_post_replies(id, limit: 20, replies: 2, replies_order: {:desc, :inserted_at})
+
+      title = post.body || gettext("@%{username}'s post", username: post.user.username)
+      conn
+      |> put_layout(false)
+      |> render("show_modal.html", page_title: title, post: post, replies_page: replies_page)
+    end
+  end
+
   def create(%{assigns: %{current_user: user}} = conn, params) do
     params =
       params

@@ -3,6 +3,8 @@ import { dgettext } from "~js/lib/gettext"
 import { Component } from "~js/components/component";
 
 export default class TagInput extends Component(HTMLInputElement) {
+  static component = "TagInput";
+
   static tagName = "input";
 
   tags: string[];

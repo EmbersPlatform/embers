@@ -21,11 +21,16 @@
           label: @reply.user.username,
           class: "username")
         %>
-        <%= link(to: post_path(@conn, :show, encode_id(@reply.id)), itemprop: "url") do %>
+        <%= link(to: post_path(@conn, :show, encode_id(@reply.id)), itemprop: "url",
+
+            "up-instant": true,
+            "up-preload": true,
+            "up-target": "#embers") do %>
           <time
             datetime="<%= @reply.inserted_at %>"
             pubdate="<%= @reply.inserted_at %>"
-            itemprop="datePublished">
+            itemprop="datePublished"
+            >
             <%= time_ago(@reply.inserted_at) %>
           </time>
         <% end %>

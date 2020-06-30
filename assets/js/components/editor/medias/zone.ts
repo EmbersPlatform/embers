@@ -2,9 +2,10 @@ import { html } from "heresy";
 import { Component } from "~js/components/component";
 
 import MediaItem from "./item";
+import { Media } from "~js/lib/medias";
 
 export type FileToUpload = {tag: "File", id: string, value: File}
-export type UploadedMedia = {tag: "Media", id: string, value: Object}
+export type UploadedMedia = {tag: "Media", id: string, value: Media}
 export type FileOrMedia = FileToUpload | UploadedMedia;
 
 function build_file(file: File): FileOrMedia {

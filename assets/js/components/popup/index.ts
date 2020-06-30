@@ -1,6 +1,8 @@
 import { Component } from "../component";
 
 export default class PopUp extends Component(HTMLElement) {
+  static component = "PopUp";
+
 
   trigger: HTMLElement;
 

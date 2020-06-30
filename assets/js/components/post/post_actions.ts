@@ -8,6 +8,8 @@ import icon_gavel from "~static/svg/generic/icons/gavel.svg";
 import icon_ellipsis from "~static/svg/generic/icons/ellipsis-v.svg"
 
 export default class PostActions extends Component(HTMLElement) {
+  static component = "PostActions";
+
   post: HTMLElement;
   faved: boolean;
   is_owner: boolean;
@@ -16,7 +18,6 @@ export default class PostActions extends Component(HTMLElement) {
     this.post = this.closest(".post") as HTMLElement;
     this.is_owner = this.post.dataset["authorId"] === Application.get_user().id;
     this.faved = this.post.hasAttribute("faved");
-    console.log(this.faved)
   }
 
   render() {

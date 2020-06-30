@@ -119,6 +119,7 @@ defmodule EmbersWeb.Router do
     post("/post", PostController, :create)
     delete("/post/:id", PostController, :delete)
     get("/post/:hash", PostController, :show)
+    get("/post/:hash/modal", PostController, :show_modal)
 
     # Post replies
     get("/post/:hash/replies", PostController, :show_replies)
