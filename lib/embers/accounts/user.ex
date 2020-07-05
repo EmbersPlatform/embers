@@ -94,7 +94,6 @@ defmodule Embers.Accounts.User do
     |> validate_password(:password)
     |> put_pass_hash()
     |> put_canonical_username()
-    |>
   end
 
   @doc """
