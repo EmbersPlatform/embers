@@ -95,3 +95,6 @@ msgstr "debe ser mayor o igual a %{number}"
 
 msgid "must be equal to %{number}"
 msgstr "debe ser igual a %{number}"
+
+msgid "forbidden provider"
+msgstr "No se permiten proveedores de correos desechables"

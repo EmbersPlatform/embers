@@ -77,8 +77,9 @@ defmodule Embers.Accounts.User do
     user
     |> cast(attrs, [:email, :username])
     |> validate_required([:email, :username])
-    |> validate_unique_email
-    |> validate_username
+    |> validate_non_temporary_email()
+    |> validate_unique_email()
+    |> validate_username()
     |> cast_assoc(:meta)
   end
 
@@ -87,11 +88,13 @@ defmodule Embers.Accounts.User do
     |> cast(attrs, [:username, :email, :password])
     |> validate_required([:username, :email, :password])
     |> validate_confirmation(:password)
-    |> validate_username
-    |> validate_unique_email
+    |> validate_username()
+    |> validate_non_temporary_email()
+    |> validate_unique_email()
     |> validate_password(:password)
-    |> put_pass_hash
-    |> put_canonical_username
+    |> put_pass_hash()
+    |> put_canonical_username()
+    |>
   end
 
   @doc """
@@ -102,8 +105,8 @@ defmodule Embers.Accounts.User do
     user
     |> cast(attrs, [:username, :email, :password_hash, :id])
     |> validate_required([:username, :email, :password_hash, :id])
-    |> validate_unique_email
-    |> put_canonical_username
+    |> validate_unique_email()
+    |> put_canonical_username()
   end
 
   @doc """
@@ -122,6 +125,15 @@ defmodule Embers.Accounts.User do
   """
   def password_reset_changeset(user, reset_sent_at) do
     change(user, %{reset_sent_at: reset_sent_at})
+  end
+
+  defp validate_non_temporary_email(%{valid?: false} = changeset), do: changeset
+  defp validate_non_temporary_email(changeset) do
+    email = get_change(changeset, :email)
+    case EmailGuard.check(email, [Embers.Accounts.DisposableEmail]) do
+      :ok -> changeset
+      {:error, _} -> add_error(changeset, :email, "forbidden provider")
+    end
   end
 
   defp validate_unique_email(changeset) do
