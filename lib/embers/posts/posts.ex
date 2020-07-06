@@ -122,7 +122,7 @@ defmodule Embers.Posts do
     |> Repo.update()
   end
 
-  def delete_post(%Post{} = post, actor \\ nil) do
+  def delete_post(%Post{} = post, opts \\ []) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -147,6 +147,7 @@ defmodule Embers.Posts do
     end
 
     with {:ok, post} <- Repo.soft_delete(post) do
+      actor = Keyword.get(opts, :actor)
       Embers.Event.emit(:post_disabled, %{post: post, actor: actor})
       {:ok, post}
     else
@@ -154,7 +155,7 @@ defmodule Embers.Posts do
     end
   end
 
-  def restore_post(%Post{} = post, actor \\ nil) do
+  def restore_post(%Post{} = post, opts \\ []) do
     if post.nesting_level > 0 do
       # Update parent post replies count
       Repo.update_all(
@@ -179,6 +180,7 @@ defmodule Embers.Posts do
     end
 
     with {:ok, post} <- Repo.restore_entry(post) do
+      actor = Keyword.get(opts, :actor)
       Embers.Event.emit(:post_restored, %{post: post, actor: actor})
       {:ok, post}
     else

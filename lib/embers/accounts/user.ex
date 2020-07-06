@@ -129,9 +129,13 @@ defmodule Embers.Accounts.User do
   defp validate_non_temporary_email(%{valid?: false} = changeset), do: changeset
   defp validate_non_temporary_email(changeset) do
     email = get_change(changeset, :email)
-    case EmailGuard.check(email, [Embers.Accounts.DisposableEmail]) do
-      :ok -> changeset
-      {:error, _} -> add_error(changeset, :email, "forbidden provider")
+    if is_nil(email) do
+      changeset
+    else
+      case EmailGuard.check(email, [Embers.Accounts.DisposableEmail]) do
+        :ok -> changeset
+        {:error, _} -> add_error(changeset, :email, "forbidden provider")
+      end
     end
   end
 

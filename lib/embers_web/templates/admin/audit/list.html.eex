@@ -16,21 +16,38 @@
 </article>
 <% end %>
 
-<ul class="list">
-    <%= for audit <- @audits do %>
-    <li class="list-item">
-      <%= raw format_audit(audit) %>
-      <%= if !Enum.empty?(audit.details) do %>
-        <div class="content">
-          <ul>
-            <%= for detail <- audit.details do %>
-              <li><%= detail.description %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
-    </li>
+
+<%= for audit <- @audits do %>
+  <div class="box is-marginless audit-item">
+    <%= raw format_audit(audit) %>
+    <%= if !Enum.empty?(audit.details) do %>
+      <div class="audit-details">
+        <%= for {detail, c} <- Enum.with_index(audit.details) do %>
+          <% count = Integer.to_string(c + 1) %>
+          <div class="audit-detail">
+            <span class="audit-detail__index">
+              <%= String.pad_leading(count, 2, "0") %> -
+            </span><%= raw format_detail(audit, detail) %></div>
+        <% end %>
+      </div>
     <% end %>
-</ul>
+  </div>
+<% end %>
 
 <%= pagination_links @audits %>
+
+<style>
+.audit-item {
+  margin-bottom: .5em!important;
+  padding: 0.5rem;
+}
+
+.audit-details {
+  padding-left: 2em;
+}
+
+.audit-detail__index {
+  font-family: monospace;
+  color: #eb3d2d;
+}
+</style>

@@ -5,7 +5,7 @@ defmodule Embers.Mixfile do
   def project do
     [
       app: :embers,
-      version: "0.2.19",
+      version: "0.2.20",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -13,7 +13,14 @@ defmodule Embers.Mixfile do
       aliases: aliases(),
       deps: deps(),
       source_url: "https://gitlab.com/embers-project/embers/embers",
-      docs: docs()
+      docs: docs(),
+      releases: [
+        tar: [
+          include_executables_for: [:unix],
+          steps: [:assemble, :tar],
+          path: "artifacts"
+        ]
+      ]
     ]
   end
 
@@ -64,7 +71,7 @@ defmodule Embers.Mixfile do
       {:uuid, "~> 1.1"},
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
-      {:hackney, "~> 1.7"},
+      {:hackney, "~> 1.16"},
       {:httpoison, "~> 1.5"},
       {:sweet_xml, "~> 0.6"},
       {:recaptcha, "~> 2.3"},
