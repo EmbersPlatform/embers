@@ -40,6 +40,7 @@ defmodule Embers.Accounts.User do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Ecto.Query, only: [from: 2]
 
   alias Embers.Accounts.User
   alias Embers.Sessions.Session
@@ -182,7 +183,20 @@ defmodule Embers.Accounts.User do
          %Ecto.Changeset{valid?: true, changes: %{username: username}} = changeset
        ) do
     change(changeset, canonical: String.downcase(username))
+    |> unique_canonical()
   end
 
   defp put_canonical_username(changeset), do: changeset
+
+  defp unique_canonical(changeset) do
+    changeset
+    |> prepare_changes(fn changeset ->
+      canonical = get_change(changeset, :canonical)
+      query = from(u in User, where: u.canonical == ^canonical)
+      case changeset.repo.exists?(query) do
+        false -> changeset
+        true -> add_error(changeset, :username, "has already been taken")
+      end
+    end)
+  end
 end
