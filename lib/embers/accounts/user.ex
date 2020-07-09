@@ -132,9 +132,9 @@ defmodule Embers.Accounts.User do
     if is_nil(email) do
       changeset
     else
-      case EmailGuard.check(email, [Embers.Accounts.DisposableEmail]) do
-        :ok -> changeset
-        {:error, _} -> add_error(changeset, :email, "forbidden provider")
+      case Embers.Accounts.DisposableEmail.disposable?(email) do
+        false -> changeset
+        true -> add_error(changeset, :email, "forbidden provider")
       end
     end
   end

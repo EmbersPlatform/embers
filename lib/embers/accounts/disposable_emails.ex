@@ -1,23 +1,21 @@
 defmodule Embers.Accounts.DisposableEmail do
-  @moduledoc """
-  Contains list of providers of disposable email address.
-  """
+  import Ecto.Query
 
-  @behaviour EmailGuard.List
+  alias Embers.Repo
 
-  @impl EmailGuard.List
+  def disposable?(email) do
+    domain = extract_domain(email)
 
-  @filepath Application.app_dir(:embers, "priv")
-            |> Path.join("disposable_emails.txt")
+    from(
+      d in "domains_blacklist",
+      where: d.domain == ^domain
+    )
+    |> Repo.exists?
+  end
 
-  @filepath
-  |> File.stream!()
-  |> Stream.map(&String.trim/1)
-  |> Stream.reject(&match?("", &1))
-  |> Enum.uniq()
-  |> Enum.map(fn domain ->
-    def lookup(unquote(domain)), do: __MODULE__
-  end)
-
-  def lookup(_unmatched_domain), do: nil
+  defp extract_domain(input) do
+    input
+    |> :binary.split("@", [:global])
+    |> List.last()
+  end
 end

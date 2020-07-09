@@ -64,8 +64,32 @@ defmodule Seed do
       Enum.each(settings, fn attrs -> Embers.Settings.create(attrs) end)
     end
   end
+
+  def domains_blacklist() do
+    current_datetime = DateTime.utc_now()
+
+    domains =
+      Application.app_dir(:embers, "priv")
+      |> Path.join("disposable_emails.txt")
+      |> File.stream!()
+      |> Stream.map(&String.trim/1)
+      |> Stream.reject(&match?("", &1))
+      |> Enum.uniq()
+      |> Enum.map(fn domain ->
+        %{
+          domain: domain,
+          inserted_at: current_datetime,
+          updated_at: current_datetime
+        }
+      end)
+      |> Enum.chunk_every(10000)
+      |> Enum.each(fn d ->
+        Repo.insert_all("domains_blacklist", d, on_conflict: :nothing)
+      end)
+  end
 end
 
 Seed.roles()
 Seed.admin_account()
 Seed.settings()
+Seed.domains_blacklist()
