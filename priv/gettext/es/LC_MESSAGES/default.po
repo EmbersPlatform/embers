@@ -154,3 +154,13 @@ msgstr "registrarme"
 #: lib/embers_web/templates/page/landing.html.eex:60
 msgid "rules"
 msgstr "reglas"
+
+#, elixir-format
+#: lib/embers_web/controllers/web/account_controller.ex:73
+msgid "There was an error, please try again later"
+msgstr "Hubo un error, por favor intenta más tarde"
+
+#, elixir-format
+#: lib/embers_web/controllers/web/account_controller.ex:79
+msgid "You have to wait a few days before creating another account"
+msgstr "Tienes que esperar unos días antes de crear otra cuenta"

@@ -3,6 +3,12 @@
   <%= form_for @changeset, account_path(@conn, :create), fn f -> %>
     <h3>Registrarse</h3>
 
+    <%= if error = get_flash(@conn, :error) do %>
+      <div class="error">
+        <%= error %>
+      </div>
+    <% end %>
+
     <%= error_tag f, :username %>
     <%= text_input f, :username, class: "form-control", placeholder: "nombre_de_usuario1", required: true %>
 

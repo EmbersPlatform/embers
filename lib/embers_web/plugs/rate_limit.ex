@@ -10,6 +10,18 @@ defmodule EmbersWeb.RateLimit do
     end
   end
 
+  def limited?(bucket, interval, limit) do
+    {_, count, _, _, _} = ExRated.inspect_bucket(bucket, interval, limit)
+    count <= 0
+  end
+
+  def peek_rate(bucket, interval, limit) do
+    case limited?(bucket, interval, limit) do
+      true -> :rate_limited
+      false -> :ok
+    end
+  end
+
   defp check_rate(conn, options) do
     interval_milliseconds = options[:interval_seconds] * 1000
     max_requests = options[:max_requests]
