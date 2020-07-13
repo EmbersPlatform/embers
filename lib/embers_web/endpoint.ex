@@ -1,6 +1,8 @@
 defmodule EmbersWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :embers
 
+  plug(RemoteIp)
+
   socket("/socket", EmbersWeb.UserSocket)
 
   # Serve at "/" the static files from "priv/static" directory.

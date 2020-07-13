@@ -91,7 +91,8 @@ defmodule Embers.Mixfile do
       {:benchee_html, "~> 1.0", only: :dev},
       {:scrivener_ecto, "~> 2.0"},
       {:scrivener_html, "~> 1.8"},
-      {:ex_rated, "~> 1.2"}
+      {:ex_rated, "~> 1.2"},
+      {:remote_ip, "~> 0.2.1"}
     ]
   end
 
