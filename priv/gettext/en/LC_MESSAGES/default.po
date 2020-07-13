@@ -163,6 +163,7 @@ msgid "rules"
 msgstr ""
 
 #, elixir-format
+<<<<<<< HEAD
 #: lib/embers_web/controllers/web/account_controller.ex:73
 msgid "There was an error, please try again later"
 msgstr ""
@@ -173,6 +174,8 @@ msgid "You have to wait a few days before creating another account"
 msgstr ""
 
 #: lib/embers_web/templates/web/post/post.html.eex:103
+=======
+>>>>>>> 418616d40149eb31ad4271c602c5f1fc734ce2d5
 #: lib/embers_web/templates/web/post/post.html.eex:129
 #: lib/embers_web/templates/web/post/show.html.eex:15
 msgid "1 comment"

@@ -10,6 +10,7 @@ defmodule EmbersWeb.Api.ReactionController do
 
   plug(:user_check when action in [:create, :delete])
 
+<<<<<<< HEAD
   plug(
     :rate_limit_create,
     [max_requests: 5, interval_seconds: 1] when action in [:create, :delete]
@@ -31,6 +32,8 @@ defmodule EmbersWeb.Api.ReactionController do
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end
 
+=======
+>>>>>>> 418616d40149eb31ad4271c602c5f1fc734ce2d5
   def create(conn, %{"name" => name, "post_id" => post_id} = _params) do
     user_id = conn.assigns.current_user.id
     post_id = IdHasher.decode(post_id)

@@ -18,9 +18,10 @@
         <%= error %>
       </div>
     <% end %>
-
-    <%= error_tag f, :username %>
-    <%= text_input f, :username, class: "form-control", placeholder: "nombre_de_usuario1", required: true %>
+    <fieldset>
+      <%= text_input f, :username, class: "form-control", placeholder: "nombre_de_usuario1", required: true %>
+      <%= error_tag f, :username %>
+    </fieldset>
 
     <fieldset>
       <%= email_input f, :email, class: "form-control", placeholder: "micorreo@proveedor.dominio", required: true %>
