@@ -3,18 +3,18 @@ defmodule EmbersWeb.SearchView do
 
   use EmbersWeb, :view
 
-  def render("results.json", %{entries: posts} = metadata) do
+  def render("results.json", %{posts: posts} = assigns) do
     %{
       items:
-        Enum.map(posts, fn post ->
+        Enum.map(posts.entries, fn post ->
           render(
             EmbersWeb.PostView,
             "show.json",
-            %{post: post, current_user: metadata.current_user}
+            %{post: post, current_user: assigns.current_user}
           )
         end),
-      next: metadata.next,
-      last_page: metadata.last_page
+      next: posts.next,
+      last_page: posts.last_page
     }
   end
 

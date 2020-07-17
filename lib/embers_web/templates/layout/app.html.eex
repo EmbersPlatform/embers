@@ -105,7 +105,7 @@
       <% end %>
     <% end %>
 	</div>
-	<%= render @view_module, @view_template, assigns %>
+	<%= @inner_content %>
 	<script type="text/javascript">
     <%= if not is_nil(@conn.assigns.current_user) do %>
       window.user_token = <%= raw Jason.encode!(@conn.assigns.user_token) %>

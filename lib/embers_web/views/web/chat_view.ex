@@ -26,18 +26,18 @@ defmodule EmbersWeb.ChatView do
     render_many(conversations, EmbersWeb.UserView, "user.json")
   end
 
-  def render("messages.json", %{entries: messages} = metadata) do
+  def render("messages.json", %{messages: messages} = _assigns) do
     %{
       items:
-        Enum.map(messages, fn message ->
+        Enum.map(messages.entries, fn message ->
           render(
             __MODULE__,
             "message.json",
             %{message: message}
           )
         end),
-      next: metadata.next,
-      last_page: metadata.last_page
+      next: messages.next,
+      last_page: messages.last_page
     }
   end
 

@@ -33,9 +33,9 @@ defmodule Embers.Mixfile do
       extra_applications: [
         :logger,
         :runtime_tools,
+        :os_mon,
         :recaptcha,
         :scrivener_ecto,
-        :scrivener_html,
         :ex_rated,
         :swoosh,
         :gen_smtp
@@ -52,16 +52,19 @@ defmodule Embers.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.0"},
-      {:phoenix_pubsub, "~> 1.1"},
+      {:phoenix, "~> 1.5.0"},
+      {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_ecto, "~> 4.0"},
+      {:phoenix_live_dashboard, "~> 0.1"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
+      {:plug_cowboy, "~> 2.1"},
+      {:telemetry_poller, "~> 0.4"},
+      {:telemetry_metrics, "~> 0.4"},
       {:phauxth, "~> 2.1"},
       {:swoosh, "~> 0.23"},
       {:mail, "~> 0.2"},
@@ -90,7 +93,6 @@ defmodule Embers.Mixfile do
       {:benchee, "~> 1.0", only: :dev},
       {:benchee_html, "~> 1.0", only: :dev},
       {:scrivener_ecto, "~> 2.0"},
-      {:scrivener_html, "~> 1.8"},
       {:ex_rated, "~> 1.2"},
       {:remote_ip, "~> 0.2.1"}
     ]

@@ -18,7 +18,7 @@ defmodule EmbersWeb.BlockController do
         limit: params["limit"]
       )
 
-    render(conn, "blocks.json", blocks)
+    render(conn, "blocks.json", blocks: blocks)
   end
 
   def list_ids(conn, %{"id" => id} = params) do
@@ -31,7 +31,7 @@ defmodule EmbersWeb.BlockController do
         limit: params["limit"]
       )
 
-    render(conn, "blocks_ids.json", blocks_ids)
+    render(conn, "blocks_ids.json", ids: blocks_ids)
   end
 
   def create(

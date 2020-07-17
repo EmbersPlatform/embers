@@ -34,7 +34,7 @@
   </div>
 <% end %>
 
-<%= pagination_links @audits %>
+<%# <%= pagination_links @audits %> %>
 
 <style>
 .audit-item {

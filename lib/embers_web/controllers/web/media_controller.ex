@@ -19,7 +19,7 @@ defmodule EmbersWeb.MediaController do
     case Media.upload(file, user.id) do
       {:ok, media} ->
         conn
-        |> render("media.json", %{media: media})
+        |> render("media.json", media: media)
 
       {:error, :file_not_supported} ->
         conn

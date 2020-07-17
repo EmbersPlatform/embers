@@ -21,7 +21,7 @@ defmodule EmbersWeb.ChatController do
         before: decode(params["before"])
       )
 
-    render(conn, "messages.json", messages)
+    render(conn, "messages.json", messages: messages)
   end
 
   def create(conn, params) do

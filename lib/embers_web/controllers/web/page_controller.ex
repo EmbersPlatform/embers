@@ -38,7 +38,7 @@ defmodule EmbersWeb.PageController do
     notifications =
       EmbersWeb.NotificationView.render(
         "notifications.json",
-        notifications
+        notifications: notifications
       )
 
     user = %{

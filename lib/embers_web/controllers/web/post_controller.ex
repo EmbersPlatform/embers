@@ -159,7 +159,7 @@ defmodule EmbersWeb.PostController do
         order: order
       )
 
-    render(conn, "show_replies.json", results)
+    render(conn, "show_replies.json", posts: results)
   end
 
   defp can_delete?(user, post) do

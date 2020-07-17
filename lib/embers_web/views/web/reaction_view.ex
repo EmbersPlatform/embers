@@ -3,11 +3,11 @@ defmodule EmbersWeb.ReactionView do
 
   use EmbersWeb, :view
 
-  def render("reactions.json", %{entries: reactions} = metadata) do
+  def render("reactions.json", %{reactions: reactions} = _assigns) do
     %{
-      entries: render_many(reactions, __MODULE__, "reaction.json"),
-      last_page: metadata.last_page,
-      next: metadata.next
+      entries: render_many(reactions.entries, __MODULE__, "reaction.json"),
+      last_page: reactions.last_page,
+      next: reactions.next
     }
   end
 

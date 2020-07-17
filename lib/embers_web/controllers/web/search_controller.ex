@@ -17,13 +17,13 @@ defmodule EmbersWeb.SearchController do
       )
 
     conn
-    |> render("results.json", results)
+    |> render("results.json", posts: results)
   end
 
   def user_typeahead(conn, %{"username" => username}) do
     results = UserSearch.search(username)
 
     conn
-    |> render("user_results.json", %{results: results})
+    |> render("user_results.json", results: results)
   end
 end

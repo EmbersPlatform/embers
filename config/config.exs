@@ -15,7 +15,8 @@ config :embers, EmbersWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "HZe8bMvclknQMj38U8sozwTxlyQsABzs3ARC4vKpAsQseTzRntb+/6TC7LZ2gCmY",
   render_errors: [view: EmbersWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Embers.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub_server: Embers.PubSub,
+  live_view: [signing_salt: "HZe8bMvclknQMj38U8sozwTxlyQsABzs3ARC4vKpAsQseTzRntb+/6TC7LZ2gCmY"]
 
 config :embers, Embers.Email, host: "localhost"
 

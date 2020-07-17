@@ -1,5 +1,6 @@
 defmodule EmbersWeb.Router do
   use EmbersWeb, :router
+  import Phoenix.LiveDashboard.Router
 
   alias EmbersWeb.Plugs.{CheckPermissions, GetPermissions}
 
@@ -36,6 +37,13 @@ defmodule EmbersWeb.Router do
 
   scope "/admin" do
     pipe_through([:admin])
+
+    if Mix.env() == :dev do
+      scope "/" do
+        pipe_through :browser
+        live_dashboard "/dashboard", metrics: EmbersWeb.Telemetry
+      end
+    end
 
     get("/", EmbersWeb.Admin.DashboardController, :index)
 
