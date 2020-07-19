@@ -5,8 +5,6 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 
-import "./components/twitter-embed";
-
 const app = new Vue({
   router,
   store,

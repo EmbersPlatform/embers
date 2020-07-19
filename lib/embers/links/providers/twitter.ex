@@ -3,9 +3,6 @@ defmodule Embers.Links.TwitterProvider do
 
   @behaviour Embers.Links.Provider
 
-  @bearer Application.get_env(:embers, Embers.Links, [])
-          |> Keyword.get(:twitter_bearer_token)
-
   alias Embers.Links.EmbedSchema
 
   def provides?(url) do
@@ -15,10 +12,33 @@ defmodule Embers.Links.TwitterProvider do
   def get(url) do
     [_, id] = Regex.run(~r/^https?:\/\/(?:twitter\.com)\/(?:.*)\/status\/(\d+)$/i, url)
 
-    %EmbedSchema{
-      url: url,
-      type: "link",
-      html: "<twitter-embed data-id=\"#{id}\"></twitter-embed>"
+    embed = %EmbedSchema{
+      url: url
     }
+
+    case OpenGraph.fetch(url) do
+      {:error, _} ->
+        %{embed | type: "link"}
+
+      {:ok, og} ->
+        embed = %{
+          embed
+          | type: og.type,
+            title: og.title,
+            description: og.description,
+            thumbnail_url: og.image
+        }
+
+        embed =
+          if og.type === "video" do
+            %{
+              embed
+              | html:
+                  "<iframe src='https://twitter.com/i/videos/#{id}' width='100%' height='400' allowfullscreen></iframe>"
+            }
+          end || embed
+
+        embed
+    end
   end
 end

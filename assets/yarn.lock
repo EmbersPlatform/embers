@@ -843,11 +843,6 @@
     "@types/unist" "*"
     "@types/vfile-message" "*"
 
-"@ungap/create-content@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@ungap/create-content/-/create-content-0.2.0.tgz#f123a7c79f391d853600abf6dba44034a8ced58e"
-  integrity sha512-CvmX0Mr5PfFARDBbSef0B+SAqSeMKaHOG/twJi9nbPtp/MiNPgyBLqZndiyO3RXQ0RXy6TqwarvB6KWzTmc4MQ==
-
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -5824,10 +5819,10 @@ performance-now@^2.1.0:
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
 
 "phoenix@file:../deps/phoenix":
-  version "1.5.3"
+  version "1.4.1"
 
 "phoenix_html@file:../deps/phoenix_html":
-  version "2.14.2"
+  version "2.13.1"
 
 picomatch@^2.0.4, picomatch@^2.2.1:
   version "2.2.2"
@@ -5881,11 +5876,6 @@ pkg-up@^2.0.0:
   integrity sha1-yBmscoBZpGHKscOImivjxJoATX8=
   dependencies:
     find-up "^2.1.0"
-
-plain-tag@^0.1.0:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/plain-tag/-/plain-tag-0.1.2.tgz#ba6c7cfef02d9dbd1054453d16f6af9da8974d68"
-  integrity sha512-rfh3s7X+MxAcMQxbbzt9PXUP8Aq9ETg7VPdEcuNWoAt4MqzWz++WgzeKG4wAVNzp5EJzCPso0zUVZrXxgOXVlg==
 
 popper.js@^1.15.0:
   version "1.16.1"
@@ -7771,29 +7761,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-uarray@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/uarray/-/uarray-1.0.0.tgz#e89bf0ea2129596f4bf653b66e53246ed6562b6c"
-  integrity sha512-LHmiAd5QuAv7pU2vbh+Zq9YOnqVK0H764p2Ozinpfy9ka58OID4IsGLiXsitqH7n0NAIDxvax1A/kDXpii/Ckg==
-
 uc.micro@^1.0.1, uc.micro@^1.0.5:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/uc.micro/-/uc.micro-1.0.6.tgz#9c411a802a409a91fc6cf74081baba34b24499ac"
   integrity sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==
-
-uce@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/uce/-/uce-1.2.2.tgz#b5a7cb9ac8608bfdbc395f1980174d83f4e2511f"
-  integrity sha512-DjUaKZeh+SewVh9LGS6eDynshOSzehuJUfgfHVjvDd6ko4oNEUoJ2Xh/jf1p1a23kK/TDGbGWcMdvPZl+lcRBQ==
-  dependencies:
-    plain-tag "^0.1.0"
-    uhtml "^2.0.1"
-    umap "^1.0.2"
-
-udomdiff@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/udomdiff/-/udomdiff-1.1.0.tgz#1d0c4741b93a2ffd10728ca4cea15b277cc3082f"
-  integrity sha512-aqjTs5x/wsShZBkVagdafJkP8S3UMGhkHKszsu1cszjjZ7iOp86+Qb3QOFYh01oWjPMy5ZTuxD6hw5uTKxd+VA==
 
 uglify-es@^3.3.4:
   version "3.3.9"
@@ -7849,35 +7820,10 @@ uglifyjs-webpack-plugin@^1.1.8:
     webpack-sources "^1.1.0"
     worker-farm "^1.5.2"
 
-uhandlers@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/uhandlers/-/uhandlers-0.3.5.tgz#26109b60e307bfe5bb0685384abd1aeea7af4706"
-  integrity sha512-v5j3eTz8DxEGz89EgTvkCmRt+dZqmUSLB8fCzBQ1v3irsVB8WZr1gfbxm/ZpvcDv5m1r0NlXteg7fx7Rg/YP5w==
-  dependencies:
-    uarray "^1.0.0"
-
-uhtml@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/uhtml/-/uhtml-2.0.1.tgz#5907ddece68c109099c6e820f6c6a7aeaff09c83"
-  integrity sha512-IdFrMu2e5v5WDZPM39beZgFYi7SYgffDbWv5+ylCcq+7hQRF2fiap0DlPf8oPAqiRW/Y7h2qNlUzTUW2IPpXmQ==
-  dependencies:
-    "@ungap/create-content" "^0.2.0"
-    uarray "^1.0.0"
-    udomdiff "^1.1.0"
-    uhandlers "^0.3.5"
-    umap "^1.0.2"
-    uparser "^0.2.1"
-    uwire "^1.0.1"
-
 ultron@1.0.x:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.0.2.tgz#ace116ab557cd197386a4e88f4685378c8b2e4fa"
   integrity sha1-rOEWq1V80Zc4ak6I9GhTeMiy5Po=
-
-umap@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/umap/-/umap-1.0.2.tgz#2d7d4b145ad8c9f957921460798f3e221347c981"
-  integrity sha512-bW127HgG4H4VAD6qlqO5vCC+7bnlYvZ6A6BdwyGblkWvlEG7VYpj1bcpf3iJpvyKmkPZWDIeZDmoULz67ec7NA==
 
 underscore-plus@1.x:
   version "1.7.0"
@@ -8055,11 +8001,6 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
-uparser@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/uparser/-/uparser-0.2.1.tgz#0251e7bca14ebeb222b79baf806784e40870ad47"
-  integrity sha512-hTwK8e+bAaER8gJBOysoFGjRPsX/xOthSPR/ieI9EgTf1rts9ey25tbDXIU0rDr/cGcLsvkCo1n8J/eccfAvvw==
-
 upath@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/upath/-/upath-1.2.0.tgz#8f66dbcd55a883acdae4408af8b035a5044c1894"
@@ -8131,13 +8072,6 @@ uuid@^3.0.1, uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
-
-uwire@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/uwire/-/uwire-1.0.1.tgz#e1723aafd3cfc7bb039f6446d549095b72615b0e"
-  integrity sha512-LOFKTfjqUu+DXbOAxj2Jruy6KY2bDx+HT6JrTOHQFD3a7rPew0ZTkzxef2/1hRBn+YM5wRdwDMAqwqpxoEVWtg==
-  dependencies:
-    uarray "^1.0.0"
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
