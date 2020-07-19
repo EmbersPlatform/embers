@@ -10,12 +10,10 @@ defmodule Embers.Application do
     children = [
       # Start the Ecto repository
       supervisor(Embers.Repo, []),
-      {Phoenix.PubSub, name: Embers.PubSub},
       # Start the endpoint when the application starts
       supervisor(EmbersWeb.Endpoint, []),
       # Start your own worker by calling: Embers.Worker.start_link(arg1, arg2, arg3)
       # worker(Embers.Worker, [arg1, arg2, arg3]),
-      EmbersWeb.Telemetry,
       EmbersWeb.Presence,
       worker(Cachex, [:embers, []]),
       {Task.Supervisor, name: TaskSupervisor, restart: :transient}

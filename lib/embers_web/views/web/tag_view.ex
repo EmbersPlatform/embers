@@ -9,19 +9,19 @@ defmodule EmbersWeb.TagView do
     render_many(tags, __MODULE__, "tag.json")
   end
 
-  def render("tags_paginated.json", %{tags: tags} = _assigns) do
+  def render("tags_paginated.json", %{entries: tags} = metadata) do
     %{
-      items: render_many(tags.entries, __MODULE__, "tag.json"),
-      next: tags.next,
-      last_page: tags.last_page
+      items: render_many(tags, __MODULE__, "tag.json"),
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 
-  def render("tags_ids.json", %{tags_ids: ids} = _assigns) do
+  def render("tags_ids.json", %{entries: ids} = metadata) do
     %{
-      ids: render_many(ids.entries, __MODULE__, "tag_id"),
-      next: ids.next,
-      last_page: ids.last_page
+      ids: render_many(ids, __MODULE__, "tag_id"),
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 

@@ -5,11 +5,11 @@ defmodule EmbersWeb.NotificationView do
 
   alias Embers.Helpers.IdHasher
 
-  def render("notifications.json", %{notifications: notifications} = _assigns) do
+  def render("notifications.json", %{entries: notifications} = metadata) do
     %{
-      items: render_many(notifications.entries, __MODULE__, "notification.json"),
-      next: notifications.next,
-      last_page: notifications.last_page
+      items: render_many(notifications, __MODULE__, "notification.json"),
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 

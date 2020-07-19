@@ -18,7 +18,7 @@ defmodule EmbersWeb.TagBlockController do
         limit: params["limit"]
       )
 
-    render(conn, "tags_paginated.json", blocks: blocks)
+    render(conn, "tags_paginated.json", blocks)
   end
 
   def list_ids(conn, %{"id" => id} = params) do
@@ -31,7 +31,7 @@ defmodule EmbersWeb.TagBlockController do
         limit: params["limit"]
       )
 
-    render(conn, "tags_ids.json", ids: blocks_ids)
+    render(conn, "tags_ids.json", blocks_ids)
   end
 
   def create(

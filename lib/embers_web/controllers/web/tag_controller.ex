@@ -25,7 +25,7 @@ defmodule EmbersWeb.TagController do
 
   def show_tag_posts(conn, %{"name" => name} = params) do
     results = Tags.list_tag_posts(name, before: decode(params["before"]), limit: params["limit"])
-    render(conn, EmbersWeb.FeedView, "timeline.json", page: results)
+    render(conn, EmbersWeb.FeedView, "timeline.json", results)
   end
 
   @doc false
@@ -37,7 +37,7 @@ defmodule EmbersWeb.TagController do
         limit: params["limit"]
       )
 
-    render(conn, "tags_paginated.json", tags: tags)
+    render(conn, "tags_paginated.json", tags)
   end
 
   @doc false
@@ -49,7 +49,7 @@ defmodule EmbersWeb.TagController do
         limit: params["limit"]
       )
 
-    render(conn, "tags_ids.json", tags_ids: tags_ids)
+    render(conn, "tags_ids.json", tags_ids)
   end
 
   @doc false

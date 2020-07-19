@@ -5,11 +5,11 @@ defmodule EmbersWeb.FavoriteView do
 
   alias EmbersWeb.PostView
 
-  def render("favorites.json", %{favorites: favorites} = _favorites) do
+  def render("favorites.json", %{entries: favorites} = metadata) do
     %{
-      items: render_many(favorites.entries, __MODULE__, "favorite.json"),
-      next: favorites.next,
-      last_page: favorites.last_page
+      items: render_many(favorites, __MODULE__, "favorite.json"),
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 

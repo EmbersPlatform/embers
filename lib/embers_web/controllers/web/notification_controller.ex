@@ -19,7 +19,7 @@ defmodule EmbersWeb.NotificationController do
         mark_as_read: params["mark_as_read"]
       )
 
-    render(conn, "notifications.json", notifications: results)
+    render(conn, "notifications.json", results)
   end
 
   def read(conn, %{"id" => id} = _params) do

@@ -4,33 +4,33 @@ defmodule EmbersWeb.FeedView do
   use EmbersWeb, :view
   alias EmbersWeb.PostView
 
-  def render("timeline.json", %{page: page} = assigns) do
+  def render("timeline.json", %{entries: posts} = metadata) do
     %{
       items:
-        Enum.map(page.entries, fn post ->
+        Enum.map(posts, fn post ->
           render(
             EmbersWeb.PostView,
             "show.json",
-            %{post: post, current_user: assigns.current_user}
+            %{post: post, current_user: metadata.current_user}
           )
         end),
-      next: page.next,
-      last_page: page.last_page
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 
-  def render("posts.json", %{page: page} = assigns) do
+  def render("posts.json", %{entries: posts} = metadata) do
     %{
       items:
-        Enum.map(page.entries, fn post ->
+        Enum.map(posts, fn post ->
           render(
             EmbersWeb.PostView,
             "show.json",
-            %{post: post, current_user: assigns.current_user}
+            %{post: post, current_user: metadata.current_user}
           )
         end),
-      next: page.next,
-      last_page: page.last_page
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 

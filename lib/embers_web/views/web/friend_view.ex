@@ -6,19 +6,19 @@ defmodule EmbersWeb.FriendView do
   alias Embers.Helpers.IdHasher
   alias EmbersWeb.UserView
 
-  def render("friends.json", %{friends: friends} = _assigns) do
+  def render("friends.json", %{entries: friends} = metadata) do
     %{
-      items: render_many(friends.entries, __MODULE__, "friend.json"),
-      next: friends.next,
-      last_page: friends.last_page
+      items: render_many(friends, __MODULE__, "friend.json"),
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 
-  def render("friends_ids.json", %{ids: ids} = _assigns) do
+  def render("friends_ids.json", %{entries: ids} = metadata) do
     %{
-      ids: render_many(ids.entries, __MODULE__, "friend_id"),
-      next: ids.next,
-      last_page: ids.last_page
+      ids: render_many(ids, __MODULE__, "friend_id"),
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 

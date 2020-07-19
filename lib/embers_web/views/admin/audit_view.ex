@@ -1,7 +1,7 @@
 defmodule EmbersWeb.Admin.AuditView do
   @moduledoc false
   use EmbersWeb, :view
-  # import Scrivener.HTML
+  import Scrivener.HTML
 
   alias Embers.Helpers.IdHasher
 

@@ -6,19 +6,19 @@ defmodule EmbersWeb.BlockView do
   alias EmbersWeb.UserView
   alias Embers.Helpers.IdHasher
 
-  def render("blocks.json", %{blocks: blocks} = _assigns) do
+  def render("blocks.json", %{entries: blocks} = metadata) do
     %{
-      items: render_many(blocks.entries, __MODULE__, "block.json"),
-      next: blocks.next,
-      last_page: blocks.last_page
+      items: render_many(blocks, __MODULE__, "block.json"),
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 
-  def render("blocks_ids.json", %{ids: ids} = _assigns) do
+  def render("blocks_ids.json", %{entries: ids} = metadata) do
     %{
-      ids: render_many(ids.entries, __MODULE__, "block_ids"),
-      next: ids.next,
-      last_page: ids.last_page
+      ids: render_many(ids, __MODULE__, "block_ids"),
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 

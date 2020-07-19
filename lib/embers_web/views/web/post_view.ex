@@ -46,18 +46,18 @@ defmodule EmbersWeb.PostView do
     end || view
   end
 
-  def render("show_replies.json", %{posts: posts} = assigns) do
+  def render("show_replies.json", %{entries: posts} = metadata) do
     %{
       items:
-        Enum.map(posts.entries, fn post ->
+        Enum.map(posts, fn post ->
           render(
             __MODULE__,
             "show.json",
-            %{post: post, current_user: assigns.current_user}
+            %{post: post, current_user: metadata.current_user}
           )
         end),
-      next: posts.next,
-      last_page: posts.last_page
+      next: metadata.next,
+      last_page: metadata.last_page
     }
   end
 

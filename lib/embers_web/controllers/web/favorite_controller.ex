@@ -19,7 +19,7 @@ defmodule EmbersWeb.FavoriteController do
         limit: params["limit"]
       )
 
-    render(conn, "favorites.json", favorites: favs)
+    render(conn, "favorites.json", favs)
   end
 
   def create(

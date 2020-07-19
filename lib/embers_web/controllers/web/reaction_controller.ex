@@ -41,7 +41,7 @@ defmodule EmbersWeb.ReactionController do
 
         conn
         |> put_view(EmbersWeb.PostView)
-        |> render("show.json", post: post)
+        |> render("show.json", %{post: post})
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
@@ -64,7 +64,7 @@ defmodule EmbersWeb.ReactionController do
 
     conn
     |> put_view(EmbersWeb.PostView)
-    |> render("show.json", post: post)
+    |> render("show.json", %{post: post})
   end
 
   def list_valid_reactions(conn, _parms) do
@@ -93,6 +93,6 @@ defmodule EmbersWeb.ReactionController do
     reactions = Reactions.who_reacted(post_id, reaction: reaction_name, after: params["after"])
 
     conn
-    |> render("reactions.json", reactions: reactions)
+    |> render("reactions.json", reactions)
   end
 end

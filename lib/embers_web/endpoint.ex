@@ -3,15 +3,7 @@ defmodule EmbersWeb.Endpoint do
 
   plug(RemoteIp)
 
-  socket("/live", Phoenix.LiveView.Socket)
   socket("/socket", EmbersWeb.UserSocket)
-
-  plug(Plug.RequestId)
-  plug(
-    Phoenix.LiveDashboard.RequestLogger,
-    param_key: "request_logger",
-    cookie_key: "request_logger"
-  )
 
   # Serve at "/" the static files from "priv/static" directory.
   #

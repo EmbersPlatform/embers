@@ -31,7 +31,7 @@ defmodule EmbersWeb.FriendController do
 
     friends = %{friends | entries: users}
 
-    render(conn, "friends.json", friends: friends)
+    render(conn, "friends.json", friends)
   end
 
   def list_ids(conn, %{"id" => id} = params) do
@@ -123,7 +123,7 @@ defmodule EmbersWeb.FriendController do
 
     friends = %{friends | entries: users}
 
-    render(conn, "friends.json", friends: friends)
+    render(conn, "friends.json", friends)
   end
 
   def list__followers_ids(conn, %{"id" => id} = params) do
@@ -136,6 +136,6 @@ defmodule EmbersWeb.FriendController do
         limit: params["limit"]
       )
 
-    render(conn, "friends_ids.json", ids: friends_ids)
+    render(conn, "friends_ids.json", friends_ids)
   end
 end
