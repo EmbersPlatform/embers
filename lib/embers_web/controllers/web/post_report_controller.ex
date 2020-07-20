@@ -10,6 +10,15 @@ defmodule EmbersWeb.PostReportController do
   alias EmbersWeb.Plugs.CheckPermissions
 
   plug(CheckPermissions, [permission: "create_report"] when action in [:create])
+  plug(
+    :rate_limit_reports,
+    [max_requests: 10, interval_seconds: 60] when action in [:create]
+  )
+
+  def rate_limit_reports(conn, options \\ []) do
+    options = Keyword.merge(options, bucket_name: "report_creation:#{conn.assigns.current_user.id}")
+    EmbersWeb.RateLimit.rate_limit(conn, options)
+  end
 
   def create(%{assigns: %{current_user: user}} = conn, %{"post_id" => id} = params) do
     reportable = Posts.get_post!(decode(id))
