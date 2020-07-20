@@ -100,8 +100,27 @@ export default {
     max-width: 100%;
   }
 }
-[data-card-size="little"] .link-item__oembed iframe {
-  max-height: 200px;
+
+[data-card-size="little"] .link-item__oembed {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 56.25%;
+
+  &>iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  &>twitter-embed {
+    display: block;
+    margin-top: -56.25%;
+  }
 }
 
 .link-item__title {

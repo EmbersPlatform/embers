@@ -34,6 +34,7 @@
             :ref="`item-${index}`"
             @intersect="post_in_view(index)"
             @leave="post_leaves_view(index)"
+            @medialoaded="redraw_masonry"
           ></Card>
           <Card
             v-else
@@ -94,6 +95,8 @@ import _ from "lodash";
 import feed from "../api/feed";
 
 import formatter from "@/lib/formatter";
+
+import EventBus from "@/lib/event_bus";
 
 import Card from "./Card/_Card";
 import Intersector from "./Intersector";
@@ -168,6 +171,9 @@ export default {
       }
       this.isMasonry = false;
       return;
+    },
+    redraw_masonry() {
+      this.$redrawVueMasonry("#masonry");
     },
     // Concatena shared post que se siguen el uno al otro
     // TODO concatenar post entre peticiones loadmore y vista actual
@@ -331,6 +337,10 @@ export default {
     this.$root.$on("prepend_new_posts", this.prepend_new_posts);
     this.noMasonry(); //check if can show masonry at page load
     window.addEventListener("resize", this.noMasonry);
+
+    EventBus.$on("medialoaded", e => {
+      this.redraw_masonry()
+    })
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.noMasonry);

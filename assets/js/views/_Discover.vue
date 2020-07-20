@@ -46,6 +46,7 @@
 <script>
 import axios from "axios";
 
+import EventBus from "@/lib/event_bus";
 import Card from "@/components/Card/_Card";
 import Top from "@/components/Top";
 import Intersector from "@/components/Intersector";
@@ -93,10 +94,16 @@ export default {
         body.scrollTop = old_scroll;
       });
       this.loading_more = false;
-    }
+    },
+    redraw_masonry() {
+      this.$redrawVueMasonry("#masonry");
+    },
   },
   mounted() {
     this.fetch_public();
+    EventBus.$on("medialoaded", e => {
+      this.redraw_masonry()
+    });
   },
   beforeDestroy() {
     this.$store.dispatch("cleanFeedPosts");
@@ -105,12 +112,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+#wrapper {
+  padding: 30px 0;
+}
 #content {
   justify-content: flex-start;
   align-items: center;
 }
 .hot-tags {
-  width: 230px;
+  width: 325px;
   margin: 0 15px 30px 15px;
 }
 </style>
