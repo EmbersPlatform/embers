@@ -1,3 +1,14 @@
 #!/usr/bin/env bash
-source .env
-MIX_ENV=prod mix release unix --overwrite
+
+rm -rf priv/static
+mkdir priv-static
+
+mix embers.static
+
+cd assets && yarn production
+cd admin && yarn production
+cd ../../
+
+mix phx.digest
+
+MIX_ENV=prod mix release tar
