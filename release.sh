@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 rm -rf priv/static
-mkdir priv-static
+mkdir priv/static
 
 mix embers.static
 
