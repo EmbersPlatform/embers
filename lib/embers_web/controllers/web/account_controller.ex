@@ -11,10 +11,10 @@ defmodule EmbersWeb.Web.AccountController do
 
   plug(:guest_check when action in [:new, :create])
 
-  plug(
-    :rate_limit_signup,
-    [max_requests: 5, interval_seconds: 60] when action in [:create]
-  )
+  #plug(
+  #  :rate_limit_signup,
+  #  [max_requests: 5, interval_seconds: 60] when action in [:create]
+  #)
 
   def rate_limit_signup(conn, options \\ []) do
     ip = conn.remote_ip

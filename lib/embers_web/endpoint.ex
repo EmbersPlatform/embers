@@ -2,6 +2,7 @@ defmodule EmbersWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :embers
 
   plug(Unpoly)
+  plug(RemoteIp)
 
   socket("/socket", EmbersWeb.UserSocket)
 

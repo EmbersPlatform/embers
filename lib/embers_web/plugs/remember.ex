@@ -27,19 +27,28 @@ defmodule EmbersWeb.Remember do
   defp maybe_renew_session(conn, token) do
     with {:ok, user_id} <- Token.verify(token, max_age: @max_age),
          {:ok, %{id: session_id}} <- Sessions.create_session(%{user_id: user_id}) do
-      conn
-      |> put_session(:phauxth_session_id, session_id)
-      |> add_rem_cookie(user_id)
-      |> configure_session(renew: true)
-      |> EmbersWeb.Authenticate.authenticate()
-      |> EmbersWeb.Authenticate.report([])
-      |> EmbersWeb.Authenticate.set_user(conn)
+      renew_session(conn, user_id, session_id)
     else
-      {:error, _reason} ->
-        conn
-        |> delete_session(:phauxth_session_id)
-        |> delete_rem_cookie()
+      {:error, _reason} -> revoke_sesion(conn)
     end
+  rescue
+    MatchError -> revoke_sesion(conn)
+  end
+
+  defp renew_session(conn, user_id, session_id) do
+    conn
+    |> put_session(:phauxth_session_id, session_id)
+    |> add_rem_cookie(user_id)
+    |> configure_session(renew: true)
+    |> EmbersWeb.Authenticate.authenticate()
+    |> EmbersWeb.Authenticate.report([])
+    |> EmbersWeb.Authenticate.set_user(conn)
+  end
+
+  defp revoke_sesion(conn) do
+    conn
+    |> delete_session(:phauxth_session_id)
+    |> delete_rem_cookie()
   end
 
   @doc """

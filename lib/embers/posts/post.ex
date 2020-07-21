@@ -295,6 +295,9 @@ defmodule Embers.Posts.Post do
 
     is_trusted? =
       cond do
+        user_id == parent_owner.id ->
+          true
+
         parent_owner.settings.privacy_trust_level == "everyone" ->
           true
 

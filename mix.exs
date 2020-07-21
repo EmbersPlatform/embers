@@ -5,7 +5,7 @@ defmodule Embers.Mixfile do
   def project do
     [
       app: :embers,
-      version: "0.2.23",
+      version: "0.2.27",
       elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -93,7 +93,8 @@ defmodule Embers.Mixfile do
       {:scrivener_html, "~> 1.8"},
       {:ex_rated, "~> 1.2"},
       {:phoenix_inline_svg, "~> 1.3"},
-      {:phoenix_active_link, "~> 0.3.0"}
+      {:phoenix_active_link, "~> 0.3.0"},
+      {:remote_ip, "~> 0.2.1"}
     ]
   end
 
