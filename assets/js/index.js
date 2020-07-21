@@ -10,3 +10,4 @@ import * as Components from "./components";
 // Turbolinks.start();
 Constrollers.init();
 Components.init();
+

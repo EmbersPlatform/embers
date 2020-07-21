@@ -4,6 +4,10 @@ twitter-embed {
   flex-direction: column;
   align-items: center;
 
+  &>.twitter-tweet {
+    margin: 0!important;
+  }
+
   &> blockquote {
     display: none;
   }
