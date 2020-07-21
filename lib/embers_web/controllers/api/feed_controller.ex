@@ -12,7 +12,6 @@ defmodule EmbersWeb.Api.FeedController do
 
   plug(:user_check when action in [:timeline, :hide_post])
 
-<<<<<<< HEAD
   plug(
     :rate_limit_feeds,
     [max_requests: 20, interval_seconds: 60] when action in [
@@ -27,8 +26,6 @@ defmodule EmbersWeb.Api.FeedController do
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end
 
-=======
->>>>>>> 418616d40149eb31ad4271c602c5f1fc734ce2d5
   def timeline(%Plug.Conn{assigns: %{current_user: %{id: user_id}}} = conn, params) do
     results =
       Timeline.get(
