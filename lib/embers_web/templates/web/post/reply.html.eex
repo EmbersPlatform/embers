@@ -99,7 +99,7 @@
     <p class="dialog-title"><%= gettext("Delete reply?") %></p>
     <p><%= gettext("This will permanently delete this reply") %></p>
   </confirm-dialog>
-  <reactions-dialog data-target="reply.reactionsDialog" data-reply-id="<%= encode_id(@reply.id) %>"></reactions-dialog>
+  <reactions-dialog data-target="reply.reactionsDialog" data-post-id="<%= encode_id(@reply.id) %>"></reactions-dialog>
   <media-gallery data-target="medias.gallery">
     <%= if (length @reply.links) > 0 do %>
       <%= for link <- @reply.links do %>
