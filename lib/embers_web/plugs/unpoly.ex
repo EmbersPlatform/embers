@@ -142,7 +142,6 @@ defmodule Unpoly do
   end
 
   defp echo_request_headers(conn) do
-    IO.inspect(conn)
     conn
     |> put_resp_location_header(conn.request_path)
     |> put_resp_method_header(conn.method)

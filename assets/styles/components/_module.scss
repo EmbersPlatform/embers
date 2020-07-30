@@ -1,5 +1,8 @@
 @import "./alert.scss";
 @import "./avatar.scss";
+@import "./avatar-editor.scss";
+@import "./cover-editor.scss";
+@import "./croppable-image.scss";
 @import "./editor/_module.scss";
 @import "./fabs-zone.scss";
 @import "./feed.scss";
@@ -19,6 +22,10 @@
 @import "./tag.scss";
 @import "./timeline.scss";
 @import "./twitter-embed.scss";
+@import "./masonry-layout.scss";
+
+@import "./design-options.scss";
+@import "./privacy-options.scss";
 
 @import "./reply/_module.scss";
 @import "./post/_module.scss";

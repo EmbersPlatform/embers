@@ -11,5 +11,46 @@
   "Share post": "Compartir publicacion",
   "Show": "Mostrar",
   "Hide": "Ocultar",
-  "Loading...": "Cargando..."
+  "Loading...": "Cargando...",
+
+  "Scroll to top": "Ir hacia arriba",
+
+
+  "The max file size if 5MB": "El tamaño máximo es de 5MB",
+  "The file type is not allowed": "El tipo de archivo no está permitido",
+
+  "Profile": "Perfil",
+  "Content": "Contenido",
+  "Design": "Diseño",
+  "Privacy": "Privacy",
+  "Security": "Seguridad",
+
+  "Username": "Nombre de usuario",
+  "Email": "Correo electrónico",
+  "Bio": "Descripción",
+
+  "Save changes": "Guardar cambios",
+  "Saving changes...": "Guardando cambios...",
+
+  "Not Safe For Work content": "Contenido NSFW",
+  "Show NSFW content": "Mostrar contenido NSFW",
+  "Ask before showing": "Preguntar antes de mostrar",
+  "Hide NSFW content": "Ocultar contenido NSFW",
+
+  "Images": "Imágenes",
+  "Collapse tall images in posts": "Contraer imágenes muy largas",
+  "Dark": "Oscuro",
+  "Light": "Claro",
+
+  "Show my online status": "Mostrar a los demás usuarios si estoy en línea",
+  "Everyone can see my reactions": "Los demás usuarios pueden ver a qué reaccioné",
+
+  "Who can comment my posts": "Quién puede comentar mis publicaciones",
+  "Everyone": "Todos",
+  "Only those I follow": "Sólo quienes sigo",
+
+  "Reset password": "Restablecer contraseña",
+  "A mail was sent with a link to reset your password": "Enviamos un enlace a tu correo para que puedas cambiar tu contraseña",
+  "An unexpected error ocurred, please try again later": "Ocurrió un error inesperado, por favor intenta más tarde",
+  "Please wait a few minutes before requesting another password reset": "Por favor espera unos minutos antes de solicitar otro cambio de contraseña"
 }

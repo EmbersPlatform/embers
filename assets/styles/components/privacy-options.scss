@@ -1,0 +1,19 @@
+privacy-options {
+  display: flex;
+  flex-direction: column;
+
+  &>*+* {
+    margin-top: 1em;
+  }
+
+  .group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+}

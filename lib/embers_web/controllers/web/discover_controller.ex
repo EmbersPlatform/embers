@@ -28,8 +28,6 @@ defmodule EmbersWeb.Web.DiscoverController do
         blocked_tags: blocked_tags
       )
 
-    IO.inspect(params)
-
     if params["entries"] == "true" do
       conn
       |> put_layout(false)

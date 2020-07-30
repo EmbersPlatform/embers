@@ -29,6 +29,7 @@
   dialog-box {
     display: block;
     z-index: 1;
+    box-sizing: border-box;
 
     background: var(--dialog-background, var(--primary));
     color: var(--dialog-foreground, var(--text));

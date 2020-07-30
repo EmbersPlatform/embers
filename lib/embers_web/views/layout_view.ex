@@ -59,11 +59,13 @@ defmodule EmbersWeb.LayoutView do
     if is_nil(user) do
       ""
     else
-      content = if is_nil(content), do: sidebar_default_content(), else: content
+      content = if is_nil(content), do: sidebar_default_content(assigns), else: content
 
       ~E"""
       <nav id="sidebar" is="embers-sidebar">
-        <%= content %>
+        <section>
+          <%= content %>
+        </section>
         <footer>
           <pop-up class="nav-user-menu" data-controller="user-menu">
             <img src="<%= user.meta.avatar.small %>" class="user-avatar" pop-up-trigger/>
@@ -86,7 +88,7 @@ defmodule EmbersWeb.LayoutView do
     end
   end
 
-  defp sidebar_default_content() do
-    render("_default_sidebar.html")
+  defp sidebar_default_content(assigns) do
+    render("_default_sidebar.html", assigns)
   end
 end

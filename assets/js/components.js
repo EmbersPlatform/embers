@@ -1,6 +1,6 @@
 import { define } from "heresy";
 // @ts-ignore
-import components from "./components/*/index.ts";
+import components from "./components/**/*.comp.ts";
 
 const register = component => {
   // Hack, since class names get transpiled and the name property can't
@@ -15,24 +15,17 @@ const register = component => {
   define(component)
 }
 
-import PostTags from "./components/post/tags";
-import PostFavButton from "./components/post/favorite-button";
-import PostActions from "./components/post/post_actions";
-import PostViewerModal from "./components/post/post-viewer-modal";
-
-import ENotification from "./components/notifications_panel/notification";
-import NotificationsBell from "./components/notifications_panel/notifications-bell";
+const traverse_module = (module) => {
+  if(module.__esModule) {
+    register(module.default)
+  } else {
+    for(let name in module) {
+      traverse_module(module[name])
+    }
+  }
+}
 
 export function init() {
-  for(let name in components) {
-    register(components[name].default);
-  }
-  register(PostTags);
-  register(PostFavButton);
-  register(PostActions);
-  register(PostViewerModal);
-
-  register(ENotification);
-  register(NotificationsBell);
+  traverse_module(components)
 }
 

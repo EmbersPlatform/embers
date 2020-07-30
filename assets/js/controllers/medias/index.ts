@@ -1,5 +1,5 @@
 import { BaseController } from "~js/lib/controller";
-import MediaGallery from "~js/components/media_gallery";
+import MediaGallery from "~js/components/media_gallery/media_gallery.comp";
 
 export const name = "medias"
 

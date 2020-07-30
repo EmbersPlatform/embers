@@ -19,6 +19,7 @@ export default class PostFavButton extends Component(HTMLButtonElement) {
   faved
 
   oninit() {
+    this.faved = this.closest("article").hasAttribute("faved");
     this.toggle_favorite = this.toggle_favorite.bind(this);
 
     this.addEventListener("click", this.toggle_favorite);

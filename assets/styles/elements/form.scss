@@ -1,4 +1,20 @@
-form fieldset {
+fieldset {
   border: none;
   padding: 0;
+  margin-bottom: 2em;
+
+  &>legend {
+    margin-bottom: 1em;
+    font-size: 1.2em;
+  }
+
+  &>label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+}
+
+label>input[type=radio] {
+  margin-right: 0.5em;
 }

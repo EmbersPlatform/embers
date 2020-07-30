@@ -1,5 +1,5 @@
 import {Component} from "~js/components/component";
-import type EmbersSidebar from "~js/components/sidebar";
+import type EmbersSidebar from "~js/components/sidebar/sidebar.comp";
 
 export default class EmbersNavigation extends Component(HTMLElement) {
   static component = "EmbersNavigation";

@@ -1,20 +1,32 @@
 <h1>Inicio</h1>
 <ul>
   <li>
-    <a href="/">
+    <%= active_link(@conn,
+      to: "/",
+      active: :exact,
+      "aria-label": gettext("Activity"),
+      title: gettext("Activity"),
+      "up-preload": true
+    ) do %>
       <span>
         <%= svg_image("activity") %>
       </span>
-      <span>Actividad</span>
-    </a>
+      <span><%= gettext("Activity") %></span>
+    <% end %>
   </li>
   <li>
-    <a href="/favorites">
+    <%= active_link(@conn,
+      to: favorite_path(@conn, :list),
+      active: :exact,
+      "aria-label": gettext("Favorites"),
+      title: gettext("Favorites"),
+      "up-preload": true
+    ) do %>
       <span>
         <%= svg_image("icons/star_outline") %>
       </span>
-      <span>Favoritos</span>
-    </a>
+      <span><%= gettext("Favorites") %></span>
+    <% end %>
   </li>
   <li>
     <a href="/subs">

@@ -107,6 +107,19 @@ defmodule EmbersWeb.Router do
     get("/register", AccountController, :new)
     post("/register", AccountController, :create)
 
+    # Settings
+    get("/settings", SettingsController, :show_profile)
+    patch("/settings", SettingsController, :update)
+    post("/settings/reset_pass", SettingsController, :reset_pass)
+    get("/settings/profile", SettingsController, :show_profile)
+    patch("/settings/profile/update_profile", SettingsController, :update_profile)
+    post("/settings/profile/update_cover", SettingsController, :update_cover)
+    post("/settings/profile/update_avatar", SettingsController, :update_avatar)
+    get("/settings/content", SettingsController, :show_content)
+    get("/settings/design", SettingsController, :show_design)
+    get("/settings/privacy", SettingsController, :show_privacy)
+    get("/settings/security", SettingsController, :show_security)
+
     # Feeds
     get("/timeline", TimelineController, :index)
     get("/discover", DiscoverController, :index)

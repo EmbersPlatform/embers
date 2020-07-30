@@ -2,7 +2,7 @@
 import {html, ref} from "heresy"
 import PubSub from "pubsub-js";
 
-import ModalDialog from "~js/components/dialog";
+import ModalDialog from "~js/components/dialog/dialog.comp";
 
 import i18n from "~js/lib/gettext";
 

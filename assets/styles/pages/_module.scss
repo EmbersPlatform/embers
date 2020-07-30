@@ -1,8 +1,11 @@
-@import "./session/_module.scss";
+@import "./session/module";
 
-@import "./home/_module.scss";
-@import "./discover/_module.scss";
+@import "./home/module";
+@import "./discover/module";
+@import "./favorites/module";
 
-@import "./post/_module.scss";
+@import "./post/module";
 
-@import "./user/_module.scss";
+@import "./settings/module";
+
+@import "./user/module";

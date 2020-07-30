@@ -23,7 +23,7 @@
   --link-foreground: var(--link);
 }
 
-.theme-dark {
+[theme=dark] {
   --primary: #222327;
   --secondary: #26272b;
   --secondary-accent: #1a1a1d;
@@ -76,6 +76,8 @@
   --avatar-border: #ccc;
   --avatar-hover-border: var(--link);
 
+  --warning-nsfw-background: #ff4c4c66;
+  --warning-nsfw-foreground: #fff;
   --post-username-color: var(--text);
   --post-footer-foreground: var(--text);
 
@@ -92,7 +94,7 @@
   --link-background: #2b2d31;
 }
 
-.theme-light {
+[theme=light] {
   --primary: #fff;
   --secondary: #f3f3f3;
   --secondary-accent: #f2f2f2;
@@ -131,6 +133,8 @@
   --scrollbar-thumb-background: var(--accent);
   --scrollbar-thumb-foreground: var(--scrollbar-background);
 
+  --warning-nsfw-background: var(--danger);
+  --warning-nsfw-foreground: #fff;
   --post-commentbox-background: #fff;
   --post-footer-foreground: var(--text);
 

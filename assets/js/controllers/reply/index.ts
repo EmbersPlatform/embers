@@ -1,7 +1,7 @@
 import { BaseController } from "~js/lib/controller"
 
 import * as Posts from "~js/lib/posts";
-import type ModalDialog from "~js/components/dialog";
+import type ModalDialog from "~js/components/dialog/dialog.comp";
 
 export const name = "reply"
 

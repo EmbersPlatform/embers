@@ -2,7 +2,7 @@ import { BaseController } from "~js/lib/controller";
 
 import * as Discover from "~js/lib/discover";
 import { gettext } from "~js/lib/gettext";
-import LoadingIndicator from "~js/components/loading_indicator";
+import LoadingIndicator from "~js/components/loading_indicator/loading_indicator.comp";
 
 enum States {Idle, Loading, Finished};
 

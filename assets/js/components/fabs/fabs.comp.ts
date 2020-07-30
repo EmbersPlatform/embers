@@ -4,6 +4,7 @@ import { Component } from "../component";
 import throttle from "~js/lib/utils/throttle";
 
 import icon_arrow_top from "~static/svg/generic/icons/angle-up.svg";
+import { gettext } from "~js/lib/gettext";
 
 const scroll_top_threshold = 300;
 
@@ -40,7 +41,7 @@ export default class FabsZone extends Component(HTMLElement) {
     this.html`
       ${this.show_scroll_top
         ? html`
-          <button onclick=${scroll_top} title="Scroll to top">
+          <button onclick=${scroll_top} title=${ gettext("Scroll to top") }>
             ${{html: icon_arrow_top}}
           </button>
         `

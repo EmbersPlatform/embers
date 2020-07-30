@@ -2,7 +2,7 @@ import { BaseController } from "~js/lib/controller";
 
 import * as Timeline from "~js/lib/timeline";
 import { gettext } from "~js/lib/gettext";
-import LoadingIndicator from "~js/components/loading_indicator";
+import LoadingIndicator from "~js/components/loading_indicator/loading_indicator.comp";
 
 import PubSub from "pubsub-js";
 import ActivitiesCache from "./activities_cache";

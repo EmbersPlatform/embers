@@ -1,6 +1,5 @@
 import { html } from "heresy";
-import ModalDialog from "../dialog";
-import Turbolinks from "turbolinks";
+import ModalDialog from "../dialog/dialog.comp";
 
 import back_icon from "/static/svg/generic/icons/angle-left.svg";
 import { dgettext } from "~js/lib/gettext";

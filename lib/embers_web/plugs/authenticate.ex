@@ -48,9 +48,11 @@ defmodule EmbersWeb.Authenticate do
 
   def set_user(user, conn) do
     token = Token.sign(%{"user_id" => user.id})
+    settings = Embers.Profile.Settings.get_setting!(user.id)
 
     conn
     |> assign(:current_user, user)
+    |> assign(:settings, settings)
     |> assign(:user_token, token)
     |> EmbersWeb.Remember.add_rem_cookie(user.id)
   end

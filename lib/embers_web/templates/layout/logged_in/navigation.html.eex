@@ -87,7 +87,13 @@
       </pop-up>
     </li>
     <li>
-      <%= svg_image("settings") %>
+      <%= active_link(@conn,
+        to: "/settings",
+        "aria-label": gettext("Settings"),
+        title: gettext("Settings")
+      ) do %>
+        <%= svg_image("settings") %>
+      <% end %>
     </li>
   </ul>
   <ul class="desktop-hidden">

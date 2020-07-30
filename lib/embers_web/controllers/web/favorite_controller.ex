@@ -8,7 +8,36 @@ defmodule EmbersWeb.Web.FavoriteController do
 
   action_fallback(EmbersWeb.Web.FallbackController)
 
-  plug(:user_check when action in [:create, :delete])
+  plug(:user_check)
+
+  def list(conn, params) do
+    user = conn.assigns.current_user
+    favs =
+      Favorites.list_paginated(user.id,
+        after: IdHasher.decode(params["after"]),
+        before: IdHasher.decode(params["before"]),
+        limit: params["limit"]
+      )
+
+    favs = update_in(favs.entries,
+      fn favs ->
+        Enum.map(favs,
+          fn fav -> fav.post end
+        )
+      end
+    )
+    |> Embers.Feed.Utils.load_avatars()
+
+    if params["entries"] == "true" do
+      conn
+      |> put_layout(false)
+      |> Embers.Paginator.put_page_headers(favs)
+      |> render("entries.html", favorites: favs)
+    else
+      conn
+      |> render("index.html", favorites: favs)
+    end
+  end
 
   def create(conn, %{"post_id" => post_id} = _params) do
     user = conn.assigns.current_user

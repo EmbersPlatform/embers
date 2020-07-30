@@ -22,7 +22,7 @@ defmodule Embers.Profile.Settings do
   """
   def update_setting(%Setting{} = setting, attrs) do
     setting
-    |> Setting.changeset(attrs)
+    |> Setting.update_changeset(attrs)
     |> Repo.update()
   end
 

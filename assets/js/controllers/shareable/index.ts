@@ -1,5 +1,5 @@
 import { BaseController } from "~js/lib/controller";
-import type SharePostDialog from "~js/components/share_post_dialog";
+import type SharePostDialog from "~js/components/share_post_dialog/share_post_dialog.comp";
 
 export const name = "shareable"
 

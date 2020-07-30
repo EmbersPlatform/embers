@@ -41,6 +41,7 @@
 
   <link href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<%= static_path(@conn, "/dist/styles/main.css") %>">
+  <link rel="stylesheet" href="https://unpkg.com/croppie/croppie.css">
 
   <script src="https://platform.twitter.com/widgets.js"></script>
   <script>this.customElements||document.write('<script src="//unpkg.com/document-register-element"><\x2fscript>');</script>
@@ -49,7 +50,7 @@
   <%= render("_context_data.html", assigns) %>
   <script src="<%= static_path(@conn, "/dist/js/index.js") %>" defer></script>
 </head>
-<body class="theme-dark">
+<body theme="<%= @conn.assigns.settings.style_theme %>">
   <div id="embers">
     <%= render "logged_in/navigation.html", assigns %>
     <div id="board">

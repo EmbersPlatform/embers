@@ -66,7 +66,8 @@ defmodule Embers.Profile.Uploads.Avatar do
   end
 
   defp valid?(file) do
-    ~w(.jpg .jpeg .gif .png) |> Enum.member?(Path.extname(file.filename))
+    [_, type] = String.split(file.content_type, "/")
+    ~w(jpg jpeg gif png) |> Enum.member?(type)
   end
 
   defp make_small(image) do

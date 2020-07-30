@@ -27,6 +27,18 @@ defmodule Embers.Profile.Meta do
     |> validate_length(:bio, max: 255)
   end
 
+  def update_cover_changeset(meta) do
+    meta
+    |> Ecto.Changeset.change(cover_version: Integer.to_string(:os.system_time(:seconds)))
+  end
+
+  def update_avatar_changeset(meta) do
+    meta
+    |> Ecto.Changeset.change(
+      avatar_version: DateTime.utc_now() |> DateTime.to_unix() |> Integer.to_string()
+    )
+  end
+
   def avatar_map(%Meta{avatar_version: nil} = _meta) do
     %{
       small: "/images/default_avatar.jpg",

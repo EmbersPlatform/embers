@@ -76,12 +76,20 @@ export const get = async (url: string, options?: Object) => {
   return await perform_fetch(url, "GET", options);
 }
 
-export const post = async (url, body, options?) => {
+export const post = async (url, body?, options?) => {
   return await perform_fetch(url, "POST", { body, ...options });
 }
 
 export const delet = async (url: string, options?: Object) => {
   return await perform_fetch(url, "DELETE", options);
+}
+
+export const put = async (url, body, options?) => {
+  return await perform_fetch(url, "PUT", { body, ...options });
+}
+
+export const patch = async (url, body, options?) => {
+  return await perform_fetch(url, "PATCH", { body, ...options });
 }
 
 export interface PaginationPage {
@@ -97,4 +105,10 @@ export const parse_pagination = async (response: Response): Promise<PaginationPa
     last_page: metadata.last_page,
     next: metadata.next
   }
+}
+
+export const formdata_from_file = (file: Blob | File, key = "file") => {
+  let formdata = new FormData();
+  formdata.append(key, file);
+  return formdata;
 }

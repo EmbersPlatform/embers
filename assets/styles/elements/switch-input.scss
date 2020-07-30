@@ -47,6 +47,7 @@ switch-input {
       background: #fff;
       transform: translate(0, -50%);
       border-radius: 50%;
+      border: var(--border);
       transition: 0.3s all ease-out;
     }
   }
@@ -58,5 +59,10 @@ switch-input {
       left: calc(100% - .3em);
       transform: translate(-100%, -50%);
     }
+  }
+
+  input[type="checkbox"][disabled] + .tip {
+    filter: grayscale(50%);
+    opacity: 0.6;
   }
 }

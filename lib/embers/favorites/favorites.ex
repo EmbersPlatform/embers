@@ -45,6 +45,7 @@ defmodule Embers.Favorites do
     |> with_post()
     |> Paginator.paginate(opts)
     |> set_faved_status()
+    |> fill_nsfw()
   end
 
   defp with_post(query) do
@@ -52,24 +53,15 @@ defmodule Embers.Favorites do
       left_join: post in assoc(fav, :post),
       as: :post,
       order_by: [desc: fav.inserted_at, desc: post.inserted_at],
-      left_join: post_user in assoc(post, :user),
-      left_join: post_user_meta in assoc(post_user, :meta),
-      left_join: related in assoc(post, :related_to),
-      left_join: related_user in assoc(related, :user),
-      left_join: related_user_meta in assoc(related_user, :meta),
-      preload: [post: [:tags, :media, :links, related_to: [:media, :links]]],
       preload: [
-        post: {
-          post,
-          user: {
-            post_user,
-            meta: post_user_meta
-          },
-          related_to: {
-            related,
-            user: {related_user, meta: related_user_meta}
-          }
-        }
+        post: [
+          :media,
+          :links,
+          :tags,
+          :reactions,
+          user: [:meta],
+          related_to: [:media, :tags, :links, :reactions, user: :meta]
+        ]
       ]
     )
   end
@@ -79,5 +71,13 @@ defmodule Embers.Favorites do
       page
       | entries: Enum.map(favs, fn fav -> %{fav | post: %{fav.post | faved: true}} end)
     }
+  end
+
+  def fill_nsfw(page) do
+    Map.update!(page, :entries, fn favs ->
+      Enum.map(favs, fn fav ->
+        %{fav | post: Embers.Posts.Post.fill_nsfw(fav.post)}
+      end)
+    end)
   end
 end

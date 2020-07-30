@@ -14,7 +14,7 @@ export default class TwitterEmbed extends Component(HTMLElement) {
       }
     )
     .then(() => {
-      this.dispatch("medialoaded")
+      this.dispatch("medialoaded", null, {bubbles: true})
     })
   }
 }

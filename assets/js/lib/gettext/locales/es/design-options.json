@@ -1,0 +1,8 @@
+{
+  "": {
+    "language": "es",
+    "plural-forms": "nplurals = 2; plural = (n != 1);"
+  },
+  "5 minutes ago": "Hace 5 minutos",
+  "Hello world!": "¡Hola mundo!"
+}

@@ -2,7 +2,7 @@
 
 import { html } from "heresy";
 
-import ModalDialog from "../dialog";
+import ModalDialog from "../dialog/dialog.comp";
 
 import { gettext } from "~js/lib/gettext";
 

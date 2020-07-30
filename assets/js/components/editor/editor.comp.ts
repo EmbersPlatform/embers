@@ -10,11 +10,12 @@ import { Component } from "~js/components/component";
 import * as Posts from "~js/lib/posts";
 import * as PostValidations from "~js/lib/posts/validations";
 import * as Links from "~js/lib/links";
+import * as Medias from "~js/lib/medias";
 
 import add_image_icon from "/static/svg/generic/image.svg";
 import publish_icon from "~static/svg/generic/inbox.svg";
 
-import AutosizeTextarea from "../textarea";
+import AutosizeTextarea from "../textarea/textarea.comp";
 import TagInput from "./tag_input";
 import MediaZone from "./medias/zone";
 import LinkZone from "./link_zone";
@@ -200,6 +201,7 @@ export default class PostEditor extends Component(HTMLElement) {
       : ``
 
     const toggle_nsfw = event => {
+      console.log(event)
       setNsfw(event.detail);
     }
 
@@ -221,6 +223,7 @@ export default class PostEditor extends Component(HTMLElement) {
                   onchange=${select_media}
                   multiple
                   disabled=${publishing}
+                  accept=${Medias.allowed_media_types.join(",")}
                 >
               </label>
               `
@@ -257,6 +260,7 @@ export default class PostEditor extends Component(HTMLElement) {
                 onchange=${select_media}
                 multiple
                 disabled=${publishing}
+                accept=${Medias.allowed_media_types.join(",")}
               >
             </label>
             `

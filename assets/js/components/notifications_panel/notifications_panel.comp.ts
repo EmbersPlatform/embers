@@ -1,7 +1,7 @@
 import { Component } from "../component";
 import * as Notifications from "~js/lib/notifications";
-import IntersectObserver from "../intersection_observer";
-import LoadingIndicator from "../loading_indicator";
+import IntersectObserver from "../intersection_observer/intersection_observer.comp";
+import LoadingIndicator from "../loading_indicator/loading_indicator.comp";
 
 enum State {Idle, Loading, Finished}
 
@@ -26,6 +26,7 @@ export default class NotificationsPanel extends Component(HTMLElement) {
   state = State.Idle;
 
   onconnected() {
+    console.log(this)
     this.next = this.dataset.next;
     this.last_page = !!this.dataset.last_page;
     this.notifs_section = this.querySelector("section");

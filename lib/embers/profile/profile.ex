@@ -20,7 +20,7 @@ defmodule Embers.Profile do
   alias Embers.Repo
 
   alias Embers.Profile.Meta
-  alias Embers.Uploads
+  alias Embers.Profile.Uploads
 
   @doc """
   Returns the list of user_metas.
@@ -105,26 +105,49 @@ defmodule Embers.Profile do
     Repo.delete(meta)
   end
 
-  def remove_avatar(%Meta{user_id: id} = meta) do
-    path = Embers.Profile.Uploads.Avatar.fetch_path()
-    id = Embers.Helpers.IdHasher.encode(id)
-
-    with :ok <- Uploads.delete("#{path}/#{id}_small.png"),
-         :ok <- Uploads.delete("#{path}/#{id}_medium.png"),
-         :ok <- Uploads.delete("#{path}/#{id}_large.png"),
-         {:ok, _} <- update_meta(meta, %{avatar_version: nil}) do
-      :ok
+  def update_cover(%{user_id: user_id} = meta, file) do
+    with(
+      :ok <- Uploads.Cover.upload(file, user_id),
+      changeset <- Meta.update_cover_changeset(meta),
+      {:ok, meta} <- Embers.Repo.update(changeset)
+    ) do
+      meta =
+        meta
+        |> Meta.load_avatar_map()
+        |> Meta.load_cover()
+      {:ok, meta}
     end
   end
 
+  def update_avatar(%{user_id: user_id} = meta, file) do
+    with(
+      :ok <- Uploads.Avatar.upload(file, user_id),
+      changeset <- Meta.update_avatar_changeset(meta),
+      {:ok, meta} <- Embers.Repo.update(changeset)
+    ) do
+      meta = Meta.load_avatar_map(meta)
+      {:ok, meta}
+    end
+  end
+
+  def remove_avatar(%Meta{user_id: id} = meta) do
+    path = Uploads.Avatar.fetch_path()
+    id = Embers.Helpers.IdHasher.encode(id)
+
+    with  :ok <- Uploads.delete("#{path}/#{id}_small.png"),
+          :ok <- Uploads.delete("#{path}/#{id}_medium.png"),
+          :ok <- Uploads.delete("#{path}/#{id}_large.png"),
+          {:ok, _} <- update_meta(meta, %{avatar_version: nil}),
+          do: :ok
+  end
+
   def remove_cover(%Meta{user_id: id} = meta) do
-    path = Embers.Profile.Uploads.Cover.fetch_path()
+    path = Uploads.Cover.fetch_path()
     id = Embers.Helpers.IdHasher.encode(id)
 
     with :ok <- Uploads.delete("#{path}/#{id}.jpg"),
-         {:ok, _} <- update_meta(meta, %{cover_version: nil}) do
-      :ok
-    end
+         {:ok, _} <- update_meta(meta, %{cover_version: nil}),
+         do: :ok
   end
 
   @doc """

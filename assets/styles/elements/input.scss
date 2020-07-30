@@ -4,6 +4,7 @@ input {
   border: var(--border);
   color: var(--text);
   padding: 0.3em 0.5em;
+  box-sizing: border-box;
 
   &:focus {
     border-color: var(--accent);
@@ -39,9 +40,59 @@ textarea {
   border: var(--border);
   color: var(--text);
   padding: 0.3em 0.5em;
+  box-sizing: border-box;
 
   &:focus {
     border-color: var(--accent);
     outline: none;
+  }
+}
+
+input[type=radio] {
+  width: 2em;
+  height: 2em;
+  border: 3px solid var(--primary);
+  cursor: pointer;
+  border-radius: 50%;
+  appearance: none;
+  position: relative;
+
+  &[disabled] {
+    filter: grayscale(70%);
+    opacity: 0.6;
+  }
+
+  &:checked {
+    border: 3px solid var(--accent);
+
+    &:hover {
+      border: 3px solid var(--accent);
+    }
+
+    &:after {
+      background-color: var(--accent);
+    }
+  }
+
+  &:hover {
+    border: 3px solid #fff;
+
+    &:after {
+      background-color: var(--accent);
+    }
+  }
+
+  &:after {
+    content: "";
+    display: block;
+    background-color: #444;
+    width: 0.8em;
+    height: 0.8em;
+    border-radius: 50%;
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 }

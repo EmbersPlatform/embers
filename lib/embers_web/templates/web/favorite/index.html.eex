@@ -1,0 +1,23 @@
+<%= EmbersWeb.LayoutView.sidebar(assigns) %>
+<div id="view" view="favorites" class="has-sidebar">
+  <%= render_shared("top_bar.html") %>
+  <main class="">
+    <div
+      id="favorites"
+      class="main-content"
+      data-controller="favorites"
+      data-next="<%= @favorites.next %>"
+    >
+      <h1><%= gettext "Favorites" %></h1>
+      <div class="feed">
+        <masonry-layout data-selector=".post" data-target="favorites.feed">
+        <%= for post <- @favorites.entries do %>
+          <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
+        <% end %>
+        </masonry-layout>
+      </div>
+      <intersect-observer data-action="intersect->favorites#loadMore"></intersect-observer>
+      <loading-indicator data-target="favorites.loadingIndicator"></loading-indicator>
+    </div>
+  </main>
+</div>

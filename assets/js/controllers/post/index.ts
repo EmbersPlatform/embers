@@ -9,7 +9,7 @@ import * as PostsDOM from "~js/components/post/dom";
 import * as Channel from "~js/lib/socket/channel";
 import {gettext} from "~js/lib/gettext";
 
-import type ModalDialog from "~js/components/dialog";
+import type ModalDialog from "~js/components/dialog/dialog.comp";
 
 export const name = "post"
 

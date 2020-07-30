@@ -2,8 +2,8 @@ import { BaseController } from "~js/lib/controller";
 
 import * as Posts from "~js/lib/posts";
 import * as Window from "~js/lib/utils/window";
-import PostEditor from "~js/components/editor";
-import LoadingIndicator from "~js/components/loading_indicator";
+import PostEditor from "~js/components/editor/editor.comp";
+import LoadingIndicator from "~js/components/loading_indicator/loading_indicator.comp";
 
 export const name = "replyable";
 

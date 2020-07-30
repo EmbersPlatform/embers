@@ -6,7 +6,7 @@ import close_icon from "/static/svg/generic/icons/times.svg";
 import arrow_left from "/static/svg/generic/icons/arrow-left.svg";
 import arrow_right from "/static/svg/generic/icons/arrow-right.svg";
 
-import Zoomable from "~js/components/zoomable";
+import Zoomable from "~js/components/zoomable/zoomable.comp";
 
 export default class MediaGallery extends Component(HTMLElement) {
   static component = "MediaGallery";

@@ -1,0 +1,66 @@
+[view=settings][subview=design] {
+
+  main > h1 {
+    margin-left: 0.5em;
+  }
+
+  .profile-settings {
+    display: flex;
+    flex-direction: column;
+
+    @include media(">=tablet") {
+      flex-direction: row;
+    }
+
+
+  }
+
+  profile-options {
+    padding: 1em;
+    @include media(">=tablet") {
+      width: 60%;
+    }
+
+    &>label {
+      display: block;
+    }
+
+    &>label>strong {
+      display: block;
+      margin-bottom: 0.5em;
+    }
+
+    &>label+label {
+      margin-top: 1em;
+    }
+
+    textarea {
+      resize: none;
+      width: 100%;
+      min-height: 6em;
+    }
+
+    input[type=text] {
+      width: 100%;
+    }
+
+    &>button {
+      margin-top: 1em;
+    }
+  }
+  .pic-editors {
+    order: -1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    &>*+* {
+      margin-top: 1em;
+    }
+    @include media(">=tablet") {
+      order: 2;
+      width: 40%;
+    }
+  }
+}

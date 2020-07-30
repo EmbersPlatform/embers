@@ -25,6 +25,7 @@ class MediaItem extends Component(HTMLDivElement) {
 
   media: FileOrMedia;
   preview: string;
+  errors: string;
 
   onattributechanged({attributeName}) {
     switch (attributeName) {
@@ -61,6 +62,8 @@ class MediaItem extends Component(HTMLDivElement) {
     ${
       (this.dataset.status === "error")
       ? html`<p class="error">
+          <span>${this.errors}</span>
+          <br>
           <button
             class="plain-button"
             onclick=${retry}
@@ -106,11 +109,14 @@ class MediaItem extends Component(HTMLDivElement) {
         this.render();
         break;
       }
-      case "Error": {
-        const errors = res.value;
+      case "Error":
+      case "ValidationError": {
+        const errors = i18n.gettext(res.value);
         this.dataset.status = "error";
         console.error(errors)
         this.dispatch("error", errors);
+        this.errors = errors;
+        this.render();
         break;
       }
       case "NetworkError": {
