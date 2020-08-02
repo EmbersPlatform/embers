@@ -156,7 +156,7 @@ defmodule EmbersWeb.Router do
 
     # Notifications
     get("/notifications", NotificationController, :index)
-    # put("/notifications/:id", NotificationController, :read)
+    put("/notifications/:id", NotificationController, :read)
 
     scope "/moderation", Moderation do
       post("/post/update_tags", TagController, :update_tags)

@@ -9,10 +9,15 @@ post-viewer-modal {
       display: flex;
       flex-direction: row;
       font-size: 1.4em;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--primary);
+      padding: 0.5em 0;
 
-      @include media(">=tablet") {
+      /* @include media(">=tablet") {
         display: none;
-      }
+      } */
 
       button {
         width: 3em;

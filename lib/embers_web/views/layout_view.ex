@@ -13,6 +13,7 @@ defmodule EmbersWeb.LayoutView do
     Map.new()
     |> Map.put(:csrf_token, Phoenix.Controller.get_csrf_token)
     |> maybe_add_user_data(conn)
+    |> maybe_add_unseen_notifications(conn)
     |> Jason.encode!()
   end
 
@@ -39,6 +40,14 @@ defmodule EmbersWeb.LayoutView do
       privacy_trust_level: settings.privacy_trust_level
     })
     |> Map.put(:ws_token, conn.assigns.user_token)
+  end
+
+  defp maybe_add_unseen_notifications(data, %{assigns: %{current_user: nil}}), do: data
+  defp maybe_add_unseen_notifications(data, conn) do
+    user = conn.assigns.current_user
+    unseen_notifications = Embers.Notifications.count_unseen(user.id)
+
+    Map.put(data, :unseen_notifications_count, unseen_notifications)
   end
 
   @doc """

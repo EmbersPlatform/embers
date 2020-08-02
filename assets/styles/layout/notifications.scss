@@ -43,7 +43,6 @@
   }
 
   e-notification {
-    background: rgba(0, 0, 0, 0.1);
     padding: 0.6em;
     border-radius: 0.2em;
     box-sizing: border-box;
@@ -64,6 +63,15 @@
     p {
       margin: 0;
     }
+
+    &[data-status=read] {
+    }
+    &[data-status=seen] {
+      background: rgba(0, 0, 0, 0.3);
+    }
+    &[data-status=unseen] {
+      background: var(--notification-unseen-background);
+    }
   }
 
   e-notification + e-notification {
@@ -73,7 +81,8 @@
 
 [is=notifications-bell] > .counter {
   position: absolute;
-  background: var(--accent);
+  background: var(--notification-counter-background);
+  color: var(--notification-counter-foreground);
   display: block;
   padding: 0.2em 0.4em;
   border-radius: 2em;
@@ -81,4 +90,5 @@
   border: 0.2em solid var(--navigation-background);
   box-sizing: border-box;
   font-size: 0.8em;
+  font-weight: 600;
 }

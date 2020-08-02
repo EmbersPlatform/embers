@@ -10,20 +10,34 @@ defmodule EmbersWeb.Web.NotificationController do
 
   action_fallback(EmbersWeb.Web.FallbackController)
 
-  plug(:user_check when action in [:index])
+  plug(:user_check)
 
-  def index(%{assigns: %{current_user: user}} = conn, params) do
+  def index(conn, params) do
+    user = conn.assigns.current_user
+
     results =
       Notifications.list_notifications_paginated(user.id,
         before: IdHasher.decode(params["before"]),
         after: IdHasher.decode(params["after"]),
         limit: params["limit"],
-        mark_as_read: params["mark_as_read"]
+        mark_as_read: params["mark_as_seen"]
       )
 
     conn
     |> put_layout(false)
     |> Embers.Paginator.put_page_headers(results)
     |> render("notifications.html", notifications: results.entries)
+  end
+
+  def read(conn, %{"id" => id} = _params) do
+    user = conn.assigns.current_user
+    id = IdHasher.decode(id)
+
+    Notifications.set_status(id, 2)
+    Embers.Event.emit(:notification_read, %{id: id, user_id: user.id})
+
+    conn
+    |> put_status(:no_content)
+    |> json(nil)
   end
 end

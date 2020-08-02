@@ -27,7 +27,7 @@
 
   <script src="<%= static_path(@conn, "/dist/js/index.js") %>"></script>
 </head>
-<body class="theme-dark">
+<body theme="dark">
   <%= render_shared("top_nav.html") %>
   <%= render @view_module, @view_template, assigns %>
 </body>

@@ -9,6 +9,9 @@ const callbacks = {
   notification(payload) {
     PubSub.publish("new_notification", payload);
   },
+  notification_read(payload) {
+    PubSub.publish("notification_read", payload);
+  },
   new_chat_message(payload) {
     PubSub.publish("new_chat_message", payload);
   },
@@ -32,6 +35,7 @@ export default {
     channel.join();
 
     channel.on("notification", callbacks.notification);
+    channel.on("notification_read", callbacks.notification_read);
 
     channel.on("new_chat_message", callbacks.new_chat_message);
 

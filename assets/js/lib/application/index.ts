@@ -1,3 +1,5 @@
+import s from "flyd";
+
 export interface UserData {
   id: string,
   username: string,
@@ -18,10 +20,26 @@ export interface ApplicationData {
   ws_token: string,
   user?: UserData,
   permissions: string[],
-  settings: UserSettings
+  settings: UserSettings,
+  unseen_notifications_count: number
 }
 
-let app_data = window["embers"] as ApplicationData;
+function parse_appdata(): ApplicationData {
+  let source = window["embers"];
+
+  let unseen_notifications_count = parseInt(source.unseen_notifications_count)
+
+  return {
+    csrf_token: source.csrf_token,
+    ws_token: source.ws_token,
+    user: source.user,
+    permissions: source.permissions,
+    settings: source.settings,
+    unseen_notifications_count: unseen_notifications_count
+  }
+}
+
+export const app_data = parse_appdata();
 
 export const is_authenticated = () => {
   return !!app_data.user;

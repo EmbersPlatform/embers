@@ -1,4 +1,6 @@
 import { Component } from "../component";
+import PubSub from "pubsub-js";
+import * as Notifications from "~js/lib/notifications";
 
 export default class NotificationsBell extends Component(HTMLButtonElement) {
   static component = "NotificationsBell";
@@ -12,7 +14,11 @@ export default class NotificationsBell extends Component(HTMLButtonElement) {
 
   onconnected() {
     this.counter_element = this.querySelector(".counter");
-    this.unread_count = parseInt(this.dataset.unreadCount) || 0;
+    this.unread_count = Notifications.unseen_count();
+
+    Notifications.unseen_count.map(count => {
+      this.unread_count = count;
+    })
   }
 
   onunread_count() {

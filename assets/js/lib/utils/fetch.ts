@@ -84,11 +84,11 @@ export const delet = async (url: string, options?: Object) => {
   return await perform_fetch(url, "DELETE", options);
 }
 
-export const put = async (url, body, options?) => {
+export const put = async (url, body?, options?) => {
   return await perform_fetch(url, "PUT", { body, ...options });
 }
 
-export const patch = async (url, body, options?) => {
+export const patch = async (url, body?, options?) => {
   return await perform_fetch(url, "PATCH", { body, ...options });
 }
 

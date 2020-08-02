@@ -2,12 +2,37 @@ import "./modernizr";
 import "./soft_keyboard";
 import "./polyfills/dialog";
 import "./lib/socket";
-import "./unpoly";
+// import "./unpoly";
 
 import * as Constrollers from "./controllers";
 import * as Components from "./components";
 
-// Turbolinks.start();
+import * as Title from "./lib/title"
+
+import Pjax from "pjax-api";
+
+Title.init();
 Constrollers.init();
 Components.init();
 
+window["pjax"] = new Pjax({
+  areas: [
+    '#board'
+  ],
+  filter: el => {
+    return !el.matches("a[data-post-modal]")
+  }
+});
+
+var _wr = function(type) {
+	var orig = history[type];
+	return function() {
+		const rv = orig.apply(this, arguments);
+    const e = new Event(type);
+    // @ts-ignore
+		e.arguments = arguments;
+		window.dispatchEvent(e);
+		return rv;
+	};
+};
+history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');

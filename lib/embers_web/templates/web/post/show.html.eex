@@ -1,20 +1,29 @@
 <%= if authenticated?(@conn) do %>
-  <%= EmbersWeb.LayoutView.sidebar assigns do %>
-    Post sidebar!
-  <% end %>
+  <%= EmbersWeb.LayoutView.sidebar assigns %>
 <% end %>
 <div id="view" view="post" class="<%= attr_list([{"has-sidebar", authenticated?(@conn)}]) %>">
   <%= render_shared("top_bar.html") %>
   <main class="padded columns-layout">
     <div class="main-content">
-      <%= render("post.html", conn: @conn, post: @post) %>
+      <%= if assigns[:parent] do %>
+        <%= render("post_compacted.html", conn: @conn, post: @parent) %>
+        <%= render("reply_thread.html", conn: @conn, reply: @post) %>
+      <%= else %>
+        <%= render("post.html", conn: @conn, post: @post) %>
+      <% end %>
       <section id="comments"
         data-controller="comments"
         data-post_id="<%= encode_id(@post.id) %>"
         data-next="<%= @replies_page.next %>"
         data-last_page="<%= @replies_page.last_page %>"
       >
-        <h2><%= ngettext("1 comment", "%{count} comments", @post.replies_count) %></h2>
+        <h2>
+          <%= if assigns[:parent] do %>
+            <%= ngettext("1 reply", "%{count} replies", @post.replies_count) %>
+          <%= else %>
+            <%= ngettext("1 comment", "%{count} comments", @post.replies_count) %>
+          <% end %>
+        </h2>
         <div class="comment-list" data-target="comments.commentList">
           <%= for reply <- @replies_page.entries do %>
             <%= render("reply_thread.html", conn: @conn, reply: reply) %>

@@ -54,6 +54,18 @@ defmodule Embers.Notifications do
     Repo.get!(Notification, id)
   end
 
+  def count_unseen(user_id) do
+    query =
+      from(
+        notif in Notification,
+        where: notif.recipient_id == ^user_id,
+        where: notif.status == 0,
+        select: count(notif.id)
+      )
+
+    Repo.one(query)
+  end
+
   @doc """
   Creates a notification.
 
@@ -145,6 +157,7 @@ defmodule Embers.Notifications do
       if mark_as_read do
         ids = Enum.map(results.entries, fn o -> o.id end)
         set_status(ids, 1)
+        Embers.Event.emit(:all_notifications_read, user_id)
 
         %{
           results
@@ -165,9 +178,9 @@ defmodule Embers.Notifications do
   Sets the `status` a notification with id `id` to `status`. Defaults to `read` status.
 
   ## Examples
-      set_read(id, 0) // unseen
-      set_read(id, 1) // seen
-      set_read(id, 2) // read
+      set_read(id, 0) # unseen
+      set_read(id, 1) # seen
+      set_read(id, 2) # read
   """
   def set_status(id, status \\ 2)
 

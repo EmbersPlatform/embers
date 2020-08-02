@@ -57,7 +57,7 @@
       <%= render @view_module, @view_template, assigns %>
     </div>
     <fabs-zone></fabs-zone>
-    <post-viewer-modal></post-viewer-modal>
+    <post-viewer-modal id="post-viewer-modal"></post-viewer-modal>
   </div>
 </body>
 </html>

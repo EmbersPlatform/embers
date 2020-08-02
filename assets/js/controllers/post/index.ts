@@ -135,17 +135,3 @@ export default class extends BaseController {
   }
 }
 
-document.addEventListener("click", async (event: MouseEvent) => {
-  const target = event.target as Element;
-  const anchor = target.closest("a[data-post-modal]") as HTMLElement;
-  if(!anchor || anchor.closest("dialog, [view=post]")) return;
-  event.preventDefault()
-
-  const post_url = `/post/${anchor.dataset.postModal}`;
-  const url = `/post/${anchor.dataset.postModal}/modal`;
-  const content_res = await fetch(url);
-  const content_str = await content_res.text();
-
-  // @ts-ignore
-  window.up.modal.extract(".post-preview-modal", content_str, {url: post_url, history: post_url})
-})

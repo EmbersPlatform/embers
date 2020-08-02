@@ -41,6 +41,7 @@
     id="notifications-panel"
     data-next="<%= notifications.next %>"
     data-last_page="<%= notifications.last_page %>"
+    data-unread-count="<%= unread_notifications_count %>"
     up-keep
   >
     <header><%= gettext "Notifications" %></header>

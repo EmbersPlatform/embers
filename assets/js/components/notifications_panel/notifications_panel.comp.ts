@@ -1,7 +1,11 @@
 import { Component } from "../component";
+import * as Application from "~js/lib/application";
 import * as Notifications from "~js/lib/notifications";
 import IntersectObserver from "../intersection_observer/intersection_observer.comp";
 import LoadingIndicator from "../loading_indicator/loading_indicator.comp";
+import * as Channel from "~js/lib/socket/channel";
+
+const user = Application.get_user();
 
 enum State {Idle, Loading, Finished}
 
@@ -25,10 +29,12 @@ export default class NotificationsPanel extends Component(HTMLElement) {
 
   state = State.Idle;
 
+  pubsub_subs = [];
+
   onconnected() {
-    console.log(this)
+    console.log("reloading")
     this.next = this.dataset.next;
-    this.last_page = !!this.dataset.last_page;
+    this.last_page = this.dataset.last_page == "true";
     this.notifs_section = this.querySelector("section");
     this.iobserver = this.querySelector("intersect-observer");
     this.loading_indicator = this.querySelector("loading-indicator");
@@ -38,11 +44,35 @@ export default class NotificationsPanel extends Component(HTMLElement) {
 
     document.addEventListener("click", this.on_click);
     this.iobserver.addEventListener("intersect", this._fetch_more);
+
+    Channel.subscribe(`user:${user.id}`, "notification", notification => {
+      const node = document.createElement("e-notification");
+      for(let prop in notification) {
+        node.dataset[prop] = notification[prop]
+      }
+      node.dataset.status = ["unseen", "seen", "read"][notification.status]
+      this.notifs_section.prepend(node);
+    }).then(token => this.pubsub_subs.push(token))
+
+    Channel.subscribe(`user:${user.id}`, "notification_read", notification => {
+      for(let node of this.notifs_section.children as any) {
+        if(node.dataset.id != notification.id) continue;
+        node.dataset.status = "read";
+      };
+    }).then(token => this.pubsub_subs.push(token))
   }
 
   ondisconnected() {
+    console.log(this, this.pubsub_subs, user.id)
     document.removeEventListener("click", this.on_click);
     this.iobserver.removeEventListener("intersect", this._fetch_more);
+    this.pubsub_subs.forEach((token, i) => {
+      console.log(`user:${user.id}`, token)
+      Channel.unsubscribe(`user:${user.id}`, token)
+      .then(() => {
+        delete this.pubsub_subs[i]
+      })
+    });
   }
 
   on_click(event: MouseEvent) {
@@ -71,6 +101,7 @@ export default class NotificationsPanel extends Component(HTMLElement) {
     }
     this.open = true;
     this.focus();
+    Notifications.get({mark_as_seen: true})
   }
 
   hide() {
@@ -79,10 +110,15 @@ export default class NotificationsPanel extends Component(HTMLElement) {
       this.current_trigger.classList.remove("active");
       this.current_trigger = undefined;
     }
+    for(let notification of this.notifs_section.children as any) {
+      if(notification.dataset.status == "unseen")
+        notification.dataset.status = "seen";
+    };
   }
 
   async _fetch_more() {
     if(this.state !== State.Idle) return;
+    if(this.last_page) return;
     this.state = State.Loading;
     this.loading_indicator.show();
     const res = await Notifications.get({before: this.next});

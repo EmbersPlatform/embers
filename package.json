@@ -10,6 +10,7 @@
     "croppie": "^2.6.5",
     "daggy": "^1.4.0",
     "dialog-polyfill": "^0.5.1",
+    "flyd": "^0.2.8",
     "gettext.js": "^0.9.0",
     "hammerjs": "^2.0.8",
     "heresy": "^0.27.0",
@@ -18,6 +19,7 @@
     "include-media": "^1.4.9",
     "masonry-layout": "^4.2.2",
     "phoenix": "^1.5.3",
+    "pjax-api": "^3.33.0",
     "pubsub-js": "^1.8.0",
     "stimulus": "^1.1.1",
     "unpoly": "^0.62.1"

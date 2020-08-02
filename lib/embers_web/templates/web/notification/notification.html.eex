@@ -1,7 +1,13 @@
 <e-notification
+  data-id="<%= encode_id @notification.id %>"
   data-image="<%= @notification.from.meta.avatar.small %>"
   data-type="<%= @notification.type %>"
   data-from="<%= @notification.from.username %>"
   data-source="<%= encode_id(@notification.source_id) %>"
   data-text="<%= @notification.text %>"
+  data-status="<%= case @notification.status do
+    0 -> "unseen"
+    1 -> "seen"
+    2 -> "read"
+  end %>"
 ></e-notification>

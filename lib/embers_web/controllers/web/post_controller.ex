@@ -27,15 +27,52 @@ defmodule EmbersWeb.Web.PostController do
     id = IdHasher.decode(hash)
 
     with {:ok, post} = Posts.get_post(id) do
-      post = put_in(post.user.meta.avatar, Meta.avatar_map(post.user.meta))
       post = put_in(post.user.meta.cover, Meta.cover(post.user.meta))
       post = put_in(post.id, hash)
 
-      replies_page = Posts.get_post_replies(id, limit: 20, replies: 2, replies_order: {:desc, :inserted_at})
+      if is_nil(post.parent_id) do
+        show_root_post(conn, post)
+      else
+        root = get_post_root(post)
+        featured_reply? = (root.id != post.parent_id)
 
-      title = post.body || gettext("@%{username}'s post", username: post.user.username)
-      conn
-      |> render(:show, page_title: title, post: post, replies_page: replies_page)
+        comment = if featured_reply? do
+          {:ok, post} = Posts.get_post(post.parent_id)
+          post
+        else
+          post
+        end
+
+        replies_page = Posts.get_post_replies(root.id, limit: 20, replies: 2, replies_order: {:desc, :inserted_at})
+
+        title = post.body || gettext("@%{username}'s post", username: post.user.username)
+
+        conn
+        |> render(:show, page_title: title, post: comment, replies_page: replies_page, parent: root,)
+      end
+    end
+  end
+
+  defp show_root_post(conn, post) do
+    id = IdHasher.decode(post.id)
+    replies_page = Posts.get_post_replies(id, limit: 20, replies: 2, replies_order: {:desc, :inserted_at})
+
+    title = post.body || gettext("@%{username}'s post", username: post.user.username)
+
+    conn
+    |> render(:show, page_title: title, post: post, replies_page: replies_page)
+  end
+
+  defp get_post_root(post) do
+    case Posts.get_post(post.parent_id) do
+      {:ok, post} ->
+        if post.parent_id do
+          {:ok, post} = Posts.get_post(post.parent_id)
+          post
+        else
+          post
+        end
+      _ -> nil
     end
   end
 

@@ -3,9 +3,9 @@ import ModalDialog from "../dialog/dialog.comp";
 
 import back_icon from "/static/svg/generic/icons/angle-left.svg";
 import { dgettext } from "~js/lib/gettext";
-import random_id from "~js/lib/utils/random_id";
+import Pjax from "pjax-api";
 
-export default class extends ModalDialog {
+export default class PostViewerModal extends ModalDialog {
   static component = "PostViewerModal";
 
   load: (post_id: string) => void;
@@ -15,18 +15,33 @@ export default class extends ModalDialog {
   onconnected() {
     super.initialize();
     if(this._in_preview) return;
+    this.popclose = this.popclose.bind(this)
+    this.clickclose = this.clickclose.bind(this)
+    this.close = this.close.bind(this)
     this.cleanup = this.cleanup.bind(this);
-    window.addEventListener("popstate", this.cleanup);
   }
 
   cleanup() {
+    window.removeEventListener("popstate", this.popclose);
+    window.removeEventListener("pjax:unload", this.clickclose);
+  }
+
+  popclose() {
+    Pjax.sync();
     super.close();
-    window.removeEventListener("popstate", this.cleanup);
+    this.cleanup()
+  }
+
+  clickclose() {
+    super.close();
+    this.cleanup()
   }
 
   close() {
     history.back();
-    // this.cleanup();
+    Pjax.sync()
+    super.close()
+    this.cleanup();
   }
 
   // @ts-ignore
@@ -34,23 +49,28 @@ export default class extends ModalDialog {
     if(this._in_preview) return;
 
     const [contents, setContents] = useState(null);
+    const [username, setUsername] = useState(null);
 
     this.load = async post_id => {
-      this.restoration_uuid = random_id();
-      // Turbolinks.controller.pushHistoryWithLocationAndRestorationIdentifier(post_id, this.restoration_uuid)
-      window.history.pushState({custom: false}, null, post_id)
-
-
       this.showModal();
+
       setContents(html`
       <p>${dgettext("post-viewer-modal", "Loading post...")}</p>
       `);
 
-      const content_res = await fetch(post_id);
+      window.addEventListener("popstate", this.popclose);
+      window.addEventListener("pjax:fetch", this.clickclose);
+
+      const url = `/post/${post_id}`;
+
+      window.history.pushState(null, null, url)
+      Pjax.sync()
+
+      const content_res = await fetch(url);
       const content_str = await content_res.text();
       const content_html = document.createRange().createContextualFragment(content_str);
       const main_content = content_html.querySelector(".main-content");
-
+      setUsername(main_content.querySelector(".username").textContent);
 
       setContents(html`
         <div view="post">
@@ -66,7 +86,11 @@ export default class extends ModalDialog {
     const template = html`
       <header>
         <button class="plain-button" onclick=${close}>${{html: back_icon}}</button>
-        <span>${dgettext("post-viewer-modal", "Post details")}</span>
+        <span>
+          ${ username
+            ? dgettext("post-viewer-modal", `@${username}'s post`)
+            : dgettext("post-viewer-modal", `Post details`)
+          }</span>
       </header>
       ${contents}
     `
@@ -74,3 +98,14 @@ export default class extends ModalDialog {
     this.html`${this.render_dialog(template)}`
   }
 }
+
+document.addEventListener("click", async (event) => {
+  const target = event.target as HTMLElement;
+  const anchor = target.closest("a[data-post-id]") as HTMLAnchorElement;
+  if(!anchor || anchor.closest("dialog, [view=post]")) return;
+  event.preventDefault()
+  event.stopPropagation()
+
+  const dialog = document.getElementById("post-viewer-modal") as PostViewerModal;
+  dialog.load(anchor.dataset.postId)
+})

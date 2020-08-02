@@ -43,6 +43,10 @@
   --navigation-foreground: var(--link);
   --navigation-accent: var(--accent);
 
+  --notification-counter-background: var(--accent);
+  --notification-counter-foreground: var(--primary);
+  --notification-unseen-background: #4d2c2d;
+
   --sidebar-background: var(--primary);
   --sidebar-background-hover: hsla(0, 0%, 100%, 0.1);
   --sidebar-background-accent: var(--accent);
@@ -116,6 +120,10 @@
   --navigation-background: var(--accent);
   --navigation-foreground: var(--primary);
   --navigation-accent: #fff;
+
+  --notification-counter-background: #fff;
+  --notification-counter-foreground: #000;
+  --notification-unseen-background: #f5c1bc;
 
   --sidebar-background: var(--primary);
   --sidebar-background-hover: var(--secondary-accent);

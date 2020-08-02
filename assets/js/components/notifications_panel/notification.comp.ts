@@ -1,6 +1,8 @@
 import {html} from "heresy";
 import { Component } from "../component";
 
+import * as Notifications from "~js/lib/notifications";
+
 import {dgettext} from "~js/lib/gettext";
 
 interface Notification {
@@ -21,6 +23,19 @@ export default class ENotification extends Component(HTMLElement) {
     this.notification.from = this.dataset.from;
     this.notification.source = this.dataset.source;
     this.notification.image = this.dataset.image;
+
+    this.read = this.read.bind(this);
+
+    this.addEventListener("click", this.read)
+  }
+
+  ondisconnected() {
+    this.removeEventListener("click", this.read)
+  }
+
+  async read() {
+    if(this.dataset.status === "read") return;
+    await Notifications.read(this.dataset.id);
   }
 
   render() {

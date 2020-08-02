@@ -1,6 +1,10 @@
 [view=post] main {
   padding-top: 1.4em;
 
+  .post-compacted + .reply-thread .reply {
+    border: none!important;
+  }
+
   #comments {
     &>h2 {
       margin: 0;
