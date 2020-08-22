@@ -2,6 +2,8 @@ import { define } from "heresy";
 // @ts-ignore
 import components from "./components/**/*.comp.ts";
 
+import "./components/infinite-scroll";
+
 const register = component => {
   // Hack, since class names get transpiled and the name property can't
   // be overriden, just dinamically set it to whatever the static `component`

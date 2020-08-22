@@ -32,7 +32,6 @@ export default class NotificationsPanel extends Component(HTMLElement) {
   pubsub_subs = [];
 
   onconnected() {
-    console.log("reloading")
     this.next = this.dataset.next;
     this.last_page = this.dataset.last_page == "true";
     this.notifs_section = this.querySelector("section");
@@ -63,12 +62,10 @@ export default class NotificationsPanel extends Component(HTMLElement) {
   }
 
   ondisconnected() {
-    console.log(this, this.pubsub_subs, user.id)
     document.removeEventListener("click", this.on_click);
     this.iobserver.removeEventListener("intersect", this._fetch_more);
     this.pubsub_subs.forEach((token, i) => {
-      console.log(`user:${user.id}`, token)
-      Channel.unsubscribe(`user:${user.id}`, token)
+      Channel.unsubscribe(token)
       .then(() => {
         delete this.pubsub_subs[i]
       })

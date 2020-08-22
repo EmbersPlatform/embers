@@ -9,9 +9,10 @@
     "paths": {
       "~*": ["./assets/*"]
     },
-    "lib": ["es7", "dom", "DOM.Iterable"],
+    "lib": ["esnext", "dom", "DOM.Iterable"],
     "noEmit": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
   },
   "include": [
     "assets",

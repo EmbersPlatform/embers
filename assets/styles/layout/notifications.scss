@@ -79,14 +79,16 @@
   }
 }
 
-[is=notifications-bell] > .counter {
+[is=notifications-bell] > .counter,
+unread-chat-counter {
   position: absolute;
   background: var(--notification-counter-background);
   color: var(--notification-counter-foreground);
   display: block;
   padding: 0.2em 0.4em;
   border-radius: 2em;
-  bottom: -0.3em;
+  bottom: -0.6em;
+  right: -0.4em;
   border: 0.2em solid var(--navigation-background);
   box-sizing: border-box;
   font-size: 0.8em;

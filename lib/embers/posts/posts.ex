@@ -306,6 +306,12 @@ defmodule Embers.Posts do
     }
   end
 
+  def populate_user(post) do
+    post = update_in(post.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
+    post = update_in(post.user.meta, &Embers.Profile.Meta.load_cover/1)
+    post
+  end
+
   def bulk_delete_after_date(user_id, after_days \\ 0) do
     after_date =
       Timex.now()

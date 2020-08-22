@@ -3,8 +3,13 @@ const socket = Socket.socket;
 
 import type { Channel, Push } from "phoenix";
 
+export type ChannelRef = {
+  topic: string,
+  ref: number
+}
+
 type Subscription = {
-  refs: Array<number>,
+  refs: Array<ChannelRef>,
   channel: Channel
 }
 
@@ -19,7 +24,7 @@ let subscriptions: Map<string, MaybePromisifiedSubscription> = new Map();
  * if it's not already joined.
  * When resolved returns a ref number used to unsubscribe.
  */
-export async function subscribe(topic: string, event: string, callback: callback): Promise<number> {
+export async function subscribe(topic: string, event: string, callback: callback): Promise<ChannelRef> {
   if(!subscriptions.has(topic)) {
     await create_channel(topic);
   }
@@ -29,7 +34,8 @@ export async function subscribe(topic: string, event: string, callback: callback
     // Wait for subscription to resolve
     sub = await sub;
   }
-  const ref = sub.channel.on(event, callback);
+  const ref_number = sub.channel.on(event, callback) as number;
+  const ref = {topic, ref: ref_number};
   sub.refs.push(ref);
 
   return ref;
@@ -39,7 +45,7 @@ export async function subscribe(topic: string, event: string, callback: callback
  * Unsubscribes the ref from the topic.
  * If there are no refs left, it automatically leaves the channel.
  */
-export async function unsubscribe(topic: string, ref: number) {
+export async function unsubscribe({topic, ref}: ChannelRef) {
   if(!subscriptions.has(topic)) return;
 
   let sub = subscriptions.get(topic);
@@ -49,7 +55,7 @@ export async function unsubscribe(topic: string, ref: number) {
     sub = await sub;
   }
   sub.channel.off(topic, ref);
-  sub.refs = sub.refs.filter(r => r !== ref);
+  sub.refs = sub.refs.filter(r => r.ref !== ref);
 
   if(sub.refs.length <= 0) {
     // No more refs from this topic, unsubscribe it's channel

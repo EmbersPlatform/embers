@@ -8,18 +8,39 @@
       </div>
     </div>
     <div class="profile-stats">
-      <%= Enum.map(@user.stats, fn {stat, value} -> %>
-        <div class="stat">
-          <span class="stat-value"><%= value %></span>
-          <span class="stat-name"><%= stat %></span>
-        </div>
-      <% end) %>
+      <div class="stat">
+        <span class="stat-value"><%= @user.stats.posts %></span>
+        <span class="stat-name"><%= gettext("Posts") %></span>
+      </div>
+      <div class="stat">
+        <span class="stat-value"><%= @user.stats.comments %></span>
+        <span class="stat-name"><%= gettext("Comments") %></span>
+      </div>
+      <%= link(to: decoded_path(:user_path, @conn, :show_followers, @user.canonical), class: "stat") do %>
+        <span class="stat-value"><%= @user.stats.followers %></span>
+        <span class="stat-name"><%= gettext("Followers") %></span>
+      <% end %>
+      <%= link(to: decoded_path(:user_path, @conn, :show_following, @user.canonical), class: "stat") do %>
+        <span class="stat-value"><%= @user.stats.following %></span>
+        <span class="stat-name"><%= gettext("Following") %></span>
+      <% end %>
     </div>
   </div>
   <div class="profile-details">
+    <%= if authenticated?(@conn) and @user.id != @conn.assigns.current_user.id do %>
+      <div class="profile-actions">
+        <button
+          is="follow-button"
+          class="button"
+          data-id="<%= encode_id @user.id %>"
+          <%= if @user.following, do: "following" %>
+        ></button>
+      </div>
+    <% end %>
     <div class="profile-bio">
       <%= @user.meta.bio %>
     </div>
+    <%= if assigns[:followers] do %>
     <div class="profile-following">
       <%= for follower <- @followers do %>
         <%= labeled_link(to: "/@#{follower.canonical}", label: follower.canonical) do %>
@@ -27,5 +48,6 @@
         <% end %>
       <% end %>
     </div>
+    <% end %>
   </div>
 </section>

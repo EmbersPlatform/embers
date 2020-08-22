@@ -5,19 +5,20 @@
     <div
       id="favorites"
       class="main-content"
-      data-controller="favorites"
+      infinite-scroll
+      data-source="/favorites"
       data-next="<%= @favorites.next %>"
     >
       <h1><%= gettext "Favorites" %></h1>
       <div class="feed">
-        <masonry-layout data-selector=".post" data-target="favorites.feed">
+        <masonry-layout data-selector=".post" infinite-scroll-viewport>
         <%= for post <- @favorites.entries do %>
           <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
         <% end %>
         </masonry-layout>
       </div>
-      <intersect-observer data-action="intersect->favorites#loadMore"></intersect-observer>
-      <loading-indicator data-target="favorites.loadingIndicator"></loading-indicator>
+      <intersect-observer infinite-scroll-intersect></intersect-observer>
+      <loading-indicator infinite-scroll-indicator></loading-indicator>
     </div>
   </main>
 </div>

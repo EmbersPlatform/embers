@@ -195,7 +195,7 @@ defmodule Embers.Tags do
   end
 
   @spec list_tag_posts(String.t(), keyword) :: Embers.Paginator.Page.t()
-  def list_tag_posts(tag, params) when is_binary(tag) do
+  def list_tag_posts(tag, params \\ []) when is_binary(tag) do
     from(
       post in Post,
       where: is_nil(post.deleted_at),
@@ -215,6 +215,7 @@ defmodule Embers.Tags do
     )
     |> Paginator.paginate(params)
     |> fill_nsfw()
+    |> Paginator.map(&Embers.Posts.populate_user/1)
   end
 
   defp fill_nsfw(page) do

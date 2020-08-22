@@ -1,0 +1,26 @@
+[is=follow-button] {
+  font-size: 1em;
+  height: 1.8em;
+
+  svg {
+    width: 1.2em;
+    height: 1.2em;
+  }
+
+  &:not([textless]) {
+    svg {
+      margin-right: 0.5em;
+    }
+  }
+
+  &:hover {
+    color: var(--link);
+    &[following] {
+      background-color: var(--danger);
+    }
+
+    &:not([following]) {
+      background-color: var(--success);
+    }
+  }
+}

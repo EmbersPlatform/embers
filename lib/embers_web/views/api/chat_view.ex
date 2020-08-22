@@ -10,16 +10,10 @@ defmodule EmbersWeb.Api.ChatView do
       id: encode(message.id),
       text: message.text,
       read_at: message.read_at,
-      inserted_at: message.inserted_at
+      inserted_at: message.inserted_at,
+      nonce: message.nonce
     }
     |> handle_users(message)
-  end
-
-  def render("ws_message.json", %{message: message, temp_id: temp_id}) do
-    %{
-      message: render("message.json", %{message: message}),
-      temp_id: temp_id
-    }
   end
 
   def render("conversations.json", %{conversations: conversations}) do

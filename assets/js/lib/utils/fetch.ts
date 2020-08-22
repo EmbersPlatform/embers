@@ -92,14 +92,20 @@ export const patch = async (url, body?, options?) => {
   return await perform_fetch(url, "PATCH", { body, ...options });
 }
 
-export interface PaginationPage {
-  body: string,
+export interface PaginationPage<T = string> {
+  body: T,
   last_page: boolean,
   next: string
 }
-export const parse_pagination = async (response: Response): Promise<PaginationPage> => {
+export interface ParsePaginationOptions {
+  as_json?: boolean
+}
+export const parse_pagination = async (response: Response, options: ParsePaginationOptions = {}): Promise<PaginationPage> => {
+  const {as_json = false} = options;
   const metadata = JSON.parse(response.headers.get("embers-page-metadata"));
-  const body = await response.text()
+  const body = as_json
+    ? await response.json()
+    : await response.text()
   return {
     body,
     last_page: metadata.last_page,

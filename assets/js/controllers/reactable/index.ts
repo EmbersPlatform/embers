@@ -9,7 +9,7 @@ export const name = "reactable"
 export default class extends BaseController {
   static targets = ["reactions"]
 
-  channel_ref: number
+  channel_ref: Channel.ChannelRef
 
   connect() {
     super.connect();
@@ -27,7 +27,7 @@ export default class extends BaseController {
 
   disconnect() {
     if(this._in_preview) return;
-    Channel.unsubscribe(`post:${this.element.dataset.id}`, this.channel_ref);
+    Channel.unsubscribe(this.channel_ref);
   }
 
   set_reactions(html) {

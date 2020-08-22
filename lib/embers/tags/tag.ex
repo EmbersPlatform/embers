@@ -17,12 +17,13 @@ defmodule Embers.Tags.Tag do
 
   def changeset(changeset, attrs), do: create_changeset(changeset, attrs)
   def create_changeset(changeset, attrs) do
+
     changeset
     |> cast(attrs, [:name, :description])
     |> validate_required(:name)
     |> validate_length(:name, min: 2, max: @max_length)
     |> validate_name()
-    |> validate_format(:name, ~r/^\w+$/)
+    |> validate_format(:name, ~r/^\w+$/u)
     |> trim_desc(attrs)
   end
 

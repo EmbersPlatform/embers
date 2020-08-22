@@ -1,0 +1,36 @@
+<%= EmbersWeb.LayoutView.sidebar(assigns) %>
+<div id="view" view="home" class="has-sidebar">
+  <%= render_shared("top_bar.html") %>
+  <main class="padded columns-layout">
+    <div class="main-content"
+      infinite-scroll
+      data-source="<%= tag_path(@conn, :show, @tag.name) %>"
+      data-last-page="<%= @page.last_page %>"
+      data-next="<%= @page.next %>"
+    >
+      <h1>#<%= @tag.name %></h1>
+      <post-editor data-with-tags="<%= @tag.name %>" class="boxed"></post-editor>
+      <div class="feed" infinite-scroll-viewport>
+        <%= for post <- @page.entries do %>
+          <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
+        <% end %>
+      </div>
+      <intersect-observer infinite-scroll-intersect></intersect-observer>
+      <loading-indicator infinite-scroll-indicator></loading-indicator>
+    </div>
+    <aside>
+      <div class="content">
+        <popular-tags class="tags-widget"></popular-tags>
+        <aside>
+        <a href="https://discord.gg/uADqWPs" class="join-discord-notice" target="_blank">
+          <span><%= gettext "Join our discord!" %></span>
+          <img src="https://www.embers.pw/img/external/discord_logo.svg" alt="discord logo">
+        </a>
+        <a href="https://ko-fi.com/A1482YS9" class="donate-kofi-notice" target="_blank">
+          <img src="https://www.embers.pw/img/external/ko-fi.svg" alt="ko-fi logo">
+          <span><%= gettext "Donate on ko-fi" %></span>
+        </a>
+      </div>
+    </aside>
+  </main>
+</div>

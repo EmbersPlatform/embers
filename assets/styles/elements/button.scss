@@ -14,7 +14,7 @@
 .plain-button,
 .button-link {
   svg path {
-    fill: var(--text);
+    fill: currentColor;
   }
 }
 
@@ -63,7 +63,7 @@
 }
 
 .button svg path {
-  fill: var(--text);
+  fill: currentColor;
 }
 
 .button[disabled] {
@@ -76,17 +76,9 @@
   background: var(--accent);
 }
 
-.button.primary svg path {
-  fill: var(--primary-alt);
-}
-
 .button.danger {
   color: var(--danger-alt);
   background: var(--danger);
-}
-
-.button.danger svg path {
-  fill: var(--danger-alt);
 }
 
 .button.warning {
@@ -94,17 +86,9 @@
   background: var(--warning);
 }
 
-.button.warning svg path {
-  fill: var(--warning-alt);
-}
-
 .button.success {
   color: var(--success-alt);
   background: var(--success);
-}
-
-.button.success svg path {
-  fill: var(--success-alt);
 }
 
 .button-small {
@@ -126,24 +110,12 @@
   color: var(--success);
 }
 
-.plain-button.success svg path {
-  fill: var(--success);
-}
-
 .plain-button.warning {
   color: var(--warning);
 }
 
-.plain-button.warning svg path {
-  fill: var(--warning);
-}
-
 .plain-button.danger {
   color: var(--danger);
-}
-
-.plain-button.danger svg path {
-  fill: var(--danger);
 }
 
 .button,

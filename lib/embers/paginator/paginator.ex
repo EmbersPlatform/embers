@@ -93,4 +93,11 @@ defmodule Embers.Paginator do
     conn
     |> Plug.Conn.put_resp_header("embers-page-metadata", page_metadata)
   end
+
+  @doc """
+  Applies the function to each element in the page entries
+  """
+  def map(page, fun) do
+    update_in(page.entries, fn entries -> Enum.map(entries, fun) end)
+  end
 end

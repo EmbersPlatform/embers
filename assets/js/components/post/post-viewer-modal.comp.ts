@@ -88,7 +88,7 @@ export default class PostViewerModal extends ModalDialog {
         <button class="plain-button" onclick=${close}>${{html: back_icon}}</button>
         <span>
           ${ username
-            ? dgettext("post-viewer-modal", `@${username}'s post`)
+            ? dgettext("post-viewer-modal", `@%1's post`, username)
             : dgettext("post-viewer-modal", `Post details`)
           }</span>
       </header>

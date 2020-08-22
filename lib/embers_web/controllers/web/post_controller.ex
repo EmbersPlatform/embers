@@ -174,7 +174,7 @@ defmodule EmbersWeb.Web.PostController do
     tag_names =
       Enum.concat(body_tags, provided_tags)
       |> Enum.reject(fn tag -> tag == "" end)
-      |> Enum.uniq()
+      |> Enum.uniq_by(&String.downcase/1)
       |> Enum.take(10)
 
     tags =

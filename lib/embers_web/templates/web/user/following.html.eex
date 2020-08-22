@@ -1,0 +1,23 @@
+<%= EmbersWeb.LayoutView.sidebar assigns %>
+<div
+  id="view"
+  view="user"
+  subview="following"
+  class="has-sidebar"
+>
+  <%= render_shared("top_bar.html") %>
+  <%= render("_profile_header.html", assigns) %>
+  <main class="padded"
+    infinite-scroll
+    data-source="<%= user_path(@conn, :show_following, @user.canonical) %>"
+    data-last-page="<%= @users.last_page %>"
+    data-next="<%= @users.next %>"
+  >
+    <section class="following-list" infinite-scroll-viewport>
+      <%= for user <- @users.entries do %>
+        <%= render("_user_card.html", %{assigns | user: user}) %>
+      <% end %>
+    </section><intersect-observer infinite-scroll-intersect></intersect-observer>
+    <loading-indicator infinite-scroll-indicator></loading-indicator>
+  </main>
+</div>

@@ -8,10 +8,13 @@ import * as Constrollers from "./controllers";
 import * as Components from "./components";
 
 import * as Title from "./lib/title"
+import * as Chat from "./lib/chat";
 
 import Pjax from "pjax-api";
 
 Title.init();
+Chat.connect();
+
 Constrollers.init();
 Components.init();
 
@@ -36,3 +39,4 @@ var _wr = function(type) {
 	};
 };
 history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState');
+

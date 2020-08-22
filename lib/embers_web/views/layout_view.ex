@@ -14,6 +14,7 @@ defmodule EmbersWeb.LayoutView do
     |> Map.put(:csrf_token, Phoenix.Controller.get_csrf_token)
     |> maybe_add_user_data(conn)
     |> maybe_add_unseen_notifications(conn)
+    |> maybe_add_unseen_messages(conn)
     |> Jason.encode!()
   end
 
@@ -48,6 +49,18 @@ defmodule EmbersWeb.LayoutView do
     unseen_notifications = Embers.Notifications.count_unseen(user.id)
 
     Map.put(data, :unseen_notifications_count, unseen_notifications)
+  end
+
+  defp maybe_add_unseen_messages(data, %{assigns: %{current_user: nil}}), do: data
+  defp maybe_add_unseen_messages(data, conn) do
+    user = conn.assigns.current_user
+    unseen_messages =
+      for %{party: partner, unread: count} <- Embers.Chat.list_unread_conversations(user.id), into: %{} do
+        {encode_id(partner), count}
+      end
+
+
+    Map.put(data, :unseen_messages, unseen_messages)
   end
 
   @doc """

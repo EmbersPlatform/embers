@@ -50,6 +50,8 @@ export function flash(message) {
 }
 
 export function stop_flash() {
-  document.title = title()
+  if(title()) {
+    document.title = title()
+  }
   clearInterval(flash_interval());
 }

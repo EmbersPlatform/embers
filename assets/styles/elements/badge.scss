@@ -1,0 +1,9 @@
+.badge {
+  border-radius: 2em;
+  padding: 0 0.5em;
+  line-height: .9375rem;
+  font-weight: 500;
+  box-sizing: border-box;
+  background: var(--badge-background);
+  color: var(--badge-foreground);
+}

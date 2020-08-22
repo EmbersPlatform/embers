@@ -72,6 +72,15 @@
     }
   }
 
+  .profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding: 1em;
+    box-sizing: border-box;
+  }
+
   .profile-following {
     display: flex;
     flex-wrap: wrap;
@@ -92,3 +101,6 @@
     padding: 1em;
   }
 }
+
+@import "./followers.scss";
+@import "./following.scss";

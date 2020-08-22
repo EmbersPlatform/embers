@@ -38,17 +38,19 @@ export default class PostEditor extends Component(HTMLElement) {
 
   placeholder: string
 
-  textarea
-  tag_input
-  media_zone
-  link_zone
-  nsfw_switch
+  textarea;
+  tag_input;
+  media_zone;
+  link_zone;
+  nsfw_switch;
 
-  cancel
-  publish
-  show
-  hide
-  addReply
+  cancel;
+  publish;
+  show;
+  hide;
+  addReply;
+
+  with_tags = [];
 
   onconnected() {
     super.initialize();
@@ -59,6 +61,9 @@ export default class PostEditor extends Component(HTMLElement) {
     this.media_zone = ref();
     this.link_zone = ref();
     this.nsfw_switch = ref();
+
+    if(this.dataset.withTags)
+      this.with_tags = this.dataset.withTags.split(" ");
 
     this.placeholder =
       this.getAttribute("placeholder")
@@ -96,7 +101,8 @@ export default class PostEditor extends Component(HTMLElement) {
       this.textarea.current.update();
       this.media_zone.current.reset();
       this.link_zone.current.reset();
-      this.nsfw_switch.current.reset();
+      if(this.nsfw_switch.current)
+        this.nsfw_switch.current.reset();
     }
 
     this.cancel = () => {
@@ -115,6 +121,10 @@ export default class PostEditor extends Component(HTMLElement) {
 
       if(nsfw && !post_attrs.tags.includes("nsfw")) {
         post_attrs.tags.push("nsfw");
+      }
+
+      if(this.with_tags) {
+        post_attrs.tags.push(...this.with_tags)
       }
 
       setPublishing(true);
@@ -201,7 +211,6 @@ export default class PostEditor extends Component(HTMLElement) {
       : ``
 
     const toggle_nsfw = event => {
-      console.log(event)
       setNsfw(event.detail);
     }
 
@@ -228,14 +237,6 @@ export default class PostEditor extends Component(HTMLElement) {
               </label>
               `
             : ``}
-          <button
-            class="button"
-            onclick=${this.cancel}
-            disabled=${publishing}
-            title=${dgettext("editor", "Cancel")}
-            aria-label=${dgettext("editor", "Cancel")}
-            tabindex="0"
-          >${dgettext("editor", "Cancel")}</button>
           <button
             class="button primary"
             onclick=${this.publish}

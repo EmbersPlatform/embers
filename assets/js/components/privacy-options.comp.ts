@@ -30,7 +30,7 @@ export default class extends Component(HTMLElement) {
     const update_show_status = async (event) => {
       const new_value = event.detail;
       event.target.disable();
-      console.log({privacy_show_status: new_value})
+
       const result = await Settings.update({privacy_show_status: new_value});
       if(result.tag === "Success") {
         set_show_status(new_value);

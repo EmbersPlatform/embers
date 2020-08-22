@@ -166,7 +166,7 @@ defmodule Embers.Posts.Post do
   """
   @spec parse_tags(String.t()) :: [String.t()]
   def parse_tags(text) do
-    hashtag_regex = ~r/(?<!\w)#\w+/
+    hashtag_regex = ~r/(?<!\w)#\w+/u
 
     if is_nil(text) do
       []

@@ -1,10 +1,12 @@
 .tag {
-  padding: 2px 10px;
+  padding: 0.25em 0.5em;
   border: 2px solid transparent;
   border-radius: 2em;
   margin: 0;
   color: var(--text);
   transition: 100ms ease all;
+  font-size: 0.8em;
+  line-height: 1em;
 
   &:not(:last-child) {
     margin-right: 5px;

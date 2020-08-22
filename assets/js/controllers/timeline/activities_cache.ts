@@ -7,7 +7,7 @@ import * as PostsDOM from "~js/components/post/dom";
 export default class ActivitiesCache {
 
   activities: HTMLElement[] = [];
-  channel_refs: Map<string, number> = new Map();
+  channel_refs: Map<string, Channel.ChannelRef> = new Map();
 
   timeline: TimelineController;
 
@@ -59,7 +59,7 @@ export default class ActivitiesCache {
     const activities = this.activities;
     this.activities = [];
     this.channel_refs.forEach(
-      (ref, post_id) => Channel.unsubscribe(`post:${post_id}`, ref)
+      (ref) => Channel.unsubscribe(ref)
     );
     this.timeline._update_alert();
     return activities;

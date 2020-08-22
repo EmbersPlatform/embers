@@ -9,7 +9,8 @@ export async function get_timeline(user_id: string, options: GetTimelineOptions 
   const res = await Fetch.get(`/user/${user_id}/timeline`, {params})
   switch(res.tag) {
     case "Success": {
-      const page = await Fetch.parse_pagination(res.value)
+      const page = await Fetch.parse_pagination(res.value, {as_json: true})
+
       return Fetch.FetchResults.Success(page);
     }
     case "Error": {
@@ -18,6 +19,32 @@ export async function get_timeline(user_id: string, options: GetTimelineOptions 
     }
     case "NetworkError": {
       return Fetch.FetchResults.NetworkError()
+    }
+  }
+}
+
+export async function follow(user_id: string, opts) {
+  const res = await Fetch.post(`/user_follow`, {id: user_id}, opts)
+  switch(res.tag) {
+    case "Success": {
+      return true;
+    }
+    case "Error":
+    case "NetworkError": {
+      return false;
+    }
+  }
+}
+
+export async function unfollow(user_id: string, opts) {
+  const res = await Fetch.delet(`/user_follow/${user_id}`, opts)
+  switch(res.tag) {
+    case "Success": {
+      return true;
+    }
+    case "Error":
+    case "NetworkError": {
+      return false;
     }
   }
 }

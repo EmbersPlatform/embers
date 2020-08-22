@@ -13,19 +13,21 @@ defmodule Embers.Chat.Message do
 
     field(:text, :string)
 
+    field(:nonce, :string, virtual: true)
+
     field(:read_at, :utc_datetime)
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   def changeset(message, attrs) do
     message
     |> cast(attrs, [:sender_id, :receiver_id, :text, :read_at])
+    |> validate_required([:text, :sender_id, :receiver_id])
     |> foreign_key_constraint(:sender_id)
     |> foreign_key_constraint(:receiver_id)
     |> check_blocked(attrs)
     |> trim_text(attrs)
     |> validate_length(:text, min: 1, max: 1600)
-    |> validate_required([:text])
   end
 
   def read_changeset(message) do
@@ -33,11 +35,13 @@ defmodule Embers.Chat.Message do
     |> change(read_at: DateTime.utc_now())
   end
 
+  defp trim_text(%{valid?: false} = changeset, _attrs), do: changeset
   defp trim_text(changeset, %{"text" => text} = _attrs) do
     changeset
     |> change(text: String.trim(text))
   end
 
+  defp check_blocked(%{valid?: false} = changeset, _attrs), do: changeset
   defp check_blocked(changeset, _attrs) do
     user_id = get_change(changeset, :sender_id)
     receiver_id = get_change(changeset, :receiver_id)

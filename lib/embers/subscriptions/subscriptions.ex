@@ -89,12 +89,18 @@ defmodule Embers.Subscriptions do
 
   @spec list_following_paginated(integer(), keyword()) :: Embers.Paginator.Page.t()
   def list_following_paginated(user_id, opts \\ []) do
-    UserSubscription
-    |> where([sub], sub.user_id == ^user_id)
-    |> join(:left, [sub], user in assoc(sub, :source))
-    |> join(:left, [sub, user], meta in assoc(user, :meta))
-    |> preload([sub, user, meta], user: {user, meta: meta})
+    from(
+      sub in UserSubscription,
+      where: sub.user_id == ^user_id,
+      left_join: user in assoc(sub, :source),
+      left_join: meta in assoc(user, :meta),
+      order_by: [desc: sub.id],
+      preload: [
+        user: {user, meta: meta}
+      ]
+    )
     |> Paginator.paginate(opts)
+    |> Paginator.map(&load_sub_profile/1)
   end
 
   @spec list_following_ids_paginated(integer(), keyword()) :: Embers.Paginator.Page.t()
@@ -106,12 +112,18 @@ defmodule Embers.Subscriptions do
   end
 
   def list_followers_paginated(user_id, opts \\ []) do
-    UserSubscription
-    |> where([sub], sub.source_id == ^user_id)
-    |> join(:left, [sub], user in assoc(sub, :user))
-    |> join(:left, [sub, user], meta in assoc(user, :meta))
-    |> preload([sub, user, meta], user: {user, meta: meta})
+    from(
+      sub in UserSubscription,
+      where: sub.source_id == ^user_id,
+      left_join: user in assoc(sub, :user),
+      left_join: meta in assoc(user, :meta),
+      order_by: [desc: sub.id],
+      preload: [
+        user: {user, meta: meta}
+      ]
+    )
     |> Paginator.paginate(opts)
+    |> Paginator.map(&load_sub_profile/1)
   end
 
   @spec list_followers_ids_paginated(integer(), keyword()) :: Embers.Paginator.Page.t()
@@ -151,5 +163,11 @@ defmodule Embers.Subscriptions do
     intersection = MapSet.intersection(MapSet.new(followers), MapSet.new(followed))
 
     intersection
+  end
+
+  defp load_sub_profile(sub) do
+    sub = update_in(sub.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
+    sub = update_in(sub.user.meta, &Embers.Profile.Meta.load_cover/1)
+    sub
   end
 end

@@ -13,12 +13,12 @@ defmodule Embers.Chat do
       %Message{}
       |> Message.changeset(attrs)
 
-    temp_id = Keyword.get(opts, :temp_id, nil)
+    nonce = Keyword.get(opts, :nonce, nil)
 
     case Repo.insert(message) do
       {:ok, message} ->
         message = message |> Repo.preload(sender: :meta, receiver: :meta)
-        Embers.Event.emit(:chat_message_created, %{message: message, temp_id: temp_id})
+        Embers.Event.emit(:chat_message_created, %{message: %{message | nonce: nonce}})
         {:ok, message}
 
       error ->
@@ -98,6 +98,17 @@ defmodule Embers.Chat do
       where: is_nil(m.read_at),
       group_by: m.sender_id,
       select: %{party: m.sender_id, unread: count(m.sender_id)}
+    )
+    |> Repo.all()
+  end
+
+  def get_unread_conversations(user_id) do
+    from(m in Message,
+      where: m.receiver_id == ^user_id,
+      where: is_nil(m.read_at),
+      left_join: partner in assoc(m, :sender),
+      group_by: partner.canonical,
+      select: %{partner: partner.canonical, unread: count(m.sender_id)}
     )
     |> Repo.all()
   end

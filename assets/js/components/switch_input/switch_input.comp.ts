@@ -45,7 +45,6 @@ export default class extends Component(HTMLElement) {
   }
 
   onattributechanged(event) {
-    console.log(event)
     switch(event.attributeName) {
       case "checked": {
         this.checked = this.hasAttribute("checked");

@@ -1,0 +1,3 @@
+<%= for user <- @users.entries do %>
+  <%= render("_user_card.html", %{assigns | user: user}) %>
+<% end %>

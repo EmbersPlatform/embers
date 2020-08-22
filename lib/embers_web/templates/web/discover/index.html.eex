@@ -11,6 +11,7 @@
       <h1><%= gettext "Most recent posts" %></h1>
       <div class="feed">
         <masonry-layout data-selector=".post" data-target="discover.feed">
+        <popular-tags class="tags-widget post"></popular-tags>
         <%= for post <- @posts.entries do %>
           <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
         <% end %>

@@ -327,7 +327,7 @@ defmodule Embers.Accounts do
   def load_stats_map(%User{} = user) do
     stats = %{
       followers: get_followers_count(user),
-      friends: get_friends_count(user),
+      following: get_following_count(user),
       posts: get_posts_count(user),
       comments: get_comments_count(user)
     }
@@ -351,7 +351,7 @@ defmodule Embers.Accounts do
   @doc """
   Gets the count of friends
   """
-  def get_friends_count(%User{} = user) do
+  def get_following_count(%User{} = user) do
     count =
       Embers.Subscriptions.UserSubscription
       |> where([s], s.user_id == ^user.id)

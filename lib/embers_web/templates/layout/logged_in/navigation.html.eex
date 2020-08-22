@@ -68,7 +68,15 @@
       </button>
     </li>
     <li>
-      <%= svg_image("inbox") %>
+      <%= active_link(@conn,
+        to: "/chat",
+        active: :exact,
+        title: gettext("Chat"),
+        "aria-label":  gettext("Chat")
+      ) do %>
+        <%= svg_image("inbox") %>
+        <unread-chat-counter></unread-chat-counter>
+      <% end %>
     </li>
     <li class="nav-user-menu-li">
       <pop-up class="nav-user-menu" data-controller="user-menu">
@@ -137,7 +145,15 @@
       </button>
     </li>
     <li>
-      <%= svg_image("inbox") %>
+      <%= active_link(@conn,
+        to: "/chat",
+        active: :exact,
+        title: gettext("Chat"),
+        "aria-label":  gettext("Chat")
+      ) do %>
+        <%= svg_image("inbox") %>
+        <unread-chat-counter></unread-chat-counter>
+      <% end %>
     </li>
   </ul>
 </nav>

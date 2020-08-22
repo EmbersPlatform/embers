@@ -77,6 +77,9 @@
   --button-hover-filter: brightness(120%);
   --button-text-shadow: 1px 1px 1px #000c;
 
+  --badge-background:  #37383f;
+  --badge-foreground: var(--link);
+
   --avatar-border: #ccc;
   --avatar-hover-border: var(--link);
 
@@ -151,6 +154,9 @@
   --button-border-foreground: #ffffff75;
   --button-border-background: #0000004a;
   --button-hover-filter: brightness(110%);
+
+  --badge-background:  #dedede;
+  --badge-foreground: var(--text);
 
   --avatar-border: #222;
   --avatar-hover-border: var(--link);

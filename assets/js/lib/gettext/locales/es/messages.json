@@ -5,10 +5,14 @@
   },
   "Accept": "Aceptar",
   "Cancel": "Cancelar",
+  "Retry": "Reintentar",
+
   "Processing link": "Procesando enlace",
   "Remove link": "Quitar enlace",
   "Could not process the link": "No se pudo procesar el enlace",
+
   "Share post": "Compartir publicacion",
+
   "Show": "Mostrar",
   "Hide": "Ocultar",
   "Loading...": "Cargando...",

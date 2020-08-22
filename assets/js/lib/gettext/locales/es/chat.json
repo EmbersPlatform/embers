@@ -1,0 +1,8 @@
+{
+  "": {
+    "language": "es",
+    "plural-forms": "nplurals = 2; plural = (n != 1);"
+  },
+  "The message could not be sent": "No se pudo enviar el mensaje",
+  "Send message to @%1": "Enviar mensaje a @%1"
+}

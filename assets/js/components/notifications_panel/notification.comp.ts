@@ -59,12 +59,12 @@ export default class ENotification extends Component(HTMLElement) {
       case "comment": {
         const from = `<strong>${this.notification.from}</strong>`
         const post = `<strong>post</strong>`
-        return html`<p>${{html: dgettext("notifications", `${from} replied to your ${post}`)}}</p>`;
+        return html`<p>${{html: dgettext("notifications", `%1 replied to your %2`, from, post)}}</p>`;
       }
       case "mention": {
         const from = `<strong>${this.notification.from}</strong>`
         const post = `<strong>post</strong>`
-        return html`<p>${{html: dgettext("notifications", `${from} mentioned you in a ${post}`)}}</p>`;
+        return html`<p>${{html: dgettext("notifications", `%1 mentioned you in a %2`, from, post)}}</p>`;
       }
       default: return `test`
     }

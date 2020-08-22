@@ -127,6 +127,8 @@ defmodule EmbersWeb.Router do
     # User profile
     get("/@:username", UserController, :show)
     get("/user/:user_id/timeline", UserController, :timeline)
+    get("/@:username/followers", UserController, :show_followers)
+    get("/@:username/following", UserController, :show_following)
 
     # Posts
     post("/post", PostController, :create)
@@ -157,6 +159,24 @@ defmodule EmbersWeb.Router do
     # Notifications
     get("/notifications", NotificationController, :index)
     put("/notifications/:id", NotificationController, :read)
+
+    # Follows
+    post("/user_follow", UserFollowController, :create)
+    post("/user_follow/name", UserFollowController, :create_by_name)
+    delete("/user_follow/:id", UserFollowController, :destroy)
+    delete("/user_follow/name/:name", UserFollowController, :destroy_by_name)
+
+    # Chat
+    get("/chat", ChatController, :index)
+    post("/chat", ChatController, :create)
+    get("/chat/conversations", ChatController, :list_conversations)
+    get("/chat/@:username", ChatController, :show)
+    get("/chat/:id/messages", ChatController, :show_messages)
+    put("/chat/:id", ChatController, :read)
+
+    # Tags
+    get("/tag/:name", TagController, :show)
+    get("/tags/popular", TagController, :list_popular)
 
     scope "/moderation", Moderation do
       post("/post/update_tags", TagController, :update_tags)

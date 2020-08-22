@@ -21,7 +21,7 @@ export default class extends BaseController {
   pubsub_tokens: string[] = [];
 
   channel_topic: string;
-  channel_refs: number[] = [];
+  channel_refs: Channel.ChannelRef[] = [];
 
   connect() {
     super.connect();
@@ -126,7 +126,7 @@ export default class extends BaseController {
 
   _leave_post_channel() {
     for(let ref of this.channel_refs) {
-      Channel.unsubscribe(this.channel_topic, ref)
+      Channel.unsubscribe(ref)
     }
   }
 

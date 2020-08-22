@@ -15,7 +15,6 @@ export default class EmbersNavigation extends Component(HTMLElement) {
 
     const update_active_links = () => {
       this.querySelectorAll("a").forEach(el => {
-        console.log(el.href, window.location.href)
         if(window.location.href == el.href) {
           el.classList.add("active")
         } else {
@@ -39,9 +38,11 @@ export default class EmbersNavigation extends Component(HTMLElement) {
 
   hide() {
     this.classList.add("input-focus");
+    document.body.classList.add("no-navigation")
   }
 
   show() {
     this.classList.remove("input-focus");
+    document.body.classList.remove("no-navigation")
   }
 }

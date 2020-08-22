@@ -1,0 +1,43 @@
+message-block {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5em;
+
+  &+& {
+    margin-top: 1em;
+  }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 3em;
+    height: 3em;
+    margin-right: 1em;
+    position: sticky;
+    top: 0.5em;
+  }
+
+  chat-message + * {
+    margin-top: 0.5em;
+  }
+
+  @include media("<tablet") {
+    max-width: 80%;
+
+    &[mine] {
+      justify-content: flex-end;
+      text-align: right;
+      align-self: flex-end;
+      .avatar {
+        display: none;
+      }
+    }
+  }
+
+  .message-block-messages > span {
+    color: var(--text-secondary);
+
+    &>b {
+      color: var(--link);
+    }
+  }
+}

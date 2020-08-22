@@ -8,7 +8,7 @@ export default class IntersectObserver extends Component(HTMLElement) {
   oninit() {
     this.style.height = this.offsetHeight > 0
       ? this.offsetHeight + "px"
-      : "20px";
+      : "1px";
 
     this.observer = new IntersectionObserver(([entry]) => {
       if (entry.intersectionRatio > 0) {
