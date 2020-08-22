@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
 rm -rf priv/static
-mkdir priv/static
 
-mix embers.static
+cp -R assets/static priv/static
 
-cd assets && yarn production
-cd admin && yarn production
-cd ../../
+cd assets && yarn install && yarn build
+cd ../
 
 mix phx.digest
 
