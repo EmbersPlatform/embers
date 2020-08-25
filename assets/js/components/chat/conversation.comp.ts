@@ -74,7 +74,11 @@ export default class extends Component(HTMLElement) {
   scroll_to_bottom = () => {
     let nodes = this.messages_blocks.current.querySelectorAll("chat-message");
     let last = nodes[nodes.length - 1];
-    last.scrollIntoView();
+    if(last) {
+      last.scrollIntoView();
+    } else {
+      this.messages_blocks.current.scrollTop = this.messages_blocks.current.scrollHeight;
+    }
     this.conversation.read();
   }
 
@@ -116,6 +120,12 @@ export default class extends Component(HTMLElement) {
     const grouped_messages = group_messages(this.conversation.messages());
     const unread_count = Chat.unread_conversations().get(this.dataset.userId) || 0;
 
+    const handle_send_button = event => {
+      // event.preventDefault();
+      this.message_textarea.current.focus();
+      this.send_message();
+    }
+
     this.html`
     <header>
       <button class="plain-button" onclick=${this.go_back}>${{html: back_icon}}</button>
@@ -148,7 +158,7 @@ export default class extends Component(HTMLElement) {
         onkeydown=${this.maybe_send}
         placeholder=${dgettext("chat", `Send message to @%1`, this.dataset.username)}
       ></textarea>
-      <button class="plain-button chat-send-button" onclick=${this.send_message}>${{html: publish_icon}}</button>
+      <button class="plain-button chat-send-button" onfocus=${handle_send_button}>${{html: publish_icon}}</button>
     </footer>
     `
   }

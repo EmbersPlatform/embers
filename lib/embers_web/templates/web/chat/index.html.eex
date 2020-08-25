@@ -1,11 +1,11 @@
 <%= EmbersWeb.LayoutView.sidebar(assigns) do %>
+  <h1><%= gettext("Conversations") %></h1>
   <div view="chat">
     <chat-list></chat-list>
   </div>
 <% end %>
 <div id="view" view="chat" class="has-sidebar">
-  <%= render_shared("top_bar.html") %>
   <main>
-    <chat-list></chat-list>
+    <chat-list class="desktop-hidden"></chat-list>
   </main>
 </div>

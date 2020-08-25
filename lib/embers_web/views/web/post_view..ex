@@ -96,7 +96,7 @@ defmodule EmbersWeb.Web.PostView do
 
   def ask_nsfw?(%{assigns: %{current_user: user}}, post) do
     if is_nil(user) do
-      true
+      post.nsfw
     else
       %{content_nsfw: nsfw_setting} = Embers.Profile.Settings.get_setting!(user.id)
       post.nsfw && nsfw_setting != "show"

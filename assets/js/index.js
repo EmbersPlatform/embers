@@ -4,7 +4,7 @@ import "./polyfills/dialog";
 import "./lib/socket";
 // import "./unpoly";
 
-import * as Constrollers from "./controllers";
+import * as Controllers from "./controllers";
 import * as Components from "./components";
 
 import * as Title from "./lib/title"
@@ -15,7 +15,7 @@ import Pjax from "pjax-api";
 Title.init();
 Chat.connect();
 
-Constrollers.init();
+Controllers.init();
 Components.init();
 
 window["pjax"] = new Pjax({

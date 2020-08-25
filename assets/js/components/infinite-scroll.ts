@@ -4,6 +4,7 @@ import s from "flyd";
 
 define("[infinite-scroll]", {
   connected() {
+    this.streams = [];
     this.next = this.element.dataset.next;
     this.last_page = this.element.dataset.lastPage == "true";
 
@@ -11,26 +12,33 @@ define("[infinite-scroll]", {
     this.cursor = this.element.dataset.cursor || "before";
     this.insertion_point = this.element.dataset.insertionPoint || "beforeend";
 
-    this.viewport = this.element.querySelector("[infinite-scroll-viewport]");
-    this.indicator = this.element.querySelector("[infinite-scroll-indicator]");
-    this.observer = this.element.querySelector("[infinite-scroll-intersect]");
+    document.addEventListener("DOMContentLoaded", () => {
+      this.viewport = this.element.querySelector("[infinite-scroll-viewport]");
+      this.indicator = this.element.querySelector("[infinite-scroll-indicator]");
+      this.observer = this.element.querySelector("[infinite-scroll-intersect]");
 
-    this.loading = s.stream();
+      this.loading = s.stream();
 
-    s.on(loading => {
-      if(!this.indicator) return;
-      loading
-        ? this.indicator.show()
-        : this.indicator.hide();
-    }, this.loading)
+      this.streams.push(
+        s.on(loading => {
+          if(!this.indicator) return;
+          loading
+            ? this.indicator.show()
+            : this.indicator.hide();
+        }, this.loading)
+      );
 
-    this.load_more = load_more.bind(this);
+      this.load_more = load_more.bind(this);
 
-    this.observer.addEventListener("intersect", this.load_more);
+      this.observer.addEventListener("intersect", this.load_more);
+
+    })
+
   }
 
   ,disconnected() {
     this.observer.removeEventListener("intersect", this.load_more);
+    this.streams.forEach(stream => stream.end(true));
   }
 });
 

@@ -1,9 +1,12 @@
-import s from "flyd";
-
 export interface UserData {
   id: string,
   username: string,
-  canonical: string
+  canonical: string,
+  avatar?: {
+    small: string,
+    medium: string,
+    big: string
+  }
 }
 
 export interface UserSettings {
@@ -16,16 +19,17 @@ export interface UserSettings {
 }
 
 export interface ApplicationData {
-  csrf_token: string,
-  ws_token: string,
+  csrf_token?: string,
+  ws_token?: string,
   user?: UserData,
-  permissions: string[],
-  settings: UserSettings,
-  unseen_notifications_count: number
+  permissions?: string[],
+  settings?: UserSettings,
+  unseen_notifications_count?: number
 }
 
 function parse_appdata(): ApplicationData {
   let source = window["embers"];
+  if(!source) return {};
 
   let unseen_notifications_count = parseInt(source.unseen_notifications_count)
 

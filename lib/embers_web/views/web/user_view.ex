@@ -3,6 +3,7 @@ defmodule EmbersWeb.Web.UserView do
   use EmbersWeb, :view
 
   alias Embers.Helpers.IdHasher
+  alias EmbersWeb.Api.MetaView
 
   def render("user.json", %{user: user}) do
     view = %{

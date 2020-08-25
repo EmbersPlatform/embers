@@ -1,4 +1,4 @@
-<h1>Inicio</h1>
+<h1><%= gettext("Home") %></h1>
 <ul>
   <li>
     <%= active_link(@conn,
@@ -37,3 +37,5 @@
     </a>
   </li>
 </ul>
+<h1><%= gettext("Online friends") %></h1>
+<online-friends></online-friends>

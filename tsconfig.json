@@ -16,6 +16,7 @@
   },
   "include": [
     "assets",
+    "assets/js/types/window.d.ts",
     "assets/js/types/svg.d.ts",
     "assets/js/components/hook.d.ts"
   ],

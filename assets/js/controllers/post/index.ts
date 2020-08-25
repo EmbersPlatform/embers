@@ -7,9 +7,9 @@ import * as Sets from "~js/lib/utils/sets";
 import * as Posts from "~js/lib/posts";
 import * as PostsDOM from "~js/components/post/dom";
 import * as Channel from "~js/lib/socket/channel";
-import {gettext} from "~js/lib/gettext";
 
 import type ModalDialog from "~js/components/dialog/dialog.comp";
+import { is_authenticated } from "~js/lib/application";
 
 export const name = "post"
 
@@ -31,9 +31,11 @@ export default class extends BaseController {
     this.id = id;
     this.channel_topic = `post:${id}`;
 
-    this.pubsub_tokens.push(
-      PubSub.subscribe(`post:${id}.updated_tags`, this.update_tags.bind(this))
-    );
+    if(is_authenticated()) {
+      this.pubsub_tokens.push(
+        PubSub.subscribe(`post:${id}.updated_tags`, this.update_tags.bind(this))
+      );
+    }
 
     this._join_post_channel();
   }
@@ -112,6 +114,8 @@ export default class extends BaseController {
   }
 
   _join_post_channel() {
+    if(!is_authenticated()) return;
+
     Channel.subscribe(this.channel_topic, "deleted",
       () => {
         // this._replace_with_tombstone()

@@ -1,24 +1,32 @@
-<%= EmbersWeb.LayoutView.sidebar(assigns) %>
-<div id="view" view="discover" class="has-sidebar">
-  <%= render_shared("top_bar.html") %>
+<%= if authenticated?(@conn), do: EmbersWeb.LayoutView.sidebar(assigns) %>
+<div
+  id="view"
+  view="discover"
+  class="<%= attr_list [
+    {"has-sidebar", authenticated?(@conn)},
+    {"no-navigation", !authenticated?(@conn)}
+  ] %>"
+>
+  <%= if authenticated?(@conn), do: render_shared("top_bar.html") %>
   <main class="">
     <div
       id="discover"
       class="main-content"
-      data-controller="discover"
+      infinite-scroll
+      data-source="/discover"
       data-next="<%= @posts.next %>"
     >
       <h1><%= gettext "Most recent posts" %></h1>
       <div class="feed">
-        <masonry-layout data-selector=".post" data-target="discover.feed">
+        <masonry-layout data-selector=".post" infinite-scroll-viewport>
         <popular-tags class="tags-widget post"></popular-tags>
         <%= for post <- @posts.entries do %>
           <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
         <% end %>
         </masonry-layout>
       </div>
-      <intersect-observer data-action="intersect->discover#loadMore"></intersect-observer>
-      <loading-indicator data-target="discover.loadingIndicator"></loading-indicator>
+      <intersect-observer infinite-scroll-intersect></intersect-observer>
+      <loading-indicator infinite-scroll-indicator></loading-indicator>
     </div>
   </main>
 </div>

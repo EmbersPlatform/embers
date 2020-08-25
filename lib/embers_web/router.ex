@@ -178,6 +178,10 @@ defmodule EmbersWeb.Router do
     get("/tag/:name", TagController, :show)
     get("/tags/popular", TagController, :list_popular)
 
+    # Search
+    get("/search/:query", SearchController, :search)
+    get("/search_typeahead/user/:username", SearchController, :user_typeahead)
+
     scope "/moderation", Moderation do
       post("/post/update_tags", TagController, :update_tags)
     end

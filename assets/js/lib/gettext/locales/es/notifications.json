@@ -5,5 +5,6 @@
   },
   "%1 replied to your %2": "%1 respondió a tu %2",
   "%1 commented in your %2": "%1 comentó en tu %1",
-  "%1 mentioned you in a %2": "%1 te mencionó en un %2"
+  "%1 mentioned you in a %2": "%1 te mencionó en un %2",
+  "%1 is following you": "%1 te está siguiendo"
 }

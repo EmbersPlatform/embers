@@ -127,11 +127,7 @@
         <%= render("post.html", conn: @conn, post: @post.related_to, embedded: true) %>
       <% end %>
     </section>
-    <post-tags data-post_id="<%= encode_id(@post.id) %>">
-      <%= for tag <- @post.tags do %>
-        <post-tag><%= tag.name %></post-tag>
-      <% end %>
-    </post-tags>
+    <post-tags data-post_id="<%= encode_id(@post.id) %>"></post-tags>
     <footer>
       <div class="stats">
         <div data-target="reactable.reactions" class="reactions">

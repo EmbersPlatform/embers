@@ -1,6 +1,8 @@
-import { html } from "heresy";
+import { html, ref } from "heresy";
 import { Component } from "../component";
 import * as Chat from "~js/lib/chat";
+import { dgettext } from "~js/lib/gettext";
+import plus_icon from "~static/svg/generic/plus.svg";
 
 export default class extends Component(HTMLElement) {
   static component = "ChatList";
@@ -9,15 +11,20 @@ export default class extends Component(HTMLElement) {
 
   streams = [];
 
-  async oninit() {
-    const res = await Chat.list_conversations();
-    switch(res.tag) {
-      case "Success": {
-        this.conversations = res.value;
-        this.render();
-        break;
+  new_message_modal;
+
+  oninit() {
+    this.new_message_modal = ref();
+
+    Chat.list_conversations().then(res => {
+      switch(res.tag) {
+        case "Success": {
+          this.conversations = res.value;
+          this.render();
+          break;
+        }
       }
-    }
+    });
 
     this.streams.push(
       Chat.unread_conversations.map(() => this.render())
@@ -30,12 +37,18 @@ export default class extends Component(HTMLElement) {
 
   render() {
     this.html`
-      ${this.conversations.map(chat_list_item)}
+      <button class="new-message-button" onclick=${() => this.new_message_modal.current.showModal()}>
+        ${{html: plus_icon}}
+        <span>${dgettext("chat", "New message")}</span>
+      </button>
+      <!--👻 Should conversations be wrapped in another element? -->
+      ${this.conversations.map(render_list_item)}
+      <new-message-modal ref=${this.new_message_modal} />
     `
   }
 }
 
-const chat_list_item = (user) => {
+const render_list_item = (user) => {
   const unread_count = Chat.unread_conversations().get(user.id);
 
   return html`

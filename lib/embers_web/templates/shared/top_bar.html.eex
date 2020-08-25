@@ -1,3 +1,6 @@
 <nav id="top-bar" class="soft-kw-hide">
-  <input type="search" placeholder="<%= gettext("Search Embers") %>" />
+  <input
+    type="search"
+    placeholder="<%= gettext("Search Embers") %>"
+    value="<%= if assigns[:search_query], do: @search_query %>" />
 </nav>

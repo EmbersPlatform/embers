@@ -4,11 +4,11 @@ import Socket from './socket';
 import Feed from './channels/feed';
 import User from './channels/user';
 
-let user_id = Application.get_user().id;
+let user_id = Application.is_authenticated() ? Application.get_user() : null;
 
 const socket = Socket();
-const feed_channel = Feed.init(socket, user_id);
-const user_channel = User.init(socket, user_id);
+const feed_channel = Application.is_authenticated() ? Feed.init(socket, user_id) : null;
+const user_channel = Application.is_authenticated() ? User.init(socket, user_id) : null;
 
 export default {
   socket: socket,

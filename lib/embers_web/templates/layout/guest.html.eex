@@ -25,7 +25,11 @@
   <link href="https://fonts.googleapis.com/css?family=Work+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="<%= static_path(@conn, "/dist/styles/main.css") %>">
 
-  <script src="<%= static_path(@conn, "/dist/js/index.js") %>"></script>
+  <script src="https://platform.twitter.com/widgets.js"></script>
+  <script>this.customElements||document.write('<script src="//unpkg.com/document-register-element"><\x2fscript>');</script>
+  <script src="//unpkg.com/@ungap/custom-elements-builtin"></script>
+
+  <script src="<%= static_path(@conn, "/dist/js/landing.js") %>"></script>
 </head>
 <body theme="dark">
   <%= render_shared("top_nav.html") %>

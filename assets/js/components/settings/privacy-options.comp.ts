@@ -1,5 +1,5 @@
 import { html } from "heresy";
-import { Component } from "./component";
+import { Component } from "../component";
 import { gettext } from "~js/lib/gettext";
 
 import * as Settings from "~js/lib/user_settings";

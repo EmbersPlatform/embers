@@ -66,7 +66,11 @@ export default class ENotification extends Component(HTMLElement) {
         const post = `<strong>post</strong>`
         return html`<p>${{html: dgettext("notifications", `%1 mentioned you in a %2`, from, post)}}</p>`;
       }
-      default: return `test`
+      case "follow": {
+        const from = `<strong>${this.notification.from}</strong>`
+        return html`<p>${{html: dgettext("notifications", `%1 is following you`, from)}}</p>`;
+      }
+      default: return this.notification.type
     }
   }
 }

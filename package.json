@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "parcel watch assets/js/index.js assets/styles/main.scss --out-dir priv/static/dist --public-url ./",
-    "build": "parcel build assets/js/index.js assets/styles/main.scss --out-dir priv/static/dist --public-url ./",
+    "dev": "parcel watch assets/js/index.js assets/js/landing.js assets/styles/main.scss --out-dir priv/static/dist --public-url ./",
+    "build": "parcel build assets/js/index.js assets/js/landing.js assets/styles/main.scss --out-dir priv/static/dist --public-url ./",
     "docs": "typedoc --options typedoc.json --allowJs --ignoreCompilerErrors"
   },
   "dependencies": {

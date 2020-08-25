@@ -4,17 +4,22 @@
  * This module was ported from old codebase and has not been tested yet
  */
 
-import Socket from './index';
-import PubSub from "pubsub-js";
+import * as Channels from './channel';
+import Socket from "./index";
 import { Presence } from "phoenix";
 import * as Sets from "../utils/sets";
+import s from "flyd";
+import { get_user } from '../application';
 
-const user_channel = Socket.channels.user;
+console.log(Socket)
+const socket = Socket.socket;
+const current_user = get_user();
+const user_channel = `user:${current_user.id}`;
 
-let presences = new Set();
+export const presences = s.stream(new Set());
 
-user_channel.on("presence_state", state => {
-  presences = Sets.from(
+Channels.subscribe(user_channel, "presence_state", state => {
+  const new_presences = Sets.from(
     Object.keys(
       Presence
       .syncState({}, state)
@@ -22,11 +27,12 @@ user_channel.on("presence_state", state => {
     .map(key => {
       return state[key].metas[0];
     })
-  );
-  PubSub.publish("chat.set_online_friends", presences);
-});
-user_channel.on("presence_diff", diff => {
-  presences = Sets.from(
+  )
+  presences(new_presences);
+})
+
+Channels.subscribe(user_channel, "presence_diff", diff => {
+  const new_presences = Sets.from(
     Object.keys(
       Presence
       .syncDiff(presences, diff)
@@ -34,12 +40,13 @@ user_channel.on("presence_diff", diff => {
     .map(key => {
       return diff[key].metas[0];
     })
-  );
-  PubSub.publish("chat.set_online_friends", presences);
-});
+  )
+  presences(new_presences);
+})
+
 
 // Handle messages that are sent to topics that don't have a client side representation
-Socket.socket.onMessage(({
+socket.onMessage(({
   topic,
   event,
   payload
@@ -60,13 +67,11 @@ Socket.socket.onMessage(({
     );
 
     if (joins.size > 0) {
-      presences = Sets.uniq_by(Sets.union(presences, joins), "username");
+      presences(Sets.uniq_by(Sets.union(presences(), joins), "username"));
     }
 
     if (leaves.size > 0) {
-      presences = Sets.difference_by(presences, leaves, "username");
+      presences(Sets.difference_by(presences(), leaves, "username"));
     }
-
-    PubSub.publish("chat.set_online_friends", presences);
   }
-});
+})
