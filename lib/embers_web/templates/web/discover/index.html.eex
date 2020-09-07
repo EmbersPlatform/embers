@@ -7,7 +7,7 @@
     {"no-navigation", !authenticated?(@conn)}
   ] %>"
 >
-  <%= if authenticated?(@conn), do: render_shared("top_bar.html") %>
+  <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
   <main class="">
     <div
       id="discover"

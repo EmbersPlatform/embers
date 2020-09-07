@@ -2,7 +2,7 @@
   <%= EmbersWeb.LayoutView.sidebar assigns %>
 <% end %>
 <div id="view" view="post" class="<%= attr_list([{"has-sidebar", authenticated?(@conn)}]) %>">
-  <%= if authenticated?(@conn), do: render_shared("top_bar.html") %>
+  <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
   <main class="padded columns-layout">
     <div class="main-content">
       <%= if assigns[:parent] do %>
@@ -46,8 +46,7 @@
     </div>
     <aside>
       <section class="user-preview mobile-hidden">
-        <figure class="cover">
-          <img src="<%= @post.user.meta.cover %>">
+        <figure style="background-image: url(<%= @post.user.meta.cover %>);" class="cover">
         </figure>
         <div class="user-avatar">
           <img src="<%= @post.user.meta.avatar.medium %>">

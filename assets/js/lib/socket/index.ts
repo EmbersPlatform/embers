@@ -4,7 +4,7 @@ import Socket from './socket';
 import Feed from './channels/feed';
 import User from './channels/user';
 
-let user_id = Application.is_authenticated() ? Application.get_user() : null;
+let user_id = Application.is_authenticated() ? Application.get_user().id : null;
 
 const socket = Socket();
 const feed_channel = Application.is_authenticated() ? Feed.init(socket, user_id) : null;

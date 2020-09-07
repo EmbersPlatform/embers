@@ -8,6 +8,9 @@
   .cover {
     max-width: 100%;
     margin: 0;
+    height: 0;
+    background-size: cover;
+    padding-top: 33%;
 
     img {
       max-width: 100%;

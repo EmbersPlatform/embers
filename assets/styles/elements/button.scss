@@ -8,6 +8,10 @@
   white-space: nowrap;
   color: var(--text);
   box-sizing: border-box;
+
+  * {
+    pointer-events: none;
+  }
 }
 
 .button,

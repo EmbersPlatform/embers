@@ -4,6 +4,8 @@ import components from "./components/**/*.comp.ts";
 
 import "./components/infinite-scroll";
 import "./components/top-bar";
+import "./components/moderation/post-report-summary";
+import "./components/post/post";
 
 const traverse_module = (module) => {
   if(module.__esModule) {

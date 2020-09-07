@@ -1,0 +1,37 @@
+.post-actions>*>button,
+.post-actions>button {
+  padding: 0.2em;
+}
+
+.post-actions ol > li button {
+  opacity: 0.6;
+}
+
+.post-actions>ol>li button:hover {
+  opacity: 1;
+}
+
+post-actions {
+  flex-shrink: 0;
+}
+
+.post-actions ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post-actions .hover-menu button {
+  width: 100%;
+  padding: 0.5em 1em;
+  opacity: 0.8;
+}
+
+.post-actions .hover-menu button:hover {
+  opacity: 1;
+}
+
+.post-actions svg {
+  width: 1em;
+  height: 1em;
+}

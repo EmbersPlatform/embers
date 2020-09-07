@@ -29,6 +29,7 @@ export default class ReactionsDialog extends ModalDialog {
   last_page: boolean
   next: string
   overview: Posts.ReactionOverview[];
+  post_id: string;
 
   oninit() {
     super.oninit();
@@ -66,7 +67,7 @@ export default class ReactionsDialog extends ModalDialog {
     this.r_state = States.Loading;
     if(!after) this.list = "";
 
-    const res = await Posts.get_reactions(this.dataset.postId, this.selected_reaction, after)
+    const res = await Posts.get_reactions(this.post_id, this.selected_reaction, after)
     switch(res.tag) {
       case "Success": {
         const page = res.value;
@@ -93,7 +94,7 @@ export default class ReactionsDialog extends ModalDialog {
   }
 
   async _fetch_overview() {
-    const res = await Posts.get_reactions_overview(this.dataset.postId);
+    const res = await Posts.get_reactions_overview(this.post_id);
     switch(res.tag) {
       case "Success": {
         this.overview = res.value;
@@ -107,11 +108,20 @@ export default class ReactionsDialog extends ModalDialog {
     }
   }
 
-  showModal() {
+  // @ts-ignore
+  showModal = (post_id: string) => {
     super.showModal();
+    this.post_id = post_id;
 
     this._fetch_reactions();
     this._fetch_overview();
+  }
+
+  close = () => {
+    super.close();
+    this.post_id = undefined;
+    this.overview = undefined;
+    this.list = undefined;
   }
 
   render() {

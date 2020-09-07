@@ -184,6 +184,10 @@ defmodule EmbersWeb.Router do
 
     scope "/moderation", Moderation do
       post("/post/update_tags", TagController, :update_tags)
+
+      get("/reports", ReportsController, :index)
+      post("/reports/post/:post_id", ReportsController, :create_post_report)
+      put("/reports/post/:post_id", ReportsController, :resolve)
     end
   end
 

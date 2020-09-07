@@ -11,7 +11,6 @@ import * as Sets from "../utils/sets";
 import s from "flyd";
 import { get_user } from '../application';
 
-console.log(Socket)
 const socket = Socket.socket;
 const current_user = get_user();
 const user_channel = `user:${current_user.id}`;
@@ -21,8 +20,7 @@ export const presences = s.stream(new Set());
 Channels.subscribe(user_channel, "presence_state", state => {
   const new_presences = Sets.from(
     Object.keys(
-      Presence
-      .syncState({}, state)
+      Presence.syncState({}, state)
     )
     .map(key => {
       return state[key].metas[0];
@@ -34,8 +32,7 @@ Channels.subscribe(user_channel, "presence_state", state => {
 Channels.subscribe(user_channel, "presence_diff", diff => {
   const new_presences = Sets.from(
     Object.keys(
-      Presence
-      .syncDiff(presences, diff)
+      Presence.syncDiff(presences, diff)
     )
     .map(key => {
       return diff[key].metas[0];

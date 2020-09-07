@@ -5,7 +5,7 @@
   subview="following"
   class="has-sidebar"
 >
-  <%= render_shared("top_bar.html") %>
+  <%= render_shared("top_bar.html", assigns) %>
   <%= render("_profile_header.html", assigns) %>
   <main class="padded"
     infinite-scroll

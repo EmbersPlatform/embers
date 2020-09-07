@@ -2,12 +2,13 @@ defmodule Embers.Reports.PostReport do
   @moduledoc false
   use Ecto.Schema
 
+  import Ecto.Changeset
+  import Ecto.Query
+
   alias Embers.Accounts.User
   alias Embers.Posts.Post
   alias Embers.Repo
-
-  import Ecto.Changeset
-  import Ecto.Query
+  alias Embers.Reports.Queries
 
   schema "post_reports" do
     belongs_to(:post, Post)
@@ -29,20 +30,26 @@ defmodule Embers.Reports.PostReport do
   end
 
   def list_paginated(opts \\ []) do
+    preloads = Keyword.get(opts, :preload)
+    pagination_opts = Keyword.get(opts, :pagination, [])
     from(r in __MODULE__,
+      distinct: r.post_id,
       where: r.resolved == false,
       left_join: post in assoc(r, :post),
-      left_join: author in assoc(post, :user),
       where: is_nil(post.deleted_at),
-      group_by: [post.id, author.username],
-      select: %{
-        post: post,
-        author: author.username,
-        count: fragment("count(?) as count", r.id)
-      },
-      order_by: [desc: fragment("count")]
+      order_by: [desc: r.inserted_at],
+      preload: [
+        post: [
+          :media,
+          :links,
+          :tags,
+          :reactions,
+          user: [:meta],
+          related_to: [:media, :tags, :links, :reactions, user: :meta]
+        ]
+      ]
     )
-    |> Repo.paginate(opts)
+    |> Embers.Paginator.paginate(pagination_opts)
   end
 end
 

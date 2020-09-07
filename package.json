@@ -5,6 +5,7 @@
     "docs": "typedoc --options typedoc.json --allowJs --ignoreCompilerErrors"
   },
   "dependencies": {
+    "animejs": "^3.2.0",
     "autosize": "^4.0.2",
     "bricks.js": "^1.8.0",
     "croppie": "^2.6.5",
@@ -24,6 +25,7 @@
     "pjax-api": "^3.33.0",
     "pubsub-js": "^1.8.0",
     "stimulus": "^1.1.1",
+    "uhtml": "^2.1.1",
     "unpoly": "^0.62.1",
     "wicked-elements": "^3.1.0"
   },

@@ -3,4 +3,10 @@
     type="search"
     placeholder="<%= gettext("Search Embers") %>"
     value="<%= if assigns[:search_query], do: @search_query %>" />
+
+  <%= if Embers.Authorization.can?(@current_user, "access_mod_tools") do %>
+    <a href="/moderation/reports" class="button-link">
+      <%= svg_image("icons/flag") %>
+    </a>
+  <% end %>
 </nav>

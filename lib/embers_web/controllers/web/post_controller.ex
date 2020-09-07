@@ -27,7 +27,7 @@ defmodule EmbersWeb.Web.PostController do
     id = IdHasher.decode(hash)
 
     with {:ok, post} = Posts.get_post(id) do
-      post = put_in(post.user.meta.cover, Meta.cover(post.user.meta))
+      post = update_in(post.user.meta, &Meta.load_cover/1)
       post = put_in(post.id, hash)
 
       if is_nil(post.parent_id) do

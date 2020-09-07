@@ -29,6 +29,11 @@ export default class ConfirmDialog extends ModalDialog {
     this.render();
   }
 
+  close = () => {
+    this.dispatch("cancel");
+    super.close();
+  }
+
   render() {
     const content = html`
       ${this._contents}

@@ -4,7 +4,7 @@ import PubSub from "pubsub-js";
 
 import ModalDialog from "~js/components/dialog/dialog.comp";
 
-import i18n from "~js/lib/gettext";
+import i18n, { gettext } from "~js/lib/gettext";
 
 export default class SharePostDialog extends ModalDialog {
   static component = "SharePostDialog";
@@ -14,22 +14,27 @@ export default class SharePostDialog extends ModalDialog {
   post_content
 
   onconnected() {
-    super.initialize();
-    if(this._in_preview) return;
+    this.editor = ref();
+  }
 
-    this.post = this.closest("article.post");
+  // @ts-ignore
+  showModal = (post) => {
+    this.post = post;
     this.post_content = this.post
       .querySelector(".post-wrapper")
       .cloneNode(true);
     this.post_content.removeAttribute("embedded");
     this.post_content.removeAttribute("preview");
+    this.post_content.querySelector("article.post")?.remove();
+    this.post_content.querySelector("post-actions")?.remove();
+    super.showModal();
+  }
 
-    this.editor = ref();
-
-    let embedded_post = this.post_content.querySelector("article.post")
-    if(embedded_post) {
-      embedded_post.remove();
-    }
+  close = () => {
+    this.editor.current.cancel();
+    this.post = undefined;
+    this.post_content = undefined;
+    super.close();
   }
 
   /**
@@ -38,15 +43,11 @@ export default class SharePostDialog extends ModalDialog {
   onpublish(event) {
     this.close();
     PubSub.publish("post.created", event.detail);
+    window["status_toasts"].add({content: gettext("The post was shared!"), classes: ["success"]})
   }
 
   render() {
     if(this._in_preview || !this.post) return;
-
-    const cancel = () => {
-      this.editor.current.cancel();
-      this.close();
-    }
 
     const publish = () => this.editor.current.publish();
 
@@ -66,7 +67,7 @@ export default class SharePostDialog extends ModalDialog {
               ></post-editor>
             </section>
             <footer>
-              <button class="button" onclick=${cancel}>${i18n.dgettext("editor", "Cancel")}</button>
+              <button class="button" onclick=${this.close}>${i18n.dgettext("editor", "Cancel")}</button>
               <button class="button primary" onclick=${publish}>${i18n.dgettext("editor", "Publish")}</button>
             </footer>
             <aside class="modal-content">

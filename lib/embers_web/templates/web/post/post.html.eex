@@ -6,6 +6,7 @@
   id="post-<%= encode_id(@post.id) %>"
   data-id="<%= encode_id(@post.id) %>"
   class="post"
+  post
   itemscope
   itemtype="https://schema.org/SocialMediaPosting"
   role="article"
@@ -158,7 +159,7 @@
           ) do %>
             <%= svg_image("comment") %>
           <% end %>
-          <button class="plain-button" data-action="shareable#showDialog">
+          <button class="plain-button" share-trigger>
             <%= svg_image("share") %>
           </button>
         </div>
@@ -180,15 +181,6 @@
       ></post-editorcompact>
     </section>
   <% end %>
-  <%= if !assigns[:embedded] do %>
-    <confirm-dialog padded data-target="post.deleteDialog" data-action="accept->post#delete"
-      data-accept-text="<%= gettext("Delete") %>" pending>
-      <p class="dialog-title"><%= gettext("Delete post?") %></p>
-      <p><%= gettext("This will permanently delete this post") %></p>
-    </confirm-dialog>
-  <% end %>
-  <share-post-dialog data-target="shareable.dialog" padded></share-post-dialog>
-  <reactions-dialog data-target="post.reactionsDialog" data-post-id="<%= encode_id(@post.id) %>"></reactions-dialog>
   <media-gallery data-target="medias.gallery">
     <%= if (length @post.links) > 0 do %>
       <%= for link <- @post.links do %>

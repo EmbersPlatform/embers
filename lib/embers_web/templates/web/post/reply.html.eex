@@ -1,7 +1,7 @@
 <article
   id="reply-<%= encode_id(@reply.id) %>"
   data-id="<%= encode_id(@reply.id) %>"
-  data-author="<%= @reply.user.canonical %>"
+  data-author-id="<%= encode_id(@reply.user.id) %>"
   data-depth="<%= @reply.nesting_level %>"
   class="reply"
   data-controller="<%= attr_list([
@@ -36,7 +36,7 @@
         <% end %>
       </div>
       <e-spacer></e-spacer>
-      <%= render("_reply_actions.html", assigns) %>
+      <post-actions></post-actions>
     </header>
     <section class="reply-contents">
       <section class="reply-body" itemprop="articleBody">
@@ -94,12 +94,6 @@
       <% end %>
     </footer>
   </section>
-  <confirm-dialog padded data-target="reply.deleteDialog" data-action="accept->reply#delete"
-    data-accept-text="<%= gettext("Delete") %>" pending>
-    <p class="dialog-title"><%= gettext("Delete reply?") %></p>
-    <p><%= gettext("This will permanently delete this reply") %></p>
-  </confirm-dialog>
-  <reactions-dialog data-target="reply.reactionsDialog" data-post-id="<%= encode_id(@reply.id) %>"></reactions-dialog>
   <media-gallery data-target="medias.gallery">
     <%= if (length @reply.links) > 0 do %>
       <%= for link <- @reply.links do %>

@@ -53,7 +53,6 @@
       display: block;
       width: 100%;
       padding-left: 4.2em;
-      border-left: 1px solid var(--border-color);
       position: relative;
       text-align: left;
 
@@ -81,7 +80,6 @@
     @include media(">=tablet") {
       .reply:not(:first-child) {
         margin-left: 3em;
-        border-left: 1px solid var(--border-color);
       }
 
       .reply:first-child::after,
@@ -92,16 +90,6 @@
 
     .reply:nth-child(2) {
       border-top: none;
-    }
-
-    .reply:first-child,
-    .reply:last-child {
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .reply {
-      border-left: 1px solid var(--border-color);
-      border-right: 1px solid var(--border-color);
     }
 
     .reply:not(:first-child)::before {
@@ -134,8 +122,4 @@
       }
     }
   }
-}
-
-.reply-thread + .reply-thread {
-  border-top: 0.1em solid var(--border-color);
 }

@@ -7,14 +7,28 @@
  * There should be a better method to detect this.
  */
 
-const input_types = ["INPUT", "TEXTAREA"];
+const input_qs = [
+  "input[type=text]",
+  "input[type=search]",
+  "input[type=password",
+  "input[type=number",
+  "textarea"
+];
+
+const matches = (el, qs) => {
+  for(let query of qs) {
+    if(el.matches(query))
+      return true;
+  }
+  return false;
+}
 
 // The events are being added to the document, so there should be no need to
 // remove them.
 
 document.addEventListener("focusin", function (event) {
   // @ts-ignore
-  if (event.target && input_types.includes(event.target.nodeName)) {
+  if (event.target && matches(event.target, input_qs)) {
     document.querySelectorAll(".soft-kw-hide").forEach(el => {
       if(el === event.target || el.contains(event.target)) return;
       el.classList.add("mobile-hidden");
@@ -24,7 +38,7 @@ document.addEventListener("focusin", function (event) {
 
 document.addEventListener("focusout", function (event) {
   // @ts-ignore
-  if (event.target && input_types.includes(event.target.nodeName)) {
+  if (event.target && matches(event.target, input_qs)) {
     document.querySelectorAll(".soft-kw-hide").forEach(el => {
       el.classList.remove("mobile-hidden");
     })

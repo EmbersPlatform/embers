@@ -3,7 +3,7 @@
   <%= render("_sidebar.html", assigns) %>
 <% end %>
 <div id="view" view="settings" subview="account" class="has-sidebar">
-  <%= render_shared("top_bar.html") %>
+  <%= render_shared("top_bar.html", assigns) %>
   <main class="padded">
     <h1><%= gettext "Content" %></h1>
     <content-options

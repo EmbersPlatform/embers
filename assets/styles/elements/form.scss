@@ -18,3 +18,23 @@ fieldset {
 label>input[type=radio] {
   margin-right: 0.5em;
 }
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  &[is=autosize-textarea] {
+    resize: none;
+  }
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+}
