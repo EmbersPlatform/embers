@@ -7,8 +7,8 @@ defmodule Embers.Reports.UserReport do
   import Ecto.Changeset
 
   schema "user_reports" do
-    belongs_to(:user, User)
-    belongs_to(:reporter, User)
+    belongs_to(:user, User, type: Embers.Hashid)
+    belongs_to(:reporter, User, type: Embers.Hashid)
 
     field(:comments, :string)
     field(:resolved, :boolean)

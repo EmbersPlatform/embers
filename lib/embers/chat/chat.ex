@@ -56,7 +56,7 @@ defmodule Embers.Chat do
     list_conversations_with(user_id)
   end
 
-  def list_conversations_with(user_id) when is_integer(user_id) do
+  def list_conversations_with(user_id) do
     receivers =
       from(m in Message,
         where: m.sender_id == ^user_id,

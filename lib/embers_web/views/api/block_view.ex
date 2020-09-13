@@ -4,7 +4,7 @@ defmodule EmbersWeb.Api.BlockView do
   use EmbersWeb, :view
 
   alias EmbersWeb.Api.UserView
-  alias Embers.Helpers.IdHasher
+
 
   def render("blocks.json", %{entries: blocks} = metadata) do
     %{
@@ -23,7 +23,7 @@ defmodule EmbersWeb.Api.BlockView do
   end
 
   def render("block_id", %{block: id}) do
-    IdHasher.encode(id)
+    id
   end
 
   def render("block.json", %{block: block}) do

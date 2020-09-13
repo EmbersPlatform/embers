@@ -7,7 +7,7 @@
 <div id="view" view="chat" subview="chat-view" class="has-sidebar">
   <main>
     <chat-conversation
-      data-user-id="<%= encode_id @user.id %>"
+      data-user-id="<%= @user.id %>"
       data-username="<%= @user.canonical %>"
       data-avatar="<%= @user.meta.avatar.small %>"
     ></chat-conversation>

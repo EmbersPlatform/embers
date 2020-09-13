@@ -5,7 +5,6 @@ defmodule EmbersWeb.Admin.UserController do
 
   alias Embers.Accounts
   alias Embers.Accounts.User
-  alias Embers.Helpers.IdHasher
   alias Embers.Repo
   import EmbersWeb.Helpers
 
@@ -15,7 +14,7 @@ defmodule EmbersWeb.Admin.UserController do
     page =
       Accounts.list_users_paginated(
         order: :desc,
-        before: IdHasher.decode(params["before"]),
+        before: params["before"],
         limit: params["limit"],
         name: params["name"],
         preload: [:roles, :meta]

@@ -4,9 +4,10 @@ defmodule Embers.Blocks.TagBlock do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "tag_blocks" do
-    belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:tag, Embers.Tags.Tag)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:tag, Embers.Tags.Tag, type: Embers.Hashid)
     field(:level, :integer, null: false, default: 1)
 
     timestamps()

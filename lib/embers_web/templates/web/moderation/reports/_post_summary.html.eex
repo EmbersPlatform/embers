@@ -1,5 +1,5 @@
 <article
-  data-post-id="<%= encode_id(@post.id) %>"
+  data-post-id="<%= @post.id %>"
   class="post post-report-summary"
   post-report-summary
   data-controller="<%= attr_list [
@@ -36,7 +36,7 @@
           %>
         </div>
         <div class="details-bottom">
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), itemprop: "url") do %>
+          <%= link(to: post_path(Endpoint, :show, @post.id), itemprop: "url") do %>
             <time
               datetime="<%= @post.inserted_at %>"
               pubdate="<%= @post.inserted_at %>"
@@ -44,8 +44,8 @@
               <%= time_ago(@post.inserted_at) %>
             </time>
           <% end %>
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), class: "post-id-link") do %>
-            >><%= encode_id(@post.id) %>
+          <%= link(to: post_path(Endpoint, :show, @post.id), class: "post-id-link") do %>
+            >><%= @post.id %>
           <% end %>
         </div>
       </div>
@@ -54,8 +54,8 @@
       <section class="post-body" itemprop="articleBody">
         <%= @post.body %>
         <%= if !is_nil(@post.related_to_id) do %>
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.related_to_id)), class: "related-link") do %>
-            <%= " " <> post_url(Endpoint, :show, encode_id(@post.related_to_id)) %>
+          <%= link(to: post_path(Endpoint, :show, @post.related_to_id), class: "related-link") do %>
+            <%= " " <> post_url(Endpoint, :show, @post.related_to_id) %>
           <% end %>
         <% end %>
       </section>
@@ -71,16 +71,16 @@
       <% end %>
     </section>
   <div class="post-report-actions">
-    <button class="button" resolve-trigger>Conservar</button>
-    <button class="button">Marcar como NSFW</button>
-    <button class="button danger">Eliminar</button>
+    <button class="button" data-action="resolve">Conservar</button>
+    <button class="button" data-action="flag_nsfw">Marcar como NSFW</button>
+    <button class="button danger" data-action="disable">Eliminar</button>
   </div>
   </section>
   <media-gallery data-target="medias.gallery">
     <%= if (length @post.links) > 0 do %>
       <%= for link <- @post.links do %>
         <gallery-item
-          data-id="<%= encode_id link.id %>"
+          data-id="<%= link.id %>"
           data-type="image"
           data-src="<%= link.embed.thumbnail_url %>"
         ></gallery-item>
@@ -88,7 +88,7 @@
     <% end %>
     <%= for media <- @post.media do %>
       <gallery-item
-        data-id="<%= encode_id media.id %>"
+        data-id="<%= media.id %>"
         data-type="<%= media.type %>"
         data-src="<%= Embers.Media.format_url media.url %>"
       ></gallery-item>

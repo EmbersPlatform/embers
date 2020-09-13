@@ -47,6 +47,7 @@ defmodule Embers.Accounts.User do
 
   @type t() :: %__MODULE__{}
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "users" do
     field(:username, :string)
     field(:canonical, :string)

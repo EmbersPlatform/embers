@@ -33,9 +33,6 @@ defmodule EmbersWeb.Plugs.InitialData do
 
     unread_conversations =
       Embers.Chat.list_unread_conversations(user.id)
-      |> Enum.map(fn x ->
-        %{x | party: Embers.Helpers.IdHasher.encode(x.party)}
-      end)
 
     conn
     |> assign(:user, user)

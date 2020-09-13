@@ -5,18 +5,15 @@ defmodule EmbersWeb.Api.FriendController do
   import EmbersWeb.Authorize
 
   alias Embers.Subscriptions
-  alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.Web.FallbackController)
   plug(:id_check when action in [:update, :delete])
 
   def list(conn, %{"id" => id} = params) do
-    id = IdHasher.decode(id)
-
     friends =
       Subscriptions.list_following_paginated(id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -35,12 +32,10 @@ defmodule EmbersWeb.Api.FriendController do
   end
 
   def list_ids(conn, %{"id" => id} = params) do
-    id = IdHasher.decode(id)
-
     friends_ids =
       Subscriptions.list_following_ids_paginated(id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -51,8 +46,6 @@ defmodule EmbersWeb.Api.FriendController do
         %Plug.Conn{assigns: %{current_user: user}} = conn,
         %{"id" => source_id} = _params
       ) do
-    source_id = IdHasher.decode(source_id)
-
     sub_params = %{
       user_id: user.id,
       source_id: source_id
@@ -95,20 +88,16 @@ defmodule EmbersWeb.Api.FriendController do
   end
 
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    id = IdHasher.decode(id)
-
     Subscriptions.delete_user_subscription(user.id, id)
 
     conn |> put_status(:no_content) |> json(nil)
   end
 
   def list_followers(conn, %{"id" => id} = params) do
-    id = IdHasher.decode(id)
-
     friends =
       Subscriptions.list_followers_paginated(id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -127,12 +116,10 @@ defmodule EmbersWeb.Api.FriendController do
   end
 
   def list__followers_ids(conn, %{"id" => id} = params) do
-    id = IdHasher.decode(id)
-
     friends_ids =
       Subscriptions.list_followers_ids_paginated(id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 

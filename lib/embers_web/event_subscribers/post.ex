@@ -3,7 +3,7 @@ defmodule EmbersWeb.ActivitySubscriber do
 
   use Embers.EventSubscriber, topics: ~w(new_activity)
 
-  alias Embers.Helpers.IdHasher
+
 
   def handle_event(:new_activity, event) do
     %{post: post, recipients: recipients} = event.data
@@ -12,7 +12,6 @@ defmodule EmbersWeb.ActivitySubscriber do
     |> Enum.reject(fn recipient -> recipient == post.user_id end)
     |> Enum.each(fn recipient ->
       # Broadcast the good news to the recipients via Channels
-      hashed_id = IdHasher.encode(recipient)
       encoded_post = EmbersWeb.Web.PostView.render("post.html",
         post: post,
         with_replies: true,
@@ -20,7 +19,7 @@ defmodule EmbersWeb.ActivitySubscriber do
       )
       payload = %{post: encoded_post |> Phoenix.HTML.safe_to_string()}
 
-      EmbersWeb.Endpoint.broadcast!("feed:#{hashed_id}", "new_activity", payload)
+      EmbersWeb.Endpoint.broadcast!("feed:#{recipient}", "new_activity", payload)
     end)
   end
 end

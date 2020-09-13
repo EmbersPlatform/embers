@@ -4,13 +4,14 @@ defmodule Embers.Moderation.Ban do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "bans" do
     field(:reason, :string)
     field(:level, :integer, default: 0)
     field(:expires_at, :utc_datetime)
     field(:deleted_at, :utc_datetime)
 
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
 
     timestamps()
   end

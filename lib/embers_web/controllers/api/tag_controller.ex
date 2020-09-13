@@ -7,7 +7,7 @@ defmodule EmbersWeb.Api.TagController do
 
   alias Embers.Accounts
   alias Embers.Subscriptions.Tags, as: Subscriptions
-  alias Embers.Helpers.IdHasher
+
   alias Embers.Tags
 
   action_fallback(EmbersWeb.Web.FallbackController)
@@ -24,7 +24,7 @@ defmodule EmbersWeb.Api.TagController do
   end
 
   def show_tag_posts(conn, %{"name" => name} = params) do
-    results = Tags.list_tag_posts(name, before: decode(params["before"]), limit: params["limit"])
+    results = Tags.list_tag_posts(name, before: params["before"], limit: params["limit"])
     render(conn, EmbersWeb.Web.FeedView, "timeline.json", results)
   end
 
@@ -32,8 +32,8 @@ defmodule EmbersWeb.Api.TagController do
   def list(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
     tags =
       Subscriptions.list_subscribed_tags_paginated(user.id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -44,8 +44,8 @@ defmodule EmbersWeb.Api.TagController do
   def list_ids(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
     tags_ids =
       Subscriptions.list_subscribed_tags_ids_paginated(user.id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -57,7 +57,6 @@ defmodule EmbersWeb.Api.TagController do
         %Plug.Conn{assigns: %{current_user: user}} = conn,
         %{"id" => source_id} = params
       ) do
-    source_id = IdHasher.decode(source_id)
     level = Map.get(params, "level", 1)
 
     sub_params = %{
@@ -88,8 +87,6 @@ defmodule EmbersWeb.Api.TagController do
 
   @doc false
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    id = IdHasher.decode(id)
-
     Subscriptions.delete_subscription(user.id, id)
 
     conn |> put_status(200) |> json(nil)
@@ -99,8 +96,6 @@ defmodule EmbersWeb.Api.TagController do
         %Plug.Conn{assigns: %{current_user: user}} = conn,
         %{"id" => tag_id} = _params
       ) do
-    tag_id = IdHasher.decode(tag_id)
-
     block_params = %{
       user_id: user.id,
       tag_id: tag_id

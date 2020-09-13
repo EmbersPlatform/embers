@@ -11,7 +11,7 @@
         <%= render("post.html", conn: @conn, post: @post) %>
         <section id="comments"
           data-controller="comments"
-          data-post_id="<%= encode_id(@post.id) %>"
+          data-post_id="<%= @post.id %>"
           data-next="<%= @replies_page.next %>"
           data-last_page="<%= @replies_page.last_page %>"
         >

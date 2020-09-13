@@ -5,6 +5,7 @@ defmodule Embers.LoadingMsg.Msg do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "loading_msg" do
     field(:name, :string)
     field(:title, :string)

@@ -13,7 +13,7 @@
           %>
         </div>
         <div class="details-bottom">
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), itemprop: "url") do %>
+          <%= link(to: post_path(Endpoint, :show, @post.id), itemprop: "url") do %>
             <time
               datetime="<%= @post.inserted_at %>"
               pubdate="<%= @post.inserted_at %>"
@@ -21,8 +21,8 @@
               <%= time_ago(@post.inserted_at) %>
             </time>
           <% end %>
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), class: "post-id-link") do %>
-            >><%= encode_id(@post.id) %>
+          <%= link(to: post_path(Endpoint, :show, @post.id), class: "post-id-link") do %>
+            >><%= @post.id %>
           <% end %>
         </div>
       </div>

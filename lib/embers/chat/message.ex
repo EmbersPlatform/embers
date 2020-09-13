@@ -7,9 +7,10 @@ defmodule Embers.Chat.Message do
 
   alias Embers.Repo
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "chat_messages" do
-    belongs_to(:sender, Embers.Accounts.User)
-    belongs_to(:receiver, Embers.Accounts.User)
+    belongs_to(:sender, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:receiver, Embers.Accounts.User, type: Embers.Hashid)
 
     field(:text, :string)
 

@@ -8,7 +8,6 @@ defmodule EmbersWeb.Api.FeedController do
   alias Embers.Feed.Public
   alias Embers.Feed.Timeline
   alias Embers.Feed.User, as: UserFeed
-  alias Embers.Helpers.IdHasher
 
   plug(:user_check when action in [:timeline, :hide_post])
 
@@ -30,8 +29,8 @@ defmodule EmbersWeb.Api.FeedController do
     results =
       Timeline.get(
         user_id: user_id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -39,13 +38,11 @@ defmodule EmbersWeb.Api.FeedController do
   end
 
   def user_statuses(conn, %{"id" => id} = params) do
-    id = IdHasher.decode(id)
-
     posts =
       UserFeed.get(
         user_id: id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -62,8 +59,8 @@ defmodule EmbersWeb.Api.FeedController do
 
     posts =
       Public.get(
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"],
         blocked_users: blocked_users,
         blocked_tags: blocked_tags
@@ -75,8 +72,8 @@ defmodule EmbersWeb.Api.FeedController do
   def get_public_feed(conn, params) do
     posts =
       Public.get(
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -84,7 +81,7 @@ defmodule EmbersWeb.Api.FeedController do
   end
 
   def hide_post(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    with {:ok, _activity} <- Timeline.delete_activity(user.id, IdHasher.decode(id)) do
+    with {:ok, _activity} <- Timeline.delete_activity(user.id, id) do
       conn
       |> put_status(:no_content)
       |> json(nil)

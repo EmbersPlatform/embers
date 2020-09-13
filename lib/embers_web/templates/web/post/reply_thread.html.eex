@@ -2,9 +2,9 @@
 <div
   class="reply-thread"
   data-controller="replyable post-replies"
-  data-id="<%= encode_id(@reply.id) %>"
+  data-id="<%= @reply.id %>"
   <%= if length(replies) > 0 && @reply.replies_count > 2 do %>
-    data-next="<%= encode_id List.first(replies).id %>"
+    data-next="<%= List.first(replies).id %>"
   <% end %>
 >
   <div class="reply-thread-list" data-target="post-replies.list">
@@ -22,7 +22,7 @@
   </div>
   <post-editor
     class="hidden"
-    data-parent_id="<%= encode_id(@reply.id) %>"
+    data-parent_id="<%= @reply.id %>"
     compact
     data-target="replyable.replyEditor"
     data-action="publish->post-replies#addReply"

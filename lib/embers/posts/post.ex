@@ -39,9 +39,10 @@ defmodule Embers.Posts.Post do
 
   @max_body_len 1600
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "posts" do
     field(:body, :string)
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
     field(:nesting_level, :integer, default: 0)
     field(:replies_count, :integer, default: 0)
     field(:shares_count, :integer, default: 0)
@@ -50,8 +51,8 @@ defmodule Embers.Posts.Post do
     field(:nsfw, :boolean, virtual: true, default: false)
     field(:faved, :boolean, virtual: true, default: false)
 
-    belongs_to(:parent, __MODULE__)
-    belongs_to(:related_to, __MODULE__)
+    belongs_to(:parent, __MODULE__, type: Embers.Hashid)
+    belongs_to(:related_to, __MODULE__, type: Embers.Hashid)
     has_many(:replies, __MODULE__, foreign_key: :parent_id)
     has_many(:reactions, Embers.Reactions.Reaction)
 

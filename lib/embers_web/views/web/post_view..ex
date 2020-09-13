@@ -5,7 +5,7 @@ defmodule EmbersWeb.Web.PostView do
 
   alias Embers.Posts.Post
 
-  # alias Embers.Helpers.IdHasher
+  #
   alias EmbersWeb.Web.UserView
 
   def render("show.json", %{post: post}) do

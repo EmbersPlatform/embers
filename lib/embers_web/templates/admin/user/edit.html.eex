@@ -40,7 +40,7 @@
   <div class="column">
     <%= form_for @changeset, user_path(@conn, :update, @changeset.data.canonical), fn f -> %>
     <div class="field"><label class="label">
-        ID: <%= Embers.Helpers.IdHasher.encode(@user.id) %>
+        ID: <%= @user.id %>
       </label></div>
     <div class="field">
       <label class="label">

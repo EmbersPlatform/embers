@@ -5,7 +5,7 @@ defmodule EmbersWeb.Web.SearchController do
 
   import EmbersWeb.Authorize
 
-  alias Embers.Helpers.IdHasher
+
   alias Embers.Search
   alias Embers.Search.UserSearch
 
@@ -18,8 +18,8 @@ defmodule EmbersWeb.Web.SearchController do
 
     page =
       Search.search(query,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
       |> Embers.Paginator.map(fn post ->

@@ -6,9 +6,10 @@ defmodule Embers.Authorization.RoleUser do
 
   alias Embers.Authorization.Role
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "role_user" do
-    belongs_to(:role, Role)
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:role, Role, type: Embers.Hashid)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
   end
 
   def changeset(role_user, attrs) do

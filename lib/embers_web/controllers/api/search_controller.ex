@@ -2,7 +2,6 @@ defmodule EmbersWeb.Api.SearchController do
   @moduledoc false
   use EmbersWeb, :controller
 
-  alias Embers.Helpers.IdHasher
   alias Embers.Search
   alias Embers.Search.UserSearch
 
@@ -11,8 +10,8 @@ defmodule EmbersWeb.Api.SearchController do
 
     results =
       Search.search(query,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 

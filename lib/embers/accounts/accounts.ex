@@ -118,9 +118,11 @@ defmodule Embers.Accounts do
   """
   def get_populated(identifier, opts \\ []) do
     query =
-      case is_integer(identifier) do
-        true -> User |> where([user], user.id == ^identifier)
-        false -> User |> where([user], user.canonical == ^String.downcase(identifier))
+      case identifier do
+        %{"canonical" => canonical} ->
+          from(user in User, where: user.canonical == ^canonical)
+        id when is_binary(id) ->
+          from(user in User, where: user.id == ^id)
       end
 
     user =

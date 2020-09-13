@@ -135,7 +135,7 @@ defmodule Embers.Notifications do
       iex> list_notifications_paginated(1)
       [entries: [%Notification{}, ...], ...]
   """
-  def list_notifications_paginated(user_id, opts \\ []) when is_integer(user_id) do
+  def list_notifications_paginated(user_id, opts \\ []) do
     query =
       from(
         notif in Notification,

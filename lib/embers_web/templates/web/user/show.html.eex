@@ -4,7 +4,7 @@
   view="user"
   class="has-sidebar"
   data-controller="user-profile"
-  data-user="<%= encode_id @user.id %>"
+  data-user="<%= @user.id %>"
   data-next="<%= @activities.next %>"
 >
   <%= render_shared("top_bar.html", assigns) %>

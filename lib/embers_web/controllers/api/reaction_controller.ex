@@ -4,8 +4,6 @@ defmodule EmbersWeb.Api.ReactionController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  import Embers.Helpers.IdHasher
-  alias Embers.Helpers.IdHasher
   alias Embers.{Posts, Reactions}
 
   plug(:user_check when action in [:create, :delete])
@@ -34,7 +32,6 @@ defmodule EmbersWeb.Api.ReactionController do
 
   def create(conn, %{"name" => name, "post_id" => post_id} = _params) do
     user_id = conn.assigns.current_user.id
-    post_id = IdHasher.decode(post_id)
 
     case Reactions.create_reaction(%{"name" => name, "user_id" => user_id, "post_id" => post_id}) do
       {:ok, _reaction} ->
@@ -53,7 +50,6 @@ defmodule EmbersWeb.Api.ReactionController do
 
   def delete(conn, %{"name" => name, "post_id" => post_id}) do
     user_id = conn.assigns.current_user.id
-    post_id = IdHasher.decode(post_id)
 
     Reactions.delete_reaction(%{
       "name" => name,
@@ -76,7 +72,6 @@ defmodule EmbersWeb.Api.ReactionController do
   end
 
   def reactions_overview(conn, %{"post_id" => post_id}) do
-    post_id = decode(post_id)
     stats = Reactions.overview(post_id)
 
     conn
@@ -84,8 +79,6 @@ defmodule EmbersWeb.Api.ReactionController do
   end
 
   def reactions_by_name(conn, %{"post_id" => post_id, "reaction_name" => reaction_name} = params) do
-    post_id = decode(post_id)
-
     reaction_name =
       unless reaction_name == "all" do
         reaction_name

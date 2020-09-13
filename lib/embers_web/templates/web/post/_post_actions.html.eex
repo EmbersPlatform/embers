@@ -34,7 +34,7 @@
   <button
     is="post-fav-button"
     class="plain-button"
-    data-post_id="<%= encode_id(@post.id) %>"
+    data-post_id="<%= @post.id %>"
     <%= if @post.faved, do: "faved" %>
   ></button>
   <div class="hover-menu-wrapper">

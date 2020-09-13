@@ -12,7 +12,7 @@ defmodule EmbersWeb.Api.PostReportController do
   plug(CheckPermissions, [permission: "create_report"] when action in [:create])
 
   def create(%{assigns: %{current_user: user}} = conn, %{"post_id" => id} = params) do
-    reportable = Posts.get_post!(decode(id))
+    reportable = Posts.get_post!(id)
 
     attrs = [comments: params["comments"]]
 

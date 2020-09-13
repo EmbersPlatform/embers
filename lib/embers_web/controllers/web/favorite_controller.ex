@@ -4,7 +4,6 @@ defmodule EmbersWeb.Web.FavoriteController do
   import EmbersWeb.Authorize
 
   alias Embers.Favorites
-  alias Embers.Helpers.IdHasher
 
   action_fallback(EmbersWeb.Web.FallbackController)
 
@@ -14,8 +13,8 @@ defmodule EmbersWeb.Web.FavoriteController do
     user = conn.assigns.current_user
     favs =
       Favorites.list_paginated(user.id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -41,7 +40,6 @@ defmodule EmbersWeb.Web.FavoriteController do
 
   def create(conn, %{"post_id" => post_id} = _params) do
     user = conn.assigns.current_user
-    post_id = IdHasher.decode(post_id)
 
     case Favorites.create(user.id, post_id) do
       {:ok, _} ->
@@ -67,8 +65,6 @@ defmodule EmbersWeb.Web.FavoriteController do
   end
 
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"post_id" => id}) do
-    id = IdHasher.decode(id)
-
     Favorites.delete(user.id, id)
 
     conn |> put_status(:no_content) |> json(nil)

@@ -7,8 +7,8 @@ defmodule Embers.Tags.TagPost do
   import Ecto.Changeset
 
   schema "tags_posts" do
-    belongs_to(:tag, Embers.Tags.Tag)
-    belongs_to(:post, Embers.Posts.Post)
+    belongs_to(:tag, Embers.Tags.Tag, type: Embers.Hashid)
+    belongs_to(:post, Embers.Posts.Post, type: Embers.Hashid)
 
     timestamps()
   end

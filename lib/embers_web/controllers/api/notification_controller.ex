@@ -5,7 +5,6 @@ defmodule EmbersWeb.Api.NotificationController do
 
   import EmbersWeb.Authorize
 
-  alias Embers.Helpers.IdHasher
   alias Embers.Notifications
 
   plug(:user_check)
@@ -13,8 +12,8 @@ defmodule EmbersWeb.Api.NotificationController do
   def index(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
     results =
       Notifications.list_notifications_paginated(user.id,
-        before: IdHasher.decode(params["before"]),
-        after: IdHasher.decode(params["after"]),
+        before: params["before"],
+        after: params["after"],
         limit: params["limit"],
         mark_as_read: params["mark_as_read"]
       )
@@ -23,8 +22,6 @@ defmodule EmbersWeb.Api.NotificationController do
   end
 
   def read(conn, %{"id" => id} = _params) do
-    id = IdHasher.decode(id)
-
     Notifications.set_status(id, 2)
 
     conn

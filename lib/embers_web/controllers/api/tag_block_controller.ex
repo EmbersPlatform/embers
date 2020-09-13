@@ -5,7 +5,7 @@ defmodule EmbersWeb.Api.TagBlockController do
 
   import EmbersWeb.Authorize
   alias Embers.Subscriptions.Tags
-  alias Embers.Helpers.IdHasher
+
 
   action_fallback(EmbersWeb.Web.FallbackController)
   plug(:user_check when action in [:update, :delete])
@@ -13,8 +13,8 @@ defmodule EmbersWeb.Api.TagBlockController do
   def list(%Plug.Conn{assigns: %{current_user: user}} = conn, params) do
     blocks =
       Tags.list_blocked_tags_paginated(user.id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -22,12 +22,10 @@ defmodule EmbersWeb.Api.TagBlockController do
   end
 
   def list_ids(conn, %{"id" => id} = params) do
-    id = IdHasher.decode(id)
-
     blocks_ids =
       Tags.list_blocked_tags_ids_paginated(id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -38,8 +36,6 @@ defmodule EmbersWeb.Api.TagBlockController do
         %Plug.Conn{assigns: %{current_user: user}} = conn,
         %{"id" => source_id} = _params
       ) do
-    source_id = IdHasher.decode(source_id)
-
     do_create_block(conn, user.id, source_id)
   end
 
@@ -51,8 +47,6 @@ defmodule EmbersWeb.Api.TagBlockController do
   end
 
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    id = IdHasher.decode(id)
-
     Tags.delete_block(user.id, id)
 
     conn |> put_status(:no_content) |> json(nil)

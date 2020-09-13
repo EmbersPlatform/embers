@@ -2,7 +2,7 @@ defmodule EmbersWeb.Web.MediaView do
   @moduledoc false
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
 
   def render("media.json", %{media: media}) do
     timestamp =
@@ -14,7 +14,7 @@ defmodule EmbersWeb.Web.MediaView do
       end
 
     %{
-      id: IdHasher.encode(media.id),
+      id: media.id,
       url: media.url,
       type: media.type,
       temp: media.temporary,

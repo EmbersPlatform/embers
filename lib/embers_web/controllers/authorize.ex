@@ -44,7 +44,7 @@ defmodule EmbersWeb.Authorize do
         %Plug.Conn{params: %{"id" => id}, assigns: %{current_user: current_user}} = conn,
         _opts
       ) do
-    if id == to_string(current_user.id) do
+    if id == current_user.id do
       conn
     else
       conn

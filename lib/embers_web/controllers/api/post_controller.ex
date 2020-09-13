@@ -4,7 +4,7 @@ defmodule EmbersWeb.Api.PostController do
 
   import EmbersWeb.Authorize
   alias Embers.Posts
-  alias Embers.Helpers.IdHasher
+
   alias EmbersWeb.Plugs.CheckPermissions
 
   action_fallback(EmbersWeb.Web.FallbackController)
@@ -38,14 +38,12 @@ defmodule EmbersWeb.Api.PostController do
   end
 
   defp maybe_put_parent_id(%{"parent_id" => parent_id} = params) do
-    parent_id = IdHasher.decode(parent_id)
     Map.put(params, "parent_id", parent_id)
   end
 
   defp maybe_put_parent_id(params), do: params
 
   defp maybe_put_related_to_id(%{"related_to_id" => related_to_id} = params) do
-    related_to_id = IdHasher.decode(related_to_id)
     Map.put(params, "related_to_id", related_to_id)
   end
 
@@ -55,7 +53,7 @@ defmodule EmbersWeb.Api.PostController do
     medias =
       for media <- medias,
           %{"id" => id_hash} = media,
-          id = IdHasher.decode(id_hash),
+          id = id_hash,
           media = Embers.Media.get(id) do
         media
       end
@@ -69,7 +67,7 @@ defmodule EmbersWeb.Api.PostController do
     links =
       for link <- links,
           %{"id" => id_hash} = link,
-          id = IdHasher.decode(id_hash),
+          id = id_hash,
           link = Embers.Links.get_by(%{id: id}) do
         link
       end
@@ -98,9 +96,7 @@ defmodule EmbersWeb.Api.PostController do
     Map.put(params, "tags", tags)
   end
 
-  def show(conn, %{"id" => id}) do
-    post_id = IdHasher.decode(id)
-
+  def show(conn, %{"id" => post_id}) do
     with {:ok, post} <- Posts.get_post(post_id) do
       post = populate_user(post, conn)
 
@@ -117,7 +113,6 @@ defmodule EmbersWeb.Api.PostController do
   end
 
   def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    id = IdHasher.decode(id)
     post = Posts.get_post!(id)
 
     case can_delete?(user, post) do
@@ -132,8 +127,6 @@ defmodule EmbersWeb.Api.PostController do
   end
 
   def show_replies(conn, %{"id" => parent_id} = params) do
-    parent_id = IdHasher.decode(parent_id)
-
     order =
       case params["order"] do
         "desc" -> :desc
@@ -143,8 +136,8 @@ defmodule EmbersWeb.Api.PostController do
 
     results =
       Posts.get_post_replies(parent_id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"],
         order: order
       )

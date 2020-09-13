@@ -42,7 +42,7 @@
       </td>
       <td><%= ban.expires_at %></td>
       <td>
-        <%= link "Detalles", to: "/admin/bans/#{ Embers.Helpers.IdHasher.encode(ban.user_id) }", class: "button is-small" %>
+        <%= link "Detalles", to: "/admin/bans/#{ ban.user_id }", class: "button is-small" %>
       </td>
     </tr>
     <% end %>

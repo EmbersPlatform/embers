@@ -9,7 +9,7 @@
       class="media"
       itemscope
       itemtype="https://schema.org/ImageObject"
-      data-action="click->medias#show_at" data-id="<%= encode_id media.id %>"
+      data-action="click->medias#show_at" data-id="<%= media.id %>"
     >
       <img
         loading="lazy"
@@ -28,7 +28,7 @@
       <div class="media-preview"
         itemscope
         itemtype="https://schema.org/ImageObject"
-        data-action="click->medias#show_at" data-id="<%= encode_id media.id %>">
+        data-action="click->medias#show_at" data-id="<%= media.id %>">
         <div class="media-preview_bg" style="background-image: url('<%= Embers.Media.format_url(media.metadata["preview_url"]) %>');">
           <img
             loading="lazy"
@@ -46,7 +46,7 @@
 
   <%= if count > 2 do %>
     <% [media | aside_medias] = @medias %>
-    <div class="media-preview" data-action="click->medias#show_at" data-id="<%= encode_id media.id %>">
+    <div class="media-preview" data-action="click->medias#show_at" data-id="<%= media.id %>">
       <div class="media-preview_bg" style="background-image: url('<%= Embers.Media.format_url(media.metadata["preview_url"]) %>');">
         <img
           loading="lazy"
@@ -59,7 +59,7 @@
     </div>
     <div class="medias-aside">
       <%= for media <- aside_medias do %>
-        <div class="media-preview" data-action="click->medias#show_at" data-id="<%= encode_id media.id %>">
+        <div class="media-preview" data-action="click->medias#show_at" data-id="<%= media.id %>">
           <div class="media-preview_bg" style="background-image: url('<%= Embers.Media.format_url(media.metadata["preview_url"]) %>');">
             <img
               loading="lazy"

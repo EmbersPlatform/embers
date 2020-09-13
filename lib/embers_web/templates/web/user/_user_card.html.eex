@@ -19,7 +19,7 @@
       <button
         is="follow-button"
         class="button"
-        data-id="<%= encode_id @user.id %>"
+        data-id="<%= @user.id %>"
         <%= if authenticated?(@conn) and @user.following, do: "following" %>
         textless
       ></button>

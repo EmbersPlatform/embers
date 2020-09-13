@@ -3,7 +3,7 @@ defmodule EmbersWeb.Web.LinkView do
 
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
 
   def render("link.json", %{link: link}) do
     embed =
@@ -11,7 +11,7 @@ defmodule EmbersWeb.Web.LinkView do
       |> clean_embed()
 
     %{
-      "id" => IdHasher.encode(link.id),
+      "id" => link.id,
       "url" => link.url,
       "embed" => embed
     }

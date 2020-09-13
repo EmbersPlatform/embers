@@ -7,7 +7,7 @@ defmodule EmbersWeb.Web.ChatController do
 
   alias Embers.Accounts.User
   alias Embers.Chat
-  alias Embers.Helpers.IdHasher
+
 
   plug(:user_check)
 
@@ -21,7 +21,7 @@ defmodule EmbersWeb.Web.ChatController do
   end
 
   def show(conn, %{"username" => username} = _params) do
-    with %User{} = user <- Embers.Accounts.get_populated(username) do
+    with %User{} = user <- Embers.Accounts.get_populated(%{"canonical" => username}) do
       render(conn, "show.html", user: user)
     end
   end
@@ -32,12 +32,11 @@ defmodule EmbersWeb.Web.ChatController do
     render(conn, "conversations.json", conversations: conversations)
   end
 
-  def show_messages(conn, %{"id" => id} = params) do
-    user_id = IdHasher.decode(id)
+  def show_messages(conn, %{"id" => user_id} = params) do
     with %User{} = user <- Embers.Accounts.get_populated(user_id) do
       messages =
         Chat.list_messages_for(conn.assigns.current_user.id, user.id,
-          before: IdHasher.decode(params["before"])
+          before: params["before"]
         )
 
       render(conn, "messages.json", messages: messages)
@@ -51,7 +50,7 @@ defmodule EmbersWeb.Web.ChatController do
 
     params =
       if !is_nil(params["receiver_id"]) do
-        Map.put(params, "receiver_id", IdHasher.decode(params["receiver_id"]))
+        Map.put(params, "receiver_id", params["receiver_id"])
       end || params
 
     with {:ok, message} <- Chat.create(params, nonce: nonce) do
@@ -71,16 +70,15 @@ defmodule EmbersWeb.Web.ChatController do
     end
   end
 
-  def read(conn, %{"id" => id} = _params) do
+  def read(conn, %{"id" => party} = _params) do
     reader = conn.assigns.current_user.id
-    party = IdHasher.decode(id)
 
     Chat.read_conversation(reader, party)
 
     EmbersWeb.Endpoint.broadcast!(
-      "user:#{IdHasher.encode(reader)}",
+      "user:#{reader}",
       "conversation_read",
-      %{id: id}
+      %{id: party}
     )
 
     conn

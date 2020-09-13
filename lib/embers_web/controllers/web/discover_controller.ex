@@ -5,7 +5,7 @@ defmodule EmbersWeb.Web.DiscoverController do
   import EmbersWeb.Authorize
 
   alias Embers.Feed.Public
-  alias Embers.Helpers.IdHasher
+
 
   plug(:user_check when action in [])
 
@@ -34,8 +34,8 @@ defmodule EmbersWeb.Web.DiscoverController do
   defp posts_for_guests(params) do
     posts =
       Public.get(
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"],
         blocked_tags: ["nsfw"]
       )
@@ -51,8 +51,8 @@ defmodule EmbersWeb.Web.DiscoverController do
 
     posts =
       Public.get(
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"],
         blocked_users: blocked_users,
         blocked_tags: blocked_tags

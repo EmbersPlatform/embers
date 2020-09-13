@@ -3,7 +3,7 @@ defmodule EmbersWeb.Api.FriendView do
 
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
   alias EmbersWeb.Api.UserView
 
   def render("friends.json", %{entries: friends} = metadata) do
@@ -23,7 +23,7 @@ defmodule EmbersWeb.Api.FriendView do
   end
 
   def render("friend_id", %{friend: id}) do
-    IdHasher.encode(id)
+    id
   end
 
   def render("friend.json", %{friend: friend}) do

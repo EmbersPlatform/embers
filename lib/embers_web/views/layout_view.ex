@@ -3,7 +3,7 @@ defmodule EmbersWeb.LayoutView do
 
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
 
   def render_layout(layout, assigns, do: content) do
     render(layout, Map.put(assigns, :inner_layout, content))
@@ -25,7 +25,7 @@ defmodule EmbersWeb.LayoutView do
 
     data
     |> Map.put(:user, %{
-      id: IdHasher.encode(user.id),
+      id: user.id,
       username: user.username,
       canonical: user.canonical,
       avatar: user.meta.avatar,
@@ -56,7 +56,7 @@ defmodule EmbersWeb.LayoutView do
     user = conn.assigns.current_user
     unseen_messages =
       for %{party: partner, unread: count} <- Embers.Chat.list_unread_conversations(user.id), into: %{} do
-        {encode_id(partner), count}
+        {partner, count}
       end
 
 

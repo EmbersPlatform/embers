@@ -3,7 +3,7 @@ defmodule EmbersWeb.Admin.AuditView do
   use EmbersWeb, :view
   import Scrivener.HTML
 
-  alias Embers.Helpers.IdHasher
+
 
   def format_audit(audit) do
     action = action_text(audit)
@@ -31,35 +31,35 @@ defmodule EmbersWeb.Admin.AuditView do
       "delete_post" ->
         ~E"""
           <strong><%= link("Post",
-            to: "/post/#{audit.source |> String.to_integer() |> IdHasher.encode()}",
+            to: "/post/#{audit.source |> String.to_integer()}",
             target: "_blank"
           ) %></strong> eliminado
         """
       "disable_post" ->
         ~E"""
           <strong><%= link("Post",
-            to: "/post/#{audit.source |> String.to_integer() |> IdHasher.encode()}",
+            to: "/post/#{audit.source |> String.to_integer()}",
             target: "_blank"
           ) %></strong> deshabilitado
         """
       "restore_post" ->
         ~E"""
           <strong><%= link("Post",
-            to: "/post/#{audit.source |> String.to_integer() |> IdHasher.encode()}",
+            to: "/post/#{audit.source |> String.to_integer()}",
             target: "_blank"
           ) %></strong> restaurado
         """
       "update_post" ->
         ~E"""
           <strong><%= link("Post",
-            to: "/post/#{audit.source |> String.to_integer() |> IdHasher.encode()}",
+            to: "/post/#{audit.source |> String.to_integer()}",
             target: "_blank"
           ) %></strong> Actualizado
         """
       "tags_updated" ->
         ~E"""
           Tags de un <strong><%= link("post",
-            to: "/post/#{audit.source |> String.to_integer() |> IdHasher.encode()}",
+            to: "/post/#{audit.source |> String.to_integer()}",
             target: "_blank"
           ) %></strong> actualizados
         """
@@ -81,8 +81,7 @@ defmodule EmbersWeb.Admin.AuditView do
 
   defp format_detail(%{source: source} = _audit, %{action: "in_post"}) do
     id = String.to_integer(source)
-    hash = Embers.Helpers.IdHasher.encode(id)
-    {:safe, link} = link(hash, to: "/post/#{hash}", target: "_blank")
+    {:safe, link} = link(id, to: "/post/#{id}", target: "_blank")
     "En el post #{link}"
   end
 

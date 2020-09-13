@@ -1,6 +1,5 @@
 defmodule Embers.Profile.Uploads.Cover do
   @moduledoc false
-  alias Embers.Helpers.IdHasher
   alias Embers.Uploads
 
   @path Keyword.get(Application.get_env(:embers, Embers.Profile), :cover_path, "user/cover")
@@ -13,10 +12,8 @@ defmodule Embers.Profile.Uploads.Cover do
     if valid?(cover) do
       processed = process(cover)
 
-      id = IdHasher.encode(user_id)
-
       with {:ok, _} <-
-             Uploads.upload(processed.path, "#{@path}/#{id}.jpg", content_type: "image/png") do
+             Uploads.upload(processed.path, "#{@path}/#{user_id}.jpg", content_type: "image/png") do
         :ok
       else
         error -> error
@@ -31,9 +28,7 @@ defmodule Embers.Profile.Uploads.Cover do
   end
 
   def delete(user_id) when is_integer(user_id) do
-    id = IdHasher.encode(user_id)
-
-    with :ok <- Uploads.delete("#{@path}/#{id}.jpg") do
+    with :ok <- Uploads.delete("#{@path}/#{user_id}.jpg") do
       :ok
     else
       error -> error

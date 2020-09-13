@@ -2,8 +2,6 @@ defmodule EmbersWeb.PostChannel do
   @moduledoc false
   use Phoenix.Channel
 
-  alias Embers.Helpers.IdHasher
-
   intercept ["reactions_updated"]
 
   def join("post:" <> _id, _params, socket) do
@@ -12,7 +10,7 @@ defmodule EmbersWeb.PostChannel do
 
   defp check_user(id, socket) do
     %Phoenix.Socket{assigns: %{user: user}} = socket
-    IdHasher.decode(id) == user.id
+    id == user.id
   end
 
   def handle_out("reactions_updated", payload, %{assigns: %{user: nil}} = socket) do

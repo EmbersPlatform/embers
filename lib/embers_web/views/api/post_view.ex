@@ -2,7 +2,7 @@ defmodule EmbersWeb.Api.PostView do
   @moduledoc false
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
   alias EmbersWeb.{Api.LinkView, Api.MediaView, Api.PostView, Api.UserView}
 
   def render("show.json", %{post: post, current_user: current_user})
@@ -21,7 +21,7 @@ defmodule EmbersWeb.Api.PostView do
   def render("post.json", %{post: post} = assigns) do
     view =
       %{
-        id: IdHasher.encode(post.id),
+        id: post.id,
         body: post.body,
         created_at: post.inserted_at,
         deleted: !is_nil(post.deleted_at),
@@ -73,7 +73,7 @@ defmodule EmbersWeb.Api.PostView do
 
   defp put_in_reply_to(view, post) do
     if not is_nil(post.parent_id) do
-      Map.put(view, "in_reply_to", IdHasher.encode(post.parent_id))
+      Map.put(view, "in_reply_to", post.parent_id)
     end || view
   end
 

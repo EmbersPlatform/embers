@@ -3,7 +3,7 @@ defmodule EmbersWeb.Api.TagBlockView do
 
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
 
   def render("tags.json", %{tags: tags}) do
     render_many(tags, __MODULE__, "tag.json")
@@ -26,12 +26,12 @@ defmodule EmbersWeb.Api.TagBlockView do
   end
 
   def render("tag_id", %{tag_block: id}) do
-    IdHasher.encode(id)
+    id
   end
 
   def render("tag.json", %{tag_block: tag}) do
     %{
-      id: IdHasher.encode(tag.id),
+      id: tag.id,
       name: tag.name,
       description: tag.description
     }

@@ -8,6 +8,7 @@ defmodule Embers.Tags.Tag do
 
   @max_length 100
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "tags" do
     field(:name, :string, null: false)
     field(:description, :string)

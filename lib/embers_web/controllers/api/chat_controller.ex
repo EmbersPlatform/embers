@@ -3,8 +3,6 @@ defmodule EmbersWeb.Api.ChatController do
 
   use EmbersWeb, :controller
 
-  import Embers.Helpers.IdHasher
-
   alias Embers.Chat
 
   def list_conversations(conn, _params) do
@@ -14,11 +12,9 @@ defmodule EmbersWeb.Api.ChatController do
   end
 
   def list_messages(conn, %{"id" => party_id} = params) do
-    party_id = decode(party_id)
-
     messages =
       Chat.list_messages_for(conn.assigns.current_user.id, party_id,
-        before: decode(params["before"])
+        before: params["before"]
       )
 
     render(conn, "messages.json", messages)
@@ -31,7 +27,7 @@ defmodule EmbersWeb.Api.ChatController do
 
     params =
       if !is_nil(params["receiver_id"]) do
-        Map.put(params, "receiver_id", decode(params["receiver_id"]))
+        Map.put(params, "receiver_id", params["receiver_id"])
       end || params
 
     with {:ok, message} <- Chat.create(params, temp_id: temp_id) do
@@ -51,16 +47,15 @@ defmodule EmbersWeb.Api.ChatController do
     end
   end
 
-  def read(conn, %{"id" => id} = _params) do
+  def read(conn, %{"id" => party} = _params) do
     reader = conn.assigns.current_user.id
-    party = decode(id)
 
     Chat.read_conversation(reader, party)
 
     EmbersWeb.Endpoint.broadcast!(
-      "user:#{encode(reader)}",
+      "user:#{reader}",
       "conversation_read",
-      %{id: id}
+      %{id: party}
     )
 
     conn
@@ -70,7 +65,6 @@ defmodule EmbersWeb.Api.ChatController do
 
   def list_unread_conversations(conn, _params) do
     conversations = Chat.list_unread_conversations(conn.assigns.current_user.id)
-    conversations = Enum.map(conversations, &encode/1)
 
     conn
     |> json(conversations)

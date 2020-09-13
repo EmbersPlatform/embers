@@ -2,7 +2,7 @@ defmodule EmbersWeb.ViewHelpers do
   use Phoenix.HTML
 
   alias EmbersWeb.Router.Helpers
-  alias Embers.Helpers.IdHasher
+
 
   def get_locale(conn) do
     Map.get(
@@ -11,14 +11,6 @@ defmodule EmbersWeb.ViewHelpers do
       Application.get_env(:embers, EmbersWeb.Gettext)[:default_locale]
     )
   end
-
-  def encode_id(nil), do: nil
-
-  def encode_id(id) when is_integer(id) do
-    IdHasher.encode(id)
-  end
-
-  def encode_id(id) when is_binary(id), do: id
 
   def authenticated?(%{assigns: %{current_user: user}}) when not is_nil(user), do: true
   def authenticated?(_), do: false

@@ -3,7 +3,7 @@ defmodule EmbersWeb.Web.PageController do
 
   use EmbersWeb, :controller
 
-  alias Embers.Helpers.IdHasher
+
   alias Embers.Feed.Timeline
 
   def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, _params) do
@@ -20,8 +20,8 @@ defmodule EmbersWeb.Web.PageController do
         Timeline.get(
           user_id: current_user.id,
           with_replies: 2,
-          after: IdHasher.decode(params["after"]),
-          before: IdHasher.decode(params["before"]),
+          after: params["after"],
+          before: params["before"],
           limit: 20
         )
       rescue

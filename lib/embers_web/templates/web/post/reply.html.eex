@@ -1,7 +1,7 @@
 <article
-  id="reply-<%= encode_id(@reply.id) %>"
-  data-id="<%= encode_id(@reply.id) %>"
-  data-author-id="<%= encode_id(@reply.user.id) %>"
+  id="reply-<%= @reply.id %>"
+  data-id="<%= @reply.id %>"
+  data-author-id="<%= @reply.user.id %>"
   data-depth="<%= @reply.nesting_level %>"
   class="reply"
   data-controller="<%= attr_list([
@@ -21,7 +21,7 @@
           label: @reply.user.username,
           class: "username")
         %>
-        <%= link(to: post_path(@conn, :show, encode_id(@reply.id)), itemprop: "url",
+        <%= link(to: post_path(@conn, :show, @reply.id), itemprop: "url",
 
             "up-instant": true,
             "up-preload": true,
@@ -61,7 +61,7 @@
         <e-spacer></e-spacer>
         <div>
           <%= if @reply.replies_count > 0 do %>
-            <a href="<%= post_path(@conn, :show, encode_id(@reply.id)) %>" class="stat replies-stat">
+            <a href="<%= post_path(@conn, :show, @reply.id) %>" class="stat replies-stat">
               <%= ngettext("1 reply", "%{count} replies", @reply.replies_count) %>
             </a>
           <% end %>
@@ -98,7 +98,7 @@
     <%= if (length @reply.links) > 0 do %>
       <%= for link <- @reply.links do %>
         <gallery-item
-          data-id="<%= encode_id link.id %>"
+          data-id="<%= link.id %>"
           data-type="image"
           data-src="<%= link.embed.thumbnail_url %>"
         ></gallery-item>
@@ -106,7 +106,7 @@
     <% end %>
     <%= for media <- @reply.media do %>
       <gallery-item
-        data-id="<%= encode_id media.id %>"
+        data-id="<%= media.id %>"
         data-type="<%= media.type %>"
         data-src="<%= Embers.Media.format_url media.url %>"
       ></gallery-item>

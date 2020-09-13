@@ -7,6 +7,7 @@ defmodule Embers.Profile.Settings.Setting do
 
   @allowed_themes ["dark", "light"]
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "user_settings" do
     field(:content_nsfw, :string, default: "hide")
     field(:content_lowres_images, :boolean, default: false)
@@ -18,7 +19,7 @@ defmodule Embers.Profile.Settings.Setting do
 
     field(:style_theme, :string, default: "dark")
 
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
 
     timestamps()
   end

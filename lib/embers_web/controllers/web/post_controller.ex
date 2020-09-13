@@ -4,7 +4,6 @@ defmodule EmbersWeb.Web.PostController do
 
   import EmbersWeb.Authorize
 
-  alias Embers.Helpers.IdHasher
   alias Embers.Posts
   alias Embers.Profile.Meta
   alias Embers.Reactions
@@ -23,12 +22,10 @@ defmodule EmbersWeb.Web.PostController do
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end
 
-  def show(conn, %{"hash" => hash} = _params) do
-    id = IdHasher.decode(hash)
-
+  def show(conn, %{"hash" => id} = _params) do
     with {:ok, post} = Posts.get_post(id) do
       post = update_in(post.user.meta, &Meta.load_cover/1)
-      post = put_in(post.id, hash)
+      post = put_in(post.id, id)
 
       if is_nil(post.parent_id) do
         show_root_post(conn, post)
@@ -54,7 +51,7 @@ defmodule EmbersWeb.Web.PostController do
   end
 
   defp show_root_post(conn, post) do
-    id = IdHasher.decode(post.id)
+    id = post.id
     replies_page = Posts.get_post_replies(id, limit: 20, replies: 2, replies_order: {:desc, :inserted_at})
 
     title = post.body || gettext("@%{username}'s post", username: post.user.username)
@@ -76,13 +73,12 @@ defmodule EmbersWeb.Web.PostController do
     end
   end
 
-  def show_modal(conn, %{"hash" => hash} = _params) do
-    id = IdHasher.decode(hash)
+  def show_modal(conn, %{"hash" => id} = _params) do
 
     with {:ok, post} = Posts.get_post(id) do
       post = put_in(post.user.meta.avatar, Meta.avatar_map(post.user.meta))
       post = put_in(post.user.meta.cover, Meta.cover(post.user.meta))
-      post = put_in(post.id, hash)
+      post = put_in(post.id, id)
 
       replies_page = Posts.get_post_replies(id, limit: 20, replies: 2, replies_order: {:desc, :inserted_at})
 
@@ -126,14 +122,12 @@ defmodule EmbersWeb.Web.PostController do
   end
 
   defp maybe_put_parent_id(%{"parent_id" => parent_id} = params) do
-    parent_id = IdHasher.decode(parent_id)
     Map.put(params, "parent_id", parent_id)
   end
 
   defp maybe_put_parent_id(params), do: params
 
   defp maybe_put_related_to_id(%{"related_to_id" => related_to_id} = params) do
-    related_to_id = IdHasher.decode(related_to_id)
     Map.put(params, "related_to_id", related_to_id)
   end
 
@@ -142,8 +136,7 @@ defmodule EmbersWeb.Web.PostController do
   defp maybe_put_medias(%{"medias" => medias} = params) do
     medias =
       for media <- medias,
-          %{"id" => id_hash} = media,
-          id = IdHasher.decode(id_hash),
+          %{"id" => id} = media,
           media = Embers.Media.get(id) do
         media
       end
@@ -155,8 +148,7 @@ defmodule EmbersWeb.Web.PostController do
 
   defp maybe_put_links(%{"links" => links} = params) do
     links =
-      for id_hash <- links,
-          id = IdHasher.decode(id_hash),
+      for id <- links,
           link = Embers.Links.get_by(%{id: id}) do
         link
       end
@@ -186,7 +178,6 @@ defmodule EmbersWeb.Web.PostController do
   end
 
   def delete(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
-    id = IdHasher.decode(id)
     post = Posts.get_post!(id)
 
     case can_delete?(user, post) do
@@ -194,7 +185,7 @@ defmodule EmbersWeb.Web.PostController do
         {:ok, _post} = Posts.delete_post(post, actor: user.id)
 
         EmbersWeb.Endpoint.broadcast!(
-          "post:#{IdHasher.encode(post.id)}",
+          "post:#{post.id}",
           "deleted",
           %{}
         )
@@ -212,8 +203,7 @@ defmodule EmbersWeb.Web.PostController do
     Embers.Authorization.is_owner?(user, post) || Embers.Authorization.can?("delete_post", user)
   end
 
-  def show_replies(conn, %{"hash" => hash} = params) do
-    parent_id = IdHasher.decode(hash)
+  def show_replies(conn, %{"hash" => parent_id} = params) do
     limit = Map.get(params, "limit", 2)
     skip_first? = Map.get(params, "skip_first", false)
     replies = if is_binary(params["replies"]) do
@@ -234,8 +224,8 @@ defmodule EmbersWeb.Web.PostController do
 
     results =
       Posts.get_post_replies(parent_id,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: limit,
         order: order,
         replies: replies,
@@ -258,15 +248,14 @@ defmodule EmbersWeb.Web.PostController do
     |> render(:show_replies, replies: results, as_thread?: as_thread?)
   end
 
-  def add_reaction(conn, %{"name" => name, "hash" => hash}) do
+  def add_reaction(conn, %{"name" => name, "hash" => post_id}) do
     user_id = conn.assigns.current_user.id
-    post_id = IdHasher.decode(hash)
 
     case Reactions.create_reaction(%{"name" => name, "user_id" => user_id, "post_id" => post_id}) do
       {:ok, _reaction} ->
         post = Posts.get_post!(post_id)
         EmbersWeb.Endpoint.broadcast!(
-          "post:#{IdHasher.encode(post.id)}",
+          "post:#{post.id}",
           "reactions_updated",
           %{user_id: user_id,
             added: [name]
@@ -284,9 +273,8 @@ defmodule EmbersWeb.Web.PostController do
     end
   end
 
-  def remove_reaction(conn, %{"name" => name, "hash" => hash}) do
+  def remove_reaction(conn, %{"name" => name, "hash" => post_id}) do
     user_id = conn.assigns.current_user.id
-    post_id = IdHasher.decode(hash)
 
     Reactions.delete_reaction(%{
       "name" => name,
@@ -296,7 +284,7 @@ defmodule EmbersWeb.Web.PostController do
 
     post = Posts.get_post!(post_id)
     EmbersWeb.Endpoint.broadcast!(
-      "post:#{IdHasher.encode(post.id)}",
+      "post:#{post.id}",
       "reactions_updated",
       %{user_id: user_id,
         removed: [name]

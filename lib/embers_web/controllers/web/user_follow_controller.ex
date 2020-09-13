@@ -6,15 +6,13 @@ defmodule EmbersWeb.Web.UserFollowController do
   import EmbersWeb.Authorize
 
   alias Embers.Subscriptions
-  alias Embers.Helpers.IdHasher
+
 
   action_fallback(EmbersWeb.Web.FallbackController)
   plug(:user_check when action in [:create, :create_by_name, :delete])
 
   def create(conn, %{"id" => source_id} = _params) do
     user = conn.assigns.current_user
-    source_id = IdHasher.decode(source_id)
-
     sub_params = %{
       user_id: user.id,
       source_id: source_id
@@ -56,7 +54,6 @@ defmodule EmbersWeb.Web.UserFollowController do
 
   def destroy(conn, %{"id" => id}) do
     user = conn.assigns.current_user
-    id = IdHasher.decode(id)
 
     Subscriptions.delete_user_subscription(user.id, id)
 

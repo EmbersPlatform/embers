@@ -132,7 +132,6 @@ defmodule Embers.Profile do
 
   def remove_avatar(%Meta{user_id: id} = meta) do
     path = Uploads.Avatar.fetch_path()
-    id = Embers.Helpers.IdHasher.encode(id)
 
     with  :ok <- Uploads.delete("#{path}/#{id}_small.png"),
           :ok <- Uploads.delete("#{path}/#{id}_medium.png"),
@@ -143,7 +142,6 @@ defmodule Embers.Profile do
 
   def remove_cover(%Meta{user_id: id} = meta) do
     path = Uploads.Cover.fetch_path()
-    id = Embers.Helpers.IdHasher.encode(id)
 
     with :ok <- Uploads.delete("#{path}/#{id}.jpg"),
          {:ok, _} <- update_meta(meta, %{cover_version: nil}),

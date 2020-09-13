@@ -4,9 +4,10 @@ defmodule Embers.Favorites.Favorite do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "favorites" do
-    belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:post, Embers.Posts.Post)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:post, Embers.Posts.Post, type: Embers.Hashid)
 
     timestamps()
   end

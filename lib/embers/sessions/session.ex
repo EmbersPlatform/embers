@@ -8,9 +8,10 @@ defmodule Embers.Sessions.Session do
 
   @max_age :timer.hours(24) * 7
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "sessions" do
     field(:expires_at, :utc_datetime)
-    belongs_to(:user, User)
+    belongs_to(:user, User, type: Embers.Hashid)
 
     timestamps()
   end

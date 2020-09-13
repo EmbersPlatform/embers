@@ -3,11 +3,11 @@ defmodule EmbersWeb.Web.ChatView do
 
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
 
   def render("message.json", %{message: message}) do
     %{
-      id: IdHasher.encode(message.id),
+      id: message.id,
       text: message.text,
       read_at: message.read_at,
       inserted_at: message.inserted_at,
@@ -45,7 +45,7 @@ defmodule EmbersWeb.Web.ChatView do
         )
       end || view
 
-    view = Map.put(view, :sender_id, IdHasher.encode(message.sender_id))
+    view = Map.put(view, :sender_id, message.sender_id)
 
     view =
       if Ecto.assoc_loaded?(message.receiver) do
@@ -56,7 +56,7 @@ defmodule EmbersWeb.Web.ChatView do
         )
       end || view
 
-    view = Map.put(view, :receiver_id, IdHasher.encode(message.receiver_id))
+    view = Map.put(view, :receiver_id, message.receiver_id)
 
     view
   end

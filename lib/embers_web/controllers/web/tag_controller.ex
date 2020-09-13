@@ -4,7 +4,7 @@ defmodule EmbersWeb.Web.TagController do
   use EmbersWeb, :controller
 
   alias Embers.Tags
-  alias Embers.Helpers.IdHasher
+
 
   def show(conn, %{"name" => name} = params) do
     tag = case Tags.get_by_name(name) do
@@ -16,7 +16,7 @@ defmodule EmbersWeb.Web.TagController do
       Embers.Paginator.Page.empty()
     else
       Tags.list_tag_posts(tag.name,
-        before: IdHasher.decode(params["before"]), limit: params["limit"]
+        before: params["before"], limit: params["limit"]
       )
     end
 

@@ -10,9 +10,10 @@ defmodule Embers.Reports.PostReport do
   alias Embers.Repo
   alias Embers.Reports.Queries
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "post_reports" do
-    belongs_to(:post, Post)
-    belongs_to(:reporter, User)
+    belongs_to(:post, Post, type: Embers.Hashid)
+    belongs_to(:reporter, User, type: Embers.Hashid)
 
     field(:comments, :string)
     field(:resolved, :boolean)

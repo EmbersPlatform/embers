@@ -7,7 +7,6 @@ defmodule Embers.Paginator do
 
   import Ecto.Query, warn: false
 
-  alias Embers.Helpers.IdHasher
   alias Embers.Paginator.Options
   alias Embers.Paginator.Page
   alias Embers.Repo
@@ -73,7 +72,7 @@ defmodule Embers.Paginator do
       if last_page or is_nil(last_entry) do
         nil
       else
-        IdHasher.encode(last_entry.id)
+        last_entry.id
       end
 
     %Page{entries: entries, next: next, last_page: last_page}

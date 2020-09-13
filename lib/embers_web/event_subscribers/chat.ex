@@ -10,14 +10,14 @@ defmodule EmbersWeb.ChatSubscriber do
     %{sender_id: sender, receiver_id: receiver} = message
 
     EmbersWeb.Endpoint.broadcast!(
-      "user:#{encode(sender)}",
+      "user:#{sender}",
       "new_chat_message",
       ChatView.render("message.json", message: message)
     )
 
     if sender != receiver do
       EmbersWeb.Endpoint.broadcast!(
-        "user:#{encode(receiver)}",
+        "user:#{receiver}",
         "new_chat_message",
         ChatView.render("message.json", message: message)
       )

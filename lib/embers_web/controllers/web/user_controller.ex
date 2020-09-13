@@ -8,14 +8,14 @@ defmodule EmbersWeb.Web.UserController do
   alias Embers.Accounts
   alias Embers.Accounts.User
   alias Embers.Feed
-  alias Embers.Helpers.IdHasher
+
   alias Embers.Profile.Meta
   alias Embers.Subscriptions
 
   action_fallback(EmbersWeb.FallbackController)
 
   def show(conn, %{"username" => username}) do
-    with user <- Accounts.get_populated(username) do
+    with user <- Accounts.get_populated(%{"canonical" => username}) do
       current_user = conn.assigns.current_user
       %{entries: followers} = Subscriptions.list_following_paginated(user.id, limit: 10)
       activities = Feed.User.get(user_id: user.id)
@@ -35,9 +35,9 @@ defmodule EmbersWeb.Web.UserController do
   def timeline(conn, %{"user_id" => user_id} = params) do
     posts =
       Feed.User.get(
-        user_id: IdHasher.decode(user_id),
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        user_id: user_id,
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 
@@ -47,12 +47,12 @@ defmodule EmbersWeb.Web.UserController do
     |> render("timeline.html", posts: posts)
   end
 
-  def show_followers(conn, %{"username" => username} = params) do
-    with user <- Accounts.get_populated(username) do
+  def show_followers(conn, %{"username" => canonical} = params) do
+    with user <- Accounts.get_populated(%{"canonical" => canonical}) do
       followers =
         Subscriptions.list_followers_paginated(user.id,
-          after: IdHasher.decode(params["after"]),
-          before: IdHasher.decode(params["before"]),
+          after: params["after"],
+          before: params["before"],
           limit: params["limit"]
         )
         |> maybe_load_follows_me_status(conn)
@@ -73,12 +73,12 @@ defmodule EmbersWeb.Web.UserController do
     end
   end
 
-  def show_following(conn, %{"username" => username} = params) do
-    with user <- Accounts.get_populated(username) do
+  def show_following(conn, %{"username" => canonical} = params) do
+    with user <- Accounts.get_populated(%{"canonical" => canonical}) do
       following =
         Subscriptions.list_following_paginated(user.id,
-          after: IdHasher.decode(params["after"]),
-          before: IdHasher.decode(params["before"]),
+          after: params["after"],
+          before: params["before"],
           limit: params["limit"]
         )
         |> maybe_load_follows_me_status(conn, :source_id)

@@ -3,7 +3,6 @@ defmodule EmbersWeb.UserChannel do
   use Phoenix.Channel
 
   alias Embers.Subscriptions
-  alias Embers.Helpers.IdHasher
   alias EmbersWeb.Presence
 
   def join("user:" <> id, _payload, socket) do
@@ -29,7 +28,7 @@ defmodule EmbersWeb.UserChannel do
   end
 
   def handle_in("chat_typing", %{"party" => party_id} = _payload, socket) do
-    dest_id = IdHasher.encode(socket.assigns.user.id)
+    dest_id = socket.assigns.user.id
 
     EmbersWeb.Endpoint.broadcast!("user:#{party_id}", "chat_typing", %{
       "party" => dest_id
@@ -40,7 +39,7 @@ defmodule EmbersWeb.UserChannel do
 
   defp check_user(id, socket) do
     %Phoenix.Socket{assigns: %{user: user}} = socket
-    IdHasher.decode(id) == user.id
+    id == user.id
   end
 
   # Let's pretend that the current user is allowed to see the presence of users with an id between
@@ -54,11 +53,9 @@ defmodule EmbersWeb.UserChannel do
     setting = Embers.Profile.Settings.get_setting!(user.id)
 
     if not is_nil(setting) and setting.privacy_show_status do
-      encoded_id = IdHasher.encode(user.id)
-
       {:ok, _} =
         Presence.track(self(), presence_topic(user.id), user.username, %{
-          id: encoded_id,
+          id: user.id,
           username: user.username,
           avatar: user.meta.avatar,
           online_at: inspect(System.system_time(:second))

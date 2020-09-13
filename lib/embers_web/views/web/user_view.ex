@@ -2,12 +2,12 @@ defmodule EmbersWeb.Web.UserView do
   @moduledoc false
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
   alias EmbersWeb.Api.MetaView
 
   def render("user.json", %{user: user}) do
     view = %{
-      id: IdHasher.encode(user.id),
+      id: user.id,
       username: user.username,
       badges: [],
       canonical: user.canonical,

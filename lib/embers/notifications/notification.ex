@@ -9,14 +9,15 @@ defmodule Embers.Notifications.Notification do
 
   @type t :: %__MODULE__{}
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "notifications" do
     field(:type, :string, null: false)
     field(:source_id, :integer)
     field(:text, :string)
     field(:status, :integer)
 
-    belongs_to(:from, Embers.Accounts.User)
-    belongs_to(:recipient, Embers.Accounts.User)
+    belongs_to(:from, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:recipient, Embers.Accounts.User, type: Embers.Hashid)
 
     timestamps()
   end

@@ -5,7 +5,6 @@ defmodule EmbersWeb.Admin.BanController do
 
   import EmbersWeb.Helpers
 
-  alias Embers.Helpers.IdHasher
   alias Embers.Moderation
 
   plug(:put_layout, "dashboard.html")
@@ -13,7 +12,7 @@ defmodule EmbersWeb.Admin.BanController do
   def index(conn, params) do
     page =
       Moderation.list_all_bans(
-        after: IdHasher.decode(params["after"]),
+        after: params["after"],
         limit: params["limit"],
         name: params["name"]
       )
@@ -43,8 +42,6 @@ defmodule EmbersWeb.Admin.BanController do
   end
 
   def show(conn, %{"user_id" => user_id}) do
-    user_id = IdHasher.decode(user_id)
-
     case Embers.Accounts.get_user(user_id) do
       nil ->
         error(conn, "No se pudo encontrar el usuario", ban_path(conn, :index))
@@ -54,7 +51,7 @@ defmodule EmbersWeb.Admin.BanController do
         active_ban = Moderation.get_active_ban(user.id)
 
         render(conn, "show.html",
-          user: %{user | id: IdHasher.encode(user_id)},
+          user: user,
           bans: bans,
           active_ban: active_ban
         )
@@ -62,8 +59,6 @@ defmodule EmbersWeb.Admin.BanController do
   end
 
   def delete(conn, %{"user_id" => user_id}) do
-    user_id = IdHasher.decode(user_id)
-
     case Embers.Accounts.get_user(user_id) do
       nil ->
         error(conn, "No se pudo encontrar el usuario", ban_path(conn, :index))

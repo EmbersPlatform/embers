@@ -14,13 +14,14 @@ defmodule Embers.Media.MediaItem do
 
   @valid_types ~w(image gif video link)
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "media_items" do
     field(:url, :string, null: false)
     field(:type, :string, null: false)
     field(:temporary, :boolean, default: true)
     field(:metadata, {:map, :any})
 
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
 
     many_to_many(:post, Embers.Posts.Post, join_through: "posts_medias")
 

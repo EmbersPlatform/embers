@@ -3,11 +3,11 @@ defmodule EmbersWeb.Web.TagView do
 
   use EmbersWeb, :view
 
-  alias Embers.Helpers.IdHasher
+
 
   def render("tag.json", %{tag: %{tag: tag, level: level}}) do
     %{
-      id: IdHasher.encode(tag.id),
+      id: tag.id,
       name: tag.name,
       description: tag.description,
       sub_level: level
@@ -16,7 +16,7 @@ defmodule EmbersWeb.Web.TagView do
 
   def render("tag.json", %{tag: tag}) do
     %{
-      id: IdHasher.encode(tag.id),
+      id: tag.id,
       name: tag.name,
       description: tag.description,
       sub_level: nil

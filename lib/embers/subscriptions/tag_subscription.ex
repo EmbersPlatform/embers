@@ -4,9 +4,10 @@ defmodule Embers.Subscriptions.TagSubscription do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "tags_users" do
-    belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:source, Embers.Tags.Tag)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:source, Embers.Tags.Tag, type: Embers.Hashid)
     field(:level, :integer, null: false, default: 1)
 
     timestamps()

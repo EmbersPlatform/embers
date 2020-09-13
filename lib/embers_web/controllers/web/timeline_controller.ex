@@ -5,7 +5,6 @@ defmodule EmbersWeb.Web.TimelineController do
   import EmbersWeb.Authorize
 
   alias Embers.Feed.Timeline
-  alias Embers.Helpers.IdHasher
 
   plug(:user_check when action in [:show, :hide_activity])
 
@@ -18,8 +17,8 @@ defmodule EmbersWeb.Web.TimelineController do
       Timeline.get(
         user_id: user.id,
         with_replies: 2,
-        after: IdHasher.decode(params["after"]),
-        before: IdHasher.decode(params["before"]),
+        after: params["after"],
+        before: params["before"],
         limit: params["limit"]
       )
 

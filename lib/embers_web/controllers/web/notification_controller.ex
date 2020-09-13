@@ -6,7 +6,7 @@ defmodule EmbersWeb.Web.NotificationController do
   import EmbersWeb.Authorize
 
   alias Embers.Notifications
-  alias Embers.Helpers.IdHasher
+
 
   action_fallback(EmbersWeb.Web.FallbackController)
 
@@ -17,8 +17,8 @@ defmodule EmbersWeb.Web.NotificationController do
 
     results =
       Notifications.list_notifications_paginated(user.id,
-        before: IdHasher.decode(params["before"]),
-        after: IdHasher.decode(params["after"]),
+        before: params["before"],
+        after: params["after"],
         limit: params["limit"],
         mark_as_read: params["mark_as_seen"]
       )
@@ -31,7 +31,7 @@ defmodule EmbersWeb.Web.NotificationController do
 
   def read(conn, %{"id" => id} = _params) do
     user = conn.assigns.current_user
-    id = IdHasher.decode(id)
+    id = id
 
     Notifications.set_status(id, 2)
     Embers.Event.emit(:notification_read, %{id: id, user_id: user.id})

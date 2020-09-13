@@ -5,7 +5,6 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
 
   import EmbersWeb.Authorize
 
-  alias Embers.Helpers.IdHasher
   alias Embers.Posts
   alias Embers.Reports
   alias Embers.Reports.PostReport
@@ -19,18 +18,9 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
   def index(conn, params) do
     posts_reports =
       PostReport.list_paginated(
-        pagination: [before: params["before"]],
-        preload: [
-            :media,
-            :links,
-            :tags,
-            :reactions,
-            user: [:meta],
-            related_to: [:media, :tags, :links, :reactions, user: :meta]
-          ]
-       )
+        pagination: [before: params["before"]]
+      )
       |> Embers.Paginator.map(fn report ->
-        report = update_in(report.post.id, &IdHasher.encode/1)
         report = update_in(report.post.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
         report
       end)
@@ -40,7 +30,7 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
 
   def create_post_report(conn, %{"post_id" => id} = params) do
     user = conn.assigns.current_user
-    reportable = Posts.get_post!(IdHasher.decode(id))
+    reportable = Posts.get_post!(id)
 
     attrs = [comments: params["comments"]]
 
@@ -64,8 +54,6 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
   end
 
   def resolve(conn, %{"post_id" => post_id}) do
-    post_id = IdHasher.decode(post_id)
-
     with {:ok, post} <- Posts.get_post(post_id),
          :ok <- Reports.resolve_for(post) do
       conn

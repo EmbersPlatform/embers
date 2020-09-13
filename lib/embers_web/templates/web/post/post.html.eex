@@ -3,15 +3,15 @@
 <% else %>
 <article
   <%= if assigns[:embedded], do: "embedded" %>
-  id="post-<%= encode_id(@post.id) %>"
-  data-id="<%= encode_id(@post.id) %>"
+  id="post-<%= @post.id %>"
+  data-id="<%= @post.id %>"
   class="post"
   post
   itemscope
   itemtype="https://schema.org/SocialMediaPosting"
   role="article"
   data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>"
-  data-author-id="<%= encode_id @post.user.id %>"
+  data-author-id="<%= @post.user.id %>"
   data-controller="<%= attr_list [
     "post",
     "reactable",
@@ -48,7 +48,7 @@
           %>
         </div>
         <div class="details-bottom">
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), itemprop: "url") do %>
+          <%= link(to: post_path(Endpoint, :show, @post.id), itemprop: "url") do %>
             <time
               datetime="<%= @post.inserted_at %>"
               pubdate="<%= @post.inserted_at %>"
@@ -56,8 +56,8 @@
               <%= time_ago(@post.inserted_at) %>
             </time>
           <% end %>
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), class: "post-id-link") do %>
-            >><%= encode_id(@post.id) %>
+          <%= link(to: post_path(Endpoint, :show, @post.id), class: "post-id-link") do %>
+            >><%= @post.id %>
           <% end %>
         </div>
       </div>
@@ -109,8 +109,8 @@
       <section class="post-body" itemprop="articleBody">
         <%= @post.body %>
         <%= if !is_nil(@post.related_to_id) and assigns[:embedded] do %>
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.related_to_id)), class: "related-link") do %>
-            <%= " " <> post_url(Endpoint, :show, encode_id(@post.related_to_id)) %>
+          <%= link(to: post_path(Endpoint, :show, @post.related_to_id), class: "related-link") do %>
+            <%= " " <> post_url(Endpoint, :show, @post.related_to_id) %>
           <% end %>
         <% end %>
       </section>
@@ -128,7 +128,7 @@
         <%= render("post.html", conn: @conn, post: @post.related_to, embedded: true) %>
       <% end %>
     </section>
-    <post-tags data-post_id="<%= encode_id(@post.id) %>"></post-tags>
+    <post-tags data-post_id="<%= @post.id %>"></post-tags>
     <footer>
       <div class="stats">
         <div data-target="reactable.reactions" class="reactions">
@@ -137,7 +137,7 @@
         <e-spacer></e-spacer>
         <div>
           <%= if @post.replies_count > 0 do %>
-            <a href="<%= post_path(@conn, :show, encode_id(@post.id)) %>" class="stat replies-stat">
+            <a href="<%= post_path(@conn, :show, @post.id) %>" class="stat replies-stat">
               <%= ngettext("1 comment", "%{count} comments", @post.replies_count) %>
             </a>
           <% end %>
@@ -154,8 +154,8 @@
             <%= render("reaction_picker.html") %>
           <% end %>
           <e-spacer></e-spacer>
-          <%= link(to: post_path(Endpoint, :show, encode_id(@post.id)), class: "button-link",
-            "data-post-id": encode_id(@post.id)
+          <%= link(to: post_path(Endpoint, :show, @post.id), class: "button-link",
+            "data-post-id": @post.id
           ) do %>
             <%= svg_image("comment") %>
           <% end %>
@@ -176,7 +176,7 @@
       <post-editor
         compact
         data-action="publish->post-replies#addReply"
-        data-parent_id="<%= encode_id(@post.id) %>"
+        data-parent_id="<%= @post.id %>"
         placeholder="<%= gettext("Reply...") %>"
       ></post-editorcompact>
     </section>
@@ -185,7 +185,7 @@
     <%= if (length @post.links) > 0 do %>
       <%= for link <- @post.links do %>
         <gallery-item
-          data-id="<%= encode_id link.id %>"
+          data-id="<%= link.id %>"
           data-type="image"
           data-src="<%= link.embed.thumbnail_url %>"
         ></gallery-item>
@@ -193,7 +193,7 @@
     <% end %>
     <%= for media <- @post.media do %>
       <gallery-item
-        data-id="<%= encode_id media.id %>"
+        data-id="<%= media.id %>"
         data-type="<%= media.type %>"
         data-src="<%= Embers.Media.format_url media.url %>"
       ></gallery-item>
