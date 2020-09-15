@@ -70,6 +70,6 @@ export const format_content_warning = (post: HTMLElement): HTMLElement => {
   return post;
 }
 
-function get_tags(post: HTMLElement): Set<string> {
+export const get_tags = (post: HTMLElement): Set<string> => {
   return Sets.from(post.dataset.tags.split(" "));
 }

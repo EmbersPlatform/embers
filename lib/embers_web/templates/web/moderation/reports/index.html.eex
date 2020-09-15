@@ -4,8 +4,8 @@
   <main class="padded">
     <h1>Reportes</h1>
 
-    <%= for post_report <- @posts_reports do %>
-      <%= render("_post_summary.html", post: post_report.post, conn: @conn) %>
+    <%= for post <- @posts_reports do %>
+      <%= render("_post_summary.html", post: post, conn: @conn) %>
     <% end %>
   </main>
 </div>

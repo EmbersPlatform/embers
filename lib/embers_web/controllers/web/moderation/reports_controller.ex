@@ -17,13 +17,9 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
 
   def index(conn, params) do
     posts_reports =
-      PostReport.list_paginated(
+      PostReport.list_reported_posts(
         pagination: [before: params["before"]]
       )
-      |> Embers.Paginator.map(fn report ->
-        report = update_in(report.post.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
-        report
-      end)
 
     render(conn, "index.html", posts_reports: posts_reports)
   end
@@ -56,6 +52,37 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
   def resolve(conn, %{"post_id" => post_id}) do
     with {:ok, post} <- Posts.get_post(post_id),
          :ok <- Reports.resolve_for(post) do
+      conn
+      |> put_status(:no_content)
+      |> json(nil)
+    end
+  end
+
+  def mark_post_nsfw_and_resolve(conn, %{"post_id" => post_id}) do
+    with(
+      {:ok, post} <- Posts.get_post(post_id),
+      {:ok, _tag} <- Embers.Tags.add_tag(post, "nsfw"),
+      :ok <- Reports.resolve_for(post)
+    ) do
+      conn
+      |> put_status(:no_content)
+      |> json(nil)
+    end
+  end
+
+  def disable_post_and_resolve(conn, %{"post_id" => post_id}) do
+    user = conn.assigns.current_user
+    with(
+      {:ok, post} <- Posts.get_post(post_id),
+      {:ok, _post} = Posts.delete_post(post, actor: user.id),
+      :ok <- Reports.resolve_for(post)
+    ) do
+      EmbersWeb.Endpoint.broadcast!(
+        "post:#{post.id}",
+        "deleted",
+        %{}
+      )
+
       conn
       |> put_status(:no_content)
       |> json(nil)

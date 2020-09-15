@@ -7,6 +7,7 @@
     {"content-warning", @post.nsfw }
   ] %>"
   <%= if @post.nsfw, do: "nsfw" %>
+  data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>"
   >
   <div class="content-warnings">
     <div class="content-warning warning-nsfw">

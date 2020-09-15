@@ -147,14 +147,10 @@ defmodule Embers.Tags do
 
   def add_tag(post, tag_name) when is_binary(tag_name) do
     tag = create_tag(tag_name)
-    add_tag(post, tag.id)
+    add_tag(post, tag)
   end
 
-  def add_tag(%Post{id: pid}, tid) do
-    add_tag(pid, tid)
-  end
-
-  def add_tag(pid, tid) do
+  def add_tag(%Post{id: pid}, %Tag{id: tid}) do
     %TagPost{}
     |> TagPost.create_changeset(%{post_id: pid, tag_id: tid})
     |> Repo.insert()
@@ -163,15 +159,11 @@ defmodule Embers.Tags do
   def remove_tag(post, tag_name) when is_binary(tag_name) do
     case Repo.get_by(Tag, %{name: tag_name}) do
       nil -> nil
-      tag -> remove_tag(post, tag.id)
+      tag -> remove_tag(post, tag)
     end
   end
 
-  def remove_tag(%Post{id: pid}, tid) do
-    remove_tag(pid, tid)
-  end
-
-  def remove_tag(pid, tid) do
+  def remove_tag(%Post{id: pid}, %Tag{id: tid}) do
     case Repo.get_by(TagPost, %{post_id: pid, tag_id: tid}) do
       nil -> nil
       tag_post -> Repo.delete(tag_post)

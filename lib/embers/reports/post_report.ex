@@ -52,7 +52,33 @@ defmodule Embers.Reports.PostReport do
     )
     |> Embers.Paginator.paginate(pagination_opts)
   end
+
+  def list_reported_posts(opts \\ []) do
+    pagination_opts = Keyword.get(opts, :pagination, [])
+
+    query = from(r in __MODULE__,
+      distinct: r.post_id,
+      where: r.resolved == false,
+      left_join: post in assoc(r, :post),
+      where: is_nil(post.deleted_at),
+      order_by: [desc: r.inserted_at],
+      select: post
+    )
+
+    results = Embers.Paginator.paginate(query, pagination_opts)
+    results = update_in(results.entries, &(Repo.preload(&1, [
+      :media, :links, :tags, :reactions,
+      user: :meta,
+      related_to: [:media, :tags, :links, :reactions, user: :meta]
+    ])))
+
+    Embers.Paginator.map(results, fn post ->
+      update_in(post.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
+    end)
+  end
+
 end
+
 
 defimpl Embers.Reports.Reportable, for: Embers.Posts.Post do
   alias Embers.Reports.PostReport

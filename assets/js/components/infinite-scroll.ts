@@ -12,7 +12,6 @@ define("[infinite-scroll]", {
     this.cursor = this.element.dataset.cursor || "before";
     this.insertion_point = this.element.dataset.insertionPoint || "beforeend";
 
-    document.addEventListener("DOMContentLoaded", () => {
       this.viewport = this.element.querySelector("[infinite-scroll-viewport]");
       this.indicator = this.element.querySelector("[infinite-scroll-indicator]");
       this.observer = this.element.querySelector("[infinite-scroll-intersect]");
@@ -32,7 +31,6 @@ define("[infinite-scroll]", {
 
       this.observer.addEventListener("intersect", this.load_more);
 
-    })
 
   }
 

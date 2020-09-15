@@ -45,16 +45,4 @@ history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState')
 
 document.addEventListener("DOMContentLoaded", () => {
   register_modal();
-  const general_toasts = document.createElement("toast-zone");
-  general_toasts.setAttribute("bottom-left", "");
-  general_toasts.id = "general-toasts";
-  document.body.append(general_toasts);
-  window["general_toasts"] = general_toasts;
-
-  const status_toasts = document.createElement("toast-zone");
-  status_toasts.setAttribute("top-center", "");
-  status_toasts.classList.add("mobile-hidden");
-  status_toasts.id = "status-toasts";
-  document.body.append(status_toasts);
-  window["status_toasts"] = status_toasts;
 })

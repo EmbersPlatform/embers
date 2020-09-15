@@ -4,7 +4,7 @@ import { Component } from "../component";
 import { Toast } from "./toast-notification.comp";
 import random_id from "~js/lib/utils/random_id";
 
-interface ToastOptions {
+export interface ToastOptions {
   content: Toast["content"],
   duration?: number
 }
