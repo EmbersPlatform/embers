@@ -206,34 +206,50 @@ defmodule Embers.Posts.Post do
 
   defp validate_similarity(changeset) do
     body = get_change(changeset, :body)
+    if is_nil(body) do
+      changeset
+    else
+      do_validate_similarity(changeset)
+    end
+  end
+
+  @jaro_threshold 0.8
+  @prev_posts_limit 3
+  defp do_validate_similarity(changeset) do
+    body = get_change(changeset, :body)
     user_id = get_change(changeset, :user_id)
 
     max_time =
       Timex.now()
       |> Timex.shift(minutes: -5)
 
-    prev_post_query =
+    prev_bodies =
       from(
         post in Post,
         where: post.user_id == ^user_id,
         where: post.inserted_at >= ^max_time,
         order_by: [desc: post.inserted_at],
-        limit: 1
+        limit: @prev_posts_limit,
+        select: post.body
       )
+      |> Repo.all()
 
-    with(
-      false <- is_nil(body),
-      prev_post <- Repo.one(prev_post_query),
-      IO.inspect(prev_post),
-      IO.inspect(max_time),
-      false <- is_nil(prev_post),
-      false <- is_nil(prev_post.body),
-      true <- String.jaro_distance(prev_post.body, body) > 0.8
-    ) do
+    distances_sum =
+      Enum.map(prev_bodies, fn
+        nil -> 0
+        x -> String.jaro_distance(x, body)
+      end)
+      |> Enum.sum()
+
+    distances_len = max(1, length(prev_bodies))
+
+    distances_average = distances_sum / distances_len
+
+    if distances_average > @jaro_threshold do
       changeset
       |> add_error(:body, "too similar to previous posts")
     else
-      _ -> changeset
+      changeset
     end
   end
 
