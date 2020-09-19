@@ -1,11 +1,9 @@
 import {define} from "wicked-elements";
 import * as Reports from "~js/lib/moderation/reports";
-import * as Posts from "~js/lib/posts";
 import status_toasts from "~js/managers/status_toasts";
-import { get_tags } from "../post/dom";
-import * as Sets from "~js/lib/utils/sets";
 import * as Fetch from "~js/lib/utils/fetch";
 import { confirm } from "~js/managers/dialog";
+import { ban_user_dialog } from "./ban-user-dialog.comp";
 
 define("[post-report-summary]", {
   // @ts-ignore
@@ -24,6 +22,10 @@ define("[post-report-summary]", {
         disable_post(this);
         break;
       }
+      case "ban-user": {
+        ban_user(this);
+        break;
+      }
     }
   }
 })
@@ -33,9 +35,9 @@ const resolve_report = host => {
   .then(res => {
     if(res.tag === "Success") {
       host.element.remove();
-      status_toasts.add({content: "Reporte resuelto", duration: 1000})
+      resolved_report_toast();
     } else {
-      status_toasts.add({content: "No se pudo resolver el reporte"})
+      failed_report_toast();
       console.error(res);
     }
   })
@@ -46,11 +48,11 @@ const flag_nsfw = async (host) => {
   switch(res.tag) {
     case "Success": {
       host.element.remove();
-      status_toasts.add({content: "Reporte resuelto", duration: 1000})
+      resolved_report_toast();
       break;
     }
     default: {
-      status_toasts.add({content: "No se pudo resolver el reporte"})
+      failed_report_toast();
       console.error(res);
       break;
     }
@@ -64,13 +66,27 @@ const disable_post = async (host) => {
   switch(res.tag) {
     case "Success": {
       host.element.remove();
-      status_toasts.add({content: "Reporte resuelto", duration: 1000})
+      resolved_report_toast();
       break;
     }
     default: {
-      status_toasts.add({content: "No se pudo resolver el reporte"})
+      failed_report_toast();
       console.error(res);
       break;
     }
   }
+}
+
+const ban_user = async (host) => {
+  ban_user_dialog.showModal(host.element.dataset.author);
+}
+
+const resolved_report_toast = () => {
+  status_toasts.add({content: "Reporte resuelto", duration: 1000});
+}
+
+const failed_report_toast = (error?: string) => {
+  error
+    ? status_toasts.add({content: error})
+    : status_toasts.add({content: "No se pudo resolver el reporte"})
 }

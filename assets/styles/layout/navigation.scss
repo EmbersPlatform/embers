@@ -107,6 +107,8 @@
     justify-content: center;
     cursor: pointer;
     padding: 0;
+    min-width: auto;
+    min-height: auto;
 
     svg {
       width: 100%;

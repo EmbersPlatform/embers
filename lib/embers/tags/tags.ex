@@ -145,15 +145,25 @@ defmodule Embers.Tags do
     Repo.insert!(tag)
   end
 
+  @doc """
+  Adds a tag to a post. If the post already hast that tag associated, it's
+  a noop.
+  """
   def add_tag(post, tag_name) when is_binary(tag_name) do
     tag = create_tag(tag_name)
     add_tag(post, tag)
   end
 
-  def add_tag(%Post{id: pid}, %Tag{id: tid}) do
-    %TagPost{}
-    |> TagPost.create_changeset(%{post_id: pid, tag_id: tid})
-    |> Repo.insert()
+  def add_tag(%Post{id: pid} = post, %Tag{id: tid} = tag) do
+    tags = get_tags_for_post(post)
+
+    if tag in tags do
+      {:ok, tag}
+    else
+      %TagPost{}
+      |> TagPost.create_changeset(%{post_id: pid, tag_id: tid})
+      |> Repo.insert()
+    end
   end
 
   def remove_tag(post, tag_name) when is_binary(tag_name) do
@@ -172,6 +182,14 @@ defmodule Embers.Tags do
 
   def tags_loaded(%Post{tags: tags}) do
     tags |> Enum.map(& &1.name)
+  end
+
+  defp get_tags_for_post(post) do
+    if Ecto.assoc_loaded?(post.tags) do
+      post.tags
+    else
+      post |> Ecto.assoc(:tags) |> Repo.all()
+    end
   end
 
   def update_tags(post, new_tags) when is_list(new_tags) do

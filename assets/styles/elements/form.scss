@@ -37,4 +37,13 @@ textarea {
     flex-direction: row;
     align-items: center;
   }
+
+  &+* {
+    margin-top: 1em;
+  }
+}
+
+.form-fields-label {
+  display: block;
+  margin-bottom: 0.5em;
 }

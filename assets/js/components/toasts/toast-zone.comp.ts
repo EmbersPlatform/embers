@@ -6,6 +6,7 @@ import random_id from "~js/lib/utils/random_id";
 
 export interface ToastOptions {
   content: Toast["content"],
+  classes?: string[],
   duration?: number
 }
 

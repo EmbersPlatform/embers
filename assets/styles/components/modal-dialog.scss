@@ -42,6 +42,7 @@
     @include media("<tablet") {
       max-width: 100%;
       margin: 0.6em auto;
+      margin-top: 2.5em;
     }
 
     .dialog-title {

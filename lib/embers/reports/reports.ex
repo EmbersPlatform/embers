@@ -43,6 +43,7 @@ defmodule Embers.Reports do
     Report.open(report)
   end
 
+  @spec most_common_comments_for(struct()) :: String.t()
   def most_common_comments_for(reportable) do
     from(r in Embers.Reports.PostReport,
       where: r.post_id == ^reportable.id and not r.resolved,
@@ -54,6 +55,7 @@ defmodule Embers.Reports do
     |> Repo.one()
   end
 
+  @spec resolve(struct()) :: :ok
   def resolve_for(reportable) do
     from(r in Embers.Reports.PostReport,
       where: r.post_id == ^reportable.id and not r.resolved,
@@ -62,5 +64,26 @@ defmodule Embers.Reports do
     |> Repo.update_all([])
 
     :ok
+  end
+
+  @spec count_unresolved_reports() :: integer()
+  def count_unresolved_reports() do
+    from(r in Embers.Reports.PostReport,
+      distinct: r.post_id,
+      where: not r.resolved,
+      select: count(r.id)
+    )
+    |> Repo.one()
+  end
+
+  @spec prune_reports() :: integer()
+  def prune_reports do
+    {count, _} =
+      from(r in Embers.Reports.PostReport,
+        inner_join: post in assoc(r, :post),
+        where: (r.resolved == true or not is_nil(post.deleted_at))
+      )
+      |> Repo.delete_all()
+    count
   end
 end

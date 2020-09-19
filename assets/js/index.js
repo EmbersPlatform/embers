@@ -14,6 +14,7 @@ import "./managers";
 
 import Pjax from "pjax-api";
 import { register_modal } from "./components/moderation/post-report-dialog.comp";
+import * as BanUserDialog from "./components/moderation/ban-user-dialog.comp";
 
 Title.init();
 Chat.connect();
@@ -45,4 +46,5 @@ history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState')
 
 document.addEventListener("DOMContentLoaded", () => {
   register_modal();
+  BanUserDialog.register_modal();
 })

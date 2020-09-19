@@ -190,6 +190,8 @@ defmodule EmbersWeb.Router do
       put("/reports/post/:post_id", ReportsController, :resolve)
       put("/reports/post/:post_id/nsfw_and_resolve", ReportsController, :mark_post_nsfw_and_resolve)
       put("/reports/post/:post_id/disable_and_resolve", ReportsController, :disable_post_and_resolve)
+
+      post("/ban/user/:canonical", BanController, :ban)
     end
   end
 

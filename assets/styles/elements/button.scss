@@ -5,9 +5,17 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   white-space: nowrap;
   color: var(--text);
   box-sizing: border-box;
+
+  @include media("<=tablet") {
+    // Make sure all buttons are of the minumum size required to be easily
+    // tappable
+    min-height: 1cm;
+    min-width: 1cm;
+  }
 
   * {
     pointer-events: none;

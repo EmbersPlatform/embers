@@ -1,0 +1,32 @@
+[post-report-summary] {
+  display: flex;
+  flex-direction: row;
+
+  &>article{
+    flex-basis: 60%;
+  }
+
+  .post-report-summary-actions {
+    margin: 0!important;
+    padding: 1em;
+    flex-basis: 40%;
+
+    p {
+      margin: 0;
+      margin-bottom: 0.5em;
+    }
+  }
+
+  @include media("<=tablet") {
+    flex-direction: column-reverse;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1em;
+
+    .post-report-summary-actions {
+      padding: 0.5em;
+      padding-top: 0;
+    }
+  }
+}

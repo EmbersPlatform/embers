@@ -3,8 +3,6 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
 
   use EmbersWeb, :controller
 
-  import EmbersWeb.Authorize
-
   alias Embers.Posts
   alias Embers.Reports
   alias Embers.Reports.PostReport
@@ -61,9 +59,10 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
   def mark_post_nsfw_and_resolve(conn, %{"post_id" => post_id}) do
     with(
       {:ok, post} <- Posts.get_post(post_id),
-      {:ok, _tag} <- Embers.Tags.add_tag(post, "nsfw"),
-      :ok <- Reports.resolve_for(post)
+      {:ok, _tag} <- Embers.Tags.add_tag(post, "nsfw")
     ) do
+      Reports.resolve_for(post)
+
       conn
       |> put_status(:no_content)
       |> json(nil)
@@ -74,9 +73,10 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
     user = conn.assigns.current_user
     with(
       {:ok, post} <- Posts.get_post(post_id),
-      {:ok, _post} = Posts.delete_post(post, actor: user.id),
-      :ok <- Reports.resolve_for(post)
+      {:ok, post} = Posts.delete_post(post, actor: user.id)
     ) do
+      Reports.resolve_for(post)
+
       EmbersWeb.Endpoint.broadcast!(
         "post:#{post.id}",
         "deleted",

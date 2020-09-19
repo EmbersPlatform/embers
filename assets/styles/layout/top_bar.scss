@@ -21,13 +21,20 @@
   color: var(--color);
 }
 
+#top-bar {
+  .button, .button-link, .plain-button + * {
+    margin-left: 0.5em;
+  }
+}
+
 @include media("<tablet") {
   #top-bar {
-    padding: 0 2em;
-    height: 45px;
+    padding: 0 0.5em;
+    height: 55px;
   }
 
   #top-bar input[type="search"] {
-    height: 25px;
+    height: 35px;
   }
+
 }

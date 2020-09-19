@@ -17,7 +17,7 @@ export default class extends ModalDialog {
 
   post_id: string;
   reason = "";
-  custom_reason;
+  custom_reason: Ref<HTMLTextAreaElement>;
   has_custom_reason = false;
 
   oninit() {

@@ -1,11 +1,12 @@
 defmodule Embers.Paginator.Page do
   @moduledoc false
 
-  @type t() :: %__MODULE__{
-          entries: list(),
+  @type t(a) :: %__MODULE__{
+          entries: [a] | [],
           last_page: boolean(),
           next: String.t()
         }
+  @type t() :: t(any())
   @enforce_keys [:entries, :last_page, :next]
   defstruct entries: [],
             last_page: true,

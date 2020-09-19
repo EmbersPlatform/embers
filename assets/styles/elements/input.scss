@@ -1,4 +1,4 @@
-input {
+input, select {
   background: var(--input-background, var(--primary));
   border-radius: 0.2em;
   border: var(--border);
@@ -12,7 +12,7 @@ input {
   }
 }
 
-input.form-control {
+input.form-control, select.form-control {
   height: 3em;
   width: 100%;
   background: transparent;

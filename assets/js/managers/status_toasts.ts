@@ -12,5 +12,8 @@ const register = () => {
 
 document.addEventListener("DOMContentLoaded", register);
 
-export default status_toasts;
-
+export default {
+  add: (args) => {
+    status_toasts.add(args)
+  }
+};
