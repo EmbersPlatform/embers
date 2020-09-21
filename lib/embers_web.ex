@@ -38,7 +38,8 @@ defmodule EmbersWeb do
 
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
-      use PhoenixInlineSvg.Helpers, otp_app: :embers
+      use PhoenixInlineSvg.Helpers,
+        otp_app: :embers
 
       import EmbersWeb.Router.Helpers
       import EmbersWeb.ErrorHelpers

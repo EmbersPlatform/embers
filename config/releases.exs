@@ -24,3 +24,12 @@ config :ex_aws, :s3, %{
   host: %{System.fetch_env!("S3_REGION") => System.fetch_env!("S3_HOST")},
   region: System.fetch_env!("S3_REGION")
 }
+
+config :embers, EmbersWeb.Mailer,
+  adapter: Swoosh.Adapters.SMTP,
+  relay: System.fetch_env!("MAIL_RELAY"),
+  username: System.fetch_env!("MAIL_USERNAME"),
+  password: System.fetch_env!("MAIL_PASSWORD"),
+  ssl: false,
+  auth: :always,
+  port: System.fetch_env!("MAIL_SMTP_PORT")

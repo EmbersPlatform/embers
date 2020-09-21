@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: "."
+      dockerfile: "Dockerfile.local"
+    depends_on:
+      - db
+      - parcel
+      # - s3
+    environment:
+      MIX_ENV: dev
+    env_file:
+      - ../config.env
+    ports:
+      - "4000:4000"
+    volumes:
+      - ".:/app"
+    command:
+      - ./run.sh
+
+  parcel:
+    build:
+      context: "."
+      dockerfile: "Dockerfile.parcel"
+    command: yarn dev
+    volumes:
+      - ".:/app"
+
+  db:
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: embers_dev
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    image: 'postgres:11-alpine'
+    expose:
+      - "5432"
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data'
+
+  # s3:
+  #   image: minio/minio
+  #   ports:
+  #     - "5000:9000"
+  #   volumes:
+  #     - "s3:/data"
+  #   environment:
+  #     MINIO_ACCESS_KEY: "minioadmin"
+  #     MINIO_SECRET_KEY: "minioadmin"
+  #   command: server /data
+
+volumes:
+  pgdata:
+  s3:
+

@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-mix deps.get --only prod
 
-MIX_ENV=prod mix compile
+echo "\n preparing static assets..."
+cp -R assets/static priv/static
 
-MIX_ENV=prod mix ecto.migrate
+echo "\n Setting up and seeding database..."
+mix ecto.setup
 
-MIX_ENV=prod PORT=4000 mix phx.server
+echo "\n Starting server..."
+mix phx.server

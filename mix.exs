@@ -15,6 +15,8 @@ defmodule Embers.Mixfile do
       source_url: "https://gitlab.com/embers-project/embers/embers",
       docs: docs(),
       releases: [
+        embers: [
+        ],
         tar: [
           include_executables_for: [:unix],
           steps: [:assemble, :tar],

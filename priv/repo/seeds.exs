@@ -35,8 +35,9 @@ defmodule Seed do
 
   def admin_account() do
     unless Repo.exists?(
-             from(u in Embers.Accounts.User, where: u.canonical == ^"admin", select: u.id)
-           ) do
+      from(u in Embers.Accounts.User, where: u.canonical == ^"admin", select: u.id)
+      ) do
+      admin_role = Repo.get_by(Embers.Authorization.Role, %{name: "admin"})
       {:ok, user} =
         Embers.Accounts.create_user(%{
           username: "admin",
@@ -45,7 +46,7 @@ defmodule Seed do
         })
 
       Embers.Accounts.confirm_user(user)
-      Embers.Authorization.Roles.attach_role(1, 1)
+      Embers.Authorization.Roles.attach_role(admin_role, user)
     end
   end
 
@@ -92,4 +93,4 @@ end
 Seed.roles()
 Seed.admin_account()
 Seed.settings()
-Seed.domains_blacklist()
+# Seed.domains_blacklist()
