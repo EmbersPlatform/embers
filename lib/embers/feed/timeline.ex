@@ -51,6 +51,7 @@ defmodule Embers.Feed.Timeline do
     |> order_replies()
     |> load_avatars()
     |> fill_nsfw()
+    |> Embers.Feed.group_shares()
   end
 
   defp maybe_with_replies(page, opts) do
