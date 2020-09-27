@@ -7,7 +7,6 @@ services:
       dockerfile: "Dockerfile.local"
     depends_on:
       - db
-      - parcel
       - s3
     environment:
       MIX_ENV: dev
@@ -19,14 +18,6 @@ services:
       - ".:/app"
     command:
       - ./run.sh
-
-  parcel:
-    build:
-      context: "."
-      dockerfile: "Dockerfile.parcel"
-    command: yarn dev
-    volumes:
-      - ".:/app"
 
   db:
     environment:

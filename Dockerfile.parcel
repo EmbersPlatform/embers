@@ -1,7 +1,0 @@
-FROM node:14
-
-WORKDIR /app
-
-RUN yarn install
-
-CMD ["yarn", "dev"]

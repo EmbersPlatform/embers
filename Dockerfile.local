@@ -3,11 +3,16 @@ FROM elixir:1.10
 RUN apt-get update
 RUN apt-get install -y build-essential inotify-tools imagemagick ffmpeg
 
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install -g yarn
+
+RUN mix local.hex --force && mix local.rebar --force
+
 RUN mkdir -p /app
 WORKDIR /app
 
 COPY mix* ./
-RUN mix local.hex --force && mix local.rebar --force \
-    && mix deps.get && mix deps.compile
+RUN mix deps.get && mix deps.compile
 
 EXPOSE 4000
