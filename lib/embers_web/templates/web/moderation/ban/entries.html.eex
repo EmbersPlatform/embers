@@ -1,0 +1,3 @@
+<%= for ban <- @bans.entries do %>
+  <%= render("_ban_summary.html", ban: ban) %>
+<% end %>

@@ -19,9 +19,15 @@ defmodule EmbersWeb.Web.Moderation.BanController do
 
     bans = Moderation.list_all_bans(options)
 
-    conn
-    |> assign(:bans, bans)
-    |> render("index.html")
+    if params["entries"] == "true" do
+      conn
+      |> put_layout(false)
+      |> Embers.Paginator.put_page_headers(bans)
+      |> render("entries.html", bans: bans)
+    else
+      conn
+      |> render("index.html", bans: bans)
+    end
   end
 
   def unban(conn, %{"user_id" => user_id}) do

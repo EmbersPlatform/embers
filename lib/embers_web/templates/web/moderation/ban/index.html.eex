@@ -4,11 +4,19 @@
 <% end %>
 <div id="view" view="moderation" subview="bans" class="has-sidebar">
   <%= render_shared("top_bar.html", assigns) %>
-  <main class="padded">
+  <main class="padded"
+    infinite-scroll
+    data-source="/moderation/bans"
+    data-next="<%= @bans.next %>"
+  >
     <h1>Bans</h1>
 
-    <%= for ban <- @bans.entries do %>
-      <%= render("_ban_summary.html", ban: ban) %>
-    <% end %>
+    <section infinite-scroll-viewport>
+      <%= for ban <- @bans do %>
+        <%= render("_ban_summary.html", ban: ban) %>
+      <% end %>
+    </section>
+    <intersect-observer infinite-scroll-intersect></intersect-observer>
+    <loading-indicator infinite-scroll-indicator></loading-indicator>
   </main>
 </div>
