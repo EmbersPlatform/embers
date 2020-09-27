@@ -8,7 +8,7 @@
       data-last-page="<%= @page.last_page %>"
       data-next="<%= @page.next %>"
     >
-      <h1>#<%= @tag.name %></h1>
+      <h1>#<%= @tag.name %><follow-tag></follow-tag></h1>
       <post-editor data-with-tags="<%= @tag.name %>" class="boxed" placeholder="<%= gettext("Share something in #%{name}", name: @tag.name) %>"></post-editor>
       <div class="feed" infinite-scroll-viewport>
         <%= for post <- @page.entries do %>
