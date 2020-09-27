@@ -31,9 +31,9 @@ config :embers, :auth, token_salt: "geDDVmqL"
 config :phoenix, :json_library, Jason
 
 # Mailer configuration
-config :embers, EmbersWeb.Mailer,
-  adapter: Swoosh.SendgridAdapter,
-  api_key: "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"
+# config :embers, EmbersWeb.Mailer,
+#   adapter: Swoosh.SendgridAdapter,
+#   api_key: "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"
 
 # Phauxth authentication configuration
 config :phauxth,
