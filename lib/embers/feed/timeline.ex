@@ -44,10 +44,6 @@ defmodule Embers.Feed.Timeline do
         ]
       )
 
-    log_grouped = fn x ->
-      Embers.Feed.group_shares(x) |> IO.inspect()
-    end
-
     query
     |> Paginator.paginate(opts)
     |> activities_to_posts()
@@ -55,7 +51,6 @@ defmodule Embers.Feed.Timeline do
     |> order_replies()
     |> load_avatars()
     |> fill_nsfw()
-    |> log_grouped.()
   end
 
   defp maybe_with_replies(page, opts) do

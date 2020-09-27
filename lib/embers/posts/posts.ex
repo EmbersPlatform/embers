@@ -349,4 +349,56 @@ defmodule Embers.Posts do
       end)
     end)
   end
+
+  @doc """
+  Returns a list with the post preloads, to be used with Repo.preload
+
+  ## Options
+  - `:with_related?`: If `true`, adds preloads for the related post. Defaults
+    to `false`.
+  """
+  @spec post_preloads(options :: keyword()) :: [atom() | {atom(), any()}]
+  def post_preloads(opts \\ []) do
+    with_related? = Keyword.get(opts, :with_related?, false)
+    preloads = [:reactions, :media, :links, :tags, user: [:meta]]
+
+    preloads =
+      if with_related? do
+        preloads ++ [related_to: post_preloads()]
+      else
+        preloads
+      end
+
+    preloads
+  end
+
+  @doc """
+  Lists the disabled posts
+  See `Embers.Paginator.paginate/2` for the options
+  """
+  @spec list_disabled(options :: keyword()) :: Paginator.Page.t(Post.t())
+  def list_disabled(opts \\ []) do
+    from(post in Post,
+      where: not is_nil(post.deleted_at),
+      preload: ^post_preloads(with_related?: true)
+    )
+    |> Paginator.paginate(opts)
+    |> Paginator.map(&populate_user/1)
+  end
+
+  @spec prune_disabled(days_limit :: pos_integer()) :: {:ok, integer()}
+  def prune_disabled(days_limit \\ 7) when is_integer(days_limit) and days_limit > 0 do
+    since_date =
+      Timex.now()
+      |> Timex.shift(days: -days_limit)
+
+    {affected, _} =
+      from(post in Post,
+        where: not is_nil(post.deleted_at),
+        where: post.inserted_at < ^since_date
+      )
+      |> Repo.delete_all()
+
+    {:ok, affected}
+  end
 end

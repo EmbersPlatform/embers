@@ -8,6 +8,7 @@
       infinite-scroll
       data-source="/favorites"
       data-next="<%= @favorites.next %>"
+      data-last-page="<%= @favorites.last_page %>"
     >
       <h1><%= gettext "Favorites" %></h1>
       <div class="feed">

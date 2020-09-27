@@ -199,9 +199,13 @@ defmodule EmbersWeb.Router do
       # Bans
       get("/bans", BanController, :index)
       post("/bans/unban", BanController, :unban)
+      post("/ban/user/:canonical", BanController, :ban)
 
       # Posts
       post("/post/update_tags", TagController, :update_tags)
+
+      # Deleted posts
+      get("/deleted_posts", DeletedPostController, :index)
 
       # Reports
       get("/reports", ReportsController, :index)
@@ -210,8 +214,8 @@ defmodule EmbersWeb.Router do
       put("/reports/post/:post_id/disable_and_resolve", ReportsController, :disable_post_and_resolve)
       get("/reports/post/:post_id/comments", ReportsController, :show_comments)
 
-      # Bans
-      post("/ban/user/:canonical", BanController, :ban)
+      # Users
+      get("/users", UserController, :index)
     end
   end
 

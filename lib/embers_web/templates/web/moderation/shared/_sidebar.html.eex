@@ -15,12 +15,6 @@
     </a>
   </li>
   <li>
-    <a href="/moderation/bans">
-      <span><%= svg_image("icons/bans") %></span>
-      <span>Bans</span>
-    </a>
-  </li>
-  <li>
     <a href="/moderation/deleted_posts">
       <span>Deleted posts</span>
     </a>
@@ -29,6 +23,42 @@
     <a href="/moderation/audit">
       <span></span>
       <span>Audit</span>
+    </a>
+  </li>
+</ul>
+<h1>Users</h1>
+<ul>
+  <li>
+    <a href="/moderation/users">
+      <span><%= svg_image("account") %></span>
+      <span>Users</span>
+    </a>
+  </li>
+  <li>
+    <a href="/moderation/bans">
+      <span><%= svg_image("icons/bans") %></span>
+      <span>Bans</span>
+    </a>
+  </li>
+</ul>
+<h1>Config</h1>
+<ul>
+  <li>
+    <a href="/moderation/pages/rules">
+      <span></span>
+      <span>Rules</span>
+    </a>
+  </li>
+  <li>
+    <a href="/moderation/pages/faq">
+      <span></span>
+      <span>FAQ</span>
+    </a>
+  </li>
+  <li>
+    <a href="/moderation/pages/acknowledgements">
+      <span></span>
+      <span>Acknowledgements</span>
     </a>
   </li>
 </ul>

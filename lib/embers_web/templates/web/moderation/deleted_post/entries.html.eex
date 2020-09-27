@@ -1,0 +1,3 @@
+<%= for post <- @posts do %>
+  <%= render("_post.html", post: post) %>
+<% end %>

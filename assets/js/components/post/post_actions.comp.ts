@@ -9,6 +9,7 @@ import icon_gavel from "~static/svg/generic/icons/gavel.svg";
 import icon_ellipsis from "~static/svg/generic/icons/ellipsis-v.svg"
 import { show_reactions } from "~js/managers/post";
 import { confirm } from "~js/managers/dialog";
+import { ban_user_dialog } from "../moderation/ban-user-dialog.comp";
 
 export default class PostActions extends Component(HTMLElement) {
   static component = "PostActions";
@@ -52,14 +53,14 @@ export default class PostActions extends Component(HTMLElement) {
               :``
             }
             <li>
-              <button class="plain-button danger">
+              <button class="plain-button danger" onclick=${this.confirm_delete}>
                 <span>
                   ${gettext("Disable")}
                 </span>
               </button>
             </li>
             <li>
-              <button class="plain-button danger">
+              <button class="plain-button danger" onclick=${this.ask_ban}>
                 <span>
                   ${gettext("Ban user")}
                 </span>
@@ -152,5 +153,9 @@ export default class PostActions extends Component(HTMLElement) {
         break;
       }
     }
+  }
+
+  ask_ban = () => {
+    ban_user_dialog.showModal(this.post.dataset.author);
   }
 }

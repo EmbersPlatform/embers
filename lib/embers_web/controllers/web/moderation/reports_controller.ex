@@ -19,7 +19,15 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
         pagination: [before: params["before"]]
       )
 
-    render(conn, "index.html", posts_reports: posts_reports)
+    if params["entries"] == "true" do
+      conn
+      |> put_layout(false)
+      |> Embers.Paginator.put_page_headers(posts_reports)
+      |> render("entries.html", posts_reports: posts_reports)
+    else
+      conn
+      |> render("index.html", posts_reports: posts_reports)
+    end
   end
 
   def resolve(conn, %{"post_id" => post_id}) do
@@ -65,7 +73,6 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
   end
 
   def show_comments(conn, %{"post_id" => post_id} = params) do
-    user = conn.assigns.current_user
     with {:ok, post} <- Posts.get_post(post_id) do
       comments = Reports.get_comments_per_user(post, limit: 10, before: params["before"])
 

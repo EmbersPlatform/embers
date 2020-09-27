@@ -2,6 +2,7 @@
   id="reply-<%= @reply.id %>"
   data-id="<%= @reply.id %>"
   data-author-id="<%= @reply.user.id %>"
+  data-author="<%= @reply.user.canonical %>"
   data-depth="<%= @reply.nesting_level %>"
   class="reply"
   data-controller="<%= attr_list([

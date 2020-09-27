@@ -75,7 +75,7 @@ defmodule Embers.Audit do
   ## Options
   - `keep`: how many entries to keep. Default: `20`
   """
-  @spec prune(keyword()) :: :ok
+  @spec prune(keyword()) :: {:ok, integer()}
   def prune(opts \\ []) do
     keep = Keyword.get(opts, :keep, 20)
 

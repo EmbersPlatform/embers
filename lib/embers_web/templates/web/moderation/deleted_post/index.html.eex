@@ -1,20 +1,18 @@
 <%= EmbersWeb.LayoutView.sidebar(assigns) do %>
   <%= render(EmbersWeb.Web.Moderation.SharedView, "_sidebar.html", assigns) %>
 <% end %>
-<div id="view" view="moderation-reports" class="has-sidebar">
+<div id="view" view="moderation" subview="deleted_posts" class="has-sidebar">
   <%= render_shared("top_bar.html", assigns) %>
   <main class="padded"
     infinite-scroll
-    data-source="/moderation/reports"
-    data-next="<%= @posts_reports.next %>"
-    data-last-page="<%= @posts_reports.last_page %>"
+    data-source="/moderation/deleted_posts"
+    data-next="<%= @posts.next %>"
+    data-last-page="<%= @posts.last_page %>"
   >
-    <h1>Reportes</h1>
+    <h1>Deleted posts</h1>
 
     <section infinite-scroll-viewport>
-      <%= for summary <- @posts_reports do %>
-        <%= render("_post_summary.html", summary: summary, conn: @conn) %>
-      <% end %>
+      <%= render("entries.html", posts: @posts) %>
     </section>
     <intersect-observer infinite-scroll-intersect></intersect-observer>
     <loading-indicator infinite-scroll-indicator></loading-indicator>

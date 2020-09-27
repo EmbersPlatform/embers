@@ -8,6 +8,7 @@
     infinite-scroll
     data-source="/moderation/bans"
     data-next="<%= @bans.next %>"
+    data-last-page="<%= @bans.last_page %>"
   >
     <h1>Bans</h1>
 

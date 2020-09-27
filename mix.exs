@@ -72,7 +72,7 @@ defmodule Embers.Mixfile do
       {:not_qwerty123, "~> 2.3"},
       {:pbkdf2_elixir, "~> 1.0"},
       {:uuid, "~> 1.1"},
-      {:ex_aws, "~> 2.0"},
+      {:ex_aws, "~> 2.1.5"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.16"},
       {:httpoison, "~> 1.5"},

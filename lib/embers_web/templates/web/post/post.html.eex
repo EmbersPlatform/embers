@@ -12,6 +12,7 @@
   role="article"
   data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>"
   data-author-id="<%= @post.user.id %>"
+  data-author="<%= @post.user.canonical %>"
   data-controller="<%= attr_list [
     "post",
     "reactable",

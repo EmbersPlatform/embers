@@ -34,7 +34,7 @@ defmodule Embers.Authorization.Roles do
   @doc """
     Same as `get/1` but raises if no role was found
   """
-  @spec get(String.t()) :: Role.t()
+  @spec get!(String.t()) :: Role.t()
   def get!(name) do
     Repo.one!(
       from(role in Role,
