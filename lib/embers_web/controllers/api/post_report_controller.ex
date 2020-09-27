@@ -3,8 +3,6 @@ defmodule EmbersWeb.Api.PostReportController do
 
   use EmbersWeb, :controller
 
-  import Embers.Helpers.IdHasher
-
   alias Embers.Posts
   alias Embers.Reports
   alias EmbersWeb.Plugs.CheckPermissions

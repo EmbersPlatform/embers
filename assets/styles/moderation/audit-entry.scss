@@ -1,0 +1,27 @@
+.audit-entry {
+  @include box;
+
+  &>summary {
+    background: var(--primary);
+    padding: 1em;
+
+    &:focus {
+      outline: none;
+      filter: brightness(110%);
+    }
+  }
+
+  .audit-details {
+    padding: 0 1em;
+    border-top: var(--border);
+    .audit-detail {
+      margin-left: 1em;
+      padding: 0.5em 0;
+    }
+  }
+
+  &+* {
+    margin-top:
+    0.5em;
+  }
+}

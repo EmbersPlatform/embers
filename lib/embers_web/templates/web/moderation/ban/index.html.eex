@@ -1,0 +1,14 @@
+
+<%= EmbersWeb.LayoutView.sidebar(assigns) do %>
+  <%= render(EmbersWeb.Web.Moderation.SharedView, "_sidebar.html", assigns) %>
+<% end %>
+<div id="view" view="moderation" subview="bans" class="has-sidebar">
+  <%= render_shared("top_bar.html", assigns) %>
+  <main class="padded">
+    <h1>Bans</h1>
+
+    <%= for ban <- @bans.entries do %>
+      <%= render("_ban_summary.html", ban: ban) %>
+    <% end %>
+  </main>
+</div>

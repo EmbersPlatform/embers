@@ -1,0 +1,34 @@
+<ul>
+  <li>
+    <a href="/moderation">
+      <span><%= svg_image("icons/admin") %></span>
+      <span>Dashboard</span>
+    </a>
+  </li>
+</ul>
+<h1>Moderation</h1>
+<ul>
+  <li>
+    <a href="/moderation/reports">
+      <span><%= svg_image("icons/flag") %></span>
+      <span>Reports</span>
+    </a>
+  </li>
+  <li>
+    <a href="/moderation/bans">
+      <span><%= svg_image("icons/bans") %></span>
+      <span>Bans</span>
+    </a>
+  </li>
+  <li>
+    <a href="/moderation/deleted_posts">
+      <span>Deleted posts</span>
+    </a>
+  </li>
+  <li>
+    <a href="/moderation/audit">
+      <span></span>
+      <span>Audit</span>
+    </a>
+  </li>
+</ul>

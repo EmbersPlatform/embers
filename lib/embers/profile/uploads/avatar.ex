@@ -12,7 +12,7 @@ defmodule Embers.Profile.Uploads.Avatar do
     upload(avatar, user.id)
   end
 
-  def upload(avatar, user_id) when is_integer(user_id) do
+  def upload(avatar, user_id) do
     if valid?(avatar) do
       small = make_small(avatar)
       medium = make_medium(avatar)
@@ -37,7 +37,7 @@ defmodule Embers.Profile.Uploads.Avatar do
     delete(user.id)
   end
 
-  def delete(user_id) when is_integer(user_id) do
+  def delete(user_id) do
     meta = Embers.Repo.get_by(Embers.Profile.Meta, user_id: user_id)
 
     case meta.avatar_version do

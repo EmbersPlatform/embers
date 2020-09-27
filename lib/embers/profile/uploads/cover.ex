@@ -8,7 +8,7 @@ defmodule Embers.Profile.Uploads.Cover do
     upload(cover, user.id)
   end
 
-  def upload(cover, user_id) when is_integer(user_id) do
+  def upload(cover, user_id) do
     if valid?(cover) do
       processed = process(cover)
 
@@ -27,7 +27,7 @@ defmodule Embers.Profile.Uploads.Cover do
     delete(user.id)
   end
 
-  def delete(user_id) when is_integer(user_id) do
+  def delete(user_id) do
     with :ok <- Uploads.delete("#{@path}/#{user_id}.jpg") do
       :ok
     else

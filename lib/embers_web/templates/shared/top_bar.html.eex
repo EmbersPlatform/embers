@@ -5,8 +5,13 @@
     value="<%= if assigns[:search_query], do: @search_query %>" />
 
   <%= if Embers.Authorization.can?(@current_user, "access_mod_tools") do %>
-    <a href="/moderation/reports" class="button-link">
+    <a href="/moderation/reports" class="button-link" reports-button
+      count="<%= @mod.pending_reports_count %>"
+    >
       <%= svg_image("icons/flag") %>
+    </a>
+    <a href="/moderation" class="button-link">
+      <%= svg_image("icons/admin") %>
     </a>
   <% end %>
 </nav>

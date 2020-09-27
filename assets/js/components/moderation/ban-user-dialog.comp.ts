@@ -1,5 +1,5 @@
 import { html, ref } from "heresy";
-import { gettext } from "~js/lib/gettext";
+import { gettext, dgettext } from "~js/lib/gettext";
 import ModalDialog from "../dialog/dialog.comp";
 import * as Fetch from "~js/lib/utils/fetch";
 import status_toasts from "~js/managers/status_toasts";
@@ -46,7 +46,7 @@ export default class BanUserDialog extends ModalDialog {
     switch(res.tag) {
       case "Success": {
         status_toasts.add({
-          content: gettext("User was banned for %1 days",duration.toString()),
+          content: dgettext("moderation", "User was banned for %1 days",duration.toString()),
           classes: ["success"]
         });
         this.close();
@@ -79,16 +79,16 @@ export default class BanUserDialog extends ModalDialog {
     }
 
     const contents = html`
-    <header><p class="dialog-title">${gettext("Ban «@%1»?", this.username)}</p></header>
+    <header><p class="dialog-title">${dgettext("moderation", "Ban «@%1»?", this.username)}</p></header>
       <section class="modal-content">
         <div class="form-fields">
           <textarea is="autosize-textarea"
-            placeholder=${gettext("Ban reason")}
+            placeholder=${dgettext("moderation", "Ban reason")}
             ref=${this.reason_textarea}
             oninput=${update_reason}
           ></textarea>
         </div>
-        <span class="form-fields-label">${gettext("Duration(days)")}</span>
+        <span class="form-fields-label">${dgettext("moderation", "Duration(days)")}</span>
         <div class="form-fields duration-field">
           <input type="number" value=${this.duration} step="1" min="1" max="365"
             .disabled=${this.permanent}
@@ -99,22 +99,22 @@ export default class BanUserDialog extends ModalDialog {
               .checked=${this.permanent}
               onchange=${update_permanent}
              >
-            ${gettext("Permanent")}
+            ${dgettext("moderation", "Permanent")}
           </label>
         </div>
-        <span class="form-fields-label">${gettext("Delete posts?")}</span>
+        <span class="form-fields-label">${dgettext("moderation", "Delete posts? Can't be undone")}</span>
         <div class="form-fields">
           <select onchange=${update_delete_posts}>
-            <option value="" selected>${gettext("Don't delete")}</option>
-            <option value="1">${gettext("Last 24 hours")}</option>
-            <option value="7">${gettext("Last 7 days")}</option>
-            <option value="-1">${gettext("Everything")}</option>
+            <option value="" selected>${dgettext("moderation", "Don't delete")}</option>
+            <option value="1">${dgettext("moderation", "Last 24 hours")}</option>
+            <option value="7">${dgettext("moderation", "Last 7 days")}</option>
+            <option value="-1">${dgettext("moderation", "Everything")}</option>
           </select>
         </div>
       </section>
       <footer>
         <button class="button" onclick=${this.close}>${gettext("Cancel")}</button>
-        <button class="button primary" onclick=${this.ban_user}>${gettext("Ban")}</button>
+        <button class="button primary" onclick=${this.ban_user}>${dgettext("moderation", "Ban")}</button>
       </footer>
 
     `

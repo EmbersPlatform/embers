@@ -13,6 +13,7 @@ defmodule EmbersWeb.Router do
     plug(EmbersWeb.Remember)
     plug(GetPermissions)
     plug(EmbersWeb.Plugs.SelectLayout)
+    plug(EmbersWeb.Plugs.ModData)
   end
 
   pipeline :admin do
@@ -182,15 +183,34 @@ defmodule EmbersWeb.Router do
     get("/search/:query", SearchController, :search)
     get("/search_typeahead/user/:username", SearchController, :user_typeahead)
 
+
+    # Reports
+    post("/reports/post/:post_id", ReportController, :create_post_report)
+
     scope "/moderation", Moderation do
+      pipe_through(:admin)
+
+      # Dashboard
+      get("/", DashboardController, :index)
+
+      # Audit
+      get("/audit", AuditController, :index)
+
+      # Bans
+      get("/bans", BanController, :index)
+      post("/bans/unban", BanController, :unban)
+
+      # Posts
       post("/post/update_tags", TagController, :update_tags)
 
+      # Reports
       get("/reports", ReportsController, :index)
-      post("/reports/post/:post_id", ReportsController, :create_post_report)
       put("/reports/post/:post_id", ReportsController, :resolve)
       put("/reports/post/:post_id/nsfw_and_resolve", ReportsController, :mark_post_nsfw_and_resolve)
       put("/reports/post/:post_id/disable_and_resolve", ReportsController, :disable_post_and_resolve)
+      get("/reports/post/:post_id/comments", ReportsController, :show_comments)
 
+      # Bans
       post("/ban/user/:canonical", BanController, :ban)
     end
   end

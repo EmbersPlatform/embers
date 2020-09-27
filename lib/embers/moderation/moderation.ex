@@ -32,14 +32,31 @@ defmodule Embers.Moderation do
     get_active_ban(user.id)
   end
 
+  @doc """
+  Returns a page with active bans, ordered by date.
+  See `Embers.Paginator.paginate/2` for options.
+  """
+  @spec list_all_bans(options :: keyword()) :: Paginator.Page.t(Ban.t())
   def list_all_bans(opts \\ []) do
-    from(ban in Ban, order_by: [desc: ban.id], where: is_nil(ban.deleted_at))
+    from(ban in Ban,
+      order_by: [desc: ban.id],
+      where: is_nil(ban.deleted_at),
+      preload: [user: [:meta]]
+     )
     |> Paginator.paginate(opts)
+    |> Paginator.map(fn ban ->
+      update_in(ban.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
+    end)
   end
 
-  def list_bans(user, opts \\ [])
+  @doc """
+  Lists bans for the given user.
+  See `Embers.Paginator.paginate/2` for options.
+  """
+  @spec list_bans_for(user :: String.t() | User.t(), options:: keyword()) :: Paginator.Page.t(Ban.t())
+  def list_bans_for(user, opts \\ [])
 
-  def list_bans(user_id, opts) when is_binary(user_id) do
+  def list_bans_for(user_id, opts) when is_binary(user_id) do
     user_id
     |> bans_query(opts)
     |> Repo.all()

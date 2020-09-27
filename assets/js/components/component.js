@@ -1,5 +1,6 @@
 // @ts-check
 import { define } from "heresy";
+import stateHandler from "reactive-props";
 
 export const register = component => {
   // Hack, since class names get transpiled and the name property can't
@@ -129,3 +130,15 @@ export const Component = (superclass) => {
     render(hooks) {}
   }
 }
+
+/**
+ *
+ *
+ * @function
+ * @template T
+ * @param {T} state
+ * @param {Function} callback
+ * @returns {T}
+ */
+export const reactive = (state, callback) =>
+  stateHandler()(state, callback);

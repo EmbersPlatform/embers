@@ -4,6 +4,7 @@ import status_toasts from "~js/managers/status_toasts";
 import * as Fetch from "~js/lib/utils/fetch";
 import { confirm } from "~js/managers/dialog";
 import { ban_user_dialog } from "./ban-user-dialog.comp";
+import { dgettext } from "~js/lib/gettext";
 
 define("[post-report-summary]", {
   // @ts-ignore
@@ -24,6 +25,10 @@ define("[post-report-summary]", {
       }
       case "ban-user": {
         ban_user(this);
+        break;
+      }
+      case "show_comments": {
+        show_comments(this);
         break;
       }
     }
@@ -82,11 +87,16 @@ const ban_user = async (host) => {
 }
 
 const resolved_report_toast = () => {
-  status_toasts.add({content: "Reporte resuelto", duration: 1000});
+  status_toasts.add({content: dgettext("moderation", "Report resolved"), duration: 1000});
 }
 
 const failed_report_toast = (error?: string) => {
   error
     ? status_toasts.add({content: error})
-    : status_toasts.add({content: "No se pudo resolver el reporte"})
+    : status_toasts.add({content: dgettext("moderation", "Could not resolve the report")})
+}
+
+const show_comments = host => {
+  const dialog = host.element.querySelector("report-reasons-dialog");
+  dialog?.showModal();
 }

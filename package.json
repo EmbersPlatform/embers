@@ -24,6 +24,7 @@
     "phoenix": "^1.5.3",
     "pjax-api": "^3.33.0",
     "pubsub-js": "^1.8.0",
+    "reactive-props": "^0.1.10",
     "stimulus": "^1.1.1",
     "uhtml": "^2.1.1",
     "unpoly": "^0.62.1",

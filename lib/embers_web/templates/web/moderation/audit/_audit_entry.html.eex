@@ -1,0 +1,12 @@
+<details class="audit-entry">
+  <summary><%= raw format_audit(@entry) %></summary>
+  <div class="audit-details">
+    <%= for {detail, c} <- Enum.with_index(@entry.details) do %>
+      <% count = Integer.to_string(c + 1) %>
+      <div class="audit-detail">
+        <span class="audit-detail__index">
+          <%= String.pad_leading(count, 2, "0") %> -
+        </span><%= raw format_detail(@entry, detail) %></div>
+    <% end %>
+  </div>
+</details>

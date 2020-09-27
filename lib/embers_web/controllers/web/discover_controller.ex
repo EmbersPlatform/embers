@@ -11,7 +11,7 @@ defmodule EmbersWeb.Web.DiscoverController do
 
   action_fallback(EmbersWeb.FallbackController)
 
-  def index(%{assigns: %{current_user: user}} = conn, params) do
+  def index(conn, params) do
     # TODO This should be changed to get a list of blocked tags instead of a page
 
     posts =
@@ -32,13 +32,12 @@ defmodule EmbersWeb.Web.DiscoverController do
   end
 
   defp posts_for_guests(params) do
-    posts =
-      Public.get(
-        after: params["after"],
-        before: params["before"],
-        limit: params["limit"],
-        blocked_tags: ["nsfw"]
-      )
+    Public.get(
+      after: params["after"],
+      before: params["before"],
+      limit: params["limit"],
+      blocked_tags: ["nsfw"]
+    )
   end
 
   defp posts_for_user(user, params) do
@@ -49,13 +48,12 @@ defmodule EmbersWeb.Web.DiscoverController do
 
     blocked_tags = blocked_tags |> Enum.map(fn x -> String.downcase(x.name) end)
 
-    posts =
-      Public.get(
-        after: params["after"],
-        before: params["before"],
-        limit: params["limit"],
-        blocked_users: blocked_users,
-        blocked_tags: blocked_tags
-      )
+    Public.get(
+      after: params["after"],
+      before: params["before"],
+      limit: params["limit"],
+      blocked_users: blocked_users,
+      blocked_tags: blocked_tags
+    )
   end
 end

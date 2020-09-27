@@ -32,7 +32,7 @@
             <%= labeled_link(@summary.post.user.username,
               to: decoded_path(:user_path, Endpoint, :show, @summary.post.user.canonical),
               label: @summary.post.user.username,
-              class: "username",
+              class: "username"
             )
             %>
           </div>
@@ -93,8 +93,11 @@
     </media-galley>
   </article>
   <div class="post-report-summary-actions">
-    <p><%= ngettext("Reportado 1 vez", "Reportado %{count} veces", @summary.count) %> <button class="plain-button">Ver motivos de reporte</button></p>
-    <p><%= @summary.main_reason %></p>
+    <p><%= ngettext("Reported 1 time", "Reported %{count} times", @summary.count) %></p>
+    <p class="post-report-summary-reason">
+      <%= @summary.main_reason %>
+    </p>
+    <button class="plain-button see-report-reasons" data-action="show_comments">Ver motivos de reporte</button>
     <div class="post-report-actions">
       <button class="button" data-action="resolve">Conservar</button>
       <button class="button" data-action="flag_nsfw">Marcar como NSFW</button>
@@ -102,4 +105,5 @@
       <button class="button danger" data-action="disable">Eliminar</button>
     </div>
   </div>
+  <report-reasons-dialog data-post-id="<%= @summary.post.id %>"></report-reasons-dialog>
 </div>

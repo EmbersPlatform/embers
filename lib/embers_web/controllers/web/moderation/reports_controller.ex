@@ -22,31 +22,6 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
     render(conn, "index.html", posts_reports: posts_reports)
   end
 
-  def create_post_report(conn, %{"post_id" => id} = params) do
-    user = conn.assigns.current_user
-    reportable = Posts.get_post!(id)
-
-    attrs = [comments: params["comments"]]
-
-    with {:ok, _report} <- Reports.report(reportable, user, attrs) do
-      conn
-      |> put_status(:no_content)
-      |> json(nil)
-    else
-      {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.Web.ErrorView)
-        |> render("422.json", changeset: changeset)
-
-      {:error, reason} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.Web.ErrorView)
-        |> render("422.json", %{error: reason})
-    end
-  end
-
   def resolve(conn, %{"post_id" => post_id}) do
     with {:ok, post} <- Posts.get_post(post_id),
          :ok <- Reports.resolve_for(post) do
@@ -86,6 +61,15 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
       conn
       |> put_status(:no_content)
       |> json(nil)
+    end
+  end
+
+  def show_comments(conn, %{"post_id" => post_id} = params) do
+    user = conn.assigns.current_user
+    with {:ok, post} <- Posts.get_post(post_id) do
+      comments = Reports.get_comments_per_user(post, limit: 10, before: params["before"])
+
+      render(conn, "comments.json", comments: comments)
     end
   end
 end

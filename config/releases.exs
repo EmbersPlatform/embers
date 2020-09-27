@@ -21,9 +21,15 @@ config :ex_aws, :s3, %{
   access_key_id: System.fetch_env!("S3_ACCESS_KEY"),
   secret_access_key: System.fetch_env!("S3_SECRET"),
   scheme: "https://",
-  host: %{System.fetch_env!("S3_REGION") => System.fetch_env!("S3_HOST")},
+  host: System.fetch_env!("S3_HOST"),
   region: System.fetch_env!("S3_REGION")
 }
+
+config :embers, Embers.FileStorage,
+  store: Embers.FileStorage.Store.S3,
+  bucket: "uploads",
+  schema: "https://",
+  host: Systen.fetch_env!("S3_HOST_URL")
 
 config :embers, EmbersWeb.Mailer,
   adapter: Swoosh.Adapters.SMTP,

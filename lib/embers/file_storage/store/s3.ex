@@ -36,7 +36,7 @@ defmodule Embers.FileStorage.Store.S3 do
   end
 
   def base_path do
-    Path.join(["https://", host(), bucket(), root()])
+    Path.join([schema(), host(), bucket(), root()])
   end
 
   defp bucket() do
@@ -44,7 +44,11 @@ defmodule Embers.FileStorage.Store.S3 do
   end
 
   defp host() do
-    Application.get_env(:ex_aws, :s3).host["nyc3"]
+    Keyword.get(Application.get_env(:embers, Embers.FileStorage), :host)
+  end
+
+  defp schema() do
+    Keyword.get(Application.get_env(:embers, Embers.FileStorage), :schema)
   end
 
   defp root() do

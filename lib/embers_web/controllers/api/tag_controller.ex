@@ -3,7 +3,6 @@ defmodule EmbersWeb.Api.TagController do
   use EmbersWeb, :controller
 
   import EmbersWeb.Authorize
-  import Embers.Helpers.IdHasher
 
   alias Embers.Accounts
   alias Embers.Subscriptions.Tags, as: Subscriptions

@@ -34,6 +34,9 @@ export default class extends ModalDialog {
 
   close = () => {
     this.post_id = undefined;
+    this.reason = "";
+    this.has_custom_reason = false;
+    this.querySelectorAll("input[type=radio]").forEach((el: HTMLInputElement) => el.checked = false);
     super.close();
   }
 
@@ -46,7 +49,7 @@ export default class extends ModalDialog {
   }
 
   send_report = async () => {
-    const res = await report_post(this.post_id)
+    const res = await report_post(this.post_id, this.reason)
     switch(res.tag) {
       case "Success":
         window["status_toasts"].add({content: "Reporte enviado!"})

@@ -17,6 +17,25 @@
     }
   }
 
+  .post-report-summary-reason {
+    padding-left: 1em;
+    font-style: italic;
+  }
+
+  .see-report-reasons {
+    margin: 1em 0;
+    padding: 0.5em;
+    border: var(--border);
+  }
+
+  .post-report-actions {
+    margin: -0.2em 0;
+
+    &>*{
+      margin: 0.2em 0;
+    }
+  }
+
   @include media("<=tablet") {
     flex-direction: column-reverse;
     border: var(--border);

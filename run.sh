@@ -7,4 +7,5 @@ echo "\n Setting up and seeding database..."
 mix ecto.setup
 
 echo "\n Starting server..."
-mix phx.server
+# mix phx.server
+sleep 99999
