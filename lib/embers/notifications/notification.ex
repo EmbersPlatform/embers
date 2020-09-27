@@ -12,7 +12,7 @@ defmodule Embers.Notifications.Notification do
   @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "notifications" do
     field(:type, :string, null: false)
-    field(:source_id, :integer)
+    field(:source_id, Embers.Hashid)
     field(:text, :string)
     field(:status, :integer)
 
