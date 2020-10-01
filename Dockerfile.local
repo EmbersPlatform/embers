@@ -16,3 +16,5 @@ COPY mix* ./
 RUN mix deps.get && mix deps.compile
 
 EXPOSE 4000
+
+CMD ["sleep", "infinity"]

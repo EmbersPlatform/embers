@@ -10,8 +10,6 @@ services:
       - s3
     environment:
       MIX_ENV: dev
-    env_file:
-      - ../config.env
     ports:
       - "4000:4000"
     volumes:
