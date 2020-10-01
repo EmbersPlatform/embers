@@ -81,7 +81,7 @@ defmodule Embers.Mixfile do
       {:hashids, "~> 2.0"},
       {:ex_doc, "~> 0.20", only: :dev, runtime: false},
       {:ex_machina, "~> 2.2"},
-      {:timex, "~> 3.0"},
+      {:timex, "~> 3.6"},
       {:mogrify, "~> 0.7.0"},
       {:ffmpex, "~> 0.5.2"},
       {:silent_video, "~> 0.3.0"},
