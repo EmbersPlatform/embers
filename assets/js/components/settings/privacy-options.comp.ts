@@ -14,8 +14,8 @@ export default class extends Component(HTMLElement) {
 
   render({useState}: Hooks) {
     const [trust_level, set_trust_level] = useState(this.dataset.trust_level);
-    const [show_status, set_show_status] = useState(this.dataset.show_status);
-    const [show_reactions, set_show_reactions] = useState(this.dataset.show_reactions);
+    const [show_status, set_show_status] = useState(this.dataset.show_status.toLowerCase() === "true");
+    const [show_reactions, set_show_reactions] = useState(this.dataset.show_reactions.toLowerCase() === "true");
 
     const update_trust_level = async (event) => {
       const new_value = event.target.value;

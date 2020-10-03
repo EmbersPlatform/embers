@@ -179,6 +179,10 @@ defmodule EmbersWeb.Router do
     get("/tag/:name", TagController, :show)
     get("/tags/popular", TagController, :list_popular)
 
+    # Tags subscriptions
+    post("/tags/:tag_id/sub", TagSubscriptionController, :subscribe)
+    delete("/tags/:tag_id/sub", TagSubscriptionController, :unsubscribe)
+
     # Search
     get("/search/:query", SearchController, :search)
     get("/search_typeahead/user/:username", SearchController, :user_typeahead)

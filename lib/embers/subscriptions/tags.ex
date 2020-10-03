@@ -13,13 +13,18 @@ defmodule Embers.Subscriptions.Tags do
 
   import Ecto.Query
 
+  @spec get_sub_for(String.t(), String.t()) :: nil | TagSubscription.t()
+  def get_sub_for(tag_id, user_id) do
+    Repo.get_by(TagSubscription, user_id: user_id, source_id: tag_id)
+  end
+
   def create_subscription(attrs \\ %{}) do
     subscription = TagSubscription.create_changeset(%TagSubscription{}, attrs)
     Repo.insert(subscription)
   end
 
   def create_or_update_subscription(attrs \\ %{}) do
-    case Repo.get_by(TagSubscription, user_id: attrs.user_id, source_id: attrs.source_id) do
+    case get_sub_for(attrs.source_id, attrs.user_id) do
       nil ->
         subscription = TagSubscription.create_changeset(%TagSubscription{}, attrs)
         Repo.insert(subscription)
@@ -31,7 +36,7 @@ defmodule Embers.Subscriptions.Tags do
   end
 
   def delete_subscription(user_id, source_id) do
-    sub = Repo.get_by(TagSubscription, %{user_id: user_id, source_id: source_id})
+    sub = get_sub_for(source_id, user_id)
 
     unless is_nil(sub) do
       Repo.delete(sub)
@@ -175,5 +180,15 @@ defmodule Embers.Subscriptions.Tags do
     if not is_nil(level) do
       from(s in query, where: s.level == ^level)
     end || query
+  end
+
+  @spec get_sub_level(String.t(), nil | String.t()) :: integer()
+  def get_sub_level(_, nil), do: nil
+
+  def get_sub_level(user_id, tag_id) do
+    case get_sub_for(tag_id, user_id) do
+      nil -> nil
+      sub -> sub.level
+    end
   end
 end
