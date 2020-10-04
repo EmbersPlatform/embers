@@ -65,7 +65,7 @@ export default class extends Component(HTMLElement) {
       this.classList.remove("sending");
 
     this.html`
-    ${this.message.text}
+    <leg-markdown>${this.message.text}</leg-markdown>
     ${this.status == "Error"
       ? html`
         <div class="error-message">

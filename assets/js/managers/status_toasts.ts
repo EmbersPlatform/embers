@@ -1,4 +1,4 @@
-import ToastZone from "~js/components/toasts/toast-zone.comp";
+import ToastZone, { ToastOptions } from "~js/components/toasts/toast-zone.comp";
 
 let status_toasts: ToastZone;
 
@@ -13,7 +13,5 @@ const register = () => {
 document.addEventListener("DOMContentLoaded", register);
 
 export default {
-  add: (args) => {
-    status_toasts.add(args)
-  }
+  add: (opts: ToastOptions) => status_toasts.add(opts)
 };

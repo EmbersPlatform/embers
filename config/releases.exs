@@ -1,5 +1,7 @@
 import Config
 
+config :embers, EmbersWeb.Gettext, default_locale: System.get_env("DEFAULT_LOCALE", "en")
+
 config :embers, Embers.Media, bucket: System.fetch_env!("EMBERS_MEDIA_BUCKET")
 config :embers, Embers.Profile, bucket: System.fetch_env!("EMBERS_PROFILE_BUCKET")
 config :embers, Embers.Email, host: System.fetch_env!("EMBERS_HOST")

@@ -53,7 +53,7 @@
       </header>
       <section class="post-content">
         <section class="post-body" itemprop="articleBody">
-          <%= @summary.post.body %>
+          <leg-markdown><%= @summary.post.body %></leg-markdown>
           <%= if !is_nil(@summary.post.related_to_id) do %>
             <%= link(to: post_path(Endpoint, :show, @summary.post.related_to_id), class: "related-link") do %>
               <%= " " <> post_url(Endpoint, :show, @summary.post.related_to_id) %>

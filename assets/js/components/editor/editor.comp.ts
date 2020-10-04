@@ -96,6 +96,7 @@ export default class PostEditor extends Component(HTMLElement) {
       setTags([]);
       setMedias([]);
       setLinks([]);
+      setNsfw(false);
       if(this.tag_input.current)
         this.tag_input.current.value = "";
       this.textarea.current.update();
@@ -294,7 +295,7 @@ export default class PostEditor extends Component(HTMLElement) {
         ${compact_buttons}
       </div>
       <MediaZone ref=${this.media_zone} onmediachange=${handle_media_change} />
-      <LinkZone ref=${this.link_zone} onprocess=${e => setLinks([e.detail])} />
+      <LinkZone ref=${this.link_zone} onprocess=${e => setLinks([e.detail])} onreset=${() => setLinks([])} />
       ${tag_input}
       ${publish_buttons}
       ${(errors.length > 0)

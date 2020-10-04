@@ -110,5 +110,5 @@ const get_read_time = (content: string | HTMLElement | DocumentFragment): number
     text = content.textContent;
   }
 
-  return text.length/word_size/WPM * 60 * 1000
+  return text ? text.length/word_size/WPM * 60 * 1000 : 5000
 }

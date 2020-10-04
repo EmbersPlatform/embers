@@ -6,7 +6,6 @@ defmodule EmbersWeb.Web.SettingsController do
   import EmbersWeb.Authorize
 
   alias Embers.Profile
-  alias Embers.Profile.Meta
   alias Embers.Profile.Settings
 
   action_fallback(EmbersWeb.Web.SettingsFallbackController)
@@ -19,6 +18,7 @@ defmodule EmbersWeb.Web.SettingsController do
 
     conn
     |> render("show_account.html",
+      page_title: gettext("Account settings"),
       user: user,
       profile: profile
     )
@@ -36,6 +36,7 @@ defmodule EmbersWeb.Web.SettingsController do
 
     conn
     |> render("show_profile.html",
+      page_title: "Profile settings",
       user: user,
       profile: profile
     )
@@ -73,7 +74,7 @@ defmodule EmbersWeb.Web.SettingsController do
     user = conn.assigns.current_user
     settings = Embers.Profile.Settings.get_setting!(user.id)
 
-    render(conn, "show_content.html", settings: settings)
+    render(conn, "show_content.html", page_title: gettext("Content settings"), settings: settings)
   end
 
   def update(conn, params) do
@@ -89,15 +90,15 @@ defmodule EmbersWeb.Web.SettingsController do
     user = conn.assigns.current_user
     settings = Embers.Profile.Settings.get_setting!(user.id)
 
-    render(conn, "show_design.html", settings: settings)
+    render(conn, "show_design.html", page_title: gettext("Design settings"), settings: settings)
   end
 
   def show_privacy(conn, _params) do
-    render(conn, "show_privacy.html")
+    render(conn, "show_privacy.html", page_title: gettext("Privacy settings"))
   end
 
   def show_security(conn, _params) do
-    render(conn, "show_security.html")
+    render(conn, "show_security.html", page_title: gettext("Security settings"))
   end
 
 

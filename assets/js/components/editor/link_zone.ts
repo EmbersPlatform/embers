@@ -46,6 +46,7 @@ export default class LinkZone extends Component(HTMLDivElement) {
   }
 
   reset() {
+    this.dispatch("reset");
     this.state = {tag: "Idle"};
   }
 

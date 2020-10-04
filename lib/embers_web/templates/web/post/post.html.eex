@@ -20,7 +20,7 @@
     "medias",
     {"content-warning", ask_nsfw?(@conn, @post) }
   ] %>"
-  <%= if ask_nsfw?(@conn, @post), do: "nsfw" %>
+  <%= if @post.nsfw && ask_nsfw?(@conn, @post), do: "nsfw" %>
   <%= if @post.faved, do: "faved" %>
   >
   <div class="content-warnings">
@@ -116,11 +116,11 @@
         <% end %>
       </section>
       <%= if length(@post.media) > 0 do %>
-        <section class="post-medias">
+        <section class="post-medias" >
           <%= render("_media_group.html", medias: @post.media) %>
         </section>
       <% end %>
-      <%= if length(@post.links) > 0 do %>
+      <%= if length(@post.links) > 0 and length(@post.media) <= 0 do %>
         <%= for link <- @post.links do %>
           <%= EmbersWeb.Web.LinkView.render("link.html", link: link) %>
         <% end %>

@@ -34,7 +34,7 @@ defmodule EmbersWeb.Web.FavoriteController do
       |> render("entries.html", favorites: favs)
     else
       conn
-      |> render("index.html", favorites: favs)
+      |> render("index.html", page_title: gettext("Favorites"), favorites: favs)
     end
   end
 

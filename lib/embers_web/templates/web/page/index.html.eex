@@ -3,7 +3,7 @@
   <%= render_shared("top_bar.html", assigns) %>
   <main class="padded columns-layout">
     <div id="timeline" class="main-content" data-controller="timeline" data-next="<%= @timeline.next %>">
-      <post-editor class="boxed" data-target="timeline.editor" data-action="publish->timeline#onNewActivity"></post-editor>
+      <post-editor class="boxed mobile-hidden" data-target="timeline.editor" data-action="publish->timeline#onNewActivity"></post-editor>
       <button
         class="new-activity-alert"
         data-target="timeline.newActivityAlert"

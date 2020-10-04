@@ -45,7 +45,7 @@ defmodule EmbersWeb.Web.PostController do
         title = post.body || gettext("@%{username}'s post", username: post.user.username)
 
         conn
-        |> render(:show, page_title: title, post: comment, replies_page: replies_page, parent: root,)
+        |> render(:show, page_title: title, post: comment, og_metatags: build_metatags(conn, post), replies_page: replies_page, parent: root)
       end
     end
   end
@@ -57,7 +57,7 @@ defmodule EmbersWeb.Web.PostController do
     title = post.body || gettext("@%{username}'s post", username: post.user.username)
 
     conn
-    |> render(:show, page_title: title, post: post, replies_page: replies_page)
+    |> render(:show, page_title: title, post: post, og_metatags: build_metatags(conn, post), replies_page: replies_page)
   end
 
   defp get_post_root(post) do
@@ -71,6 +71,26 @@ defmodule EmbersWeb.Web.PostController do
         end
       _ -> nil
     end
+  end
+
+  defp build_metatags(conn, post) do
+    og_tags = %{
+      title: "#{post.user.username} en Embers",
+      type: "article",
+      url: post_path(conn, :show, post.id)
+    }
+
+    og_tags =
+      if length(post.media) > 0 do
+        Map.put(og_tags, :image, Enum.at(post.media, 0).url)
+      end || og_tags
+
+    og_tags =
+      if not is_nil(post.body) do
+        Map.put(og_tags, :description, post.body)
+      end || og_tags
+
+    og_tags
   end
 
   def show_modal(conn, %{"hash" => id} = _params) do

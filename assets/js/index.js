@@ -15,6 +15,8 @@ import "./managers";
 import Pjax from "pjax-api";
 import { register_modal } from "./components/moderation/post-report-dialog.comp";
 import * as BanUserDialog from "./components/moderation/ban-user-dialog.comp";
+import "./managers/status_toasts";
+import "./managers/general_toasts";
 
 Title.init();
 Chat.connect();

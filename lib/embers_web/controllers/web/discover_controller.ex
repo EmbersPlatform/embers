@@ -6,8 +6,7 @@ defmodule EmbersWeb.Web.DiscoverController do
 
   alias Embers.Feed.Public
 
-
-  plug(:user_check when action in [])
+  plug(:user_check)
 
   action_fallback(EmbersWeb.FallbackController)
 
@@ -27,7 +26,7 @@ defmodule EmbersWeb.Web.DiscoverController do
       |> render("entries.html", posts: posts)
     else
       conn
-      |> render("index.html", posts: posts)
+      |> render("index.html", page_title: gettext("Discover"), posts: posts)
     end
   end
 

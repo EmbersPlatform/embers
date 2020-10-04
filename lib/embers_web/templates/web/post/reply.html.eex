@@ -41,7 +41,7 @@
     </header>
     <section class="reply-contents">
       <section class="reply-body" itemprop="articleBody">
-        <%= @reply.body %>
+        <leg-markdown><%= @reply.body %></leg-markdown>
       </section>
       <%= if length(@reply.media) > 0 do %>
         <section class="reply-medias">

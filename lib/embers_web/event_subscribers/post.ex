@@ -8,6 +8,10 @@ defmodule EmbersWeb.ActivitySubscriber do
   def handle_event(:new_activity, event) do
     %{post: post, recipients: recipients} = event.data
 
+    post =
+      post
+      |> Embers.Posts.Post.fill_nsfw()
+
     recipients
     |> Enum.reject(fn recipient -> recipient == post.user_id end)
     |> Enum.each(fn recipient ->
