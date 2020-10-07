@@ -380,6 +380,7 @@ defmodule Embers.Posts do
   def list_disabled(opts \\ []) do
     from(post in Post,
       where: not is_nil(post.deleted_at),
+      order_by: [desc: post.inserted_at],
       preload: ^post_preloads(with_related?: true)
     )
     |> Paginator.paginate(opts)
@@ -400,5 +401,14 @@ defmodule Embers.Posts do
       |> Repo.delete_all()
 
     {:ok, affected}
+  end
+
+  @spec count_disabled() :: integer()
+  def count_disabled() do
+    from( post in Post,
+      where: not is_nil(post.deleted_at),
+      select: count(post.id)
+    )
+    |> Repo.one()
   end
 end

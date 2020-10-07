@@ -1,3 +1,11 @@
-<div>
-  <span><%= @user.username %></span>
-</div>
+<user-summary
+  data="<%= Jason.encode!(%{
+      username: @user.username,
+      canonical: @user.canonical,
+      email: @user.email,
+      avatar: @user.meta.avatar,
+      cover: @user.meta.cover,
+      bio: @user.meta.bio
+    }) %>"
+>
+</user-summary>

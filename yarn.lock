@@ -5449,6 +5449,11 @@ pkg-up@^3.1.0:
   dependencies:
     find-up "^3.0.0"
 
+plain-tag@^0.1.3:
+  version "0.1.3"
+  resolved "https://registry.yarnpkg.com/plain-tag/-/plain-tag-0.1.3.tgz#d20c0fdf8fa80c170bc1d12d6c9ab38e27922836"
+  integrity sha512-yyVAOFKTAElc7KdLt2+UKGExNYwYb/Y/WE9i+1ezCQsJE8gbKSjewfpRqK2nQgZ4d4hhAAGgDCOcIZVilqE5UA==
+
 pn@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pn/-/pn-1.1.0.tgz#e2f4cef0e219f463c179ab37463e4e1ecdccbafb"
@@ -6149,6 +6154,11 @@ reactive-props@^0.1.10:
   version "0.1.10"
   resolved "https://registry.yarnpkg.com/reactive-props/-/reactive-props-0.1.10.tgz#e506ec7c08b018baca0bc2860d6b5d1b76ab80d5"
   integrity sha512-+LeHr+eIjGKS+ax66wlEs9ynruATFzY7QjVwciffu56fGNgrrXX+MPT+dHAEp/0enkwbKz9ErH0Lam1822Tovw==
+
+reactive-props@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/reactive-props/-/reactive-props-0.2.1.tgz#edb4787171e1e9e7e330cbcd657ce780379ef9f1"
+  integrity sha512-JVBWIsjtRstnuxlkwRzkjje3VHvMSqcDrQh5Uiipr/bCSQ8iyqz+F6fWlnGkSdxiAXrDM/CXdm5YnMVwh43EVg==
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -7461,6 +7471,16 @@ uc.micro@^1.0.1, uc.micro@^1.0.5:
   resolved "https://registry.yarnpkg.com/uc.micro/-/uc.micro-1.0.6.tgz#9c411a802a409a91fc6cf74081baba34b24499ac"
   integrity sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==
 
+uce@^1.11.9:
+  version "1.11.9"
+  resolved "https://registry.yarnpkg.com/uce/-/uce-1.11.9.tgz#1fd8de8bf708aea6883c7b576f1f5f6de5679bdf"
+  integrity sha512-M/7wuJAnYw5PxUBe0MusMqHcyAolt3V7UEoazwy0pzfrKsSH+MlKpJp2/T8DpedF+VX6cE5hyTke4GHCsI6fhw==
+  dependencies:
+    plain-tag "^0.1.3"
+    reactive-props "^0.2.1"
+    uhtml "^2.1.2"
+    umap "^1.0.2"
+
 udomdiff@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/udomdiff/-/udomdiff-1.1.0.tgz#1d0c4741b93a2ffd10728ca4cea15b277cc3082f"
@@ -7506,6 +7526,19 @@ uhtml@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/uhtml/-/uhtml-2.1.1.tgz#316bc12f182ab299344554f7389c5d5f18f89378"
   integrity sha512-2lR3NXVMJ7se0+Uznv3GJLw9w5sCIfQs3Kc0x90EXc6S7MsDCikVkw8wzi0OXawfZ5KziUYemfj+kSwackZrjw==
+  dependencies:
+    "@ungap/create-content" "^0.2.0"
+    uarray "^1.0.0"
+    udomdiff "^1.1.0"
+    uhandlers "^0.3.6"
+    umap "^1.0.2"
+    uparser "^0.2.1"
+    uwire "^1.1.0"
+
+uhtml@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/uhtml/-/uhtml-2.1.2.tgz#7170789dc0b6c1fced4aee826b8174bd254aea29"
+  integrity sha512-2kBz7ank/FnDDk1l1+0/Behj5ptTgi2/GdLg+/8jyofi5ipIwWBh5CJg0vbRZF90LVvZ+EfSmLRBJAyNs3mcEA==
   dependencies:
     "@ungap/create-content" "^0.2.0"
     uarray "^1.0.0"

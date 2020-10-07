@@ -9,6 +9,10 @@ defmodule EmbersWeb.Web.TagSubscriptionController do
 
   plug(:user_check)
 
+  def index(conn, _params) do
+    render("index.html")
+  end
+
   def subscribe(conn, %{"tag_id" => tag_id} = params) do
     user_id = conn.assigns.current_user.id
     level = Map.get(params, "level")

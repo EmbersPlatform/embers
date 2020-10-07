@@ -8,6 +8,6 @@ defmodule EmbersWeb.Web.Moderation.DashboardController do
 
     conn
     |> assign(:last_users, last_users)
-    |> render("index.html")
+    |> render("index.html", page_title: gettext("Dashboard"))
   end
 end

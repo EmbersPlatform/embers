@@ -14,6 +14,6 @@ defmodule EmbersWeb.Web.Moderation.AuditController do
 
     conn
     |> assign(:entries, entries)
-    |> render("index.html")
+    |> render("index.html", page_title: gettext("Audit"))
   end
 end

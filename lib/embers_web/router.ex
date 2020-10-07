@@ -208,8 +208,9 @@ defmodule EmbersWeb.Router do
       # Posts
       post("/post/update_tags", TagController, :update_tags)
 
-      # Deleted posts
-      get("/deleted_posts", DeletedPostController, :index)
+      # Disabled posts
+      get("/disabled_posts", DisabledPostController, :index)
+      put("/disabled_posts/:post_id/restore", DisabledPostController, :restore)
 
       # Reports
       get("/reports", ReportsController, :index)

@@ -2,62 +2,69 @@
   <li>
     <a href="/moderation">
       <span><%= svg_image("icons/admin") %></span>
-      <span>Dashboard</span>
+      <span><%= gettext("Dashboard") %></span>
     </a>
   </li>
 </ul>
-<h1>Moderation</h1>
+<h1><%= gettext("Moderation") %></h1>
 <ul>
   <li>
     <a href="/moderation/reports">
       <span><%= svg_image("icons/flag") %></span>
-      <span>Reports</span>
+      <span><%= gettext("Reports") %></span>
     </a>
   </li>
   <li>
-    <a href="/moderation/deleted_posts">
-      <span>Deleted posts</span>
+    <a href="/moderation/disabled_posts">
+      <span><%= svg_image("icons/trash") %></span>
+      <span><%= gettext("Disabled posts") %></span>
     </a>
   </li>
   <li>
     <a href="/moderation/audit">
-      <span></span>
-      <span>Audit</span>
+      <span><%= svg_image("icons/clipboard") %></span>
+      <span><%= gettext("Audit") %></span>
     </a>
   </li>
 </ul>
-<h1>Users</h1>
+<h1><%= gettext("Users") %></h1>
 <ul>
   <li>
     <a href="/moderation/users">
       <span><%= svg_image("account") %></span>
-      <span>Users</span>
+      <span><%= gettext("Users") %></span>
     </a>
   </li>
   <li>
     <a href="/moderation/bans">
       <span><%= svg_image("icons/bans") %></span>
-      <span>Bans</span>
+      <span><%= gettext("Bans") %></span>
+    </a>
+  </li>
+  <li>
+    <a href="/moderation/roles">
+      <span><%= svg_image("icons/user-tag") %></span>
+      <span><%= gettext("Roles") %></span>
     </a>
   </li>
 </ul>
-<h1>Config</h1>
+<h1><%= gettext("Pages") %></h1>
 <ul>
   <li>
     <a href="/moderation/pages/rules">
-      <span></span>
+      <span><%= svg_image("icons/file") %></span>
       <span>Rules</span>
     </a>
   </li>
   <li>
     <a href="/moderation/pages/faq">
-      <span></span>
+      <span><%= svg_image("icons/file") %></span>
       <span>FAQ</span>
     </a>
   </li>
   <li>
     <a href="/moderation/pages/acknowledgements">
-      <span></span>
+      <span><%= svg_image("icons/file") %></span>
       <span>Acknowledgements</span>
     </a>
   </li>

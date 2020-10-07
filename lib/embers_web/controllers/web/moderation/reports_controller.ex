@@ -26,7 +26,7 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
       |> render("entries.html", posts_reports: posts_reports)
     else
       conn
-      |> render("index.html", posts_reports: posts_reports)
+      |> render("index.html", posts_reports: posts_reports, page_title: gettext("Reports"))
     end
   end
 

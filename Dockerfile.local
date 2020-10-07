@@ -1,7 +1,7 @@
-FROM elixir:1.10
+FROM elixir:1.11.0
 
 RUN apt-get update
-RUN apt-get install -y build-essential inotify-tools imagemagick ffmpeg
+RUN apt-get install -y build-essential curl git inotify-tools imagemagick ffmpeg
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs

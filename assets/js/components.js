@@ -7,6 +7,8 @@ import "./components/top-bar";
 import "./components/moderation/post-report-summary";
 import "./components/moderation/reports-counter";
 import "./components/moderation/ban-summary";
+import "./components/deleted_posts/disabled_post";
+import "./components/deleted_posts/disabled_posts";
 import "./components/post/post";
 
 const traverse_module = (module) => {

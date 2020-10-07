@@ -12,7 +12,7 @@
   >
     <h1>Bans</h1>
 
-    <section infinite-scroll-viewport>
+    <section class="boxed" infinite-scroll-viewport>
       <%= for ban <- @bans do %>
         <%= render("_ban_summary.html", ban: ban) %>
       <% end %>

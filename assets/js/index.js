@@ -29,7 +29,10 @@ window["pjax"] = new Pjax({
     '#board'
   ],
   filter: el => {
-    return !el.matches("a[data-post-modal]")
+    return (
+      !el.matches("a[data-post-modal]") &&
+      !el.matches("[target=_blank]")
+    )
   }
 });
 

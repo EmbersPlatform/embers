@@ -18,7 +18,7 @@ defmodule EmbersWeb.Web.Moderation.UserController do
       |> render("entries.html", users: users)
     else
       conn
-      |> render("index.html", users: users)
+      |> render("index.html", users: users, page_title: gettext("Users"))
     end
   end
 end

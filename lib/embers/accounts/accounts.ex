@@ -61,12 +61,18 @@ defmodule Embers.Accounts do
     query =
       from(
         users in User,
-        order_by: [{^order, users.inserted_at}]
+        order_by: [{^order, users.inserted_at}],
+        preload: [:meta]
       )
       |> maybe_filter_by_name_query(opts)
       |> maybe_preload_query(opts)
 
     Paginator.paginate(query, opts)
+    |> Paginator.map(fn user ->
+      user
+      |> Map.update!(:meta, &Embers.Profile.Meta.load_avatar_map/1)
+      |> Map.update!(:meta, &Embers.Profile.Meta.load_cover/1)
+    end)
   end
 
   defp maybe_filter_by_name_query(query, opts) do
@@ -106,7 +112,7 @@ defmodule Embers.Accounts do
       %User{}
   """
   def get_by_identifier(identifier) when is_binary(identifier) do
-    get_by(canonical: identifier)
+    get_by(%{"canonical" => identifier})
   end
 
   def get_by_identifier(identifier) when is_integer(identifier) do

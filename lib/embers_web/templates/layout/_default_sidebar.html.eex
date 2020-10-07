@@ -33,7 +33,7 @@
       <span>
         <%= svg_image("subs") %>
       </span>
-      <span>Suscripciones</span>
+      <span>Tags</span>
     </a>
   </li>
 </ul>

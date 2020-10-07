@@ -5,11 +5,18 @@
   <%= render_shared("top_bar.html", assigns) %>
   <main class="padded"
     infinite-scroll
+    disabled-posts
     data-source="/moderation/deleted_posts"
     data-next="<%= @posts.next %>"
     data-last-page="<%= @posts.last_page %>"
   >
-    <h1>Deleted posts</h1>
+    <h1><%= gettext("Disabled posts") %></h1>
+    <p>
+      <%= gettext("There are %{count} disabled posts", count: @disabled_count) %>
+    </p>
+    <p>
+      <button class="button danger" data-action="prune"><%= gettext("Prune disabled posts") %></button>
+    </p>
 
     <section infinite-scroll-viewport>
       <%= render("entries.html", posts: @posts) %>

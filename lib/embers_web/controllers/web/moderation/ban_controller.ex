@@ -26,7 +26,7 @@ defmodule EmbersWeb.Web.Moderation.BanController do
       |> render("entries.html", bans: bans)
     else
       conn
-      |> render("index.html", bans: bans)
+      |> render("index.html", bans: bans, page_title: gettext("Bans"))
     end
   end
 
