@@ -221,6 +221,10 @@ defmodule EmbersWeb.Router do
 
       # Users
       get("/users", UserController, :index)
+      get("/users/list.json", UserController, :list_users)
+      put("/users/:user_id", UserController, :update)
+      delete("/users/:user_id/avatar", UserController, :remove_avatar)
+      delete("/users/:user_id/cover", UserController, :remove_cover)
     end
   end
 

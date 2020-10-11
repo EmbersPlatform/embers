@@ -58,13 +58,17 @@ defmodule Embers.Accounts do
   @spec list_users_paginated(keyword()) :: Embers.Paginator.Page.t()
   def list_users_paginated(opts \\ []) do
     order = Keyword.get(opts, :order, :asc)
+    filters = Keyword.get(opts, :filters, [])
+    preloads = Keyword.get(opts, :preloads, [])
+
     query =
       from(
         users in User,
         order_by: [{^order, users.inserted_at}],
-        preload: [:meta]
+        preload: ^([:meta] ++ preloads)
       )
       |> maybe_filter_by_name_query(opts)
+      |> maybe_apply_filters(filters)
       |> maybe_preload_query(opts)
 
     Paginator.paginate(query, opts)
@@ -72,6 +76,12 @@ defmodule Embers.Accounts do
       user
       |> Map.update!(:meta, &Embers.Profile.Meta.load_avatar_map/1)
       |> Map.update!(:meta, &Embers.Profile.Meta.load_cover/1)
+    end)
+  end
+
+  defp maybe_apply_filters(query, filters) do
+    Enum.reduce(filters, query, fn {field, value}, q ->
+      from(users in q, where: ilike(field(users, ^field), ^"%#{value}%"))
     end)
   end
 

@@ -1,22 +1,17 @@
 <%= EmbersWeb.LayoutView.sidebar(assigns) do %>
   <%= render(EmbersWeb.Web.Moderation.SharedView, "_sidebar.html", assigns) %>
 <% end %>
-<div id="view" view="moderation" subview="users" class="has-sidebar" is="mod-users-index">
+<div id="view" view="moderation" subview="users" class="has-sidebar">
   <%= render_shared("top_bar.html", assigns) %>
   <main class="padded"
-    infinite-scroll
-    data-source="/moderation/users"
-    data-next="<%= @users.next %>"
-    data-last-page="<%= @users.last_page %>"
+    is="mod-users-index"
   >
-    <h1>Users</h1>
-
-    <section infinite-scroll-viewport class="boxed">
-      <%= for user <- @users do %>
-        <%= render("_user.html", user: user) %>
-      <% end %>
-    </section>
-    <intersect-observer infinite-scroll-intersect></intersect-observer>
-    <loading-indicator infinite-scroll-indicator></loading-indicator>
+    <script type="data"><%=
+      raw Jason.encode!(
+        for role <- @roles do
+          %{id: role.id, name: role.name}
+        end
+      )
+    %></script>
   </main>
 </div>

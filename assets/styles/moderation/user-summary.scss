@@ -4,6 +4,19 @@ user-summary {
   align-items: center;
   padding: 0.5em;
 
+  @include media("<=tablet") {
+    flex-direction: column;
+    align-items: initial;
+
+    &>*+* {
+      margin-top: 1em;
+    }
+
+    .actions {
+      align-self: flex-end;
+    }
+  }
+
   &+& {
     border-top: var(--border);
   }
@@ -17,9 +30,47 @@ user-summary {
     height: 1em;
   }
 
-  .avatar {
-    width: 2em;
-    height: 2em;
-    border-radius: 50%;
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &>.user-data {
+    display: flex;
+    flex-direction: row;
+    flex: 1 auto;
+
+    .avatar {
+      width: 2em;
+      height: 2em;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-right: 0.5em;
+    }
+  }
+
+  &>.roles {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .role {
+      padding: 0.25em 0.75em;
+      border-radius: 2em;
+      background: var(--secondary-accent);
+      margin-left: 0.5em;
+    }
+  }
+
+  &>.actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+
+    &>*+* {
+      margin-left: 0.5em;
+    }
   }
 }

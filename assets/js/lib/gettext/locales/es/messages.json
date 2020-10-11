@@ -59,5 +59,9 @@
   "An unexpected error ocurred, please try again later": "Ocurrió un error inesperado, por favor intenta más tarde",
   "Please wait a few minutes before requesting another password reset": "Por favor espera unos minutos antes de solicitar otro cambio de contraseña",
 
-  "There are no online friends": "No hay amigos conectados"
+  "There are no online friends": "No hay amigos conectados",
+
+  "Filter": "Filtrar",
+
+  "Users": "Usuarios"
 }

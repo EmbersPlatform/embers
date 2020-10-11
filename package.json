@@ -38,6 +38,7 @@
     "stimulus": "^1.1.1",
     "twemoji": "^13.0.1",
     "uce": "^1.11.9",
+    "uce-loader": "^1.0.1",
     "uhtml": "^2.1.1",
     "unified": "^9.2.0",
     "unpoly": "^0.62.1",

@@ -133,9 +133,9 @@ defmodule Embers.Profile do
   def remove_avatar(%Meta{user_id: id} = meta) do
     path = Uploads.Avatar.fetch_path()
 
-    with  :ok <- Uploads.delete("#{path}/#{id}_small.png"),
-          :ok <- Uploads.delete("#{path}/#{id}_medium.png"),
-          :ok <- Uploads.delete("#{path}/#{id}_large.png"),
+    with  :ok <- Embers.Uploads.delete("#{path}/#{id}_small.png"),
+          :ok <- Embers.Uploads.delete("#{path}/#{id}_medium.png"),
+          :ok <- Embers.Uploads.delete("#{path}/#{id}_large.png"),
           {:ok, _} <- update_meta(meta, %{avatar_version: nil}),
           do: :ok
   end
@@ -143,7 +143,7 @@ defmodule Embers.Profile do
   def remove_cover(%Meta{user_id: id} = meta) do
     path = Uploads.Cover.fetch_path()
 
-    with :ok <- Uploads.delete("#{path}/#{id}.jpg"),
+    with :ok <- Embers.Uploads.delete("#{path}/#{id}.jpg"),
          {:ok, _} <- update_meta(meta, %{cover_version: nil}),
          do: :ok
   end
