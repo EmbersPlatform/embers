@@ -1,4 +1,4 @@
-FROM elixir:1.11.0
+FROM hexpm/elixir:1.11.0-erlang-23.1.1-ubuntu-bionic-20200630
 
 RUN apt-get update
 RUN apt-get install -y build-essential curl git inotify-tools imagemagick ffmpeg
