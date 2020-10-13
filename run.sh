@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 echo "\n preparing static assets..."
-cp -R assets/static priv/static
+cp -R assets/static priv
 
 echo "\n Setting up and seeding database..."
 mix ecto.setup
