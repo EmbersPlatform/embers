@@ -249,13 +249,11 @@ defmodule EmbersWeb.Web.PostController do
         limit: limit,
         order: order,
         replies: replies,
-        replies_order: {:asc, :inserted_at}
+        replies_order: {order, :inserted_at},
+        inclusive_cursor: !skip_first?
       )
 
-    results = if skip_first? do
-      entries = results.entries |> Enum.reverse() |> tl() |> Enum.reverse()
-      put_in(results.entries, entries)
-    end || results
+    results = update_in(results.entries, &Enum.reverse/1)
 
     {:ok, page_metadata} =
       Map.from_struct(results)

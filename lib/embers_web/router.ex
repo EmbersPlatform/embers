@@ -123,6 +123,7 @@ defmodule EmbersWeb.Router do
 
     # Feeds
     get("/timeline", TimelineController, :index)
+    delete("/timeline/activity/:id", TimelineController, :hide_activity)
     get("/discover", DiscoverController, :index)
 
     # User profile
@@ -178,6 +179,7 @@ defmodule EmbersWeb.Router do
     # Tags
     get("/tag/:name", TagController, :show)
     get("/tags/popular", TagController, :list_popular)
+    get("/tags/pinned", TagPinnedController, :list_pinned)
 
     # Tags subscriptions
     post("/tags/:tag_id/sub", TagSubscriptionController, :subscribe)
@@ -225,6 +227,10 @@ defmodule EmbersWeb.Router do
       put("/users/:user_id", UserController, :update)
       delete("/users/:user_id/avatar", UserController, :remove_avatar)
       delete("/users/:user_id/cover", UserController, :remove_cover)
+
+      # Roles
+      get("/roles", RoleController, :index)
+      put("/roles/:role_id", RoleController, :update)
     end
   end
 

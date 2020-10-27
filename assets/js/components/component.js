@@ -142,3 +142,36 @@ export const Component = (superclass) => {
  */
 export const reactive = (state, callback) =>
   stateHandler()(state, callback);
+
+const get = (child, name) => child.getAttribute(name);
+const queryHelper = (attr, arr) => element => {
+  return [].reduce.call(
+    element.querySelectorAll('[' + attr + ']'),
+    (slot, node) => {
+      let {parentNode} = node;
+      do {
+        if (parentNode === element) {
+          const name = get(node, attr);
+          slot[name] = arr ? [].concat(slot[name] || [], node) : node;
+          break;
+        }
+        else if (/-/.test(parentNode.tagName) || get(parentNode, 'is'))
+          break;
+      } while (parentNode = parentNode.parentNode);
+      return slot;
+    },
+    {}
+  );
+};
+
+export const ref = queryHelper("ref", false);
+export const slot = queryHelper("slot", true);
+
+export const hydrate = (element, reactive = false) => {
+  let state = JSON.parse(element.querySelector("script[type=data]").textContent);
+
+  if(reactive)
+    state = stateHandler()(state, element.update);
+
+  return state;
+}

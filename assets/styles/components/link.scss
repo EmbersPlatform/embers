@@ -36,7 +36,8 @@
     &>a * {
       overflow: hidden;
       text-overflow: ellipsis;
-      color: var(--link-foreground)
+      color: var(--link-foreground);
+      max-width: 60vw;
     }
 
     h3 {

@@ -21,3 +21,11 @@ export async function get(options: GetTimelineOptions = {}): Promise<NetResult<P
     }
   }
 }
+
+export async function hide_activity(activity_id: string) {
+  const res = await Fetch.delet(`/timeline/activity/${activity_id}`);
+  switch(res.tag) {
+    case "Success": return true;
+    default: return false;
+  }
+}

@@ -191,4 +191,16 @@ defmodule Embers.Subscriptions.Tags do
       sub -> sub.level
     end
   end
+
+  @spec list_pinned(binary(), keyword()) :: [TagSubscription.t()]
+  def list_pinned(user_id, opts \\ []) do
+    Repo.all(
+      from(
+        sub in TagSubscription,
+        where: sub.user_id == ^user_id,
+        left_join: tag in assoc(sub, :source),
+        select: %{tag: tag, level: sub.level}
+      )
+    )
+  end
 end

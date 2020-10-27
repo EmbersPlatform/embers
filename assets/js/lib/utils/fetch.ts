@@ -55,7 +55,6 @@ const perform_fetch = async (path: string, method: string, options: Object = {})
   }
 
   let headers = build_headers(options);
-  console.log(headers)
 
   // Only json encode string bodies
   if(!(options["body"] instanceof FormData)) {

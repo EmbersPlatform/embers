@@ -1,17 +1,19 @@
-<nav id="top-bar" class="soft-kw-hide">
-  <input
-    type="search"
-    placeholder="<%= gettext("Search Embers") %>"
-    value="<%= if assigns[:search_query], do: @search_query %>" />
+<%= if authenticated?(@conn) do %>
+  <nav id="top-bar" class="soft-kw-hide">
+    <input
+      type="search"
+      placeholder="<%= gettext("Search Embers") %>"
+      value="<%= if assigns[:search_query], do: @search_query %>" />
 
-  <%= if Embers.Authorization.can?(@current_user, "access_mod_tools") do %>
-    <a href="/moderation/reports" class="button-link" reports-button
-      count="<%= @mod.pending_reports_count %>"
-    >
-      <%= svg_image("icons/flag") %>
-    </a>
-    <a href="/moderation" class="button-link">
-      <%= svg_image("icons/admin") %>
-    </a>
-  <% end %>
-</nav>
+    <%= if authenticated?(@conn) && Embers.Authorization.can?("access_mod_tools", @current_user) do %>
+      <a href="/moderation/reports" class="button-link" reports-button
+        count="<%= @mod.pending_reports_count %>"
+      >
+        <%= svg_image("icons/flag") %>
+      </a>
+      <a href="/moderation" class="button-link">
+        <%= svg_image("icons/admin") %>
+      </a>
+    <% end %>
+  </nav>
+<% end %>

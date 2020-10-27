@@ -53,6 +53,7 @@ export default class PostViewerModal extends ModalDialog {
 
     this.load = async post_id => {
       this.showModal();
+      document.body.classList.remove("loading-page");
 
       setContents(html`
       <p>${dgettext("post-viewer-modal", "Loading post...")}</p>

@@ -2,7 +2,7 @@
 
 rm -rf priv/static
 
-cp -R assets/static priv/static
+cp -R assets/static priv
 
 cd assets && yarn install && yarn build
 cd ../

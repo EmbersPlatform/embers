@@ -32,4 +32,13 @@ defmodule EmbersWeb.Web.TimelineController do
     |> Plug.Conn.put_resp_header("embers-page-metadata", page_metadata)
     |> render(:index, results: results)
   end
+
+  def hide_activity(conn, %{"id" => id}) do
+    user = conn.assigns.current_user
+    with {:ok, _activity} <- Timeline.delete_activity(user.id, id) do
+      conn
+      |> put_status(:no_content)
+      |> json(nil)
+    end
+  end
 end

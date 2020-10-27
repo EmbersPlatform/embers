@@ -20,7 +20,7 @@
     <aside>
       <div class="content">
         <popular-tags class="tags-widget"></popular-tags>
-        <aside>
+        <emb-pinned-tags></emb-pinned-tags>
         <a href="https://discord.gg/uADqWPs" class="join-discord-notice" target="_blank">
           <span><%= gettext "Join our discord!" %></span>
           <img src="https://www.embers.pw/img/external/discord_logo.svg" alt="discord logo">

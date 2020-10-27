@@ -7,7 +7,7 @@ defmodule Embers.Audit.Manager do
     %{post: post, actor: actor} = event.data
 
     Audit.create(%{
-      user_id: "#{actor}",
+      user_id: "#{actor.id}",
       action: "disable_post",
       source: "#{post.id}",
       details: [%{action: "in_post"}]
@@ -18,7 +18,7 @@ defmodule Embers.Audit.Manager do
     %{post: post, actor: actor} = event.data
 
     Audit.create(%{
-      user_id: "#{actor}",
+      user_id: "#{actor.id}",
       action: "restore_post",
       source: "#{post.id}",
       details: %{

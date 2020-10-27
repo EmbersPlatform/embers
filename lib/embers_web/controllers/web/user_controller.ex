@@ -17,18 +17,29 @@ defmodule EmbersWeb.Web.UserController do
   def show(conn, %{"username" => username}) do
     with user <- Accounts.get_populated(%{"canonical" => username}) do
       current_user = conn.assigns.current_user
-      %{entries: followers} = Subscriptions.list_following_paginated(user.id, limit: 10)
+      %{entries: followers} = Subscriptions.list_followers_paginated(user.id, limit: 10)
+      %{entries: following} = Subscriptions.list_following_paginated(user.id, limit: 10)
       activities = Feed.User.get(user_id: user.id)
       followers = subs_to_user(followers)
+      following = subs_to_user(following)
 
       user =
-        user
-        |> Accounts.load_following_status(current_user.id)
-        |> Accounts.load_follows_me_status(current_user.id)
-        |> Accounts.load_blocked_status(current_user.id)
+        unless is_nil(current_user) do
+          user
+          |> Accounts.load_following_status(current_user.id)
+          |> Accounts.load_follows_me_status(current_user.id)
+          |> Accounts.load_blocked_status(current_user.id)
+        else user end
 
       title = gettext("@%{username}'s profile", username: user.username)
-      render(conn, "show.html", page_title: title, user: user, followers: followers, activities: activities)
+
+      conn
+      |> assign(:page_title, title)
+      |> assign(:user, user)
+      |> assign(:followers, followers)
+      |> assign(:following, following)
+      |> assign(:activities, activities)
+      |> render("show.html")
     end
   end
 

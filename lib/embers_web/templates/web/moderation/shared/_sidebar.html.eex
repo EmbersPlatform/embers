@@ -51,21 +51,9 @@
 <h1><%= gettext("Pages") %></h1>
 <ul>
   <li>
-    <a href="/moderation/pages/rules">
+    <a href="/moderation/pages">
       <span><%= svg_image("icons/file") %></span>
-      <span>Rules</span>
-    </a>
-  </li>
-  <li>
-    <a href="/moderation/pages/faq">
-      <span><%= svg_image("icons/file") %></span>
-      <span>FAQ</span>
-    </a>
-  </li>
-  <li>
-    <a href="/moderation/pages/acknowledgements">
-      <span><%= svg_image("icons/file") %></span>
-      <span>Acknowledgements</span>
+      <span>Pages</span>
     </a>
   </li>
 </ul>

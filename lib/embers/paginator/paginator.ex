@@ -44,16 +44,31 @@ defmodule Embers.Paginator do
 
     query =
       unless is_nil(opts.before) do
-        from(q in query,
-          where: q.id <= ^opts.before
-        )
+        case opts.inclusive_cursor do
+          true ->
+            from(q in query,
+              where: q.id <= ^opts.before
+            )
+          false ->
+            from(q in query,
+              where: q.id < ^opts.before
+            )
+        end
+
       end || query
 
     query =
       unless is_nil(opts.after) do
-        from(q in query,
-          where: q.id >= ^opts.after
-        )
+        case opts.inclusive_cursor do
+          true ->
+            from(q in query,
+              where: q.id >= ^opts.after
+            )
+          false ->
+            from(q in query,
+              where: q.id > ^opts.after
+            )
+          end
       end || query
 
     all_entries = Repo.all(query)

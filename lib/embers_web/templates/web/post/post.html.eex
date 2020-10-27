@@ -22,6 +22,7 @@
   ] %>"
   <%= if @post.nsfw && ask_nsfw?(@conn, @post), do: "nsfw" %>
   <%= if @post.faved, do: "faved" %>
+  <%= if assigns[:activity], do: "activity" %>
   >
   <div class="content-warnings">
     <div class="content-warning warning-nsfw">

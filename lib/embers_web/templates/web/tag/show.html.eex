@@ -1,6 +1,6 @@
 <%= EmbersWeb.LayoutView.sidebar(assigns) %>
 <div id="view" view="home" class="has-sidebar">
-  <%= render_shared("top_bar.html", assigns) %>
+  <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
   <main class="padded columns-layout">
     <div class="main-content"
       infinite-scroll
@@ -16,7 +16,9 @@
           ></follow-tag>
         <% end %>
       </h1>
-      <post-editor data-with-tags="<%= @tag.name %>" class="boxed" placeholder="<%= gettext("Share something in #%{name}", name: @tag.name) %>"></post-editor>
+      <%= if authenticated?(@conn) do %>
+        <post-editor data-with-tags="<%= @tag.name %>" class="boxed" placeholder="<%= gettext("Share something in #%{name}", name: @tag.name) %>"></post-editor>
+      <% end %>
       <div class="feed" infinite-scroll-viewport>
         <%= for post <- @page.entries do %>
           <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
@@ -28,6 +30,9 @@
     <aside>
       <div class="content">
         <popular-tags class="tags-widget"></popular-tags>
+        <%= if authenticated?(@conn) do %>
+          <emb-pinned-tags></emb-pinned-tags>
+        <% end %>
         <aside>
         <a href="https://discord.gg/uADqWPs" class="join-discord-notice" target="_blank">
           <span><%= gettext "Join our discord!" %></span>

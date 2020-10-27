@@ -20,6 +20,13 @@ defmodule Embers.Authorization.Roles do
   end
 
   @doc """
+    Gets a role by it's id, or `nil` if none is found
+  """
+  def get_by_id(id) do
+    Repo.get_by(Role, id: id)
+  end
+
+  @doc """
     Gets a role by it's name, nor `nil` if none is found
   """
   @spec get(String.t()) :: Role.t() | nil

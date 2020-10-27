@@ -4,5 +4,9 @@
   masonry-layout > .post {
     width: 325px;
     margin-bottom: 20px;
+
+    @include media("<=tablet") {
+      width: 100%;
+    }
   }
 }

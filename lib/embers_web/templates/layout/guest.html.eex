@@ -42,7 +42,7 @@
 
   <script src="<%= static_path(@conn, "/dist/js/landing.js") %>"></script>
 </head>
-<body theme="dark">
+<body theme="dark" guest-layout>
   <%= render_shared("top_nav.html") %>
   <%= render @view_module, @view_template, assigns %>
 </body>

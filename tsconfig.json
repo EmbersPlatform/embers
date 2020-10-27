@@ -22,7 +22,6 @@
     "assets/js/components/hook.d.ts"
   ],
   "exclude": [
-    "priv/static",
-    "./node_modules"
+    "priv/static"
   ]
 }

@@ -81,11 +81,37 @@
     box-sizing: border-box;
   }
 
+  aside {
+    flex-shrink: 0;
+    position: sticky!important;
+    top: 1em;
+    height: fit-content;
+
+    @include media("<=tablet") {
+      display: none;
+    }
+  }
+
+  .profile-followers,
   .profile-following {
+    padding: 1em 0;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+
+    .heading {
+      font-size: 1.2em;
+    }
+
+    &>a {
+      align-self: flex-end;
+    }
+
+    .avatars {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
 
     .avatar {
       width: 48px;
@@ -93,6 +119,11 @@
       margin: 5px;
       border: 4px solid #00000033;
       border-radius: 50%;
+    }
+
+    &+* {
+      margin-top: 1em;
+      border-top: var(--border);
     }
   }
 

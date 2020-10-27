@@ -1,5 +1,4 @@
 import { define } from "wicked-elements";
-import type IWickedElementsComponent from "wicked-elements";
 import { confirm } from "~js/managers/dialog";
 import { gettext } from "~js/lib/gettext";
 import status_toasts from "~js/managers/status_toasts";

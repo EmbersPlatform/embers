@@ -29,13 +29,15 @@ customElements.define("mod-users-index", class extends HTMLElement {
   abort_controller: AbortController;
 
   connectedCallback() {
-    this.existing_roles = JSON.parse(this.querySelector("script[type=data]").textContent)
-    this.update();
-    this.fetch_users();
+    setTimeout(() => {
+      this.existing_roles = JSON.parse(this.querySelector("script[type=data]").textContent)
+      this.update();
+      this.fetch_users();
+    })
   }
 
   /**
-   * Filters users by field
+   * Filters users by field and throttles calls by 500 ms
    */
   filter = field => throttle(({target}) => {
     this.filters[field] = target.value
@@ -52,6 +54,8 @@ customElements.define("mod-users-index", class extends HTMLElement {
     if(this.state.loading) return;
     if(next && this.state.page.last_page) return;
 
+    this.abort_previous_request();
+
     this.state.loading = true;
     this.state.error = false;
 
@@ -60,7 +64,6 @@ customElements.define("mod-users-index", class extends HTMLElement {
       this.state.page.last_page = true;
     }
 
-    this.abort_previous_request();
 
     const params = {
       canonical: this.filters.canonical,

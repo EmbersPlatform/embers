@@ -7,18 +7,54 @@
   data-user="<%= @user.id %>"
   data-next="<%= @activities.next %>"
 >
-  <%= render_shared("top_bar.html", assigns) %>
+  <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
   <%= render("_profile_header.html", assigns) %>
   <main class="padded columns-layout">
-    <div class="main-content">
-      <div class="feed" data-target="user-profile.feed">
+    <div class="main-content"
+      infinite-scroll
+      data-source="<%= user_path(@conn, :timeline, @user.canonical) %>"
+      data-last-page="<%= @activities.last_page %>"
+      data-next="<%= @activities.next %>"
+    >
+      <div class="feed" infinite-scroll-viewport>
         <%= for activity <- @activities.entries do %>
           <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: activity) %>
         <% end %>
       </div>
-      <intersect-observer data-action="intersect->user-profile#loadMore"></intersect-observer>
-      <loading-indicator data-target="user-profile.loadingIndicator"></loading-indicator>
+      <intersect-observer infinite-scroll-intersect></intersect-observer>
+      <loading-indicator infinite-scroll-indicator></loading-indicator>
     </div>
-    <aside></aside>
+    <aside>
+      <%= if assigns[:followers] && length(@followers) > 0 do %>
+      <div class="profile-followers">
+        <div class="heading"><%= gettext("Followers") %></div>
+        <div class="avatars">
+          <%= for user <- @followers do %>
+            <%= labeled_link(to: "/@#{user.canonical}", label: user.canonical) do %>
+              <%= render("avatar.html", avatar: user.meta.avatar.small, bordered: true) %>
+            <% end %>
+          <% end %>
+        </div>
+        <%= link(to: decoded_path(:user_path, @conn, :show_followers, @user.canonical), class: "stat") do %>
+          <%= gettext("View all") %>
+        <% end %>
+      </div>
+      <% end %>
+      <%= if assigns[:following] && length(@following) > 0 do %>
+      <div class="profile-following">
+        <div class="heading"><%= gettext("Following") %></div>
+        <div class="avatars">
+          <%= for user <- @following do %>
+            <%= labeled_link(to: "/@#{user.canonical}", label: user.canonical) do %>
+              <%= render("avatar.html", avatar: user.meta.avatar.small, bordered: true) %>
+            <% end %>
+          <% end %>
+        </div>
+        <%= link(to: decoded_path(:user_path, @conn, :show_following, @user.canonical), class: "stat") do %>
+          <%= gettext("View all") %>
+        <% end %>
+      </div>
+      <% end %>
+    </aside>
   </main>
 </div>

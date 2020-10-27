@@ -18,6 +18,10 @@
     }
   }
 
+  [guest-layout] #view {
+    margin: 0!important;
+  }
+
   #view.no-navigation {
     margin-left: 0!important;
   }

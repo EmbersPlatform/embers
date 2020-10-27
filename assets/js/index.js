@@ -2,7 +2,6 @@ import "./modernizr";
 import "./soft_keyboard";
 import "./polyfills/dialog";
 import "./lib/socket";
-// import "./unpoly";
 
 import * as Controllers from "./controllers";
 import * as Components from "./components";
@@ -52,4 +51,12 @@ history.pushState = _wr('pushState'), history.replaceState = _wr('replaceState')
 document.addEventListener("DOMContentLoaded", () => {
   register_modal();
   BanUserDialog.register_modal();
+})
+
+window.addEventListener("pjax:fetch", (e) => {
+  document.body.classList.add("loading-page");
+})
+
+window.addEventListener("pjax:unload", () => {
+  document.body.classList.remove("loading-page")
 })

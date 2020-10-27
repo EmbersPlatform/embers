@@ -15,7 +15,6 @@ services:
     volumes:
       - ".:/app"
       - "static:/app/priv/static"
-      - "artifacts:/app/artifacts"
       - "build:/app/_build"
       - "deps:/app/deps"
       - "node_modules:/app/node_modules"
@@ -50,7 +49,6 @@ volumes:
   pgdata:
   s3:
   static:
-  artifacts:
   deps:
   build:
   node_modules:

@@ -8,4 +8,13 @@ leg-markdown {
   img {
     max-width: 100%;
   };
+
+  ul, ol {
+    list-style: initial;
+    padding-left: 1.2em;
+  }
+
+  a {
+    color: var(--accent);
+  }
 }

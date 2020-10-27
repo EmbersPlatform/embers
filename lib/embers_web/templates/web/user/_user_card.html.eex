@@ -15,7 +15,7 @@
         <% end %>
       </span>
     <% end %>
-    <%= unless @user.id == @conn.assigns.current_user.id do %>
+    <%= if authenticated?(@conn) && @user.id != @conn.assigns.current_user.id do %>
       <button
         is="follow-button"
         class="button"

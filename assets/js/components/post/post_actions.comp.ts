@@ -4,6 +4,7 @@ import { gettext } from "~js/lib/gettext";
 
 import * as Application from "~js/lib/application";
 import * as Posts from "~js/lib/posts";
+import * as Timeline from "~js/lib/timeline";
 
 import icon_gavel from "~static/svg/generic/icons/gavel.svg";
 import icon_ellipsis from "~static/svg/generic/icons/ellipsis-v.svg"
@@ -17,11 +18,13 @@ export default class PostActions extends Component(HTMLElement) {
   post: HTMLElement;
   faved: boolean;
   is_owner: boolean;
+  is_activity: boolean;
   post_kind: "post" | "reply";
 
   onconnected() {
     this.post = this.closest("article[data-author-id]") as HTMLElement;
     this.is_owner = this.post.dataset.authorId === Application.get_user().id;
+    this.is_activity = !!this.post.hasAttribute("activity");
     this.faved = this.post.hasAttribute("faved");
 
     this.post_kind = this.post.classList.contains("reply") ? "reply" : "post";
@@ -97,6 +100,14 @@ export default class PostActions extends Component(HTMLElement) {
                 <span>${gettext("Reactions")}</span>
               </button>
             </li>
+            ${ this.is_activity
+              ? html`<li>
+                <button class="plain-button" onclick=${this.hide_activity}>
+                  <span>${gettext("Hide")}</span>
+                </button>
+              </li>`
+              : ``
+            }
             <li>
               <button class="plain-button" onclick=${this.show_report_modal}>
                 <span>${gettext("Report")}</span>
@@ -157,5 +168,12 @@ export default class PostActions extends Component(HTMLElement) {
 
   ask_ban = () => {
     ban_user_dialog.showModal(this.post.dataset.author);
+  }
+
+  hide_activity = async () => {
+    const res = await Timeline.hide_activity(this.post.dataset.id);
+    if(res) {
+      this.post.remove();
+    }
   }
 }

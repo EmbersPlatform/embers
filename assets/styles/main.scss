@@ -47,6 +47,16 @@ body {
   }
 }
 
+#board {
+  transition: opacity 250ms ease-in-out;
+  opacity: 1;
+}
+
+body.loading-page #board{
+  opacity: 0.2;
+  pointer-events: none;
+}
+
 #view main {
   max-width: 960px;
   margin: 0 auto;

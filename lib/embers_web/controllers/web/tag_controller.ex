@@ -22,12 +22,10 @@ defmodule EmbersWeb.Web.TagController do
         )
       end
 
-    sub_level = Embers.Subscriptions.Tags.get_sub_level(conn.assigns.current_user.id, tag.id)
-
     conn =
       conn
       |> assign(:page, page)
-      |> assign(:sub_level, sub_level)
+      |> assign_sub_level(tag)
 
     if params["entries"] == "true" do
       conn
@@ -37,6 +35,16 @@ defmodule EmbersWeb.Web.TagController do
     else
       conn
       |> render("show.html", tag: tag)
+    end
+  end
+
+  defp assign_sub_level(conn, tag) do
+    if is_nil(conn.assigns.current_user) do
+      conn
+    else
+      sub_level = Embers.Subscriptions.Tags.get_sub_level(conn.assigns.current_user.id, tag.id)
+
+      assign(conn, :sub_level, sub_level)
     end
   end
 

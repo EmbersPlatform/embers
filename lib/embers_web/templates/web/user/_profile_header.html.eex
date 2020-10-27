@@ -38,16 +38,7 @@
       </div>
     <% end %>
     <div class="profile-bio">
-      <%= @user.meta.bio %>
+      <leg-markdown><%= @user.meta.bio %></leg-markdown>
     </div>
-    <%= if assigns[:followers] do %>
-    <div class="profile-following">
-      <%= for follower <- @followers do %>
-        <%= labeled_link(to: "/@#{follower.canonical}", label: follower.canonical) do %>
-          <%= render("avatar.html", avatar: follower.meta.avatar.small, bordered: true) %>
-        <% end %>
-      <% end %>
-    </div>
-    <% end %>
   </div>
 </section>

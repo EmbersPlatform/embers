@@ -14,14 +14,14 @@
   .reply-thread-list {
     .load-more-button {
       padding-left: 4.2em;
-      border: 1px solid var(--border-color);
       border-top: 0;
       position: relative;
       text-align: left;
+      justify-content: flex-start;
       width: 100%;
 
       @include media(">=tablet") {
-        margin-left: 3.2em;
+        margin-left: 3.3em;
         padding-left: 4.5em;
         width: calc(100% - 3.2em);
       }
@@ -37,7 +37,7 @@
         background: var(--accent);
 
         @include media(">=tablet") {
-          left: 26px;
+          left: 2em;
         }
       }
 
@@ -57,7 +57,7 @@
       text-align: left;
 
       @include media(">=tablet") {
-        margin-left: 3.2em;
+        margin-left: 3.3em;
         padding-left: 4.5em;
       }
 
@@ -98,12 +98,12 @@
       position: absolute;
       top: -1px;
       left: 1.5em;
-      height: 0.6em;
+      height: 0.3em;
       width: 2px;
       background: var(--accent);
 
       @include media(">=tablet") {
-        left: 1.9em;
+        left: 2em;
       }
     }
 
@@ -113,12 +113,13 @@
       position: absolute;
       bottom: 0;
       left: 1.5em;
-      height: calc(100% - 2.8em);
+      height: calc(100% - 3em);
       width: 2px;
       background: var(--accent);
 
       @include media(">=tablet") {
-        left: 1.9em;
+        left: 2em;
+        height: calc(100% - 3.8em);
       }
     }
   }

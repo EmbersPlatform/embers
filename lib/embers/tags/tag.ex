@@ -46,4 +46,10 @@ defmodule Embers.Tags.Tag do
   end
 
   defp trim_desc(changeset, _), do: changeset
+
+  defimpl Jason.Encoder do
+    def encode(value, opts) do
+      Jason.Encode.map(Map.take(value, [:name, :description]), opts)
+    end
+  end
 end

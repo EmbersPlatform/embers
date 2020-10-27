@@ -6,7 +6,7 @@
   <main class="padded"
     infinite-scroll
     disabled-posts
-    data-source="/moderation/deleted_posts"
+    data-source="/moderation/disabled_posts"
     data-next="<%= @posts.next %>"
     data-last-page="<%= @posts.last_page %>"
   >
