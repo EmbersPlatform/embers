@@ -30,7 +30,7 @@ defmodule Embers.Tags do
   def get_by_name(name) when is_binary(name) do
     name = String.downcase(name)
 
-    Repo.one(from(tag in Tag, where: fragment("LOWER(?) = ?", tag.name, ^name), limit: 1))
+    Repo.one(from(tag in Tag, where: fragment("LOWER(?) = ?", tag.name, ^name), limit: 1, order_by: tag.id))
   end
 
   def create_tag(name) do

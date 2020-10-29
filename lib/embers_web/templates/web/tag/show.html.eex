@@ -1,21 +1,26 @@
 <%= EmbersWeb.LayoutView.sidebar(assigns) %>
-<div id="view" view="home" class="has-sidebar">
+<div id="view" view="tag" class="has-sidebar">
   <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
-  <main class="padded columns-layout">
+  <main class="padded columns-layout" is="emb-show-tag-page" data-tag="<%= Jason.encode!(@tag) %>">
     <div class="main-content"
       infinite-scroll
       data-source="<%= tag_path(@conn, :show, @tag.name) %>"
       data-last-page="<%= @page.last_page %>"
       data-next="<%= @page.next %>"
     >
-      <h1>#<%= @tag.name %>
+      <h1>
+        <span>#<%= @tag.name %></span>
         <%= if authenticated?(@conn) do %>
           <follow-tag
             data-tag-id="<%= @tag.id %>"
             data-level="<%= @sub_level %>"
           ></follow-tag>
+          <%= if Embers.Authorization.can?("access-mod-tools", @current_user) do %>
+            <button class="button" ref="editBtn">Editar</button>
+          <% end %>
         <% end %>
       </h1>
+      <p class="tag-description"><%= @tag.description %></p>
       <%= if authenticated?(@conn) do %>
         <post-editor data-with-tags="<%= @tag.name %>" class="boxed" placeholder="<%= gettext("Share something in #%{name}", name: @tag.name) %>"></post-editor>
       <% end %>

@@ -18,7 +18,6 @@ defmodule Embers.Tags.Tag do
 
   def changeset(changeset, attrs), do: create_changeset(changeset, attrs)
   def create_changeset(changeset, attrs) do
-
     changeset
     |> cast(attrs, [:name, :description])
     |> validate_required(:name)
@@ -33,7 +32,8 @@ defmodule Embers.Tags.Tag do
   end
 
   defp validate_name(changeset) do
-    if String.valid?(get_change(changeset, :name)) do
+    new_name = get_change(changeset, :name)
+    if String.valid?(new_name) or is_nil(new_name) do
       changeset
     else
       add_error(changeset, :name, "invalid tag name")
@@ -49,7 +49,7 @@ defmodule Embers.Tags.Tag do
 
   defimpl Jason.Encoder do
     def encode(value, opts) do
-      Jason.Encode.map(Map.take(value, [:name, :description]), opts)
+      Jason.Encode.map(Map.take(value, [:id, :name, :description]), opts)
     end
   end
 end

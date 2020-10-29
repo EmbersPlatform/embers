@@ -2,10 +2,13 @@ defmodule EmbersWeb.Web.UserView do
   @moduledoc false
   use EmbersWeb, :view
 
-
   alias EmbersWeb.Api.MetaView
 
-  def render("user.json", %{user: user}) do
+  def render("show.json", %{user: user}) do
+    render("user.json", %{user: user})
+  end
+
+  def render("user.json", %{user: user} = _assigns) do
     view = %{
       id: user.id,
       username: user.username,

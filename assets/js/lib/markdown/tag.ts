@@ -25,7 +25,8 @@ function tagPlugin(opts = {}) {
         hName: 'a',
         hProperties: {
           class: 'tag',
-          href: `/tag/${tag}`
+          href: `/tag/${tag}`,
+          "data-name": tag
         },
         hChildren: [{
           type: 'text',

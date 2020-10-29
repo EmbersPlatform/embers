@@ -45,7 +45,7 @@ class PostTags extends Component(HTMLElement) {
 
   render() {
     const tags = Sets.map(this.tags, tag => html`
-      <a href=${`/tag/${tag}`} class="tag">#${tag}</span>
+      <a href=${`/tag/${tag}`} class="tag" data-name=${tag}>#${tag}</span>
     `)
 
     this.html`

@@ -1,0 +1,72 @@
+emb-mention {
+  display: inline-block;
+  position: relative;
+
+  [ref=popup] {
+    display: none;
+    position: absolute;
+    left: 0;
+    border: var(--border);
+    box-shadow: var(--box-shadow);
+    background: var(--primary);
+    width: 300px;
+    max-width: 90vw;
+    z-index: 1;
+
+    &.open {
+      display: block;
+    }
+
+    .user-resume {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 1em;
+
+      .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        margin-right: 0.5em;
+        flex-shrink: 0;
+      }
+
+      .username {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex: 1 auto;
+        width: 100%;
+
+        .display-name {
+          display: flex;
+          flex-direction: column;
+          align-items: baseline;
+
+          bdi {
+            margin: 0;
+            width: 100%;
+          }
+        }
+      }
+
+      button {
+        flex-shrink: 0;
+      }
+    }
+
+    .bio {
+      margin: 0;
+      padding: 0.5em 1em;
+    }
+
+    .user-data {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-left: 1em;
+      flex: 1;
+      min-width: 0;
+    }
+  }
+}

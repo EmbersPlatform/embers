@@ -4,7 +4,7 @@ defmodule EmbersWeb.Router do
   alias EmbersWeb.Plugs.{CheckPermissions, GetPermissions}
 
   pipeline :browser do
-    plug(:accepts, ["html"])
+    plug(:accepts, ["html", "json"])
     plug(:fetch_session)
     plug(:fetch_flash)
     plug(:protect_from_forgery)
@@ -131,6 +131,7 @@ defmodule EmbersWeb.Router do
     get("/user/:user_id/timeline", UserController, :timeline)
     get("/@:username/followers", UserController, :show_followers)
     get("/@:username/following", UserController, :show_following)
+    get("/@:username/card", UserController, :show_card)
 
     # Posts
     post("/post", PostController, :create)
@@ -178,6 +179,7 @@ defmodule EmbersWeb.Router do
 
     # Tags
     get("/tag/:name", TagController, :show)
+    put("/tag/:id", TagController, :update)
     get("/tags/popular", TagController, :list_popular)
     get("/tags/pinned", TagPinnedController, :list_pinned)
 

@@ -17,6 +17,10 @@ import "./components/deleted_posts/disabled_posts";
 import "./components/post/post";
 
 import "./components/pinned-tags";
+import "./components/show-tag-page";
+import "./components/update-tag";
+import "./components/tag";
+import "./components/mention";
 
 const traverse_module = (module) => {
   if(module.__esModule) {

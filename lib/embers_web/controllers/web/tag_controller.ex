@@ -5,6 +5,13 @@ defmodule EmbersWeb.Web.TagController do
 
   alias Embers.Tags
 
+  alias EmbersWeb.Plugs.CheckPermissions
+
+  action_fallback(EmbersWeb.Web.FallbackController)
+
+  plug :accepts, ~w(html json)
+
+  plug(CheckPermissions, [permission: "access_mod_tools"] when action in [:update])
 
   def show(conn, %{"name" => name} = params) do
     tag =
@@ -34,7 +41,7 @@ defmodule EmbersWeb.Web.TagController do
       |> render("entries.html")
     else
       conn
-      |> render("show.html", tag: tag)
+      |> render(:show, tag: tag)
     end
   end
 
@@ -60,5 +67,15 @@ defmodule EmbersWeb.Web.TagController do
 
     conn
     |> render("hot.json", hot: hot)
+  end
+
+  def update(conn, %{"id" => id} = params) do
+    with tag when not is_nil(tag) <- Tags.get_by(%{id: id}),
+        attrs = Map.take(params, ["name", "description"]),
+        {:ok, _tag} <- Tags.update_tag(tag, attrs) do
+      conn
+      |> put_status(:no_content)
+      |> json(nil)
+    end
   end
 end

@@ -7,6 +7,7 @@
   transition: 100ms ease all;
   font-size: 0.8em;
   line-height: 1em;
+  position: relative;
 
   &:not(:last-child) {
     margin-right: 5px;
@@ -28,6 +29,33 @@
 
     &:hover {
       opacity: 1;
+    }
+  }
+
+  [ref=popup] {
+    display: none;
+    position: absolute;
+    bottom: 1em;
+    left: 0;
+    border: var(--border);
+    box-shadow: var(--box-shadow);
+    background: var(--primary);
+    width: 200px;
+    max-width: 90vw;
+
+    &.open {
+      display: block;
+    }
+
+    .tag-name {
+      font-size: 1.2em;
+      padding: 0.5em;
+      background: var(--secondary);
+      border-bottom: var(--border);
+    }
+
+    .tag-details {
+      padding: 0.5em;
     }
   }
 }

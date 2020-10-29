@@ -3,7 +3,9 @@ defmodule EmbersWeb.Web.TagView do
 
   use EmbersWeb, :view
 
-
+  def render("show.json", %{tag: tag}) do
+    tag
+  end
 
   def render("tag.json", %{tag: %{tag: tag, level: level}}) do
     %{

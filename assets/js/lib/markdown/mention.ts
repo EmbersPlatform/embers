@@ -22,15 +22,10 @@ function mentionPlugin(opts = {}) {
       type: 'mention',
       value: username,
       data: {
-        hName: 'a',
+        hName: 'emb-mention',
         hProperties: {
-          class: 'mention',
-          href: `/@${username}`
+          "data-name": username
         },
-        hChildren: [{
-          type: 'text',
-          value: `@${username}`
-        }]
       }
     }
 

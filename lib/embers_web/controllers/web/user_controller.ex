@@ -39,7 +39,26 @@ defmodule EmbersWeb.Web.UserController do
       |> assign(:followers, followers)
       |> assign(:following, following)
       |> assign(:activities, activities)
-      |> render("show.html")
+      |> render(:show)
+    end
+  end
+
+  def show_card(conn, %{"username" => username}) do
+    with user <- Accounts.get_populated(%{"canonical" => username}) do
+      current_user = conn.assigns.current_user
+
+      user =
+        unless is_nil(current_user) do
+          user
+          |> Accounts.load_following_status(current_user.id)
+          |> Accounts.load_follows_me_status(current_user.id)
+          |> Accounts.load_blocked_status(current_user.id)
+        else user end
+
+      conn
+      |> put_layout(false)
+      |> assign(:user, user)
+      |> render("_user_card.html", user: user)
     end
   end
 
