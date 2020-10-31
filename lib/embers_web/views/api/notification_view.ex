@@ -3,8 +3,6 @@ defmodule EmbersWeb.Api.NotificationView do
 
   use EmbersWeb, :view
 
-
-
   def render("notifications.json", %{entries: notifications} = metadata) do
     %{
       items: render_many(notifications, __MODULE__, "notification.json"),

@@ -55,7 +55,10 @@ defmodule Embers.Factory do
 
   def reaction_factory do
     name =
-      Enum.random(~w(thumbip thumbsdown grin cry thinking point_up angry tada heart eggplant hoht_pepper cookie))
+      Enum.random(
+        ~w(thumbip thumbsdown grin cry thinking point_up angry tada heart eggplant hoht_pepper cookie)
+      )
+
     %Embers.Reactions.Reaction{
       name: name,
       user: build(:user),

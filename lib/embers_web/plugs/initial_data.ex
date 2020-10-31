@@ -31,8 +31,7 @@ defmodule EmbersWeb.Plugs.InitialData do
         notifications
       )
 
-    unread_conversations =
-      Embers.Chat.list_unread_conversations(user.id)
+    unread_conversations = Embers.Chat.list_unread_conversations(user.id)
 
     conn
     |> assign(:user, user)

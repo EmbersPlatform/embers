@@ -3,8 +3,6 @@ defmodule EmbersWeb.Api.TagBlockView do
 
   use EmbersWeb, :view
 
-
-
   def render("tags.json", %{tags: tags}) do
     render_many(tags, __MODULE__, "tag.json")
   end

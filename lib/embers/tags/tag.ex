@@ -17,6 +17,7 @@ defmodule Embers.Tags.Tag do
   end
 
   def changeset(changeset, attrs), do: create_changeset(changeset, attrs)
+
   def create_changeset(changeset, attrs) do
     changeset
     |> cast(attrs, [:name, :description])
@@ -33,6 +34,7 @@ defmodule Embers.Tags.Tag do
 
   defp validate_name(changeset) do
     new_name = get_change(changeset, :name)
+
     if String.valid?(new_name) or is_nil(new_name) do
       changeset
     else

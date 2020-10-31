@@ -52,7 +52,9 @@ defmodule Embers.Audit do
       {:ok, entry} ->
         Embers.Event.emit(:audit_created, %{entry: entry})
         {:ok, entry}
-      res -> res
+
+      res ->
+        res
     end
   end
 
@@ -81,7 +83,8 @@ defmodule Embers.Audit do
 
     last_date = get_last_keepable_entry_date(keep)
 
-    {affected, _} = from(entry in Entry,
+    {affected, _} =
+      from(entry in Entry,
         where: entry.inserted_at < ^last_date
       )
       |> Repo.delete_all()
@@ -90,7 +93,8 @@ defmodule Embers.Audit do
   end
 
   defp get_last_keepable_entry_date(keep) do
-    entry = from(entry in Entry,
+    entry =
+      from(entry in Entry,
         order_by: [desc: entry.inserted_at],
         limit: ^keep
       )

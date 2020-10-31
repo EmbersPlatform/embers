@@ -17,13 +17,11 @@ defmodule EmbersWeb.Web.TagSubscriptionController do
     user_id = conn.assigns.current_user.id
     level = Map.get(params, "level")
 
-    with \
-      Tags.create_or_update_subscription(%{
-        user_id: user_id,
-        source_id: tag_id,
-        level: level
-      })
-    do
+    with Tags.create_or_update_subscription(%{
+           user_id: user_id,
+           source_id: tag_id,
+           level: level
+         }) do
       conn
       |> put_status(:no_content)
       |> json(nil)

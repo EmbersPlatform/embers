@@ -60,7 +60,11 @@ defmodule Embers.Feed.Timeline do
     if with_replies do
       entries =
         page.entries
-        |> Repo.preload_lateral(:replies, limit: 2, assocs: [:media, :links, :reactions, user: [:meta]] )
+        |> Repo.preload_lateral(:replies,
+          limit: 2,
+          assocs: [:media, :links, :reactions, user: [:meta]]
+        )
+
       put_in(page.entries, entries)
     end || page
   end

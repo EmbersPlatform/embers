@@ -137,6 +137,7 @@ defmodule Embers.Accounts do
       case identifier do
         %{"canonical" => canonical} ->
           from(user in User, where: user.canonical == ^canonical)
+
         id when is_binary(id) ->
           from(user in User, where: user.id == ^id)
       end

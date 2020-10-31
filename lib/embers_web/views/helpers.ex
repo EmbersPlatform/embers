@@ -3,7 +3,6 @@ defmodule EmbersWeb.ViewHelpers do
 
   alias EmbersWeb.Router.Helpers
 
-
   def get_locale(conn) do
     Map.get(
       conn.assigns,
@@ -47,12 +46,20 @@ defmodule EmbersWeb.ViewHelpers do
 
   def attr_list(attrs, joiner \\ " ") when is_list(attrs) do
     Enum.reduce(attrs, [], fn
-      attr, acc when is_binary(attr) -> acc ++ [attr]
-      {attr, true}, acc when is_binary(attr) -> acc ++ [attr]
-      {attr, predicate}, acc when is_binary(attr) and  is_function(predicate) ->
+      attr, acc when is_binary(attr) ->
+        acc ++ [attr]
+
+      {attr, true}, acc when is_binary(attr) ->
+        acc ++ [attr]
+
+      {attr, predicate}, acc when is_binary(attr) and is_function(predicate) ->
         if predicate.(), do: acc ++ [attr], else: acc
-      fun, acc when is_function(fun) -> acc ++ [fun.()]
-      _, acc -> acc
+
+      fun, acc when is_function(fun) ->
+        acc ++ [fun.()]
+
+      _, acc ->
+        acc
     end)
     |> Enum.join(joiner)
   end

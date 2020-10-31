@@ -115,6 +115,7 @@ defmodule Embers.Profile do
         meta
         |> Meta.load_avatar_map()
         |> Meta.load_cover()
+
       {:ok, meta}
     end
   end
@@ -133,11 +134,11 @@ defmodule Embers.Profile do
   def remove_avatar(%Meta{user_id: id} = meta) do
     path = Uploads.Avatar.fetch_path()
 
-    with  :ok <- Embers.Uploads.delete("#{path}/#{id}_small.png"),
-          :ok <- Embers.Uploads.delete("#{path}/#{id}_medium.png"),
-          :ok <- Embers.Uploads.delete("#{path}/#{id}_large.png"),
-          {:ok, _} <- update_meta(meta, %{avatar_version: nil}),
-          do: :ok
+    with :ok <- Embers.Uploads.delete("#{path}/#{id}_small.png"),
+         :ok <- Embers.Uploads.delete("#{path}/#{id}_medium.png"),
+         :ok <- Embers.Uploads.delete("#{path}/#{id}_large.png"),
+         {:ok, _} <- update_meta(meta, %{avatar_version: nil}),
+         do: :ok
   end
 
   def remove_cover(%Meta{user_id: id} = meta) do

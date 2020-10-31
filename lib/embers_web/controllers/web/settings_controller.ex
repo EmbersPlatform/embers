@@ -26,6 +26,7 @@ defmodule EmbersWeb.Web.SettingsController do
 
   def update_account(conn, params) do
     IO.inspect(params)
+
     conn
     |> show_account(params)
   end
@@ -101,14 +102,15 @@ defmodule EmbersWeb.Web.SettingsController do
     render(conn, "show_security.html", page_title: gettext("Security settings"))
   end
 
-
   def reset_pass(conn, _params) do
     email = conn.assigns.current_user.email
 
-    rate_limit = EmbersWeb.RateLimit.peek_rate(
-      "reset_password:#{email}",
-      :timer.minutes(1), 1
-    )
+    rate_limit =
+      EmbersWeb.RateLimit.peek_rate(
+        "reset_password:#{email}",
+        :timer.minutes(1),
+        1
+      )
 
     with(
       :ok <- rate_limit,
@@ -119,7 +121,8 @@ defmodule EmbersWeb.Web.SettingsController do
 
       ExRated.check_rate(
         "reset_password:#{email}",
-        :timer.minutes(1), 1
+        :timer.minutes(1),
+        1
       )
 
       conn |> put_status(:no_content) |> json(nil)

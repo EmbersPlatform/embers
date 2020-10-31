@@ -7,7 +7,6 @@ defmodule EmbersWeb.Web.NotificationController do
 
   alias Embers.Notifications
 
-
   action_fallback(EmbersWeb.Web.FallbackController)
 
   plug(:user_check)

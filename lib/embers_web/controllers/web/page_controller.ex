@@ -3,7 +3,6 @@ defmodule EmbersWeb.Web.PageController do
 
   use EmbersWeb, :controller
 
-
   alias Embers.Feed.Timeline
 
   def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, _params) do
@@ -11,11 +10,11 @@ defmodule EmbersWeb.Web.PageController do
   end
 
   def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, params) do
+    # THIS IS A HACK
+    # It times out if there are no activities ore they are buried
+    # too deep in the feed_activity table and it NEEDS TO BE RESOLVED
+    # This is just a hack to make the page load anyways with an empty list
     timeline =
-      # THIS IS A HACK
-      # It times out if there are no activities ore they are buried
-      # too deep in the feed_activity table and it NEEDS TO BE RESOLVED
-      # This is just a hack to make the page load anyways with an empty list
       try do
         Timeline.get(
           user_id: current_user.id,

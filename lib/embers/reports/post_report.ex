@@ -31,6 +31,7 @@ defmodule Embers.Reports.PostReport do
 
   def list_paginated(opts \\ []) do
     pagination_opts = Keyword.get(opts, :pagination, [])
+
     from(r in __MODULE__,
       distinct: r.post_id,
       where: r.resolved == false,
@@ -55,28 +56,37 @@ defmodule Embers.Reports.PostReport do
   def list_reported_posts(opts \\ []) do
     pagination_opts = Keyword.get(opts, :pagination, [])
 
-    query = from(r in __MODULE__,
-      distinct: r.post_id,
-      where: r.resolved == false,
-      left_join: post in assoc(r, :post),
-      where: is_nil(post.deleted_at),
-      order_by: [desc: r.inserted_at],
-      select: post
-    )
+    query =
+      from(r in __MODULE__,
+        distinct: r.post_id,
+        where: r.resolved == false,
+        left_join: post in assoc(r, :post),
+        where: is_nil(post.deleted_at),
+        order_by: [desc: r.inserted_at],
+        select: post
+      )
 
     results =
       query
       |> Embers.Paginator.paginate(pagination_opts)
 
-    results = update_in(results.entries, &(Repo.preload(&1, [
-      :media, :links, :tags, :reactions,
-      user: :meta,
-      related_to: [:media, :tags, :links, :reactions, user: :meta]
-    ])))
+    results =
+      update_in(
+        results.entries,
+        &Repo.preload(&1, [
+          :media,
+          :links,
+          :tags,
+          :reactions,
+          user: :meta,
+          related_to: [:media, :tags, :links, :reactions, user: :meta]
+        ])
+      )
 
-    results = update_in(results.entries, fn posts ->
-      Enum.map(posts, fn post -> %Embers.Reports.PostReportSummary{post: post} end)
-    end)
+    results =
+      update_in(results.entries, fn posts ->
+        Enum.map(posts, fn post -> %Embers.Reports.PostReportSummary{post: post} end)
+      end)
 
     results = update_in(results.entries, &load_summaries_counts/1)
 
@@ -87,7 +97,7 @@ defmodule Embers.Reports.PostReport do
   end
 
   defp load_summaries_counts(summaries) do
-    post_ids = Enum.map(summaries, &(&1.post.id))
+    post_ids = Enum.map(summaries, & &1.post.id)
 
     counts =
       from(r in __MODULE__,
@@ -100,15 +110,13 @@ defmodule Embers.Reports.PostReport do
 
     Enum.map(summaries, fn summary ->
       %{
-        summary |
-        count: counts[summary.post.id],
-        main_reason: Embers.Reports.most_common_comments_for(summary.post)
+        summary
+        | count: counts[summary.post.id],
+          main_reason: Embers.Reports.most_common_comments_for(summary.post)
       }
     end)
   end
-
 end
-
 
 defimpl Embers.Reports.Reportable, for: Embers.Posts.Post do
   alias Embers.Reports.PostReport

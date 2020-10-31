@@ -130,8 +130,10 @@ defmodule Embers.Accounts.User do
   end
 
   defp validate_non_temporary_email(%{valid?: false} = changeset), do: changeset
+
   defp validate_non_temporary_email(changeset) do
     email = get_change(changeset, :email)
+
     if is_nil(email) do
       changeset
     else
@@ -195,6 +197,7 @@ defmodule Embers.Accounts.User do
     |> prepare_changes(fn changeset ->
       canonical = get_change(changeset, :canonical)
       query = from(u in User, where: u.canonical == ^canonical)
+
       case changeset.repo.exists?(query) do
         false -> changeset
         true -> add_error(changeset, :username, "has already been taken")

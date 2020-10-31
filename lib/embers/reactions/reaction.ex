@@ -9,7 +9,6 @@ defmodule Embers.Reactions.Reaction do
 
   @valid_reactions ~w(thumbsup thumbsdown grin cry thinking point_up angry tada heart eggplant hot_pepper cookie fire)
 
-
   schema "reactions" do
     field(:name, :string, null: false)
     belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)

@@ -1,7 +1,6 @@
 defmodule EmbersWeb.Web.ReactionController do
   use EmbersWeb, :controller
 
-
   alias Embers.Reactions
 
   action_fallback(EmbersWeb.Web.FallbackController)

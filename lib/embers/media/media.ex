@@ -100,6 +100,7 @@ defmodule Embers.Media do
 
   def format_url(url) when is_binary(url) do
     uri = URI.parse(url)
+
     if is_nil(uri.host) do
       "/#{uri.path}"
     else

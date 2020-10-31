@@ -21,17 +21,20 @@ defmodule EmbersWeb.Web.Moderation.UserController do
       filters: []
     ]
 
-    opts = Keyword.update!(opts, :filters, fn filters ->
-      filters = if not is_nil(params["canonical"]) do
-        Keyword.put(filters, :canonical, params["canonical"])
-      end || filters
+    opts =
+      Keyword.update!(opts, :filters, fn filters ->
+        filters =
+          if not is_nil(params["canonical"]) do
+            Keyword.put(filters, :canonical, params["canonical"])
+          end || filters
 
-      filters = if not is_nil(params["email"]) do
-        Keyword.put(filters, :email, params["email"])
-      end || filters
+        filters =
+          if not is_nil(params["email"]) do
+            Keyword.put(filters, :email, params["email"])
+          end || filters
 
-      filters
-    end)
+        filters
+      end)
 
     page = Accounts.list_users_paginated(opts)
 
@@ -39,11 +42,9 @@ defmodule EmbersWeb.Web.Moderation.UserController do
   end
 
   def update(conn, %{"user_id" => user_id} = params) do
-    with \
-      %{} = user <- Accounts.get_populated(user_id),
-      {user_data, new_roles} <- parse_update_params(params),
-      {:ok, _} <- Accounts.update_user(user, user_data, roles: new_roles)
-    do
+    with %{} = user <- Accounts.get_populated(user_id),
+         {user_data, new_roles} <- parse_update_params(params),
+         {:ok, _} <- Accounts.update_user(user, user_data, roles: new_roles) do
       user = Accounts.get_populated(user_id) |> Embers.Repo.preload(:roles)
       render(conn, "user.json", user: user)
     end
@@ -58,10 +59,9 @@ defmodule EmbersWeb.Web.Moderation.UserController do
 
   def remove_avatar(conn, %{"user_id" => user_id}) do
     with meta when not is_nil(meta) <- Embers.Profile.get_meta_for(user_id),
-      :ok <- Embers.Profile.remove_avatar(meta),
-      meta <- Embers.Profile.get_meta_for(user_id),
-      meta <- Embers.Profile.Meta.load_avatar_map(meta) do
-
+         :ok <- Embers.Profile.remove_avatar(meta),
+         meta <- Embers.Profile.get_meta_for(user_id),
+         meta <- Embers.Profile.Meta.load_avatar_map(meta) do
       conn
       |> json(meta.avatar)
     end
@@ -69,10 +69,9 @@ defmodule EmbersWeb.Web.Moderation.UserController do
 
   def remove_cover(conn, %{"user_id" => user_id}) do
     with meta <- Embers.Profile.get_meta_for(user_id),
-      :ok <- Embers.Profile.remove_cover(meta),
-      meta <- Embers.Profile.get_meta_for(user_id),
-      meta <- Embers.Profile.Meta.load_cover(meta) do
-
+         :ok <- Embers.Profile.remove_cover(meta),
+         meta <- Embers.Profile.get_meta_for(user_id),
+         meta <- Embers.Profile.Meta.load_cover(meta) do
       conn
       |> json(meta.cover)
     end

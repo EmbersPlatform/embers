@@ -37,12 +37,14 @@ defmodule Embers.Chat.Message do
   end
 
   defp trim_text(%{valid?: false} = changeset, _attrs), do: changeset
+
   defp trim_text(changeset, %{"text" => text} = _attrs) do
     changeset
     |> change(text: String.trim(text))
   end
 
   defp check_blocked(%{valid?: false} = changeset, _attrs), do: changeset
+
   defp check_blocked(changeset, _attrs) do
     user_id = get_change(changeset, :sender_id)
     receiver_id = get_change(changeset, :receiver_id)

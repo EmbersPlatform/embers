@@ -13,14 +13,17 @@ defmodule EmbersWeb.Api.FeedController do
 
   plug(
     :rate_limit_feeds,
-    [max_requests: 20, interval_seconds: 60] when action in [
-        :timeline, :user_statuses, :get_public_feed
-      ]
+    [max_requests: 20, interval_seconds: 60]
+    when action in [
+           :timeline,
+           :user_statuses,
+           :get_public_feed
+         ]
   )
 
   def rate_limit_feeds(conn, options \\ []) do
     ip = conn.remote_ip
-    ip_string = ip |> :inet_parse.ntoa |> to_string()
+    ip_string = ip |> :inet_parse.ntoa() |> to_string()
     options = Keyword.merge(options, bucket_name: "feed:#{ip_string}")
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end

@@ -11,13 +11,10 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
 
   action_fallback(EmbersWeb.Web.FallbackController)
 
-  plug(CheckPermissions, [permission: "access_reports_queue"])
+  plug(CheckPermissions, permission: "access_reports_queue")
 
   def index(conn, params) do
-    posts_reports =
-      PostReport.list_reported_posts(
-        pagination: [before: params["before"]]
-      )
+    posts_reports = PostReport.list_reported_posts(pagination: [before: params["before"]])
 
     if params["entries"] == "true" do
       conn
@@ -54,6 +51,7 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
 
   def disable_post_and_resolve(conn, %{"post_id" => post_id}) do
     user = conn.assigns.current_user
+
     with(
       {:ok, post} <- Posts.get_post(post_id),
       {:ok, post} = Posts.delete_post(post, actor: user.id)

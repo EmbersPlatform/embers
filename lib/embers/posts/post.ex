@@ -207,6 +207,7 @@ defmodule Embers.Posts.Post do
 
   defp validate_similarity(changeset) do
     body = get_change(changeset, :body)
+
     if is_nil(body) do
       changeset
     else

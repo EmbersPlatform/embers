@@ -48,18 +48,19 @@ defmodule Embers.Feed.ActivitySubscriber do
       )
       |> Embers.Repo.all()
 
-    followers = if post.nsfw do
-      # get the followers that don't want to hide nsfw posts
-      from(
-        setting in Embers.Profile.Settings.Setting,
-        where: setting.user_id in ^followers,
-        where: setting.content_nsfw != "hide",
-        select: setting.user_id
-      )
-      |> Embers.Repo.all()
-    else
-      followers
-    end
+    followers =
+      if post.nsfw do
+        # get the followers that don't want to hide nsfw posts
+        from(
+          setting in Embers.Profile.Settings.Setting,
+          where: setting.user_id in ^followers,
+          where: setting.content_nsfw != "hide",
+          select: setting.user_id
+        )
+        |> Embers.Repo.all()
+      else
+        followers
+      end
 
     exceptions = Enum.concat(blocked, tags_blockers)
 

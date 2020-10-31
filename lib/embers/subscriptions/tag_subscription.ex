@@ -21,5 +21,4 @@ defmodule Embers.Subscriptions.TagSubscription do
     |> validate_number(:level, less_than_or_equal_to: 1, greater_than_or_equal_to: 0)
     |> unique_constraint(:unique_tag_subscription, name: :unique_tag_subscription)
   end
-
 end

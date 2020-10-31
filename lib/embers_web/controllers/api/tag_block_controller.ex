@@ -6,7 +6,6 @@ defmodule EmbersWeb.Api.TagBlockController do
   import EmbersWeb.Authorize
   alias Embers.Subscriptions.Tags
 
-
   action_fallback(EmbersWeb.Web.FallbackController)
   plug(:user_check when action in [:update, :delete])
 

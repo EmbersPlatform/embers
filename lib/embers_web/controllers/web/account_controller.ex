@@ -11,14 +11,14 @@ defmodule EmbersWeb.Web.AccountController do
 
   plug(:guest_check when action in [:new, :create])
 
-  #plug(
+  # plug(
   #  :rate_limit_signup,
   #  [max_requests: 5, interval_seconds: 60] when action in [:create]
-  #)
+  # )
 
   def rate_limit_signup(conn, options \\ []) do
     ip = conn.remote_ip
-    ip_string = ip |> :inet_parse.ntoa |> to_string()
+    ip_string = ip |> :inet_parse.ntoa() |> to_string()
     options = Keyword.merge(options, bucket_name: "signup:#{ip_string}")
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end
@@ -35,13 +35,14 @@ defmodule EmbersWeb.Web.AccountController do
     email = get_in(params, ["user", "email"])
 
     ip = conn.remote_ip
-    ip_string = ip |> :inet_parse.ntoa |> to_string()
+    ip_string = ip |> :inet_parse.ntoa() |> to_string()
 
-    rate_limit = EmbersWeb.RateLimit.peek_rate(
-      "signup_success:#{ip_string}",
-      @accounts_limit_time,
-      @accounts_limit
-    )
+    rate_limit =
+      EmbersWeb.RateLimit.peek_rate(
+        "signup_success:#{ip_string}",
+        @accounts_limit_time,
+        @accounts_limit
+      )
 
     with :ok <- rate_limit,
          {:ok, _} <- Recaptcha.verify(params["g-recaptcha-response"]),
@@ -71,7 +72,10 @@ defmodule EmbersWeb.Web.AccountController do
 
       :rate_limited ->
         conn
-        |> put_flash(:error, gettext("You have to wait a few days before creating another account"))
+        |> put_flash(
+          :error,
+          gettext("You have to wait a few days before creating another account")
+        )
         |> redirect(to: Routes.account_path(conn, :new))
     end
   end

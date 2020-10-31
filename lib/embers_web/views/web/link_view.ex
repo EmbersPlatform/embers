@@ -3,8 +3,6 @@ defmodule EmbersWeb.Web.LinkView do
 
   use EmbersWeb, :view
 
-
-
   def render("link.json", %{link: link}) do
     embed =
       link.embed

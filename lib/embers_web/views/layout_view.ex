@@ -3,15 +3,13 @@ defmodule EmbersWeb.LayoutView do
 
   use EmbersWeb, :view
 
-
-
   def render_layout(layout, assigns, do: content) do
     render(layout, Map.put(assigns, :inner_layout, content))
   end
 
   def get_context_data(conn) do
     Map.new()
-    |> Map.put(:csrf_token, Phoenix.Controller.get_csrf_token)
+    |> Map.put(:csrf_token, Phoenix.Controller.get_csrf_token())
     |> maybe_add_user_data(conn)
     |> maybe_add_unseen_notifications(conn)
     |> maybe_add_unseen_messages(conn)
@@ -19,6 +17,7 @@ defmodule EmbersWeb.LayoutView do
   end
 
   defp maybe_add_user_data(data, %{assigns: %{current_user: nil}}), do: data
+
   defp maybe_add_user_data(data, conn) do
     user = conn.assigns.current_user
     settings = Embers.Profile.Settings.get_setting!(user.id)
@@ -32,7 +31,7 @@ defmodule EmbersWeb.LayoutView do
       cover: user.meta.cover
     })
     |> Map.put(:permissions, user.permissions)
-    |> Map.put(:settings,%{
+    |> Map.put(:settings, %{
       content_nsfw: settings.content_nsfw,
       content_lowres_images: settings.content_lowres_images,
       content_collapse_media: settings.content_collapse_media,
@@ -44,6 +43,7 @@ defmodule EmbersWeb.LayoutView do
   end
 
   defp maybe_add_unseen_notifications(data, %{assigns: %{current_user: nil}}), do: data
+
   defp maybe_add_unseen_notifications(data, conn) do
     user = conn.assigns.current_user
     unseen_notifications = Embers.Notifications.count_unseen(user.id)
@@ -52,13 +52,15 @@ defmodule EmbersWeb.LayoutView do
   end
 
   defp maybe_add_unseen_messages(data, %{assigns: %{current_user: nil}}), do: data
+
   defp maybe_add_unseen_messages(data, conn) do
     user = conn.assigns.current_user
+
     unseen_messages =
-      for %{party: partner, unread: count} <- Embers.Chat.list_unread_conversations(user.id), into: %{} do
+      for %{party: partner, unread: count} <- Embers.Chat.list_unread_conversations(user.id),
+          into: %{} do
         {partner, count}
       end
-
 
     Map.put(data, :unseen_messages, unseen_messages)
   end

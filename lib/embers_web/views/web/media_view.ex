@@ -2,8 +2,6 @@ defmodule EmbersWeb.Web.MediaView do
   @moduledoc false
   use EmbersWeb, :view
 
-
-
   def render("media.json", %{media: media}) do
     timestamp =
       unless is_nil(media.inserted_at) do

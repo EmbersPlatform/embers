@@ -30,12 +30,15 @@ defmodule EmbersWeb.Web.PostView do
   end
 
   def build_reactions(post, viewer \\ nil)
+
   def build_reactions(post, %{assigns: %{current_user: user}}) when not is_nil(user) do
     build_reactions(post, user.id)
   end
+
   def build_reactions(post, %{}) do
     build_reactions(post, nil)
   end
+
   def build_reactions(post, viewer_id) do
     reactions = get_reactions(post, viewer_id)
 
@@ -102,5 +105,6 @@ defmodule EmbersWeb.Web.PostView do
       post.nsfw && nsfw_setting != "show"
     end
   end
+
   def ask_nsfw?(_, _), do: true
 end

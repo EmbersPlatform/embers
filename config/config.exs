@@ -70,7 +70,6 @@ config :event_bus,
     :chat_message_created,
     :chat_message_deleted,
     :chat_message_updated,
-
     :report_created,
     :report_resolved,
     :reports_pruned

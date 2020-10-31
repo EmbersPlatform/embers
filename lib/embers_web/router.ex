@@ -191,7 +191,6 @@ defmodule EmbersWeb.Router do
     get("/search/:query", SearchController, :search)
     get("/search_typeahead/user/:username", SearchController, :user_typeahead)
 
-
     # Reports
     post("/reports/post/:post_id", ReportController, :create_post_report)
 
@@ -219,8 +218,19 @@ defmodule EmbersWeb.Router do
       # Reports
       get("/reports", ReportsController, :index)
       put("/reports/post/:post_id", ReportsController, :resolve)
-      put("/reports/post/:post_id/nsfw_and_resolve", ReportsController, :mark_post_nsfw_and_resolve)
-      put("/reports/post/:post_id/disable_and_resolve", ReportsController, :disable_post_and_resolve)
+
+      put(
+        "/reports/post/:post_id/nsfw_and_resolve",
+        ReportsController,
+        :mark_post_nsfw_and_resolve
+      )
+
+      put(
+        "/reports/post/:post_id/disable_and_resolve",
+        ReportsController,
+        :disable_post_and_resolve
+      )
+
       get("/reports/post/:post_id/comments", ReportsController, :show_comments)
 
       # Users

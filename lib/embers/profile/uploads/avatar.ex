@@ -21,7 +21,9 @@ defmodule Embers.Profile.Uploads.Avatar do
       with {:ok, _} <-
              Uploads.upload(small.path, "#{@path}/#{user_id}_small.png", content_type: "image/png"),
            {:ok, _} <-
-             Uploads.upload(medium.path, "#{@path}/#{user_id}_medium.png", content_type: "image/png"),
+             Uploads.upload(medium.path, "#{@path}/#{user_id}_medium.png",
+               content_type: "image/png"
+             ),
            {:ok, _} <-
              Uploads.upload(large.path, "#{@path}/#{user_id}_large.png", content_type: "image/png") do
         :ok

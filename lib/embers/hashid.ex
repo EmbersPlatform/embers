@@ -27,5 +27,4 @@ defmodule Embers.Hashid do
   def load(id) when is_integer(id) do
     {:ok, IdHasher.encode(id)}
   end
-
 end

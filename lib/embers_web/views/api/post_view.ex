@@ -2,7 +2,6 @@ defmodule EmbersWeb.Api.PostView do
   @moduledoc false
   use EmbersWeb, :view
 
-
   alias EmbersWeb.{Api.LinkView, Api.MediaView, Api.PostView, Api.UserView}
 
   def render("show.json", %{post: post, current_user: current_user})

@@ -49,17 +49,16 @@ defmodule EmbersWeb.Web.Moderation.BanController do
 
     IO.inspect(params)
 
-    ban_opts = [
-      duration: duration,
-      reason: reason,
-      actor: actor.id
-    ]
-    |> IO.inspect(label: "USER BANNED")
+    ban_opts =
+      [
+        duration: duration,
+        reason: reason,
+        actor: actor.id
+      ]
+      |> IO.inspect(label: "USER BANNED")
 
-    with \
-      %Accounts.User{} = user <- Accounts.get_by(%{"canonical" => canonical}),
-      {:ok, _ban} <- Moderation.ban_user(user, ban_opts)
-    do
+    with %Accounts.User{} = user <- Accounts.get_by(%{"canonical" => canonical}),
+         {:ok, _ban} <- Moderation.ban_user(user, ban_opts) do
       conn
       |> put_status(:no_content)
       |> json(nil)

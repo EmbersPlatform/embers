@@ -3,7 +3,6 @@ defmodule EmbersWeb.Api.ModerationController do
 
   use EmbersWeb, :controller
 
-
   alias Embers.Moderation
   alias Embers.{Posts, Repo, Tags}
   alias EmbersWeb.Plugs.CheckPermissions
@@ -19,14 +18,12 @@ defmodule EmbersWeb.Api.ModerationController do
              reason: reason,
              actor: conn.assigns.current_user.id
            ) do
-
       delete_since = Map.get(params, "delete_content_since")
-        with \
-          false = is_nil(delete_since),
-          {delete_since, _} = Integer.parse(delete_since)
-        do
-          Posts.bulk_delete_after_date(user_id, delete_since)
-        end
+
+      with false = is_nil(delete_since),
+           {delete_since, _} = Integer.parse(delete_since) do
+        Posts.bulk_delete_after_date(user_id, delete_since)
+      end
 
       conn
       |> put_status(:no_content)

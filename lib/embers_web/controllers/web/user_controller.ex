@@ -29,7 +29,9 @@ defmodule EmbersWeb.Web.UserController do
           |> Accounts.load_following_status(current_user.id)
           |> Accounts.load_follows_me_status(current_user.id)
           |> Accounts.load_blocked_status(current_user.id)
-        else user end
+        else
+          user
+        end
 
       title = gettext("@%{username}'s profile", username: user.username)
 
@@ -53,7 +55,9 @@ defmodule EmbersWeb.Web.UserController do
           |> Accounts.load_following_status(current_user.id)
           |> Accounts.load_follows_me_status(current_user.id)
           |> Accounts.load_blocked_status(current_user.id)
-        else user end
+        else
+          user
+        end
 
       conn
       |> put_layout(false)
@@ -87,8 +91,7 @@ defmodule EmbersWeb.Web.UserController do
         )
         |> maybe_load_follows_me_status(conn)
         |> maybe_load_following_status(conn)
-        |> Embers.Paginator.map(&(&1.user))
-
+        |> Embers.Paginator.map(& &1.user)
 
       if params["entries"] == "true" do
         conn
@@ -113,8 +116,7 @@ defmodule EmbersWeb.Web.UserController do
         )
         |> maybe_load_follows_me_status(conn, :source_id)
         |> maybe_load_following_status(conn, :source_id)
-        |> Embers.Paginator.map(&(&1.user))
-
+        |> Embers.Paginator.map(& &1.user)
 
       if params["entries"] == "true" do
         conn
@@ -134,6 +136,7 @@ defmodule EmbersWeb.Web.UserController do
       page
     else
       ids = get_following_ids(page.entries, conn, id_field)
+
       Embers.Paginator.map(page, fn sub ->
         if sub.user.id in ids do
           put_in(sub.user.following, true)
@@ -149,6 +152,7 @@ defmodule EmbersWeb.Web.UserController do
       page
     else
       ids = get_followers_ids(page.entries, conn, id_field)
+
       Embers.Paginator.map(page, fn sub ->
         if sub.user.id in ids do
           put_in(sub.user.follows_me, true)
@@ -163,22 +167,27 @@ defmodule EmbersWeb.Web.UserController do
   # TODO Move all this to a context as we should not use Ecto from a controller
   #
   defp get_followers_ids(subs, conn, id_field) do
-    user_ids = Enum.map(subs, &(Map.get(&1, id_field)))
+    user_ids = Enum.map(subs, &Map.get(&1, id_field))
+
     from(
       sub in Embers.Subscriptions.UserSubscription,
       where: sub.source_id == ^conn.assigns.current_user.id,
       where: sub.user_id in ^user_ids,
       select: sub.user_id
-    ) |> Repo.all()
+    )
+    |> Repo.all()
   end
+
   defp get_following_ids(subs, conn, id_field) do
-    user_ids = Enum.map(subs, &(Map.get(&1, id_field)))
+    user_ids = Enum.map(subs, &Map.get(&1, id_field))
+
     from(
       sub in Embers.Subscriptions.UserSubscription,
       where: sub.user_id == ^conn.assigns.current_user.id,
       where: sub.source_id in ^user_ids,
       select: sub.source_id
-    ) |> Repo.all()
+    )
+    |> Repo.all()
   end
 
   defp subs_to_user(subs) do

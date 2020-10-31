@@ -252,6 +252,7 @@ defmodule Embers.Posts do
   Gets the replies of a post
   """
   def get_post_replies(parent_id, opts \\ [])
+
   def get_post_replies(nil, _) do
     %Paginator.Page{
       entries: [],
@@ -259,6 +260,7 @@ defmodule Embers.Posts do
       last_page: true
     }
   end
+
   def get_post_replies(parent_id, opts) do
     order = Keyword.get(opts, :order, :asc)
     replies = Keyword.get(opts, :replies)
@@ -277,17 +279,17 @@ defmodule Embers.Posts do
 
     maybe_load_replies = fn page ->
       if is_integer(replies) do
-
         entries =
           page.entries
           |> Repo.preload_lateral(
-              :replies,
-              limit: replies,
-              assocs: [:reactions, :media, :links, :tags, user: [:meta]],
-              order_by: replies_order,
-              reverse: elem(replies_order, 0) == :desc
-            )
+            :replies,
+            limit: replies,
+            assocs: [:reactions, :media, :links, :tags, user: [:meta]],
+            order_by: replies_order,
+            reverse: elem(replies_order, 0) == :desc
+          )
           |> Embers.Feed.Utils.load_avatars()
+
         put_in(page.entries, entries)
       end || page
     end
@@ -317,16 +319,18 @@ defmodule Embers.Posts do
       Timex.now()
       |> Timex.shift(days: -after_days)
 
-    query = from(
-      post in Post,
-      where: post.user_id == ^user_id
-    )
+    query =
+      from(
+        post in Post,
+        where: post.user_id == ^user_id
+      )
 
-    query = if after_days == -1 do
-      query
-    else
-      from(post in query, where: post.inserted_at >= ^after_date)
-    end
+    query =
+      if after_days == -1 do
+        query
+      else
+        from(post in query, where: post.inserted_at >= ^after_date)
+      end
 
     Repo.delete_all(query)
   end
@@ -405,7 +409,7 @@ defmodule Embers.Posts do
 
   @spec count_disabled() :: integer()
   def count_disabled() do
-    from( post in Post,
+    from(post in Post,
       where: not is_nil(post.deleted_at),
       select: count(post.id)
     )

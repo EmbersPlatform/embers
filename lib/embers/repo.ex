@@ -41,12 +41,14 @@ defmodule Embers.Repo do
   """
   def preload_lateral(entities, assoc, opts \\ [])
   def preload_lateral([], _, _), do: []
+
   def preload_lateral([%source_queryable{} | _] = entities, assoc, opts) do
     limit = Keyword.get(opts, :limit, 2)
     {order_direction, order_field} = Keyword.get(opts, :order_by, {:desc, :inserted_at})
     with_deleted? = Keyword.get(opts, :with_deleted?, false)
 
     fields = source_queryable.__schema__(:fields)
+
     %{
       related_key: related_key,
       queryable: assoc_queryable
@@ -54,21 +56,25 @@ defmodule Embers.Repo do
 
     ids = Enum.map(entities, fn entity -> entity.id end)
 
-    sub = from(
-      p in assoc_queryable,
-      where: p.parent_id in ^ids,
-      select: map(p, ^fields),
-      select_merge: %{
-        _n: row_number() |> over(
-          partition_by: ^[related_key],
-          order_by: [{^order_direction, field(p, ^order_field)}]
-        )
-      }
-    )
+    sub =
+      from(
+        p in assoc_queryable,
+        where: p.parent_id in ^ids,
+        select: map(p, ^fields),
+        select_merge: %{
+          _n:
+            row_number()
+            |> over(
+              partition_by: ^[related_key],
+              order_by: [{^order_direction, field(p, ^order_field)}]
+            )
+        }
+      )
 
-    sub = unless with_deleted? do
-      from(q in sub, where: is_nil(q.deleted_at))
-    end || sub
+    sub =
+      unless with_deleted? do
+        from(q in sub, where: is_nil(q.deleted_at))
+      end || sub
 
     query =
       from(
@@ -93,6 +99,7 @@ defmodule Embers.Repo do
   end
 
   defp maybe_preload_assocs(entities, nil), do: entities
+
   defp maybe_preload_assocs(entities, assocs) do
     Repo.preload(entities, assocs)
   end

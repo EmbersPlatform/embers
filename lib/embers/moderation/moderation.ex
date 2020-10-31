@@ -42,7 +42,7 @@ defmodule Embers.Moderation do
       order_by: [desc: ban.id],
       where: is_nil(ban.deleted_at),
       preload: [user: [:meta]]
-     )
+    )
     |> Paginator.paginate(opts)
     |> Paginator.map(fn ban ->
       update_in(ban.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
@@ -53,7 +53,8 @@ defmodule Embers.Moderation do
   Lists bans for the given user.
   See `Embers.Paginator.paginate/2` for options.
   """
-  @spec list_bans_for(user :: String.t() | User.t(), options:: keyword()) :: Paginator.Page.t(Ban.t())
+  @spec list_bans_for(user :: String.t() | User.t(), options :: keyword()) ::
+          Paginator.Page.t(Ban.t())
   def list_bans_for(user, opts \\ [])
 
   def list_bans_for(user_id, opts) when is_binary(user_id) do

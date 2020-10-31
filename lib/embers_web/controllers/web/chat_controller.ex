@@ -8,7 +8,6 @@ defmodule EmbersWeb.Web.ChatController do
   alias Embers.Accounts.User
   alias Embers.Chat
 
-
   plug(:user_check)
 
   action_fallback(EmbersWeb.Web.FallbackController)
@@ -17,6 +16,7 @@ defmodule EmbersWeb.Web.ChatController do
     conversations =
       Chat.list_conversations_with(conn.assigns.current_user.id)
       |> Enum.map(fn user -> update_in(user.meta, &Embers.Profile.Meta.load_avatar_map/1) end)
+
     render(conn, "index.html", conversations: conversations)
   end
 
@@ -35,9 +35,7 @@ defmodule EmbersWeb.Web.ChatController do
   def show_messages(conn, %{"id" => user_id} = params) do
     with %User{} = user <- Embers.Accounts.get_populated(user_id) do
       messages =
-        Chat.list_messages_for(conn.assigns.current_user.id, user.id,
-          before: params["before"]
-        )
+        Chat.list_messages_for(conn.assigns.current_user.id, user.id, before: params["before"])
 
       render(conn, "messages.json", messages: messages)
     end

@@ -3,8 +3,6 @@ defmodule EmbersWeb.Web.ChatView do
 
   use EmbersWeb, :view
 
-
-
   def render("message.json", %{message: message}) do
     %{
       id: message.id,

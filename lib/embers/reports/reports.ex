@@ -33,7 +33,9 @@ defmodule Embers.Reports do
       {:ok, report} = res ->
         Embers.Event.emit(:report_created, %{report: report})
         res
-      res -> res
+
+      res ->
+        res
     end
   end
 
@@ -76,14 +78,15 @@ defmodule Embers.Reports do
       )
       |> Paginator.paginate(opts)
 
-    page = update_in(page.entries, fn entries ->
-      entries
-      |> Enum.group_by(
-        fn x -> x.reporter end,
-        fn x -> x.comments end
-      )
-      |> Enum.map(fn {reporter, comments} -> %{reporter: reporter, comments: comments} end)
-    end)
+    page =
+      update_in(page.entries, fn entries ->
+        entries
+        |> Enum.group_by(
+          fn x -> x.reporter end,
+          fn x -> x.comments end
+        )
+        |> Enum.map(fn {reporter, comments} -> %{reporter: reporter, comments: comments} end)
+      end)
 
     page
   end
@@ -115,7 +118,7 @@ defmodule Embers.Reports do
     {count, _} =
       from(r in Embers.Reports.PostReport,
         inner_join: post in assoc(r, :post),
-        where: (r.resolved == true or not is_nil(post.deleted_at))
+        where: r.resolved == true or not is_nil(post.deleted_at)
       )
       |> Repo.delete_all()
 

@@ -9,7 +9,7 @@ defmodule EmbersWeb.Web.TagController do
 
   action_fallback(EmbersWeb.Web.FallbackController)
 
-  plug :accepts, ~w(html json)
+  plug(:accepts, ~w(html json))
 
   plug(CheckPermissions, [permission: "access_mod_tools"] when action in [:update])
 
@@ -24,9 +24,7 @@ defmodule EmbersWeb.Web.TagController do
       if is_nil(tag.id) do
         Embers.Paginator.Page.empty()
       else
-        Tags.list_tag_posts(tag.name,
-          before: params["before"], limit: params["limit"]
-        )
+        Tags.list_tag_posts(tag.name, before: params["before"], limit: params["limit"])
       end
 
     conn =
@@ -71,8 +69,8 @@ defmodule EmbersWeb.Web.TagController do
 
   def update(conn, %{"id" => id} = params) do
     with tag when not is_nil(tag) <- Tags.get_by(%{id: id}),
-        attrs = Map.take(params, ["name", "description"]),
-        {:ok, _tag} <- Tags.update_tag(tag, attrs) do
+         attrs = Map.take(params, ["name", "description"]),
+         {:ok, _tag} <- Tags.update_tag(tag, attrs) do
       conn
       |> put_status(:no_content)
       |> json(nil)

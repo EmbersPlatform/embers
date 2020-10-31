@@ -11,6 +11,7 @@ defmodule EmbersWeb.Web.FavoriteController do
 
   def list(conn, params) do
     user = conn.assigns.current_user
+
     favs =
       Favorites.list_paginated(user.id,
         after: params["after"],
@@ -18,14 +19,17 @@ defmodule EmbersWeb.Web.FavoriteController do
         limit: params["limit"]
       )
 
-    favs = update_in(favs.entries,
-      fn favs ->
-        Enum.map(favs,
-          fn fav -> fav.post end
-        )
-      end
-    )
-    |> Embers.Feed.Utils.load_avatars()
+    favs =
+      update_in(
+        favs.entries,
+        fn favs ->
+          Enum.map(
+            favs,
+            fn fav -> fav.post end
+          )
+        end
+      )
+      |> Embers.Feed.Utils.load_avatars()
 
     if params["entries"] == "true" do
       conn

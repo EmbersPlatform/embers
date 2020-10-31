@@ -5,7 +5,6 @@ defmodule EmbersWeb.Api.BlockView do
 
   alias EmbersWeb.Api.UserView
 
-
   def render("blocks.json", %{entries: blocks} = metadata) do
     %{
       items: render_many(blocks, __MODULE__, "block.json"),

@@ -5,7 +5,6 @@ defmodule EmbersWeb.Web.SearchController do
 
   import EmbersWeb.Authorize
 
-
   alias Embers.Search
   alias Embers.Search.UserSearch
 

@@ -2,8 +2,6 @@ defmodule EmbersWeb.Web.NotificationView do
   @moduledoc false
   use EmbersWeb, :view
 
-
-
   def render("notifications.json", %{entries: notifications} = metadata) do
     %{
       items: render_many(notifications, __MODULE__, "notification.json"),
@@ -20,7 +18,7 @@ defmodule EmbersWeb.Web.NotificationView do
       text: notification.text,
       status: notification.status,
       inserted_at: notification.inserted_at,
-      source: notification.source_id,
+      source: notification.source_id
     }
   end
 end

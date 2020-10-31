@@ -3,7 +3,6 @@ defmodule EmbersWeb.Api.FriendView do
 
   use EmbersWeb, :view
 
-
   alias EmbersWeb.Api.UserView
 
   def render("friends.json", %{entries: friends} = metadata) do

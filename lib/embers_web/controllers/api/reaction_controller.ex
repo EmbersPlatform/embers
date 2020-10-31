@@ -12,6 +12,7 @@ defmodule EmbersWeb.Api.ReactionController do
     :rate_limit_create,
     [max_requests: 5, interval_seconds: 1] when action in [:create, :delete]
   )
+
   plug(
     :rate_limit_delete,
     [max_requests: 5, interval_seconds: 1] when action in [:create, :delete]
@@ -28,7 +29,6 @@ defmodule EmbersWeb.Api.ReactionController do
     options = Keyword.merge(options, bucket_name: "delete_reaction:#{user_id}")
     EmbersWeb.RateLimit.rate_limit(conn, options)
   end
-
 
   def create(conn, %{"name" => name, "post_id" => post_id} = _params) do
     user_id = conn.assigns.current_user.id

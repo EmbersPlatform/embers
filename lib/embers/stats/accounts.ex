@@ -1,10 +1,8 @@
 defmodule Embers.Stats.Accounts do
-
   import Ecto.Query
 
   alias Embers.Accounts.User
   alias Embers.Repo
-
 
   def get_last_registered_users() do
     from(user in User,

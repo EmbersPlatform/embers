@@ -16,21 +16,20 @@ defmodule Embers.Links.SteamProvider do
     with {:ok, response} <- fetch_details(id),
          {:ok, body} <- Jason.decode(response.body),
          %{"success" => true, "data" => app} <- body[id] do
-
-       %EmbedSchema{
-         url: url,
-         type: "link",
-         title: app["name"],
-         description: app["short_description"],
-         thumbnail_url: app["header_image"],
-         price: app["price_overview"]["final_formatted"] || "GRATIS"
-       }
+      %EmbedSchema{
+        url: url,
+        type: "link",
+        title: app["name"],
+        description: app["short_description"],
+        thumbnail_url: app["header_image"],
+        price: app["price_overview"]["final_formatted"] || "GRATIS"
+      }
     else
       _ ->
-         %EmbedSchema{
-           url: url,
-           type: "link"
-         }
+        %EmbedSchema{
+          url: url,
+          type: "link"
+        }
     end
   end
 

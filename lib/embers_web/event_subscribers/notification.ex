@@ -1,7 +1,9 @@
 defmodule EmbersWeb.NotificationSubscriber do
   @moduledoc false
 
-  use Embers.EventSubscriber, topics: ~w(notification_created post_reacted comment_reacted notification_read all_notifications_read)
+  use Embers.EventSubscriber,
+    topics:
+      ~w(notification_created post_reacted comment_reacted notification_read all_notifications_read)
 
   import Embers.Helpers.IdHasher
 
@@ -78,6 +80,7 @@ defmodule EmbersWeb.NotificationSubscriber do
 
   def handle_event(:notification_read, %{data: notification}) do
     recipient = notification.user_id
+
     EmbersWeb.Endpoint.broadcast!(
       "user:#{recipient}",
       "notification_read",
@@ -88,6 +91,7 @@ defmodule EmbersWeb.NotificationSubscriber do
   def handle_event(:all_notifications_read, %{data: user_id}) do
     IO.inspect("NOTIFICATIONS READ FOR #{user_id}")
     recipient = user_id
+
     EmbersWeb.Endpoint.broadcast!(
       "user:#{recipient}",
       "all_notifications_read",

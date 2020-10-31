@@ -49,12 +49,12 @@ defmodule Embers.Paginator do
             from(q in query,
               where: q.id <= ^opts.before
             )
+
           false ->
             from(q in query,
               where: q.id < ^opts.before
             )
         end
-
       end || query
 
     query =
@@ -64,11 +64,12 @@ defmodule Embers.Paginator do
             from(q in query,
               where: q.id >= ^opts.after
             )
+
           false ->
             from(q in query,
               where: q.id > ^opts.after
             )
-          end
+        end
       end || query
 
     all_entries = Repo.all(query)

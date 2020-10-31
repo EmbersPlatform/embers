@@ -6,7 +6,7 @@ defmodule EmbersWeb.Web.Moderation.DisabledPostController do
   alias Embers.Posts
 
   def index(conn, params) do
-    posts = Posts.list_disabled([before: params["before"]])
+    posts = Posts.list_disabled(before: params["before"])
 
     disabled_count = Posts.count_disabled()
 
@@ -27,10 +27,8 @@ defmodule EmbersWeb.Web.Moderation.DisabledPostController do
   def restore(conn, %{"post_id" => post_id}) do
     user = conn.assigns.current_user
 
-    with \
-      {:ok, post} <- Posts.get_post(post_id),
-      {:ok, _} <- Posts.restore_post(post, actor: user)
-    do
+    with {:ok, post} <- Posts.get_post(post_id),
+         {:ok, _} <- Posts.restore_post(post, actor: user) do
       conn
       |> put_status(:no_content)
       |> json(nil)
