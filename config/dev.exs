@@ -12,6 +12,8 @@ config :embers, EmbersWeb.Endpoint,
   code_reloader: true,
   check_origin: false
 
+config :logger, compile_time_purge_matching: [[application: :remote_ip]]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
