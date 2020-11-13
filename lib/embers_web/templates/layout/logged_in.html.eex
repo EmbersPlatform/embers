@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="<%= get_locale(@conn) %>">
+<html lang="<%= Cldr.get_locale().language %>">
 <head>
 	<!--
                       .' @`._

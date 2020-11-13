@@ -59,7 +59,7 @@ defmodule Embers.Posts.Post do
     many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
     many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
     many_to_many(:links, Embers.Links.Link, join_through: "link_post")
-    field(:old_attachment, {:map, :any})
+    field(:old_attachment, :map)
 
     field(:deleted_at, :naive_datetime)
     timestamps()

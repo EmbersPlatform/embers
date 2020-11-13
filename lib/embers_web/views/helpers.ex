@@ -37,11 +37,7 @@ defmodule EmbersWeb.ViewHelpers do
   end
 
   def time_ago(date) do
-    locale =
-      Application.get_env(:embers, EmbersWeb.Gettext)
-      |> Keyword.get(:default_locale, "en")
-
-    Timex.from_now(date, locale)
+    Timex.from_now(date, Cldr.get_locale().language)
   end
 
   def attr_list(attrs, joiner \\ " ") when is_list(attrs) do

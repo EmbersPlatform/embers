@@ -10,6 +10,11 @@
       itemscope
       itemtype="https://schema.org/ImageObject"
       data-action="click->medias#show_at" data-id="<%= media.id %>"
+      <%= if media.type == "gif" do %>
+        is="emb-media-gif"
+        data-thumb-url=<%= media.metadata["preview_url"] %>
+        data-original-url="<%= media.url %>"
+      <% end %>
     >
       <img
         loading="lazy"

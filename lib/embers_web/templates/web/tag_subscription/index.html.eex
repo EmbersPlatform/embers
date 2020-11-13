@@ -1,0 +1,12 @@
+<%= EmbersWeb.LayoutView.sidebar(assigns) %>
+<div id="view" view="subs" subview="tags" class="has-sidebar">
+  <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
+  <main class="padded">
+    <div class="main-content">
+      <h1><%= gettext("My tags") %></h1>
+      <%= for sub <- @tags do %>
+        <%= render(EmbersWeb.Web.TagView, "card.html", conn: @conn, tag: sub.tag, level: sub.level) %>
+      <% end %>
+    </div>
+  </main>
+</div>

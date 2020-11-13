@@ -65,7 +65,7 @@ defmodule Embers.Repo do
           _n:
             row_number()
             |> over(
-              partition_by: ^[related_key],
+              partition_by: field(p, ^related_key),
               order_by: [{^order_direction, field(p, ^order_field)}]
             )
         }

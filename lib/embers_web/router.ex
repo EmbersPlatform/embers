@@ -6,6 +6,14 @@ defmodule EmbersWeb.Router do
   pipeline :browser do
     plug(:accepts, ["html", "json"])
     plug(:fetch_session)
+
+    plug(Cldr.Plug.SetLocale,
+      apps: [:cldr, :gettext],
+      from: [:accept_language, :path, :query],
+      gettext: EmbersWeb.Gettext,
+      cldr: EmbersWeb.Cldr
+    )
+
     plug(:fetch_flash)
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
@@ -193,6 +201,12 @@ defmodule EmbersWeb.Router do
 
     # Reports
     post("/reports/post/:post_id", ReportController, :create_post_report)
+
+    # Subscriptions
+    scope "/subs" do
+      get("/", TagSubscriptionController, :index)
+      get("/tags", TagSubscriptionController, :index)
+    end
 
     scope "/moderation", Moderation do
       pipe_through(:admin)

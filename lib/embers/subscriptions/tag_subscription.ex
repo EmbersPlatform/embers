@@ -4,6 +4,11 @@ defmodule Embers.Subscriptions.TagSubscription do
 
   import Ecto.Changeset
 
+  @type t :: %__MODULE__{
+          source: Embers.Tags.Tag.t(),
+          level: integer
+        }
+
   @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "tags_users" do
     belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)

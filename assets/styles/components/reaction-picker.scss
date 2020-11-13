@@ -1,18 +1,19 @@
 reaction-picker {
   position: relative;
 
-  &>button {}
+  & > button {
+  }
 
-  &>ul.open {
+  & > ul.open {
     display: grid;
   }
 
-  &>ul {
+  & > ul {
     @include box;
     display: none;
     background: var(--primary);
     position: absolute;
-    bottom: 0;
+    bottom: 1.8em;
     left: 0;
     list-style: none;
     grid-template-columns: repeat(3, 1fr);

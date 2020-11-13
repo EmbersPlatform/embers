@@ -2,7 +2,7 @@ import { Component } from "../component";
 
 import { html, ref } from "heresy";
 import { to_base64 } from "~js/lib/utils/file";
-import { gettext } from "~js/lib/gettext";
+import { dgettext, gettext } from "~js/lib/gettext";
 
 import * as Profile from "~js/lib/profile";
 
@@ -26,7 +26,7 @@ export default class extends Component(HTMLElement) {
 
   onconnected() {
     super.initialize();
-    if(this._in_preview) return;
+    if (this._in_preview) return;
     this.cover = this.dataset.src;
   }
 
@@ -35,31 +35,33 @@ export default class extends Component(HTMLElement) {
   }
 
   render() {
-    if(this._in_preview) return;
+    if (this._in_preview) return;
 
     const cancel = () => {
       this.dialog.current.close();
       this.cropper.current.refresh();
       this.status = "Idle";
-    }
+    };
 
     const confirm = async () => {
       this.status = "Uploading";
-      const cover = await this.cropper.current.result({type: "blob"}) as Blob;
+      const cover = (await this.cropper.current.result({
+        type: "blob",
+      })) as Blob;
       const res = await Profile.update_cover(cover);
       this.dialog.current.close();
-      if(res.tag !== "Success") {
+      if (res.tag !== "Success") {
         this.status = "Idle";
         return console.error(cover);
       }
       this.cover = res.value;
       this.cropper.current.refresh();
       this.status = "Idle";
-    }
+    };
 
     const pick_cover = () => {
       this.file_input.current.click();
-    }
+    };
 
     const select_cover = async (event: Event) => {
       this.dialog.current.showModal();
@@ -68,11 +70,14 @@ export default class extends Component(HTMLElement) {
       const file = Array.from(target.files)[0];
       const base64 = await to_base64(file);
       this.cropper.current.set_image(base64);
-    }
+    };
 
     this.html`
       <img src=${this.cover}>
-      <button class="button primary" onclick=${pick_cover}>Cambiar portada</button>
+      <button class="button primary" onclick=${pick_cover}>${dgettext(
+      "profile-options",
+      "Change cover"
+    )}</button>
       <input
         ref=${this.file_input}
         type="file"
@@ -89,18 +94,21 @@ export default class extends Component(HTMLElement) {
           />
         </div>
         <footer>
-          ${this.status == "Uploading"
-            ? html`
-              <span>${ gettext("Saving changes...")}</span>
-            `
-            : html`
-              <button class="button" onclick=${cancel}>Cancelar</button>
-              <button class="button primary" onclick=${confirm}>Guardar cambios</button>
-            `
+          ${
+            this.status == "Uploading"
+              ? html` <span>${gettext("Saving changes...")}</span> `
+              : html`
+                  <button class="button" onclick=${cancel}>
+                    ${gettext("Cancel")}
+                  </button>
+                  <button class="button primary" onclick=${confirm}>
+                    ${gettext("Save changes")}
+                  </button>
+                `
           }
 
         </footer>
       </modal-dialog>
-    `
+    `;
   }
 }

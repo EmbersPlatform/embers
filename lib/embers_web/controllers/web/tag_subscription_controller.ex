@@ -10,7 +10,10 @@ defmodule EmbersWeb.Web.TagSubscriptionController do
   plug(:user_check)
 
   def index(conn, _params) do
-    render("index.html")
+    user = conn.assigns.current_user
+    pinned_tags = Tags.list_pinned(user.id)
+
+    render(conn, "index.html", tags: pinned_tags)
   end
 
   def subscribe(conn, %{"tag_id" => tag_id} = params) do

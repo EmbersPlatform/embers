@@ -8,6 +8,13 @@ use Mix.Config
 # General application configuration
 config :embers, ecto_repos: [Embers.Repo]
 
+config :embers, EmbersWeb.Cldr,
+  default_locale: "en",
+  locales: ["en", "es"],
+  gettext: EmbersWeb.Gettext,
+  data_dir: "./priv/cldr",
+  precompile_number_formats: ["¤¤#,##0.##"]
+
 # Configures the endpoint
 config :embers, EmbersWeb.Endpoint,
   url: [host: "localhost"],

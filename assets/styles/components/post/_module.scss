@@ -12,7 +12,7 @@
       align-items: center;
       padding: 0 0.5em;
 
-      &>.avatar {
+      & > .avatar {
         width: 1.5em;
         height: 1.5em;
         display: inline-block;
@@ -24,7 +24,7 @@
         }
       }
 
-      &>span {
+      & > span {
         margin-left: 0.5em;
         flex: 1;
         word-break: break-word;
@@ -32,27 +32,27 @@
       }
     }
 
-    &>footer>div>button,
-    &>footer>div>e-reaction-picker>button {
+    & > footer > div > button,
+    & > footer > div > e-reaction-picker > button {
       opacity: 0.6;
     }
 
-    &>footer>div>button:hover,
-    footer>div>*>button:hover {
+    & > footer > div > button:hover,
+    footer > div > * > button:hover {
       opacity: 1;
     }
 
-    &>header {
+    & > header {
       display: flex;
       padding: 0.8em;
       padding-bottom: 0;
     }
 
-    &>header .avatar {
+    & > header .avatar {
       flex-shrink: 0;
     }
 
-    &>header a time {
+    & > header a time {
       font-size: 0.8em;
       font-weight: 400;
       color: var(--text-secondary);
@@ -70,7 +70,7 @@
       color: var(--post-username-color, var(--link));
     }
 
-    .post-details>*+* {
+    .post-details > * + * {
       margin-top: 0.3em;
     }
 
@@ -98,7 +98,7 @@
       flex-wrap: wrap;
     }
 
-    &>footer {
+    & > footer {
       margin-left: 1em;
       margin-right: 1em;
       padding-bottom: 0.8em;
@@ -112,7 +112,7 @@
       }
     }
 
-    &>footer .stats {
+    & > footer .stats {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -122,39 +122,37 @@
         opacity: 0.6;
       }
 
-      .stat+.stat:before {
-        content: ", "
+      .stat + .stat:before {
+        content: ", ";
       }
     }
 
-    &>footer .reactions {
+    & > footer .reactions {
       line-height: 2.3em;
       margin-bottom: 0.5em;
     }
 
-    &>footer .reactions .reaction:not(:last-child) {
+    & > footer .reactions .reaction:not(:last-child) {
       margin-right: 0.3em;
     }
 
-    &>footer .actions {
+    & > footer .actions {
       display: flex;
     }
 
-    &>footer {
-
+    & > footer {
       svg {
         height: 1.4em;
       }
     }
 
-    &>footer {
-
+    & > footer {
       svg * {
         fill: var(--post-footer-foreground);
       }
     }
 
-    &>footer button a {
+    & > footer button a {
       display: auto;
     }
   }
@@ -224,7 +222,7 @@
     }
   }
   &:not([data-controller*="content-warning"]) {
-    .content-warnings {
+    & > .content-warnings {
       display: none;
     }
   }
@@ -233,7 +231,7 @@
     z-index: 1;
     margin: 0 5px;
 
-    &>.content-warning {
+    & > .content-warning {
       display: inline-flex;
       align-items: center;
       padding: 0.5em 1em;

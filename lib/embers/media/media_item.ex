@@ -19,7 +19,7 @@ defmodule Embers.Media.MediaItem do
     field(:url, :string, null: false)
     field(:type, :string, null: false)
     field(:temporary, :boolean, default: true)
-    field(:metadata, {:map, :any})
+    field(:metadata, :map)
 
     belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
 

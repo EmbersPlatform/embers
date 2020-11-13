@@ -22,6 +22,8 @@ import "./components/update-tag";
 import "./components/tag";
 import "./components/mention";
 
+import "./components/media-gif";
+
 const traverse_module = (module) => {
   if(module.__esModule) {
     register(module.default)

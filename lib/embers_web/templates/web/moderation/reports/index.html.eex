@@ -9,7 +9,7 @@
     data-next="<%= @posts_reports.next %>"
     data-last-page="<%= @posts_reports.last_page %>"
   >
-    <h1>Reportes</h1>
+    <h1><%= gettext("Reports") %></h1>
 
     <section infinite-scroll-viewport>
       <%= for summary <- @posts_reports do %>

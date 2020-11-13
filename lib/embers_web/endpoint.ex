@@ -16,7 +16,7 @@ defmodule EmbersWeb.Endpoint do
     from: :embers,
     gzip: true,
     only:
-      ~w(dist fonts uploads img svg images emoji favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
+      ~w(dist fonts uploads locales img svg images emoji favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
   )
 
   plug(Plug.Static, at: "/user/avatar", from: Path.expand('./uploads/user/avatar'), gzip: true)

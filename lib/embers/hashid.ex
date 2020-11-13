@@ -27,4 +27,8 @@ defmodule Embers.Hashid do
   def load(id) when is_integer(id) do
     {:ok, IdHasher.encode(id)}
   end
+
+  def equal?(term1, term2) do
+    term1 === term2
+  end
 end
