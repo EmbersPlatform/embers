@@ -161,12 +161,12 @@ msgid "rules"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/controllers/web/account_controller.ex:70
+#: lib/embers_web/controllers/web/account_controller.ex:71
 msgid "There was an error, please try again later"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/controllers/web/account_controller.ex:77
+#: lib/embers_web/controllers/web/account_controller.ex:78
 msgid "You have to wait a few days before creating another account"
 msgstr ""
 
@@ -278,7 +278,7 @@ msgstr[1] ""
 
 #, elixir-format
 #: lib/embers_web/controllers/web/post_controller.ex:51
-#: lib/embers_web/controllers/web/post_controller.ex:71 lib/embers_web/controllers/web/post_controller.ex:126
+#: lib/embers_web/controllers/web/post_controller.ex:71 lib/embers_web/controllers/web/post_controller.ex:160
 #: lib/embers_web/templates/web/post/show_modal.html.eex:6
 msgid "@%{username}'s post"
 msgstr ""
@@ -391,6 +391,7 @@ msgstr ""
 #, elixir-format
 #: lib/embers_web/templates/layout/logged_in/navigation.html.eex:101
 #: lib/embers_web/templates/layout/logged_in/navigation.html.eex:102 lib/embers_web/templates/web/settings/_sidebar.html.eex:1
+#: lib/embers_web/views/layout_view.ex:114 lib/embers_web/views/layout_view.ex:115
 msgid "Settings"
 msgstr ""
 
@@ -473,13 +474,13 @@ msgstr ""
 
 #, elixir-format
 #: lib/embers_web/templates/web/user/_profile_header.html.eex:21
-#: lib/embers_web/templates/web/user/show.html.eex:30
+#: lib/embers_web/templates/web/user/show.html.eex:35
 msgid "Followers"
 msgstr ""
 
 #, elixir-format
 #: lib/embers_web/templates/web/user/_profile_header.html.eex:25
-#: lib/embers_web/templates/web/user/show.html.eex:45
+#: lib/embers_web/templates/web/user/show.html.eex:50
 msgid "Following"
 msgstr ""
 
@@ -520,7 +521,7 @@ msgstr ""
 
 #, elixir-format
 #: lib/embers_web/controllers/web/moderation/reports_controller.ex:26
-#: lib/embers_web/templates/web/moderation/reports/index.html.eex:12 lib/embers_web/templates/web/moderation/shared/_sidebar.html.eex:14
+#: lib/embers_web/templates/web/moderation/reports/index.html.eex:8 lib/embers_web/templates/web/moderation/shared/_sidebar.html.eex:14
 msgid "Reports"
 msgstr ""
 
@@ -562,7 +563,17 @@ msgid "Users"
 msgstr ""
 
 #, elixir-format
-#: lib/embers_web/templates/web/user/show.html.eex:39
-#: lib/embers_web/templates/web/user/show.html.eex:54
+#: lib/embers_web/templates/web/user/show.html.eex:44
+#: lib/embers_web/templates/web/user/show.html.eex:59
 msgid "View all"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/user/show.html.eex:21
+msgid "%{user} hasn't posted anything yet"
+msgstr ""
+
+#, elixir-format
+#: lib/embers_web/templates/web/moderation/reports/index.html.eex:12
+msgid "Hooray! There are no reports"
 msgstr ""

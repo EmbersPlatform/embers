@@ -50,14 +50,13 @@ defmodule EmbersWeb.Api.BlockController do
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
     Blocks.delete_user_block(user.id, id)
 
-    conn |> put_status(:no_content) |> json(nil)
+    conn |> json(nil)
   end
 
   defp do_create_block(conn, user_id, source_id) do
     case Blocks.create_user_block(user_id, source_id) do
       {:ok, _} ->
         conn
-        |> put_status(:no_content)
         |> json(nil)
 
       {:error, changeset} ->

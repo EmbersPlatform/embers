@@ -57,7 +57,6 @@ defmodule EmbersWeb.Api.ChatController do
     )
 
     conn
-    |> put_status(:no_content)
     |> json(nil)
   end
 

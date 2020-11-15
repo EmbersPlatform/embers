@@ -1,53 +1,63 @@
 <!DOCTYPE html>
 <html lang="<%= get_locale(@conn) %>">
+
 <head>
-	<!--
+  <!--
                       .' @`._
                ...._.'  ,__.-;
              /`           .-'
          __./'       ,  .'
-        (.-'''---.    \`._  Hippity hoppity
+        (.-'''---.    |> json(nil)`._  Hippity hoppity
        (  .______.'.-' `-.`
         `-..____`-.
                 ````    Get out of my property
 	-->
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!-- Pogressive web app manifest -->
-	<link rel="manifest" href="/manifest.json">
-	<meta name="mobile-web-app-capable" content="yes">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Pogressive web app manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
 
-	<!-- Chrome, Firefox OS and Opera -->
-	<meta name="theme-color" content="#26272b">
-	<!-- Windows Phone -->
-	<meta name="msapplication-navbutton-color" content="#26272b">
-	<!-- iOS Safari -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#26272b">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#26272b">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title><%= assigns[:page_title] || "Embers" %></title>
-	<link rel="icon" href="/favicon.ico?v=3" />
-	<link href="<%= static_path(@conn, "/css/landing.css") %>" rel="stylesheet">
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous">
-	<link href="<%= static_path(@conn, "/css/main.css") %>" rel="stylesheet">
+  <link rel="icon" href="/favicon.ico?v=3" />
+  <link href="<%= static_path(@conn, "/css/landing.css") %>" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css"
+    integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous">
+  <link href="<%= static_path(@conn, "/css/main.css") %>" rel="stylesheet">
   <style>
     body {
       background: #26272b;
     }
+
     #apex {
       padding-top: 70px;
     }
+
     #main {
       padding-top: 20px;
     }
+
   </style>
 </head>
+
 <body>
   <nav id="sticky" focusable tabindex="-1">
     <h1>
       <a href="/">
         <svg version="1.1" viewBox="-1637 -2996 411 411" class="svg-icon svg-fill">
-          <path pid="0" d="M-1489.172-2862.846c61.835-23.708 96.478-17.612 149.894-42.675s89.9-90.479 89.9-90.479-157.055 23.612-218.794 55.062-79.356 57.867-94.056 94.638-15.1 68.512-15.1 68.512 26.321-61.35 88.156-85.058z"></path>
-          <path pid="1" d="M-1507.557-2765.644c56.222-24.482 57.287-14.419 73.544-29.708s22.16-67.738 22.16-67.738-32.708 3.581-75.673 18.29-72 53.609-90.091 90.091-18.1 71.9-18.1 71.9 31.938-58.352 88.16-82.835zM-1524.538-2676.014c44.462-19.593 39.527-7.981 73.009-17.851s89.898-90.479 89.898-90.479-48.769 10.935-109.155 23.9-108.381 66.772-125.214 102.287-18.1 73.157-18.1 73.157 45.1-71.421 89.562-91.014z"></path>
+          <path pid="0"
+            d="M-1489.172-2862.846c61.835-23.708 96.478-17.612 149.894-42.675s89.9-90.479 89.9-90.479-157.055 23.612-218.794 55.062-79.356 57.867-94.056 94.638-15.1 68.512-15.1 68.512 26.321-61.35 88.156-85.058z">
+          </path>
+          <path pid="1"
+            d="M-1507.557-2765.644c56.222-24.482 57.287-14.419 73.544-29.708s22.16-67.738 22.16-67.738-32.708 3.581-75.673 18.29-72 53.609-90.091 90.091-18.1 71.9-18.1 71.9 31.938-58.352 88.16-82.835zM-1524.538-2676.014c44.462-19.593 39.527-7.981 73.009-17.851s89.898-90.479 89.898-90.479-48.769 10.935-109.155 23.9-108.381 66.772-125.214 102.287-18.1 73.157-18.1 73.157 45.1-71.421 89.562-91.014z">
+          </path>
         </svg>
       </a>
     </h1>
@@ -55,7 +65,9 @@
       <li>
         <button data-button-size="medium" data-button-font="medium" class="button">
           <svg version="1.1" viewBox="0 0 411 411" class="svg-icon svg-fill">
-            <path pid="0" d="M0 87.14c1.95-7.3 8.21-13.63 16.14-13.46 126.57.07 253.17-.04 379.74.06 7.07.02 12.74 5.37 15.12 11.7v9.05c-2.18 6.95-8.69 11.96-15.98 12.18-126.35-.08-252.71.01-379.06-.04-7.62-.32-13.81-6.09-15.96-13.2v-6.29zM0 202.61c1.7-7.77 8.89-14.09 17.01-13.71 61.04.17 122.11-.18 183.14.18 17.95 2.19 17.81 30.56-.12 32.61-61.34.47-122.75.03-184.11.22-7.65-.21-14.03-6.26-15.92-13.45v-5.85zM0 317.49c1.71-7.71 8.99-13.91 16.99-13.49 93.71.09 187.42-.17 281.12.13 18.31 1.39 19.2 30.41.95 32.75-94.35.29-188.71.04-283.06.12-7.59.34-13.71-5.75-16-12.57v-6.94z"></path>
+            <path pid="0"
+              d="M0 87.14c1.95-7.3 8.21-13.63 16.14-13.46 126.57.07 253.17-.04 379.74.06 7.07.02 12.74 5.37 15.12 11.7v9.05c-2.18 6.95-8.69 11.96-15.98 12.18-126.35-.08-252.71.01-379.06-.04-7.62-.32-13.81-6.09-15.96-13.2v-6.29zM0 202.61c1.7-7.77 8.89-14.09 17.01-13.71 61.04.17 122.11-.18 183.14.18 17.95 2.19 17.81 30.56-.12 32.61-61.34.47-122.75.03-184.11.22-7.65-.21-14.03-6.26-15.92-13.45v-5.85zM0 317.49c1.71-7.71 8.99-13.91 16.99-13.49 93.71.09 187.42-.17 281.12.13 18.31 1.39 19.2 30.41.95 32.75-94.35.29-188.71.04-283.06.12-7.59.34-13.71-5.75-16-12.57v-6.94z">
+            </path>
           </svg>
         </button>
       </li>
@@ -70,14 +82,10 @@
         </a>
       </li>
       <li>
-        <a href="/acknowledgment">
-          agradecimientos
-        </a>
-      </li>
-      <li>
-        <a href="/register" class="button" data-button-size="medium" data-button-font="medium" data-button-uppercase>
-          registrate
-        </a>
+        <a href="/acknowledgment"> agradecimientos </a> </li> <li>
+          <a href="/register" class="button" data-button-size="medium" data-button-font="medium" data-button-uppercase>
+            registrate
+          </a>
       </li>
       <li>
         <a href="/login">
@@ -90,13 +98,14 @@
   <script type="text/javascript">
     if ('serviceWorker' in navigator) {
       //This is the service worker with the combined offline experience (Offline page + Offline copy of pages)
-      navigator.serviceWorker.register('/service-worker.js').then(function(registration){
-        console.log('Service worker has been registered for scope: '+ registration.scope);
-      }).catch(function(error) {
+      navigator.serviceWorker.register('/service-worker.js').then(function (registration) {
+        console.log('Service worker has been registered for scope: ' + registration.scope);
+      }).catch(function (error) {
         console.log('Service worker registration failed:', error);
       });
-    }else{
+    } else {
       console.log('Service workers are not supported.');
     }
+
   </script>
 </body>

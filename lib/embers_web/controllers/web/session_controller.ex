@@ -65,7 +65,6 @@ defmodule EmbersWeb.Web.SessionController do
         conn
         |> delete_session(:phauxth_session_id)
         |> Remember.delete_rem_cookie()
-        |> put_status(:no_content)
         |> json(nil)
 
       _ ->
@@ -88,7 +87,6 @@ defmodule EmbersWeb.Web.SessionController do
           {:ok, user} ->
             conn
             |> Login.add_session(user, user_params)
-            |> put_status(:no_content)
             |> json(%{message: :success})
 
           {:error, _message} ->

@@ -268,7 +268,6 @@ defmodule EmbersWeb.Web.PostController do
         )
 
         conn
-        |> put_status(:no_content)
         |> json(nil)
 
       false ->

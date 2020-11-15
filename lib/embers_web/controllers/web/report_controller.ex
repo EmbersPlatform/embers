@@ -20,7 +20,6 @@ defmodule EmbersWeb.Web.ReportController do
 
     with {:ok, _report} <- Reports.report(reportable, user, attrs) do
       conn
-      |> put_status(:no_content)
       |> json(nil)
     else
       {:error, %Ecto.Changeset{} = changeset} ->

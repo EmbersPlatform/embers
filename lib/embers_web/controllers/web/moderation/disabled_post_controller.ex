@@ -30,7 +30,6 @@ defmodule EmbersWeb.Web.Moderation.DisabledPostController do
     with {:ok, post} <- Posts.get_post(post_id),
          {:ok, _} <- Posts.restore_post(post, actor: user) do
       conn
-      |> put_status(:no_content)
       |> json(nil)
     end
   end

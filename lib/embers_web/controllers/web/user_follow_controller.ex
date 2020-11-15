@@ -21,7 +21,6 @@ defmodule EmbersWeb.Web.UserFollowController do
     case Subscriptions.create_user_subscription(sub_params) do
       {:ok, _} ->
         conn
-        |> put_status(:no_content)
         |> json(nil)
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -43,7 +42,6 @@ defmodule EmbersWeb.Web.UserFollowController do
     case Subscriptions.create_user_subscription(sub_params) do
       {:ok, _} ->
         conn
-        |> put_status(:no_content)
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
@@ -57,6 +55,6 @@ defmodule EmbersWeb.Web.UserFollowController do
 
     Subscriptions.delete_user_subscription(user.id, id)
 
-    conn |> put_status(:no_content) |> json(nil)
+    conn |> json(nil)
   end
 end

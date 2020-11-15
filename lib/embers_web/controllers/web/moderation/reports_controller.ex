@@ -31,7 +31,6 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
     with {:ok, post} <- Posts.get_post(post_id),
          :ok <- Reports.resolve_for(post) do
       conn
-      |> put_status(:no_content)
       |> json(nil)
     end
   end
@@ -44,7 +43,6 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
       Reports.resolve_for(post)
 
       conn
-      |> put_status(:no_content)
       |> json(nil)
     end
   end
@@ -65,7 +63,6 @@ defmodule EmbersWeb.Web.Moderation.ReportsController do
       )
 
       conn
-      |> put_status(:no_content)
       |> json(nil)
     end
   end

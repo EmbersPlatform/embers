@@ -1,6 +1,8 @@
 defmodule EmbersWeb.Router do
   use EmbersWeb, :router
 
+  import Phoenix.LiveDashboard.Router
+
   alias EmbersWeb.Plugs.{CheckPermissions, GetPermissions}
 
   pipeline :browser do
@@ -34,56 +36,13 @@ defmodule EmbersWeb.Router do
     plug(GetPermissions)
     plug(CheckPermissions, permission: "access_backoffice")
 
-    plug(
-      Plug.Static,
-      at: "/admin",
-      from: Path.expand('./priv/static/admin'),
-      gzip: true
-    )
-
     plug(:protect_from_forgery)
   end
 
-  scope "/admin" do
-    pipe_through([:admin])
+  scope "/" do
+    pipe_through([:browser, :admin])
 
-    get("/", EmbersWeb.Admin.DashboardController, :index)
-
-    get("/users", EmbersWeb.Admin.UserController, :index)
-    get("/users/edit/:name", EmbersWeb.Admin.UserController, :edit)
-    put("/users/edit/:name", EmbersWeb.Admin.UserController, :update)
-    patch("/users/confirm/:id", EmbersWeb.Admin.UserController, :confirm)
-    post("/users/send_pw_reset/:email", EmbersWeb.Admin.UserController, :send_password_reset)
-
-    get("/roles", EmbersWeb.Admin.RoleController, :index)
-    get("/roles/new", EmbersWeb.Admin.RoleController, :new)
-    post("/roles/new", EmbersWeb.Admin.RoleController, :create)
-    get("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :edit)
-    put("/roles/edit/:rolename", EmbersWeb.Admin.RoleController, :update)
-    delete("/roles/:name", EmbersWeb.Admin.RoleController, :destroy)
-
-    get("/settings", EmbersWeb.Admin.SettingController, :index)
-    get("/settings/edit/:name", EmbersWeb.Admin.SettingController, :edit)
-    put("/settings/edit/:name", EmbersWeb.Admin.SettingController, :update)
-
-    get("/reports", EmbersWeb.Admin.ReportController, :overview)
-    get("/reports/post/:id", EmbersWeb.Admin.ReportController, :post_report)
-    delete("/reports/post/:id", EmbersWeb.Admin.ReportController, :delete_post)
-    put("/reports/post/:id", EmbersWeb.Admin.ReportController, :resolve_post_reports)
-
-    get("/bans", EmbersWeb.Admin.BanController, :index)
-    get("/bans/:user_id", EmbersWeb.Admin.BanController, :show)
-    delete("/bans/:user_id", EmbersWeb.Admin.BanController, :delete)
-
-    get("/audit", EmbersWeb.Admin.AuditController, :index)
-
-    get("/tags", EmbersWeb.Admin.TagController, :index)
-    get("/tags/:name", EmbersWeb.Admin.TagController, :edit)
-    put("/tags/:name", EmbersWeb.Admin.TagController, :update)
-
-    resources("/loading", EmbersWeb.Admin.LoadingMsgController)
-
-    match(:*, "/*not_found", EmbersWeb.Admin.DashboardController, :not_found)
+    live_dashboard("/dashboard", ecto_repos: [Embers.Repo], metrics: EmbersWeb.Telemetry)
   end
 
   scope "/" do

@@ -125,7 +125,7 @@ defmodule EmbersWeb.Web.SettingsController do
         1
       )
 
-      conn |> put_status(:no_content) |> json(nil)
+      conn |> json(nil)
     else
       :rate_limited ->
         conn

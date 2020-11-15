@@ -136,7 +136,6 @@ defmodule EmbersWeb.Api.TagController do
     case Subscriptions.create_block(user_id, tag_id) do
       {:ok, _} ->
         conn
-        |> put_status(:no_content)
         |> json(nil)
 
       {:error, %Ecto.Changeset{} = changeset} ->

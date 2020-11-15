@@ -25,7 +25,6 @@ defmodule EmbersWeb.Api.NotificationController do
     Notifications.set_status(id, 2)
 
     conn
-    |> put_status(:no_content)
     |> json(nil)
   end
 end

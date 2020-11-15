@@ -34,7 +34,6 @@ defmodule EmbersWeb.Web.Moderation.BanController do
     Moderation.unban_user(user_id)
 
     conn
-    |> put_status(:no_content)
     |> json(nil)
   end
 
@@ -60,12 +59,10 @@ defmodule EmbersWeb.Web.Moderation.BanController do
     with %Accounts.User{} = user <- Accounts.get_by(%{"canonical" => canonical}),
          {:ok, _ban} <- Moderation.ban_user(user, ban_opts) do
       conn
-      |> put_status(:no_content)
       |> json(nil)
     else
       {:error, :already_banned} ->
         conn
-        |> put_status(:no_content)
         |> json(nil)
     end
   end

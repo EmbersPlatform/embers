@@ -36,7 +36,6 @@ defmodule EmbersWeb.Web.NotificationController do
     Embers.Event.emit(:notification_read, %{id: id, user_id: user.id})
 
     conn
-    |> put_status(:no_content)
     |> json(nil)
   end
 end

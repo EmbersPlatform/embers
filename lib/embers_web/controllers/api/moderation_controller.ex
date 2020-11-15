@@ -26,7 +26,6 @@ defmodule EmbersWeb.Api.ModerationController do
       end
 
       conn
-      |> put_status(:no_content)
       |> json(nil)
     else
       {:error, %Ecto.Changeset{} = changeset} ->

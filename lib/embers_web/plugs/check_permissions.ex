@@ -23,4 +23,11 @@ defmodule EmbersWeb.Plugs.CheckPermissions do
         |> halt()
     end
   end
+
+  def call(conn, _) do
+    conn
+    |> put_status(:forbidden)
+    |> json(:forbidden)
+    |> halt()
+  end
 end

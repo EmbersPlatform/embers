@@ -38,7 +38,6 @@ defmodule EmbersWeb.Web.TimelineController do
 
     with {:ok, _activity} <- Timeline.delete_activity(user.id, id) do
       conn
-      |> put_status(:no_content)
       |> json(nil)
     end
   end

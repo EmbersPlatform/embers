@@ -54,7 +54,6 @@ defmodule EmbersWeb.Api.FriendController do
     case Subscriptions.create_user_subscription(sub_params) do
       {:ok, _} ->
         conn
-        |> put_status(:no_content)
         |> json(nil)
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -78,7 +77,6 @@ defmodule EmbersWeb.Api.FriendController do
     case Subscriptions.create_user_subscription(sub_params) do
       {:ok, _} ->
         conn
-        |> put_status(:no_content)
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
@@ -90,7 +88,7 @@ defmodule EmbersWeb.Api.FriendController do
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
     Subscriptions.delete_user_subscription(user.id, id)
 
-    conn |> put_status(:no_content) |> json(nil)
+    conn |> json(nil)
   end
 
   def list_followers(conn, %{"id" => id} = params) do

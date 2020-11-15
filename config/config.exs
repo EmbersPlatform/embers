@@ -20,7 +20,8 @@ config :embers, EmbersWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "HZe8bMvclknQMj38U8sozwTxlyQsABzs3ARC4vKpAsQseTzRntb+/6TC7LZ2gCmY",
   render_errors: [view: EmbersWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Embers.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub_server: Embers.PubSub,
+  live_view: [signing_salt: "FkeJaxJqoYAoYlWC"]
 
 config :embers, Embers.Email, host: "localhost"
 
@@ -81,10 +82,6 @@ config :event_bus,
     :report_resolved,
     :reports_pruned
   ]
-
-config :scrivener_html,
-  routes_helper: EmbersWeb.Router.Helpers,
-  view_style: :bulma
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

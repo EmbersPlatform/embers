@@ -41,8 +41,8 @@
       margin-left: 1em;
 
       & > .content {
-        position: sticky;
-        top: 55px;
+        //position: sticky;
+        // top: 55px;
 
         & > * + * {
           margin-top: 1em;
@@ -57,5 +57,12 @@ main.padded {
 
   @include media(">=tablet") {
     padding: 1.4em;
+  }
+}
+
+
+#view>main>aside {
+  @include media("<tablet") {
+    display: none;
   }
 }

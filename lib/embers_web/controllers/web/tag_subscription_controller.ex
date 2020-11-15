@@ -26,7 +26,6 @@ defmodule EmbersWeb.Web.TagSubscriptionController do
            level: level
          }) do
       conn
-      |> put_status(:no_content)
       |> json(nil)
     end
   end
@@ -37,7 +36,6 @@ defmodule EmbersWeb.Web.TagSubscriptionController do
     Tags.delete_subscription(user_id, tag_id)
 
     conn
-    |> put_status(:no_content)
     |> json(nil)
   end
 end

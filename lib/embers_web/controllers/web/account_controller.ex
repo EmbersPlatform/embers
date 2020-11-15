@@ -16,6 +16,7 @@ defmodule EmbersWeb.Web.AccountController do
   #  [max_requests: 5, interval_seconds: 60] when action in [:create]
   # )
 
+  @spec rate_limit_signup(atom | %{remote_ip: any}, keyword) :: any
   def rate_limit_signup(conn, options \\ []) do
     ip = conn.remote_ip
     ip_string = ip |> :inet_parse.ntoa() |> to_string()

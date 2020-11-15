@@ -86,7 +86,6 @@ defmodule EmbersWeb.Api.FeedController do
   def hide_post(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
     with {:ok, _activity} <- Timeline.delete_activity(user.id, id) do
       conn
-      |> put_status(:no_content)
       |> json(nil)
     end
   end

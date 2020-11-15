@@ -48,14 +48,13 @@ defmodule EmbersWeb.Api.TagBlockController do
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"id" => id}) do
     Tags.delete_block(user.id, id)
 
-    conn |> put_status(:no_content) |> json(nil)
+    conn |> json(nil)
   end
 
   defp do_create_block(conn, user_id, tag) do
     case Tags.create_block(user_id, tag) do
       {:ok, _} ->
         conn
-        |> put_status(:no_content)
         |> json(nil)
 
       {:error, changeset} ->

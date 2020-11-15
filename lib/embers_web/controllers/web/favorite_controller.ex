@@ -48,7 +48,6 @@ defmodule EmbersWeb.Web.FavoriteController do
     case Favorites.create(user.id, post_id) do
       {:ok, _} ->
         conn
-        |> put_status(:no_content)
         |> json(nil)
 
       {:error,
@@ -58,7 +57,6 @@ defmodule EmbersWeb.Web.FavoriteController do
          ]
        }} ->
         conn
-        |> put_status(:no_content)
         |> json(nil)
 
       {:error, changeset} ->
@@ -71,6 +69,6 @@ defmodule EmbersWeb.Web.FavoriteController do
   def destroy(%Plug.Conn{assigns: %{current_user: user}} = conn, %{"post_id" => id}) do
     Favorites.delete(user.id, id)
 
-    conn |> put_status(:no_content) |> json(nil)
+    conn |> json(nil)
   end
 end

@@ -42,6 +42,6 @@ defmodule EmbersWeb.Api.UserController do
       EmbersWeb.Email.reset_request(email, key)
     end
 
-    conn |> put_status(:no_content) |> json(nil)
+    conn |> json(nil)
   end
 end
