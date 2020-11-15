@@ -423,7 +423,7 @@ msgstr "Auditoría"
 #: lib/embers_web/controllers/web/moderation/ban_controller.ex:29
 #: lib/embers_web/templates/web/moderation/shared/_sidebar.html.eex:41
 msgid "Bans"
-msgstr "Suspender usuario"
+msgstr "Suspensiones"
 
 #, elixir-format
 #: lib/embers_web/templates/layout/logged_in/navigation.html.eex:74
@@ -435,7 +435,7 @@ msgstr "Chat"
 #, elixir-format, fuzzy
 #: lib/embers_web/templates/web/user/_profile_header.html.eex:17
 msgid "Comments"
-msgstr "1 comentario"
+msgstr "Comentarios"
 
 #, elixir-format, fuzzy
 #: lib/embers_web/controllers/web/settings_controller.ex:78
@@ -463,7 +463,7 @@ msgstr "Diseño"
 #: lib/embers_web/controllers/web/moderation/disabled_post_controller.ex:20
 #: lib/embers_web/templates/web/moderation/disabled_post/index.html.eex:13 lib/embers_web/templates/web/moderation/shared/_sidebar.html.eex:20
 msgid "Disabled posts"
-msgstr "Deshabilitar"
+msgstr "Posts deshabilitados"
 
 #, elixir-format
 #: lib/embers_web/controllers/web/favorite_controller.ex:41
@@ -523,7 +523,7 @@ msgstr "Purgar publicaciones desactivadas"
 #: lib/embers_web/controllers/web/moderation/reports_controller.ex:26
 #: lib/embers_web/templates/web/moderation/reports/index.html.eex:12 lib/embers_web/templates/web/moderation/shared/_sidebar.html.eex:14
 msgid "Reports"
-msgstr "Reportar"
+msgstr "Reportes"
 
 #, elixir-format
 #: lib/embers_web/templates/web/moderation/disabled_post/_post.html.eex:94

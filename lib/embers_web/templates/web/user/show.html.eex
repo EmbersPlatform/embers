@@ -16,6 +16,11 @@
       data-last-page="<%= @activities.last_page %>"
       data-next="<%= @activities.next %>"
     >
+      <%= if length(@activities.entries) <= 0 do %>
+        <p class="reached-bottom-notice">
+          <%= gettext("%{user} hasn't posted anything yet", user: @user.username) %>
+        </p>
+      <% end %>
       <div class="feed" infinite-scroll-viewport>
         <%= for activity <- @activities.entries do %>
           <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: activity) %>

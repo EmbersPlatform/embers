@@ -41,6 +41,7 @@ defmodule EmbersWeb.Web.UserController do
       |> assign(:followers, followers)
       |> assign(:following, following)
       |> assign(:activities, activities)
+      |> assign(:og_metatags, title: title, image: user.meta.avatar.medium)
       |> render(:show)
     end
   end

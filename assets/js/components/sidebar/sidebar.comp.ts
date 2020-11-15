@@ -1,6 +1,6 @@
 import Hammer from "hammerjs";
 
-import {Component} from "~js/components/component";
+import { Component } from "~js/components/component";
 // Should this be extracted into it's own dragger component?
 
 export default class EmbersSidebar extends Component(HTMLElement) {
@@ -9,24 +9,27 @@ export default class EmbersSidebar extends Component(HTMLElement) {
 
   static mappedAttributes = ["sidebar_x"];
 
-  sidebar_x: number
-  panning_sidebar: boolean
-  overlay: HTMLElement
-  gestures: HammerManager
+  sidebar_x: number;
+  panning_sidebar: boolean;
+  overlay: HTMLElement;
+  gestures: HammerManager;
 
   oninit() {
     this.panning_sidebar = false;
     this.sidebar_x = 0;
 
     this.overlay = this._get_or_create_overlay();
-    this.overlay.addEventListener("click", this.on_click.bind(this));
+    this.overlay.addEventListener("click", this.on_overlay_click);
+
+    this.addEventListener("click", this.on_close_click);
 
     this._create_gesture_manager();
   }
 
   ondisconnected() {
     if (this.gestures) this.gestures.destroy();
-    this.overlay.removeEventListener("click", this.on_click.bind(this));
+    this.removeEventListener("click", this.on_close_click);
+    this.overlay.removeEventListener("click", this.on_overlay_click);
     this.overlay.remove();
   }
 
@@ -43,9 +46,14 @@ export default class EmbersSidebar extends Component(HTMLElement) {
     this.sidebar_x = 0;
   }
 
-  on_click(event) {
+  on_close_click = ({ target }) => {
+    if (!(target as HTMLElement).closest(".close-sidebar")) return;
     this.close();
-  }
+  };
+
+  on_overlay_click = (event) => {
+    this.close();
+  };
 
   onpanstart(event) {
     if (Math.abs(event.deltaY) > Math.abs(event.deltaX)) return;
@@ -77,7 +85,7 @@ export default class EmbersSidebar extends Component(HTMLElement) {
     this.panning_sidebar = false;
   }
 
-  onsidebar_x({detail}) {
+  onsidebar_x({ detail }) {
     this.style.transform = `translateX(${detail}px)`;
 
     if (this.overlay) {
@@ -97,16 +105,16 @@ export default class EmbersSidebar extends Component(HTMLElement) {
 
     this.gestures = new Hammer.Manager(document.getElementById("embers"));
     this.gestures.add(
-      new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL})
+      new Hammer.Pan({ direction: Hammer.DIRECTION_HORIZONTAL })
     );
 
     // Attaching events like this feels wrong, Hammer.js expects a function as
     // a handler, so the eventHandler standard pattern doesn't work
     // Is the bind even necessary?
-    this.gestures.on("panstart", e => this.onpanstart(e));
-    this.gestures.on("panleft", e => this.onpanleft(e));
-    this.gestures.on("panright", e => this.onpanright(e));
-    this.gestures.on("panend", e => this.onpanend(e));
+    this.gestures.on("panstart", (e) => this.onpanstart(e));
+    this.gestures.on("panleft", (e) => this.onpanleft(e));
+    this.gestures.on("panright", (e) => this.onpanright(e));
+    this.gestures.on("panend", (e) => this.onpanend(e));
   }
 
   _set_sidebar_x(event) {
@@ -121,7 +129,9 @@ export default class EmbersSidebar extends Component(HTMLElement) {
   }
 
   _get_or_create_overlay(): HTMLElement {
-    let existing_overlay = this.parentNode.querySelector(".sidebar-overlay") as HTMLElement;
+    let existing_overlay = this.parentNode.querySelector(
+      ".sidebar-overlay"
+    ) as HTMLElement;
     if (existing_overlay) return existing_overlay;
 
     let new_overlay = document.createElement("div");

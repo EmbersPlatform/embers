@@ -95,23 +95,57 @@ defmodule EmbersWeb.Web.PostController do
   end
 
   defp build_metatags(conn, post) do
-    og_tags = %{
+    og_tags = [
       title: "#{post.user.username} en Embers",
       type: "article",
       url: post_path(conn, :show, post.id)
-    }
+    ]
 
     og_tags =
-      if length(post.media) > 0 do
-        Map.put(og_tags, :image, Enum.at(post.media, 0).url)
-      end || og_tags
+      Enum.flat_map(post.media, &media_to_og/1)
+      |> Keyword.merge(og_tags)
 
     og_tags =
       if not is_nil(post.body) do
-        Map.put(og_tags, :description, post.body)
+        Keyword.put(og_tags, :description, post.body)
       end || og_tags
 
     og_tags
+  end
+
+  defp media_to_og(media) do
+    type =
+      case media.type do
+        "video" -> "video"
+        _ -> "image"
+      end
+
+    og = [{:"#{type}", media.url}]
+
+    "." <> ext = Path.extname(media.url)
+
+    og =
+      case type do
+        "video" ->
+          og ++
+            ["video:type": "video/#{ext}"]
+
+        "image" ->
+          og ++ ["image:type": "image/#{ext}"]
+      end
+
+    og =
+      if media.metadata["width"] do
+        og ++
+          [
+            "#{type}:width": media.metadata["width"],
+            "#{type}:height": media.metadata["height"]
+          ]
+      else
+        og
+      end
+
+    og
   end
 
   def show_modal(conn, %{"hash" => id} = _params) do

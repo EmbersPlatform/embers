@@ -7,17 +7,16 @@ import LoadingIndicator from "~js/components/loading_indicator/loading_indicator
 import PubSub from "pubsub-js";
 import ActivitiesCache from "./activities_cache";
 
-enum States {Idle, Loading, Finished};
+enum States {
+  Idle,
+  Loading,
+  Finished,
+}
 
 export const name = "timeline";
 
 export default class TimelineController extends BaseController {
-  static targets = [
-    "editor",
-    "feed",
-    "loadingIndicator",
-    "newActivityAlert"
-  ];
+  static targets = ["editor", "feed", "loadingIndicator", "newActivityAlert"];
 
   state: States;
   next: string;
@@ -30,18 +29,20 @@ export default class TimelineController extends BaseController {
   connect() {
     this.state = States.Idle;
     this.next = this.element.dataset.next;
-    if(!this.next) {
+    if (!this.next) {
       this.state = States.Finished;
       this.appendActivity(`
-        <p>${gettext("You reached the bottom!")}</p>
-      `)
+        <p class="reached-bottom-notice">${gettext(
+          "You reached the bottom!"
+        )}</p>
+      `);
     }
 
     this.unread_activities = new ActivitiesCache(this);
 
     this.pubsub_feed_token = PubSub.subscribe("new_activity", (_, post) => {
       this.unread_activities.add(post);
-    })
+    });
   }
 
   disconnect() {
@@ -50,69 +51,69 @@ export default class TimelineController extends BaseController {
   }
 
   addActivity(activity) {
-    this.get_target("feed").insertAdjacentHTML("afterbegin", activity)
+    this.get_target("feed").insertAdjacentHTML("afterbegin", activity);
   }
 
   appendActivity(activity) {
-    this.get_target("feed").insertAdjacentHTML("beforeend", activity)
+    this.get_target("feed").insertAdjacentHTML("beforeend", activity);
   }
 
   onNewActivity({ detail: activity }) {
-    this.addActivity(activity)
+    this.addActivity(activity);
   }
 
   async loadMore() {
-    if(this.state !== States.Idle) return;
+    if (this.state !== States.Idle) return;
     this.state = States.Loading;
     this.get_target<LoadingIndicator>("loadingIndicator").show();
 
-    const response = await Timeline.get({ before: this.next })
-    switch(response.tag) {
+    const response = await Timeline.get({ before: this.next });
+    switch (response.tag) {
       case "Success": {
-        let {next, last_page, body: activities} = response.value
+        let { next, last_page, body: activities } = response.value;
         this.next = next;
         this.last_page = last_page;
         this.get_target("feed").insertAdjacentHTML("beforeend", activities);
-        if(this.last_page) {
+        if (this.last_page) {
           this.appendActivity(`
-            <p>${gettext("You reached the bottom!")}</p>
-          `)
+            <p class="reached-bottom-notice">${gettext(
+              "You reached the bottom!"
+            )}</p>
+          `);
         }
         break;
       }
       case "Error": {
-        console.error("Error retrieving timeline", response.value)
+        console.error("Error retrieving timeline", response.value);
         break;
       }
       case "NetworkError": {
-        console.error("Could not connect to server")
+        console.error("Could not connect to server");
         break;
       }
     }
 
-    this.state = (this.last_page) ? States.Finished : States.Idle;
+    this.state = this.last_page ? States.Finished : States.Idle;
     this.get_target<LoadingIndicator>("loadingIndicator").hide();
   }
 
   flush_activities() {
     let posts = this.unread_activities.flush();
-    for(let post of posts) {
-      this.get_target("feed").prepend(post)
+    for (let post of posts) {
+      this.get_target("feed").prepend(post);
     }
-    window.scrollTo({top: 0, behavior: "smooth"});
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   _update_alert() {
     const count = this.unread_activities.length;
 
-    if(count < 1) {
+    if (count < 1) {
       this.get_target("newActivityAlert").textContent = "";
     } else {
-      this
-        .get_target("newActivityAlert")
-        .textContent = gettext(`${count.toString()} new posts`);
+      this.get_target("newActivityAlert").textContent = gettext(
+        `${count.toString()} new posts`
+      );
     }
   }
 }
-
-

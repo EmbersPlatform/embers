@@ -26,6 +26,8 @@ defmodule Embers.Feed.Activity do
   schema "feed_activity" do
     belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
     belongs_to(:post, Embers.Posts.Post, type: Embers.Hashid)
+
+    timestamps()
   end
 
   @doc false

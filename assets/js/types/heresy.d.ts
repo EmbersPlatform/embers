@@ -1,3 +1,3 @@
 declare type Ref<T> = {
-  current: T | undefined
-}
+  current: T | undefined;
+};

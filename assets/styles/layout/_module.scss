@@ -19,30 +19,34 @@
   }
 
   [guest-layout] #view {
-    margin: 0!important;
+    margin: 0 !important;
   }
 
   #view.no-navigation {
-    margin-left: 0!important;
+    margin-left: 0 !important;
   }
 
   main.columns-layout {
     display: flex;
     position: relative;
 
-    &>.main-content {
+    & > .main-content {
       width: 66%;
       margin-right: 1em;
     }
 
-    &>aside {
+    & > aside {
       width: 33%;
       position: relative;
       margin-left: 1em;
 
-      &>.content {
+      & > .content {
         position: sticky;
         top: 55px;
+
+        & > * + * {
+          margin-top: 1em;
+        }
       }
     }
   }

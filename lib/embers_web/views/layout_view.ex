@@ -91,6 +91,9 @@ defmodule EmbersWeb.LayoutView do
           <%= content %>
         </section>
         <footer>
+          <button class="close-sidebar">
+            <%= svg_image("icons/angle-left") %>
+          </button>
           <pop-up class="nav-user-menu" data-controller="user-menu">
             <img src="<%= user.meta.avatar.small %>" class="user-avatar" pop-up-trigger/>
             <ul pop-up-content>
@@ -106,6 +109,13 @@ defmodule EmbersWeb.LayoutView do
               </li>
             </ul>
           </pop-up>
+          <%= active_link(@conn,
+            to: "/settings",
+            "aria-label": gettext("Settings"),
+            title: gettext("Settings")
+          ) do %>
+            <%= svg_image("settings") %>
+          <% end %>
         </footer>
       </nav>
       """

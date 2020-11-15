@@ -70,10 +70,8 @@ defmodule EmbersWeb.Web.TagController do
   def update(conn, %{"id" => id} = params) do
     with tag when not is_nil(tag) <- Tags.get_by(%{id: id}),
          attrs = Map.take(params, ["name", "description"]),
-         {:ok, _tag} <- Tags.update_tag(tag, attrs) do
-      conn
-      |> put_status(:no_content)
-      |> json(nil)
+         {:ok, updated_tag} <- Tags.update_tag(tag, attrs) do
+      render(conn, "tag.json", tag: updated_tag)
     end
   end
 end

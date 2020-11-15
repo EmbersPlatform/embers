@@ -64,6 +64,10 @@ const messages = {
   Filter: "Filtrar",
 
   Users: "Usuarios",
+
+  "Popular tags": "Tags populares",
+
+  "You reached the bottom!": "¡Llegaste al final!",
 };
 
 const domains = {

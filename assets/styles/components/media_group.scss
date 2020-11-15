@@ -9,13 +9,12 @@
   max-height: 600px;
 
   .medias-aside {
-    margin-left: 2px;
     display: flex;
     flex-direction: column;
     flex-basis: 34%;
     flex-shrink: 0;
 
-    &>* {
+    & > * {
       flex-grow: 1;
       width: auto;
       height: fit-content;
@@ -37,6 +36,29 @@
     height: fit-content;
     position: relative;
     cursor: pointer;
+
+    &[media-preview-gif]::before {
+      position: absolute;
+      display: block;
+      bottom: 0.5em;
+      left: 0.5em;
+      content: "GIF";
+      padding: 0.2em 0.5em;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      border-radius: 0.2em;
+    }
+    &[media-preview-video]::before {
+      position: absolute;
+      display: block;
+      bottom: 0.5em;
+      left: 0.5em;
+      content: "►";
+      padding: 0.2em 0.5em;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      border-radius: 0.2em;
+    }
   }
 
   .media-preview_bg {
@@ -66,7 +88,7 @@
   }
 
   &[count="2"] {
-    &>.media-preview {
+    & > .media-preview {
       flex-basis: 50%;
 
       .media-preview_bg {
@@ -77,7 +99,7 @@
 
   &[count="3"],
   &[count="4"] {
-    &>.media-preview:first-child {
+    & > .media-preview:first-child {
       flex-basis: 66%;
       flex-shrink: 0;
 

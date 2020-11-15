@@ -16,6 +16,7 @@ customElements.define(
     );
 
     async connectedCallback() {
+      this.classList.add("tags-widget");
       const res = await Fetch.get("/tags/pinned");
       if (res.tag === "Success") {
         const subs = await res.value.json();
@@ -38,7 +39,16 @@ customElements.define(
               ${this.subs.map(
                 (sub) => html`
                   <li class="pinned-tag">
-                    <a href=${`/tag/${sub.tag.name}`}>${sub.tag.name}</a>
+                    <a href=${`/tag/${sub.tag.name}`}>
+                      <p class="tag-name">#${sub.tag.name}</p>
+                      ${sub.tag.description
+                        ? html`
+                            <p class="tag-description tag-misc">
+                              ${sub.tag.description}
+                            </p>
+                          `
+                        : ``}
+                    </a>
                   </li>
                 `
               )}
