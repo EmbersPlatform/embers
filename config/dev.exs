@@ -34,7 +34,6 @@ config :logger, compile_time_purge_matching: [[application: :remote_ip]]
 config :embers, EmbersWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
       ~r{lib/embers_web/views/.*(ex)$},
       ~r{lib/embers_web/templates/.*(eex)$}

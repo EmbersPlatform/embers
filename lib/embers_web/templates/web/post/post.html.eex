@@ -1,37 +1,22 @@
 <%= if !is_nil(@post.deleted_at) and !assigns[:show_deleted] do %>
-  <%= render("_post_tombstone.html") %>
+<%= render("_post_tombstone.html") %>
 <% else %>
-<article
-  <%= if assigns[:embedded], do: "embedded" %>
-  id="post-<%= @post.id %>"
-  data-id="<%= @post.id %>"
-  class="post"
-  post
-  itemscope
-  itemtype="https://schema.org/SocialMediaPosting"
-  role="article"
-  data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>"
-  data-author-id="<%= @post.user.id %>"
-  data-author="<%= @post.user.canonical %>"
-  data-controller="<%= attr_list [
+<article <%= if assigns[:embedded], do: "embedded" %> id="post-<%= @post.id %>" data-id="<%= @post.id %>" class="post"
+  post itemscope itemtype="https://schema.org/SocialMediaPosting" role="article"
+  data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>" data-author-id="<%= @post.user.id %>"
+  data-author="<%= @post.user.canonical %>" data-controller="<%= attr_list [
     "post",
     "reactable",
     "shareable",
     "medias",
     {"content-warning", ask_nsfw?(@conn, @post) }
-  ] %>"
-  <%= if @post.nsfw && ask_nsfw?(@conn, @post), do: "nsfw" %>
-  <%= if @post.faved, do: "faved" %>
-  <%= if assigns[:activity], do: "activity" %>
-  >
+  ] %>" <%= if @post.nsfw && ask_nsfw?(@conn, @post), do: "nsfw" %> <%= if @post.faved, do: "faved" %>
+  <%= if assigns[:activity], do: "activity" %>>
   <div class="content-warnings">
     <div class="content-warning warning-nsfw">
       <span>NSFW: </span>
-      <button
-        class="button danger button-small"
-        data-target="content-warning.button"
-        data-action="content-warning#toggle"
-      >
+      <button class="button danger button-small" data-target="content-warning.button"
+        data-action="content-warning#toggle">
         <%= gettext("Show") %>
       </button>
     </div>
@@ -51,33 +36,28 @@
         </div>
         <div class="details-bottom">
           <%= link(to: post_path(Endpoint, :show, @post.id), itemprop: "url") do %>
-            <time
-              datetime="<%= @post.inserted_at %>"
-              pubdate="<%= @post.inserted_at %>"
-              itemprop="datePublished">
-              <%= time_ago(@post.inserted_at) %>
-            </time>
+          <time datetime="<%= @post.inserted_at %>" pubdate="<%= @post.inserted_at %>" itemprop="datePublished">
+            <%= time_ago(@post.inserted_at) %>
+          </time>
           <% end %>
-          <%= link(to: post_path(Endpoint, :show, @post.id), class: "post-id-link") do %>
-            >><%= @post.id %>
-          <% end %>
+          <%= post_id_link(@post) %>
         </div>
       </div>
       <post-actions></post-actions>
       <%# <%= render("_post_actions.html", assigns) %>
     </header>
     <%= if !is_nil(assigns[:sharers]) and length(@sharers) > 0 do %>
-      <% sharers = Enum.uniq(@sharers) %>
-      <%
+    <% sharers = Enum.uniq(@sharers) %>
+    <%
         sharers_avatars =
           Enum.take(sharers, 3)
           |> Enum.map(fn x -> x.meta.avatar.small end)
       %>
-      <div class="post-sharers">
-        <%= for avatar <- sharers_avatars do %>
-          <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: avatar, size: "medium") %>
-        <% end %>
-        <span>
+    <div class="post-sharers">
+      <%= for avatar <- sharers_avatars do %>
+      <%= render(EmbersWeb.Web.UserView, "avatar.html", avatar: avatar, size: "medium") %>
+      <% end %>
+      <span>
         <%
           build_user_link = fn user ->
             labeled_link(user.username,
@@ -104,30 +84,30 @@
             raw gettext("Shared by %{user1}, %{user2} and %{rest} more",
               user1: user1, user2: user2, rest: length(sharers) - 2)
         end %>
-        </span>
-      </div>
+      </span>
+    </div>
     <% end %>
     <section class="post-content">
       <section class="post-body" itemprop="articleBody">
         <leg-markdown><%= @post.body %></leg-markdown>
         <%= if !is_nil(@post.related_to_id) and assigns[:embedded] do %>
-          <%= link(to: post_path(Endpoint, :show, @post.related_to_id), class: "related-link") do %>
-            <%= " " <> post_url(Endpoint, :show, @post.related_to_id) %>
-          <% end %>
+        <%= link(to: post_path(Endpoint, :show, @post.related_to_id), class: "related-link") do %>
+        <%= " " <> post_url(Endpoint, :show, @post.related_to_id) %>
+        <% end %>
         <% end %>
       </section>
       <%= if length(@post.media) > 0 do %>
-        <section class="post-medias" >
-          <%= render("_media_group.html", medias: @post.media) %>
-        </section>
+      <section class="post-medias">
+        <%= render("_media_group.html", medias: @post.media) %>
+      </section>
       <% end %>
       <%= if length(@post.links) > 0 and length(@post.media) <= 0 do %>
-        <%= for link <- @post.links do %>
-          <%= EmbersWeb.Web.LinkView.render("link.html", link: link) %>
-        <% end %>
+      <%= for link <- @post.links do %>
+      <%= EmbersWeb.Web.LinkView.render("link.html", link: link) %>
+      <% end %>
       <% end %>
       <%= if has_related?(@post) do %>
-        <%= render("post.html", conn: @conn, post: @post.related_to, embedded: true) %>
+      <%= render("post.html", conn: @conn, post: @post.related_to, embedded: true) %>
       <% end %>
     </section>
     <post-tags data-post_id="<%= @post.id %>"></post-tags>
@@ -139,67 +119,57 @@
         <e-spacer></e-spacer>
         <div>
           <%= if @post.replies_count > 0 do %>
-            <a href="<%= post_path(@conn, :show, @post.id) %>" class="stat replies-stat">
-              <%= ngettext("1 comment", "%{count} comments", @post.replies_count) %>
-            </a>
+          <a href="<%= post_path(@conn, :show, @post.id) %>" class="stat replies-stat">
+            <%= ngettext("1 comment", "%{count} comments", @post.replies_count) %>
+          </a>
           <% end %>
           <%= if @post.shares_count > 0 do %>
-            <span class="stat shares-stat">
-              <%= ngettext("1 time shared", "%{count} times shared", @post.shares_count) %>
-            </span>
+          <span class="stat shares-stat">
+            <%= ngettext("1 time shared", "%{count} times shared", @post.shares_count) %>
+          </span>
           <% end %>
         </div>
       </div>
       <%= if authenticated?(@conn) do %>
-        <div class="actions">
-          <%= unless is_owner?(@conn, @post) do %>
-            <%= render("reaction_picker.html") %>
-          <% end %>
-          <e-spacer></e-spacer>
-          <%= link(to: post_path(Endpoint, :show, @post.id), class: "button-link",
+      <div class="actions">
+        <%= unless is_owner?(@conn, @post) do %>
+        <%= render("reaction_picker.html") %>
+        <% end %>
+        <e-spacer></e-spacer>
+        <%= link(to: post_path(Endpoint, :show, @post.id), class: "button-link",
             "data-post-id": @post.id
           ) do %>
-            <%= svg_image("comment") %>
-          <% end %>
-          <button class="plain-button" share-trigger>
-            <%= svg_image("share") %>
-          </button>
-        </div>
+        <%= svg_image("comment") %>
+        <% end %>
+        <button class="plain-button" share-trigger>
+          <%= svg_image("share") %>
+        </button>
+      </div>
       <% end %>
     </footer>
   </section>
   <%= if assigns[:with_replies] do %>
-    <section class="replies" data-controller="post-replies">
-      <div class="replies-list" data-target="post-replies.list">
-        <%= for reply <- get_replies(@post) do
+  <section class="replies" data-controller="post-replies">
+    <div class="replies-list" data-target="post-replies.list">
+      <%= for reply <- get_replies(@post) do
           render("reply_thread.html", conn: @conn, reply: reply)
         end %>
-      </div>
-      <post-editor
-        compact
-        data-action="publish->post-replies#addReply"
-        data-parent_id="<%= @post.id %>"
-        placeholder="<%= gettext("Reply...") %>"
-      ></post-editorcompact>
-    </section>
+    </div>
+    <post-editor compact data-action="publish->post-replies#addReply" data-parent_id="<%= @post.id %>"
+      placeholder="<%= gettext("Reply...") %>">
+      </post-editorcompact>
+  </section>
   <% end %>
   <media-gallery data-target="medias.gallery">
     <%= if (length @post.links) > 0 do %>
-      <%= for link <- @post.links do %>
-        <gallery-item
-          data-id="<%= link.id %>"
-          data-type="image"
-          data-src="<%= link.embed.thumbnail_url %>"
-        ></gallery-item>
-      <% end %>
+    <%= for link <- @post.links do %>
+    <gallery-item data-id="<%= link.id %>" data-type="image" data-src="<%= link.embed.thumbnail_url %>"></gallery-item>
+    <% end %>
     <% end %>
     <%= for media <- @post.media do %>
-      <gallery-item
-        data-id="<%= media.id %>"
-        data-type="<%= media.type %>"
-        data-src="<%= Embers.Media.format_url media.url %>"
-      ></gallery-item>
+    <gallery-item data-id="<%= media.id %>" data-type="<%= media.type %>"
+      data-src="<%= Embers.Media.format_url media.url %>"></gallery-item>
     <% end %>
-  </media-galley>
+    </media-galley>
 </article>
 <% end %>

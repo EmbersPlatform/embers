@@ -43,14 +43,14 @@
   }
 
   e-notification {
-    padding: 0.6em;
-    border-radius: 0.2em;
     box-sizing: border-box;
     width: 100%;
 
-    a {
+    & > a {
       display: flex;
       align-items: center;
+      padding: 0.6em;
+      border-radius: 0.2em;
     }
 
     img {

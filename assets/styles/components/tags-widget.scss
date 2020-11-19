@@ -39,6 +39,9 @@
 
   .tag-name {
     font-size: 1.2em;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .tag-count {
@@ -47,6 +50,10 @@
 
   .tag-misc {
     font-size: 0.9em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 }
 

@@ -98,7 +98,8 @@ defmodule Embers.Mixfile do
       {:ex_rated, "~> 1.2"},
       {:phoenix_inline_svg, "~> 1.3"},
       {:phoenix_active_link, "~> 0.3.0"},
-      {:remote_ip, "~> 0.2.1"}
+      {:remote_ip, "~> 0.2.1"},
+      {:sentry, "~> 8.0"}
     ]
   end
 

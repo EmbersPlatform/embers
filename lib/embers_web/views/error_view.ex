@@ -1,4 +1,4 @@
-defmodule EmbersWeb.Web.ErrorView do
+defmodule EmbersWeb.ErrorView do
   @moduledoc false
 
   use EmbersWeb, :view

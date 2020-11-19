@@ -184,7 +184,7 @@ defmodule Embers.Notifications do
   """
   def set_status(id, status \\ 2)
 
-  def set_status(id, status) when is_integer(id) do
+  def set_status(id, status) when is_binary(id) do
     Repo.update_all(
       from(
         notif in Notification,

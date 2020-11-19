@@ -40,7 +40,7 @@ export default class extends Component(HTMLElement) {
       ${this.tags.map(
         (tag) => html`
           <li>
-            <a href=${`/tag/${tag.tag.name}`}>
+            <a href=${`/tag/${tag.tag.name}`} title=${tag.tag.name}>
               <p class="tag-name">#${tag.tag.name}</p>
               ${tag.tag.description
                 ? html`<p class="tag-misc">${tag.tag.description}</p>`

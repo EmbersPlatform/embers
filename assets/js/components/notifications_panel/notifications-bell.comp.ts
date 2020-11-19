@@ -1,5 +1,4 @@
 import { Component } from "../component";
-import PubSub from "pubsub-js";
 import * as Notifications from "~js/lib/notifications";
 
 export default class NotificationsBell extends Component(HTMLButtonElement) {
@@ -16,14 +15,14 @@ export default class NotificationsBell extends Component(HTMLButtonElement) {
     this.counter_element = this.querySelector(".counter");
     this.unread_count = Notifications.unseen_count();
 
-    Notifications.unseen_count.map(count => {
+    Notifications.unseen_count.map((count) => {
       this.unread_count = count;
-    })
+    });
   }
 
   onunread_count() {
     this.counter_element.textContent = this.unread_count.toString();
-    if(this.unread_count < 1) {
+    if (this.unread_count < 1) {
       this.counter_element.classList.add("hidden");
     } else {
       this.counter_element.classList.remove("hidden");

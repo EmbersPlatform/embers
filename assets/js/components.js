@@ -21,6 +21,7 @@ import "./components/show-tag-page";
 import "./components/update-tag";
 import "./components/tag";
 import "./components/mention";
+import "./components/post-id-link";
 
 import "./components/media-gif";
 

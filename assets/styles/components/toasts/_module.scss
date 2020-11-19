@@ -1,0 +1,16 @@
+@import "./toast-zone.scss";
+@import "./toast-notification.scss";
+@import "./reaction.scss";
+
+.notification-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.notification-content .icon {
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  margin-right: 0.5em;
+}

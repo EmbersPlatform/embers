@@ -97,14 +97,23 @@ defmodule EmbersWeb.Web.PostView do
     match?(%Post{}, post.related_to)
   end
 
-  def ask_nsfw?(%{assigns: %{current_user: user}}, post) do
-    if is_nil(user) do
-      post.nsfw
-    else
-      %{content_nsfw: nsfw_setting} = Embers.Profile.Settings.get_setting!(user.id)
-      post.nsfw && nsfw_setting != "show"
-    end
+  def ask_nsfw?(%{assigns: %{current_user: user}}, post) when not is_nil(user) do
+    user_settings =
+      case user.settings do
+        nil -> Embers.Profile.Settings.get_setting!(user.id)
+        settings -> settings
+      end
+
+    post.nsfw && user_settings.content_nsfw != "show"
   end
 
-  def ask_nsfw?(_, _), do: true
+  def ask_nsfw?(_, post), do: post.nsfw
+
+  def post_id_link(post) do
+    ~E"""
+    <details is="emb-post-id-link" data-id="<%= post.id %>">
+      <summary>>><%= post.id %></summary>
+    </details>
+    """
+  end
 end

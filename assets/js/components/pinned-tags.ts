@@ -39,7 +39,7 @@ customElements.define(
               ${this.subs.map(
                 (sub) => html`
                   <li class="pinned-tag">
-                    <a href=${`/tag/${sub.tag.name}`}>
+                    <a href=${`/tag/${sub.tag.name}`} title=${sub.tag.name}>
                       <p class="tag-name">#${sub.tag.name}</p>
                       ${sub.tag.description
                         ? html`

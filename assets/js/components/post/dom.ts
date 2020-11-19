@@ -2,12 +2,10 @@ import { get_settings } from "~js/lib/application";
 import * as Sets from "~js/lib/utils/sets";
 import { gettext } from "~js/lib/gettext";
 
-export const parse = html => {
-  return document
-    .createRange()
-    .createContextualFragment(html)
+export const parse = (html) => {
+  return document.createRange().createContextualFragment(html)
     .firstChild as HTMLElement;
-}
+};
 
 export const replace_with_tombstone = (post) => {
   post.outerHTML = `
@@ -16,11 +14,14 @@ export const replace_with_tombstone = (post) => {
     </div>
   `;
   return post;
-}
+};
 
 type TagsList = string[] | Set<string>;
-export const update_tags = (post: HTMLElement, new_tags: TagsList): HTMLElement => {
-  if(new_tags instanceof Array) {
+export const update_tags = (
+  post: HTMLElement,
+  new_tags: TagsList
+): HTMLElement => {
+  if (new_tags instanceof Array) {
     new_tags = Sets.from<string>(new_tags);
   }
 
@@ -29,7 +30,7 @@ export const update_tags = (post: HTMLElement, new_tags: TagsList): HTMLElement 
   post = format_content_warning(post);
 
   return post;
-}
+};
 
 export function is_nsfw(post) {
   const tags = get_tags(post);
@@ -37,19 +38,20 @@ export function is_nsfw(post) {
 }
 
 export const format_content_warning = (post: HTMLElement): HTMLElement => {
+  console.log(post);
   const tags = get_tags(post);
   let controllers = new Set(post.dataset.controller.split(" "));
 
-  switch(get_settings().content_nsfw) {
+  switch (get_settings().content_nsfw) {
     case "hide": {
-      if(Sets.has_insensitive(tags, "nsfw")) {
+      if (Sets.has_insensitive(tags, "nsfw")) {
         controllers.add("content-warning");
         post.setAttribute("nsfw", "true");
       }
       break;
     }
     case "ask": {
-      if(Sets.has_insensitive(tags, "nsfw")) {
+      if (Sets.has_insensitive(tags, "nsfw")) {
         controllers.add("content-warning");
         post.setAttribute("nsfw", "true");
       } else {
@@ -68,8 +70,8 @@ export const format_content_warning = (post: HTMLElement): HTMLElement => {
   post.dataset.controller = Sets.join(controllers, " ");
 
   return post;
-}
+};
 
 export const get_tags = (post: HTMLElement): Set<string> => {
   return Sets.from(post.dataset.tags.split(" "));
-}
+};

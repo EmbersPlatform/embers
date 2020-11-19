@@ -10,6 +10,8 @@ export default class PostEditorModal extends ModalDialog {
 
   editor: Ref<PostEditor>;
 
+  default_content = "";
+
   oninit() {
     super.oninit();
     this.editor = ref();
@@ -18,23 +20,39 @@ export default class PostEditorModal extends ModalDialog {
 
   close = () => {
     this.editor.current.cancel();
+    this.default_content = "";
     super.close();
-  }
+  };
 
   handle_publish = () => {
-    status_toasts.add({content: html`${gettext("Post published!")} <a href="">View post</a>`})
+    status_toasts.add({
+      content: html`${gettext("Post published!")} <a href="">View post</a>`,
+    });
     this.close();
+  };
+
+  showModal(default_content = "") {
+    this.default_content = default_content;
+    super.showModal();
+    this.editor.current.cancel();
+    this.editor.current.focus();
   }
 
   render() {
     const content = html`
       <header>
-        <button class="plain-button" onclick=${close}>${{html: back_icon}}</button>
+        <button class="plain-button" onclick=${close}>
+          ${{ html: back_icon }}
+        </button>
         <span>${gettext("Create post")}</span>
       </header>
-      <post-editor ref=${this.editor} onpublish=${this.handle_publish}></post-editor>
-    `
+      <post-editor
+        ref=${this.editor}
+        onpublish=${this.handle_publish}
+        data-default-content=${this.default_content}
+      ></post-editor>
+    `;
 
-    this.html`${this.render_dialog(content)}`
+    this.html`${this.render_dialog(content)}`;
   }
 }

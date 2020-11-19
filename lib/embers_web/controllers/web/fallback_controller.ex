@@ -15,6 +15,6 @@ defmodule EmbersWeb.Web.FallbackController do
   def call(conn, {:error, :not_found}) do
     conn
     |> put_status(:not_found)
-    |> render(EmbersWeb.Web.ErrorView, :"404", [])
+    |> render(EmbersWeb.ErrorView, :"404", [])
   end
 end

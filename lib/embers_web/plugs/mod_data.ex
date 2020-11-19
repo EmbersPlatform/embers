@@ -1,7 +1,6 @@
 defmodule EmbersWeb.Plugs.ModData do
   import Plug.Conn
 
-  alias Embers.Accounts
   alias Embers.Authorization
 
   def init(default), do: default

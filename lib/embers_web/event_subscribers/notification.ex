@@ -5,8 +5,6 @@ defmodule EmbersWeb.NotificationSubscriber do
     topics:
       ~w(notification_created post_reacted comment_reacted notification_read all_notifications_read)
 
-  import Embers.Helpers.IdHasher
-
   alias EmbersWeb.Web.NotificationView
   alias Embers.Profile.Meta
 

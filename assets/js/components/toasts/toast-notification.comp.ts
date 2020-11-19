@@ -1,12 +1,15 @@
 import { Component } from "../component";
 import { Timer } from "~js/lib/utils/timer";
 import anime from "animejs";
+import { render, Hole } from "uhtml";
 
-export interface Toast {
-  id: string,
-  content: string | DocumentFragment | HTMLElement,
-  duration?: number,
-  classes?: string[]
+export type ToastContent = string | DocumentFragment | HTMLElement | Hole;
+
+export interface ToastData {
+  id?: string;
+  content: ToastContent;
+  duration?: number;
+  classes?: string[];
 }
 
 export default class extends Component(HTMLElement) {
@@ -14,28 +17,31 @@ export default class extends Component(HTMLElement) {
 
   static mappedAttributes = ["toast"];
 
-  toast: Toast;
+  toast: ToastData;
   timer: Timer;
 
   onconnected() {
-    const duration = (typeof this.toast.duration == "number")
-      ? this.toast.duration : Math.max(get_read_time(this.toast.content), 5000);
+    const duration =
+      typeof this.toast.duration == "number"
+        ? this.toast.duration
+        : Math.max(get_read_time(this.toast.content), 5000);
 
-      if(duration > 0) {
-        this.timer = new Timer(duration, () => {
-          this._expire();
-        })
-      } else {
-        const noop = () => {};
-        // @ts-ignore Should probably add a noop timer type instead or handle it
-        // differently
-        this.timer = {
-          pause: noop, resume: noop
-        }
-      }
+    if (duration > 0) {
+      this.timer = new Timer(duration, () => {
+        this._expire();
+      });
+    } else {
+      const noop = () => {};
+      // @ts-ignore Should probably add a noop timer type instead or handle it
+      // differently
+      this.timer = {
+        pause: noop,
+        resume: noop,
+      };
+    }
 
     const classes = this.toast.classes;
-    if(classes instanceof Array) {
+    if (classes instanceof Array) {
       this.classList.add(...classes);
     }
 
@@ -51,64 +57,38 @@ export default class extends Component(HTMLElement) {
       targets: this,
       duration: 400,
       easing: "linear",
-      keyframes: [
-        {opacity: 0},
-        {height: 0}
-      ],
+      keyframes: [{ opacity: 0 }, { height: 0 }],
       complete: () => {
         this.timer.pause();
         this.dispatch("expire", this.toast);
-      }
-    })
-  }
+      },
+    });
+  };
 
   render() {
-    this.html`
+    if (this.toast.content instanceof Hole) {
+      render(this, this.toast.content);
+    } else {
+      this.html`
       ${this.toast.content}
-    `
+    `;
+    }
   }
-
-  static style = (self) => `
-    ${self} {
-      display: block;
-      width: 100%;
-      background: var(--toast-background, var(--primary));
-      color: var(--toast-foreground, var(--color));
-      padding: 0.5em;
-      box-shadow: var(--box-shadow);
-      border: var(--border);
-      border-radius: var(--border-radius);
-    }
-
-    ${self} + ${self} {
-      margin-top: 0.5em;
-    }
-
-    ${self}.success {
-      border-left: 0.3em solid var(--success);
-    }
-
-    ${self}.danger {
-      border-left: 0.3em solid var(--danger);
-    }
-
-    ${self}.warning {
-      border-left: 0.3em solid var(--warning);
-    }
-  `
 }
 
-const WPM = 200
+const WPM = 200;
 const word_size = 5;
 
-const get_read_time = (content: string | HTMLElement | DocumentFragment): number => {
+const get_read_time = (content: ToastContent): number => {
   let text;
 
-  if(typeof content == "string") {
+  if (typeof content == "string") {
     text = content;
+  } else if (content instanceof Hole) {
+    return 5000;
   } else {
     text = content.textContent;
   }
 
-  return text ? text.length/word_size/WPM * 60 * 1000 : 5000
-}
+  return text ? (text.length / word_size / WPM) * 60 * 1000 : 5000;
+};

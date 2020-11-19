@@ -1,4 +1,5 @@
 defmodule EmbersWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :embers
 
   plug(Unpoly)
@@ -59,6 +60,8 @@ defmodule EmbersWeb.Endpoint do
     json_decoder: Jason,
     length: 5_000_000
   )
+
+  plug(Sentry.PlugContext)
 
   plug(Plug.MethodOverride)
   plug(Plug.Head)

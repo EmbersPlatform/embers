@@ -257,8 +257,7 @@
     }
   }
 
-  .post-id-link {
-    opacity: 0.4;
+  [is=emb-post-id-link] {
     font-size: 0.8em;
   }
 

@@ -22,6 +22,7 @@ defmodule EmbersWeb.Router do
     plug(EmbersWeb.Authenticate)
     plug(EmbersWeb.Remember)
     plug(GetPermissions)
+    plug(EmbersWeb.Plugs.LoadSettings)
     plug(EmbersWeb.Plugs.SelectLayout)
     plug(EmbersWeb.Plugs.ModData)
   end

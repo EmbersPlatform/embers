@@ -20,7 +20,8 @@ import TagInput from "./tag_input";
 import MediaZone from "./medias/zone";
 import LinkZone from "./link_zone";
 
-import type {FileOrMedia} from "./medias/zone"
+import type { FileOrMedia } from "./medias/zone";
+import { useEffect } from "hooked-elements";
 
 export default class PostEditor extends Component(HTMLElement) {
   static component = "PostEditor";
@@ -28,7 +29,13 @@ export default class PostEditor extends Component(HTMLElement) {
   static tagName = "element";
 
   static includes = { AutosizeTextarea, TagInput, MediaZone, LinkZone };
-  static booleanAttributes = ["compact", "notags", "noactions", "nomedia", "as_thread"];
+  static booleanAttributes = [
+    "compact",
+    "notags",
+    "noactions",
+    "nomedia",
+    "as_thread",
+  ];
 
   compact = this["compact"] as boolean;
   notags = this["notags"] as boolean;
@@ -36,7 +43,7 @@ export default class PostEditor extends Component(HTMLElement) {
   nomedia = this["nomedia"] as boolean;
   as_thread = this["as_thread"] as boolean;
 
-  placeholder: string
+  placeholder: string;
 
   textarea;
   tag_input;
@@ -54,7 +61,7 @@ export default class PostEditor extends Component(HTMLElement) {
 
   onconnected() {
     super.initialize();
-    if(this._in_preview) return;
+    if (this._in_preview) return;
 
     this.textarea = ref();
     this.tag_input = ref();
@@ -62,17 +69,16 @@ export default class PostEditor extends Component(HTMLElement) {
     this.link_zone = ref();
     this.nsfw_switch = ref();
 
-    if(this.dataset.withTags)
+    if (this.dataset.withTags)
       this.with_tags = this.dataset.withTags.split(" ");
 
     this.placeholder =
-      this.getAttribute("placeholder")
-      || dgettext("editor", "Share something with your followers!")
+      this.getAttribute("placeholder") ||
+      dgettext("editor", "Share something with your followers!");
   }
 
-  render({useState}: Hooks) {
-    if(this._in_preview) return;
-    const [body, setBody] = useState("");
+  render({ useState }: Hooks) {
+    const [body, setBody] = useState(this.dataset.defaultContent || "");
     const [tags, setTags] = useState<string[]>([]);
     const [medias, setMedias] = useState<FileOrMedia[]>([]);
     const [links, setLinks] = useState([]);
@@ -83,56 +89,54 @@ export default class PostEditor extends Component(HTMLElement) {
     const post_attrs = {
       body,
       tags,
-      medias: medias.map(m => m.value),
+      medias: medias.map((m) => m.value),
       links,
       parent_id: this.dataset.parent_id,
-      related_to_id: this.dataset.related_to_id
-    }
+      related_to_id: this.dataset.related_to_id,
+    };
 
-    const can_publish = !publishing && PostValidations.valid_post(post_attrs)
+    const can_publish = !publishing && PostValidations.valid_post(post_attrs);
 
     const reset = () => {
-      setBody("");
+      setBody(this.dataset.defaultContent || "");
       setTags([]);
       setMedias([]);
       setLinks([]);
       setNsfw(false);
-      if(this.tag_input.current)
-        this.tag_input.current.value = "";
+      if (this.tag_input.current) this.tag_input.current.value = "";
       this.textarea.current.update();
       this.media_zone.current.reset();
       this.link_zone.current.reset();
-      if(this.nsfw_switch.current)
-        this.nsfw_switch.current.reset();
-    }
+      if (this.nsfw_switch.current) this.nsfw_switch.current.reset();
+    };
 
     this.cancel = () => {
       reset();
-    }
+    };
 
     this.publish = async () => {
       if (publishing) return;
       if (this.compact) this.textarea.current.focus();
 
-      let options: Posts.CreatePostOptions = {params: {}};
+      let options: Posts.CreatePostOptions = { params: {} };
 
-      if(this.as_thread) {
+      if (this.as_thread) {
         options.params.as_thread = true;
       }
 
-      if(nsfw && !post_attrs.tags.includes("nsfw")) {
+      if (nsfw && !post_attrs.tags.includes("nsfw")) {
         post_attrs.tags.push("nsfw");
       }
 
-      if(this.with_tags) {
-        post_attrs.tags.push(...this.with_tags)
+      if (this.with_tags) {
+        post_attrs.tags.push(...this.with_tags);
       }
 
       setPublishing(true);
       setErrors([]);
-      const res = await Posts.create(post_attrs, options)
-      setPublishing(false)
-      switch(res.tag) {
+      const res = await Posts.create(post_attrs, options);
+      setPublishing(false);
+      switch (res.tag) {
         case "Success": {
           this.dispatch("publish", res.value);
           PubSub.publish("post.created", res.value);
@@ -141,8 +145,8 @@ export default class PostEditor extends Component(HTMLElement) {
         }
         case "Error": {
           let errs = [];
-          for(let e in res.value.errors) {
-            errs = [...errs, ...res.value.errors[e]]
+          for (let e in res.value.errors) {
+            errs = [...errs, ...res.value.errors[e]];
           }
           setErrors(errs);
           break;
@@ -152,140 +156,151 @@ export default class PostEditor extends Component(HTMLElement) {
           break;
         }
       }
-    }
+    };
 
     this.show = () => {
       this.classList.remove("hidden");
-    }
+    };
 
     this.hide = () => {
       this.classList.add("hidden");
-    }
+    };
 
-    this.addReply = username => {
-      if(username)
-        setBody(`@${username} `);
+    this.addReply = (username) => {
+      if (username) setBody(`@${username} `);
       this.textarea.current.focus();
-    }
+    };
 
     const remove_link = () => {
       setLinks([]);
       this.link_zone.current.reset();
-    }
+    };
 
     const add_file = (file: File) => {
       remove_link();
       this.media_zone.current.add_file(file);
-    }
+    };
 
     const select_media = (event: Event) => {
       const target = event.target as HTMLInputElement;
       let files = Array.from(target.files);
-      files.forEach(file => add_file(file));
-      target.files= null;
-    }
+      files.forEach((file) => add_file(file));
+      target.files = null;
+    };
 
     const handle_paste = (event: ClipboardEvent) => {
       let files = event.clipboardData.files;
-      if(files.length) {
-        Array.from(files).forEach(file => add_file(file));
+      if (files.length) {
+        Array.from(files).forEach((file) => add_file(file));
       }
 
       const text = event.clipboardData.getData("text");
-      if(Links.text_has_link(text)) {
+      if (Links.text_has_link(text)) {
         const link = Links.extract_links(text)[0];
         this.link_zone.current.add_link(link);
       }
-    }
+    };
 
     const handle_media_change = (event: CustomEvent) => {
-      setMedias(event.detail)
-    }
+      setMedias(event.detail);
+    };
 
     const tag_input = !(this.notags || this.compact)
       ? html`
-        <TagInput
-          ref=${this.tag_input}
-          onupdate=${e => setTags(e.detail)}
-        />
+          <TagInput
+            ref=${this.tag_input}
+            onupdate=${(e) => setTags(e.detail)}
+          />
         `
-      : ``
+      : ``;
 
-    const toggle_nsfw = event => {
+    const toggle_nsfw = (event) => {
       setNsfw(event.detail);
-    }
+    };
 
-    const publish_buttons = (!this.compact && !this.noactions)
+    const publish_buttons =
+      !this.compact && !this.noactions
+        ? html`
+            <div class="editor-actions">
+              <switch-input
+                class="vertical"
+                onchange=${toggle_nsfw}
+                ref=${this.nsfw_switch}
+                >NSFW</switch-input
+              >
+              ${!this.nomedia
+                ? html`
+                    <label
+                      class="plain-button"
+                      tabindex="0"
+                      title=${dgettext("editor", "Add image")}
+                    >
+                      ${{ html: add_image_icon }}
+                      <input
+                        type="file"
+                        style="display: none;"
+                        onchange=${select_media}
+                        multiple
+                        disabled=${publishing}
+                        accept=${Medias.allowed_media_types.join(",")}
+                      />
+                    </label>
+                  `
+                : ``}
+              <button
+                class="button primary"
+                onclick=${this.publish}
+                disabled=${!can_publish}
+                title=${dgettext("editor", "Publish")}
+                aria-label=${dgettext("editor", "Publish")}
+                tabindex="0"
+              >
+                ${dgettext("editor", "Publish")}
+              </button>
+            </div>
+          `
+        : ``;
+
+    const compact_buttons = this.compact
       ? html`
-        <div class="editor-actions">
-          <switch-input
-            class="vertical"
-            onchange=${toggle_nsfw}
-            ref=${this.nsfw_switch}
-          >NSFW</switch-input>
           ${!this.nomedia
             ? html`
-              <label class="plain-button" tabindex="0" title=${dgettext("editor", "Add image")}>
-                ${{ html: add_image_icon }}
-                <input
-                  type="file"
-                  style="display: none;"
-                  onchange=${select_media}
-                  multiple
-                  disabled=${publishing}
-                  accept=${Medias.allowed_media_types.join(",")}
+                <label
+                  class="plain-button"
+                  tabindex="0"
+                  title=${dgettext("editor", "Add image")}
                 >
-              </label>
+                  ${{ html: add_image_icon }}
+                  <input
+                    type="file"
+                    style="display: none;"
+                    onchange=${select_media}
+                    multiple
+                    disabled=${publishing}
+                    accept=${Medias.allowed_media_types.join(",")}
+                  />
+                </label>
               `
             : ``}
           <button
-            class="button primary"
+            class="plain-button"
             onclick=${this.publish}
+            ontouchend=${this.publish}
             disabled=${!can_publish}
             title=${dgettext("editor", "Publish")}
             aria-label=${dgettext("editor", "Publish")}
             tabindex="0"
-          >${dgettext("editor", "Publish")}</button>
-        </div>
+          >
+            ${{ html: publish_icon }}
+          </button>
         `
-      : ``
-
-    const compact_buttons = this.compact
-      ? html`
-        ${!this.nomedia
-          ? html`
-            <label class="plain-button" tabindex="0" title=${dgettext("editor", "Add image")}>
-              ${{ html: add_image_icon }}
-              <input
-                type="file"
-                style="display: none;"
-                onchange=${select_media}
-                multiple
-                disabled=${publishing}
-                accept=${Medias.allowed_media_types.join(",")}
-              >
-            </label>
-            `
-          : ``}
-        <button
-          class="plain-button"
-          onclick=${this.publish}
-          ontouchend=${this.publish}
-          disabled=${!can_publish}
-          title=${dgettext("editor", "Publish")}
-          aria-label=${dgettext("editor", "Publish")}
-          tabindex="0"
-        >
-          ${{ html: publish_icon }}
-        </button>
-        `
-      : ``
+      : ``;
 
     this.html`
-    <form onsubmit=${e => e.preventDefault()}>
+    <form onsubmit=${(e) => e.preventDefault()}>
       <div class="editor-body">
         <AutosizeTextarea
-          oninput=${e => setBody(e.target.value)}
+          oninput=${(e) => setBody(e.target.value)}
           onpaste=${handle_paste}
           .value=${body}
           placeholder=${this.placeholder}
@@ -295,19 +310,23 @@ export default class PostEditor extends Component(HTMLElement) {
         ${compact_buttons}
       </div>
       <MediaZone ref=${this.media_zone} onmediachange=${handle_media_change} />
-      <LinkZone ref=${this.link_zone} onprocess=${e => setLinks([e.detail])} onreset=${() => setLinks([])} />
+      <LinkZone ref=${this.link_zone} onprocess=${(e) =>
+      setLinks([e.detail])} onreset=${() => setLinks([])} />
       ${tag_input}
       ${publish_buttons}
-      ${(errors.length > 0)
-        ? html`
-          <ul class="editor-errors">
-            ${errors.map(error => html`<li>${dgettext("editor", error)}</li>`)}
-          </ul>
-          `
-        : ``
+      ${
+        errors.length > 0
+          ? html`
+              <ul class="editor-errors">
+                ${errors.map(
+                  (error) => html`<li>${dgettext("editor", error)}</li>`
+                )}
+              </ul>
+            `
+          : ``
       }
 
     </form>
     `;
   }
-};
+}
