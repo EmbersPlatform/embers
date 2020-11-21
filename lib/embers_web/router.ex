@@ -77,17 +77,19 @@ defmodule EmbersWeb.Router do
     post("/register", AccountController, :create)
 
     # Settings
-    get("/settings", SettingsController, :show_profile)
-    patch("/settings", SettingsController, :update)
-    post("/settings/reset_pass", SettingsController, :reset_pass)
-    get("/settings/profile", SettingsController, :show_profile)
-    patch("/settings/profile/update_profile", SettingsController, :update_profile)
-    post("/settings/profile/update_cover", SettingsController, :update_cover)
-    post("/settings/profile/update_avatar", SettingsController, :update_avatar)
-    get("/settings/content", SettingsController, :show_content)
-    get("/settings/design", SettingsController, :show_design)
-    get("/settings/privacy", SettingsController, :show_privacy)
-    get("/settings/security", SettingsController, :show_security)
+    scope "/settings" do
+      get("/", SettingsController, :show_profile)
+      patch("/", SettingsController, :update)
+      post("/reset_pass", SettingsController, :reset_pass)
+      get("/profile", SettingsController, :show_profile)
+      patch("/profile/update_profile", SettingsController, :update_profile)
+      post("/profile/update_cover", SettingsController, :update_cover)
+      post("/profile/update_avatar", SettingsController, :update_avatar)
+      get("/content", SettingsController, :show_content)
+      get("/design", SettingsController, :show_design)
+      get("/privacy", SettingsController, :show_privacy)
+      get("/security", SettingsController, :show_security)
+    end
 
     # Feeds
     get("/timeline", TimelineController, :index)
@@ -95,26 +97,28 @@ defmodule EmbersWeb.Router do
     get("/discover", DiscoverController, :index)
 
     # User profile
-    get("/@:username", UserController, :show)
     get("/user/:user_id/timeline", UserController, :timeline)
+    get("/@:username", UserController, :show)
     get("/@:username/followers", UserController, :show_followers)
     get("/@:username/following", UserController, :show_following)
     get("/@:username/card", UserController, :show_card)
 
     # Posts
-    post("/post", PostController, :create)
-    delete("/post/:id", PostController, :delete)
-    get("/post/:hash", PostController, :show)
-    get("/post/:hash/modal", PostController, :show_modal)
+    scope "/post" do
+      post("/", PostController, :create)
+      delete("/:id", PostController, :delete)
+      get("/:hash", PostController, :show)
+      get("/:hash/modal", PostController, :show_modal)
 
-    # Post replies
-    get("/post/:hash/replies", PostController, :show_replies)
-    # Post Reactions
-    post("/post/:hash/reactions", PostController, :add_reaction)
-    delete("/post/:hash/reactions/:name", PostController, :remove_reaction)
+      # Post replies
+      get("/:hash/replies", PostController, :show_replies)
+      # Post Reactions
+      post("/:hash/reactions", PostController, :add_reaction)
+      delete("/:hash/reactions/:name", PostController, :remove_reaction)
 
-    get("/post/:hash/reactions/overview", ReactionController, :reactions_overview)
-    get("/post/:hash/reactions/:reaction_name", ReactionController, :reactions_by_name)
+      get("/:hash/reactions/overview", ReactionController, :reactions_overview)
+      get("/:hash/reactions/:reaction_name", ReactionController, :reactions_by_name)
+    end
 
     # Medias
     post("/medias", MediaController, :upload)
@@ -138,16 +142,19 @@ defmodule EmbersWeb.Router do
     delete("/user_follow/name/:name", UserFollowController, :destroy_by_name)
 
     # Chat
-    get("/chat", ChatController, :index)
-    post("/chat", ChatController, :create)
-    get("/chat/conversations", ChatController, :list_conversations)
-    get("/chat/@:username", ChatController, :show)
-    get("/chat/:id/messages", ChatController, :show_messages)
-    put("/chat/:id", ChatController, :read)
+    scope "/chat" do
+      get("/", ChatController, :index)
+      post("/", ChatController, :create)
+      get("/conversations", ChatController, :list_conversations)
+      get("/@:username", ChatController, :show)
+      get("/:id/messages", ChatController, :show_messages)
+      put("/:id", ChatController, :read)
+    end
 
     # Tags
     get("/tag/:name", TagController, :show)
     put("/tag/:id", TagController, :update)
+
     get("/tags/popular", TagController, :list_popular)
     get("/tags/pinned", TagPinnedController, :list_pinned)
 
@@ -166,6 +173,13 @@ defmodule EmbersWeb.Router do
     scope "/subs" do
       get("/", TagSubscriptionController, :index)
       get("/tags", TagSubscriptionController, :index)
+    end
+
+    # Blocks
+    scope "/blocks" do
+      get("/", BlockController, :index)
+      post("/", BlockController, :create)
+      delete("/:id", BlockController, :destroy)
     end
 
     scope "/moderation", Moderation do

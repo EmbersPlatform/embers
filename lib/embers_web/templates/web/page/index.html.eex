@@ -3,15 +3,13 @@
   <%= render_shared("top_bar.html", assigns) %>
   <main class="padded columns-layout">
     <div id="timeline" class="main-content" data-controller="timeline" data-next="<%= @timeline.next %>">
-      <post-editor class="boxed mobile-hidden" data-target="timeline.editor" data-action="publish->timeline#onNewActivity"></post-editor>
-      <button
-        class="new-activity-alert"
-        data-target="timeline.newActivityAlert"
-        data-action="timeline#flush_activities"
-      ></button>
+      <post-editor class="boxed" data-target="timeline.editor" data-action="publish->timeline#onNewActivity">
+      </post-editor>
+      <button class="new-activity-alert" data-target="timeline.newActivityAlert"
+        data-action="timeline#flush_activities"></button>
       <div class="feed" data-target="timeline.feed">
         <%= for activity <- @timeline.entries do %>
-          <%= render(EmbersWeb.Web.TimelineView, "activity.html", conn: @conn, activity: activity, with_replies: true) %>
+        <%= render(EmbersWeb.Web.TimelineView, "activity.html", conn: @conn, activity: activity, with_replies: true) %>
         <% end %>
       </div>
       <intersect-observer data-action="intersect->timeline#loadMore"></intersect-observer>

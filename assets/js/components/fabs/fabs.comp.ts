@@ -13,7 +13,6 @@ const scroll_top_threshold = 300;
 export default class FabsZone extends Component(HTMLElement) {
   static component = "FabsZone";
 
-
   show_scroll_top: boolean;
 
   onconnected() {
@@ -29,7 +28,7 @@ export default class FabsZone extends Component(HTMLElement) {
 
   _handle_scroll() {
     const new_val = window.scrollY > scroll_top_threshold;
-    if(this.show_scroll_top != new_val) {
+    if (this.show_scroll_top != new_val) {
       this.show_scroll_top = new_val;
       this.render();
     }
@@ -37,23 +36,24 @@ export default class FabsZone extends Component(HTMLElement) {
 
   render() {
     const scroll_top = () => {
-      window.scrollTo({top: 0, behavior: 'smooth'})
-    }
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
-    const show_editor_modal = () => {
+    /* const show_editor_modal = () => {
       request_editor_modal();
-    }
+    }; */
 
     this.html`
-      ${this.show_scroll_top
-        ? html`
-          <button onclick=${scroll_top} title=${ gettext("Scroll to top") }>
-            ${{html: icon_arrow_top}}
-          </button>
-        `
-        : ``
+      ${
+        this.show_scroll_top
+          ? html`
+              <button onclick=${scroll_top} title=${gettext("Scroll to top")}>
+                ${{ html: icon_arrow_top }}
+              </button>
+            `
+          : ``
       }
-      <button class="primary" onclick=${show_editor_modal} title=${gettext("Create post")}>${{html: icon_pen_nib}}</button>
-    `
+    `;
+    // <button class="primary" onclick=${show_editor_modal} title=${gettext("Create post")}>${{html: icon_pen_nib}}</button>
   }
 }
