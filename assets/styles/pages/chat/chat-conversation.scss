@@ -17,6 +17,15 @@ chat-conversation > header {
     margin-left: 0.5em;
   }
 
+  &>a {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 1em;
+    }
+  }
+
   .plain-button {
     @include media(">=tablet") {
       display: none;

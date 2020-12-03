@@ -7,11 +7,11 @@ defmodule EmbersWeb.UserChannel do
 
   def join("user:" <> id, _payload, socket) do
     case check_user(id, socket) do
-      true ->
+      {:ok, _} ->
         send(self(), :after_join)
         {:ok, socket}
 
-      false ->
+      {:error, _} ->
         {:error, %{reason: "unauthorized"}}
     end
   end
@@ -27,6 +27,8 @@ defmodule EmbersWeb.UserChannel do
     {:noreply, socket}
   end
 
+  def handle_info(_, socket), do: {:noreply, socket}
+
   def handle_in("chat_typing", %{"party" => party_id} = _payload, socket) do
     dest_id = socket.assigns.user.id
 
@@ -39,7 +41,12 @@ defmodule EmbersWeb.UserChannel do
 
   defp check_user(id, socket) do
     %Phoenix.Socket{assigns: %{user: user}} = socket
-    id == user.id
+
+    if(id == user.id) do
+      {:ok, user}
+    else
+      {:error, :user_match_error}
+    end
   end
 
   # Let's pretend that the current user is allowed to see the presence of users with an id between
@@ -77,8 +84,7 @@ defmodule EmbersWeb.UserChannel do
           fastlane: {socket.transport_pid, socket.serializer, []}
         )
 
-      presences = Presence.list(topic)
-      presences
+      Presence.list(topic)
     end)
     |> Enum.reduce(%{}, fn map, acc -> Map.merge(acc, map) end)
   end

@@ -75,7 +75,8 @@ defmodule EmbersWeb.Endpoint do
     # 7 days
     max_age: 24 * 60 * 60 * 7,
     key: "_embers_key",
-    signing_salt: "8LHeFKPR"
+    signing_salt: "8LHeFKPR",
+    same_site: "Strict"
   )
 
   plug(Corsica,

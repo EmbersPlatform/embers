@@ -24,6 +24,7 @@ import "./components/mention";
 import "./components/post-id-link";
 
 import "./components/media-gif";
+import "./components/media-preview-image";
 
 const traverse_module = (module) => {
   if(module.__esModule) {

@@ -53,18 +53,6 @@ defmodule EmbersWeb.Web.ChatController do
 
     with {:ok, message} <- Chat.create(params, nonce: nonce) do
       render(conn, "message.json", message: %{message | nonce: nonce})
-    else
-      {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.Web.ErrorView)
-        |> render("422.json", changeset: changeset)
-
-      {:error, reason} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.Web.ErrorView)
-        |> render("422.json", %{error: reason})
     end
   end
 

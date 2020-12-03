@@ -16,7 +16,7 @@ export default class ActivitiesCache {
 
   add(post_html: string) {
     let post = PostsDOM.parse(post_html.trim());
-    console.log(post_html, post);
+    console.debug(post_html, post);
 
     // Ignore the post if it's nsfw and the user doesn't want to see nsfw
     if (get_settings().content_nsfw === "hide" && PostsDOM.is_nsfw(post))

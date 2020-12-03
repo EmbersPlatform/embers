@@ -38,7 +38,7 @@ export function is_nsfw(post) {
 }
 
 export const format_content_warning = (post: HTMLElement): HTMLElement => {
-  console.log(post);
+  console.debug(post);
   const tags = get_tags(post);
   let controllers = new Set(post.dataset.controller.split(" "));
 

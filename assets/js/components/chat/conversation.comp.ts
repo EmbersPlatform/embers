@@ -41,23 +41,22 @@ export default class extends Component(HTMLElement) {
 
         const scroll_bottom = get_scroll_bottom(this.messages_blocks.current);
 
-        this.render()
+        this.render();
 
-        if(scroll_bottom <= 20) {
+        if (scroll_bottom <= 20) {
           // If near the bottom of the list, scroll to the bottom of it
           this.scroll_to_bottom();
           this.conversation.read();
         } else {
           // If not, then restore previous scroll position
           const height_diff = messages_block.scrollHeight - old_height;
-          this.messages_blocks.current.scrollTop = old_scroll + height_diff - 20;
+          this.messages_blocks.current.scrollTop =
+            old_scroll + height_diff - 20;
         }
       })
-    )
+    );
 
-    this.streams.push(
-      this.conversation.unread_count.map(() => this.render())
-    )
+    this.streams.push(this.conversation.unread_count.map(() => this.render()));
 
     requestAnimationFrame(() => navigation.hide());
 
@@ -67,24 +66,24 @@ export default class extends Component(HTMLElement) {
 
   ondisconnected() {
     navigation.show();
-    this.streams.forEach(s => s.end(true));
+    this.streams.forEach((s) => s.end(true));
     this.conversation.cleanup();
   }
 
   scroll_to_bottom = () => {
     let nodes = this.messages_blocks.current.querySelectorAll("chat-message");
     let last = nodes[nodes.length - 1];
-    if(last) {
+    if (last) {
       last.scrollIntoView();
     } else {
       this.messages_blocks.current.scrollTop = this.messages_blocks.current.scrollHeight;
     }
     this.conversation.read();
-  }
+  };
 
-  load_more = async () => {;
+  load_more = async () => {
     await this.conversation.load_more();
-  }
+  };
 
   private send_message = () => {
     const text = this.message_textarea.current.value;
@@ -96,59 +95,72 @@ export default class extends Component(HTMLElement) {
       sender: current_user,
       receiver_id: this.dataset.userId,
       inserted_at: new Date(),
-      text
+      text,
     };
     this.conversation.append_messages([new_message]);
     this.scroll_to_bottom();
-  }
+  };
 
   private maybe_send = (event: KeyboardEvent) => {
-    if(event.key !== "Enter" || event.shiftKey) return;
+    if (event.key !== "Enter" || event.shiftKey) return;
 
     const target = event.target as HTMLTextAreaElement;
 
-    if(target.value.length <= 0) return;
+    if (target.value.length <= 0) return;
 
     event.preventDefault();
 
     this.send_message();
-  }
+  };
 
   private go_back = () => history.back();
 
   render() {
     const grouped_messages = group_messages(this.conversation.messages());
-    const unread_count = Chat.unread_conversations().get(this.dataset.userId) || 0;
+    const unread_count =
+      Chat.unread_conversations().get(this.dataset.userId) || 0;
 
-    const handle_send_button = event => {
+    const handle_send_button = (event) => {
       // event.preventDefault();
       this.message_textarea.current.focus();
       this.send_message();
-    }
+    };
 
     this.html`
     <header>
-      <button class="plain-button" onclick=${this.go_back}>${{html: back_icon}}</button>
-      <img class="avatar" src=${this.dataset.avatar}/><span>${this.dataset.username}</span>
+      <button class="plain-button" onclick=${this.go_back}>${{
+      html: back_icon,
+    }}</button>
+      <a href=${`/@${this.dataset.username}`}>
+        <img class="avatar" src=${this.dataset.avatar}/>
+        <span>${this.dataset.username}</span>
+      </a>
     </header>
     <section class="message-blocks" ref=${this.messages_blocks}>
-      ${this.conversation.last_page()
-        ? `Inicio de la conversación con ${this.dataset.username}`
-        : ``
+      ${
+        this.conversation.last_page()
+          ? `Inicio de la conversación con ${this.dataset.username}`
+          : ``
       }
       <intersect-observer onintersect=${this.conversation.load_more}/>
-      ${grouped_messages.map(messages => html.for(this, messages[0].id)`
+      ${grouped_messages.map(
+        (messages) => html.for(this, messages[0].id)`
         <message-block .conversation=${this.conversation} .messages=${messages} />
-      `)}
+      `
+      )}
       <intersect-observer onintersect=${this.conversation.read}/>
 
-        ${unread_count
-          ? html`
-            <button class="unread-messages-notice" onclick=${this.scroll_to_bottom}>
-              Hay mensajes sin leer
-            </button>
-          `
-          : ``
+        ${
+          unread_count
+            ? html`
+                <button
+                  class="unread-messages-notice"
+                  onclick=${this.scroll_to_bottom}
+                >
+                  Hay mensajes sin leer
+                </button>
+              `
+            : ``
         }
     </section>
     <footer class="chat-editor">
@@ -156,23 +168,29 @@ export default class extends Component(HTMLElement) {
         is="autosize-textarea"
         ref=${this.message_textarea}
         onkeydown=${this.maybe_send}
-        placeholder=${dgettext("chat", `Send message to @%1`, this.dataset.username)}
+        placeholder=${dgettext(
+          "chat",
+          `Send message to @%1`,
+          this.dataset.username
+        )}
       ></textarea>
-      <button class="plain-button chat-send-button" onfocus=${handle_send_button}>${{html: publish_icon}}</button>
+      <button class="plain-button chat-send-button" onfocus=${handle_send_button}>${{
+      html: publish_icon,
+    }}</button>
     </footer>
-    `
+    `;
   }
 }
 
 function group_messages(messages: Message[]) {
-  if(!messages) return [];
+  if (!messages) return [];
   const acc = messages.reduce(
     (acc, m, i, arr) => {
       if (i == 0) {
         acc.blocks[acc.index] = [m];
         return acc;
       } else {
-        const previous = arr[i - 1]
+        const previous = arr[i - 1];
         const prev_date = new Date(previous.inserted_at);
         const current_date = new Date(m.inserted_at);
         const dates_diff = differenceInMinutes(current_date, prev_date);
@@ -180,7 +198,7 @@ function group_messages(messages: Message[]) {
         const too_new = Math.abs(dates_diff) > 5;
         if (too_new || previous.sender.id != m.sender.id) {
           acc.index++;
-          acc.blocks[acc.index] = [m]
+          acc.blocks[acc.index] = [m];
           return acc;
         } else {
           acc.blocks[acc.index].push(m);
@@ -191,7 +209,6 @@ function group_messages(messages: Message[]) {
     { index: 0, blocks: [] }
   );
   return acc.blocks;
-
 }
 
 function get_scroll_bottom(element) {
