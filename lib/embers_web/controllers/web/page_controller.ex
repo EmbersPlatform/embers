@@ -1,77 +1,33 @@
-defmodule EmbersWeb.PageController do
+defmodule EmbersWeb.Web.PageController do
   @moduledoc false
 
   use EmbersWeb, :controller
 
-  alias Embers.Accounts.User
-  alias Embers.Subscriptions
-  alias Embers.LoadingMsg
-  alias Embers.Notifications
-  alias Embers.Profile.Meta
-  alias Embers.Repo
+  alias Embers.Feed.Timeline
 
-  def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, params) do
-    if is_nil(params["path"]) do
-      conn = put_layout(conn, false)
-      render(conn, "landing.html")
-    else
-      render(conn, "index.html")
-    end
+  def index(%Plug.Conn{assigns: %{current_user: nil}} = conn, _params) do
+    render(conn, "landing.html")
   end
 
-  def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, _params) do
-    user =
-      User
-      |> Repo.get(current_user.id)
-      |> Repo.preload([:meta, :settings])
+  def index(%Plug.Conn{assigns: %{current_user: current_user}} = conn, params) do
+    # THIS IS A HACK
+    # It times out if there are no activities ore they are buried
+    # too deep in the feed_activity table and it NEEDS TO BE RESOLVED
+    # This is just a hack to make the page load anyways with an empty list
+    timeline =
+      try do
+        Timeline.get(
+          user_id: current_user.id,
+          with_replies: 2,
+          after: params["after"],
+          before: params["before"],
+          limit: 20
+        )
+      rescue
+        _ -> %Embers.Paginator.Page{entries: [], last_page: true, next: nil}
+      end
 
-    tags = Subscriptions.Tags.list_subscribed_tags(user.id)
-
-    tags =
-      EmbersWeb.TagView.render(
-        "tags.json",
-        %{tags: tags}
-      )
-
-    notifications = Notifications.list_notifications_paginated(user.id)
-
-    notifications =
-      EmbersWeb.NotificationView.render(
-        "notifications.json",
-        notifications
-      )
-
-    user = %{
-      user
-      | meta:
-          user.meta
-          |> Meta.load_avatar_map()
-          |> Meta.load_cover()
-    }
-
-    unread_conversations =
-      Embers.Chat.list_unread_conversations(user.id)
-      |> Enum.map(fn x ->
-        %{x | party: Embers.Helpers.IdHasher.encode(x.party)}
-      end)
-
-    render(conn, "index.html",
-      user: user,
-      tags: tags,
-      notifications: notifications.items,
-      loading_msg: LoadingMsg.get_random(),
-      unread_conversations: unread_conversations
-    )
-  end
-
-  def auth(%Plug.Conn{assigns: %{current_user: user}} = conn, _params) when not is_nil(user) do
-    tags = Subscriptions.Tags.list_subscribed_tags(user.id)
-
-    render(conn, "auth.json", conn: conn, tags: tags, user: user)
-  end
-
-  def auth(conn, _params) do
-    render(conn, "auth.json", conn: conn)
+    render(conn, "index.html", page_title: gettext("Home"), timeline: timeline)
   end
 
   def rules(conn, _params) do

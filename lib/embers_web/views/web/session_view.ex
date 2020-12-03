@@ -1,4 +1,4 @@
-defmodule EmbersWeb.SessionView do
+defmodule EmbersWeb.Web.SessionView do
   @moduledoc false
 
   use EmbersWeb, :view

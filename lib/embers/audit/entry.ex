@@ -3,8 +3,9 @@ defmodule Embers.AuditEntry do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "audit_entries" do
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
     field(:action, :string, null: false)
     field(:source, :string, null: false)
     embeds_many(:details, Embers.AuditDetail)

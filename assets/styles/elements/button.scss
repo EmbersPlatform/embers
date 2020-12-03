@@ -1,0 +1,141 @@
+.button,
+.plain-button,
+.button-link {
+  font-family: $font-family;
+  font-size: 1em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  color: var(--text);
+  box-sizing: border-box;
+  padding: 0.2em;
+
+  @include media("<=tablet") {
+    // Make sure all buttons are of the minumum size required to be easily
+    // tappable
+    min-height: 1cm;
+    min-width: 1cm;
+  }
+
+  * {
+    pointer-events: none;
+  }
+}
+
+.button,
+.plain-button,
+.button-link {
+  svg path {
+    fill: currentColor;
+  }
+}
+
+.button *+*,
+.plain-button *+*,
+.button-link *+* {
+  margin-left: 0.5em;
+}
+
+.button {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  height: 2rem;
+  position: relative;
+  border-color: var(--button-border-background);
+  color: var(--button-foreground);
+  background: var(--button-background);
+  text-shadow: var(--button-text-shadow);
+}
+
+.button,
+.button::before {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--border-radius);
+  justify-content: center;
+}
+
+.button:before {
+  display: block;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-color: var(--button-border-foreground);
+  border-radius: var(--border-radius);
+  background: #fff2;
+  height: calc(100% - 3px);
+  width: calc(100% - 2px);
+  border-top-width: 0;
+}
+
+.button:hover {
+  filter: var(--button-hover-filter);
+}
+
+.button svg path {
+  fill: currentColor;
+}
+
+.button[disabled] {
+  filter: grayscale(0.8) brightness(0.5);
+  cursor: default;
+}
+
+.button.primary {
+  color: var(--accent-foreground);
+  background: var(--accent);
+}
+
+.button.danger {
+  color: var(--danger-alt);
+  background: var(--danger);
+}
+
+.button.warning {
+  color: var(--warning-alt);
+  background: var(--warning);
+}
+
+.button.success {
+  color: var(--success-alt);
+  background: var(--success);
+}
+
+.button-small {
+  font-size: 0.8em;
+  height: 1.8em;
+  padding: 0 0.4em;
+}
+
+.plain-button {
+  background: none;
+  border: none;
+}
+
+.plain-button[disabled] {
+  opacity: 0.7;
+}
+
+.plain-button.success {
+  color: var(--success);
+}
+
+.plain-button.warning {
+  color: var(--warning);
+}
+
+.plain-button.danger {
+  color: var(--danger);
+}
+
+.button,
+.plain-button,
+.button-link {
+  svg {
+    height: 1.4em;
+  }
+}

@@ -4,8 +4,9 @@ defmodule Embers.Links.Link do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "links" do
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
     field(:url, :string, null: false)
     embeds_one(:embed, Embers.Links.EmbedSchema)
     field(:temporary, :boolean, default: true)

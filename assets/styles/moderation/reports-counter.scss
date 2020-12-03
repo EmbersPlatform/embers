@@ -1,0 +1,14 @@
+[reports-button] {
+  position: relative;
+  color: var(--link);
+
+  .counter {
+    position: absolute;
+    bottom: 0.5em;
+    padding: 0.1em 0.2em;
+    border-radius: 2em;
+    background: var(--accent);
+    bottom: 0;
+    right: 0;
+  }
+}

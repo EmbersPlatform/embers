@@ -39,9 +39,10 @@ defmodule Embers.Posts.Post do
 
   @max_body_len 1600
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "posts" do
     field(:body, :string)
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
     field(:nesting_level, :integer, default: 0)
     field(:replies_count, :integer, default: 0)
     field(:shares_count, :integer, default: 0)
@@ -50,15 +51,15 @@ defmodule Embers.Posts.Post do
     field(:nsfw, :boolean, virtual: true, default: false)
     field(:faved, :boolean, virtual: true, default: false)
 
-    belongs_to(:parent, __MODULE__)
-    belongs_to(:related_to, __MODULE__)
-    has_many(:replies, __MODULE__)
+    belongs_to(:parent, __MODULE__, type: Embers.Hashid)
+    belongs_to(:related_to, __MODULE__, type: Embers.Hashid)
+    has_many(:replies, __MODULE__, foreign_key: :parent_id)
     has_many(:reactions, Embers.Reactions.Reaction)
 
     many_to_many(:tags, Embers.Tags.Tag, join_through: "tags_posts")
     many_to_many(:media, Embers.Media.MediaItem, join_through: "posts_medias")
     many_to_many(:links, Embers.Links.Link, join_through: "link_post")
-    field(:old_attachment, {:map, :any})
+    field(:old_attachment, :map)
 
     field(:deleted_at, :naive_datetime)
     timestamps()
@@ -166,7 +167,7 @@ defmodule Embers.Posts.Post do
   """
   @spec parse_tags(String.t()) :: [String.t()]
   def parse_tags(text) do
-    hashtag_regex = ~r/(?<!\w)#\w+/
+    hashtag_regex = ~r/(?<!\w)#\w+/u
 
     if is_nil(text) do
       []
@@ -206,6 +207,7 @@ defmodule Embers.Posts.Post do
 
   defp validate_similarity(changeset) do
     body = get_change(changeset, :body)
+
     if is_nil(body) do
       changeset
     else
@@ -271,14 +273,14 @@ defmodule Embers.Posts.Post do
 
   defp validate_parent_and_set_nesting_level(changeset, parent_id) do
     case Repo.get(Post, parent_id) do
-      nil ->
-        changeset
-        |> Ecto.Changeset.add_error(:parent, "parent post does not exist")
-
-      parent ->
+      %{deleted_at: nil} = parent ->
         changeset
         |> check_if_can_reply(parent)
         |> set_nesting_level(parent.nesting_level)
+
+      _ ->
+        changeset
+        |> Ecto.Changeset.add_error(:parent, "parent post does not exist")
     end
   end
 

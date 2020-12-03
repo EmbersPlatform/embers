@@ -30,7 +30,13 @@ defmodule Embers.Tags do
   def get_by_name(name) when is_binary(name) do
     name = String.downcase(name)
 
-    Repo.one(from(tag in Tag, where: fragment("LOWER(?) = ?", tag.name, ^name), limit: 1))
+    Repo.one(
+      from(tag in Tag,
+        where: fragment("LOWER(?) = ?", tag.name, ^name),
+        limit: 1,
+        order_by: tag.id
+      )
+    )
   end
 
   def create_tag(name) do
@@ -145,33 +151,35 @@ defmodule Embers.Tags do
     Repo.insert!(tag)
   end
 
+  @doc """
+  Adds a tag to a post. If the post already hast that tag associated, it's
+  a noop.
+  """
   def add_tag(post, tag_name) when is_binary(tag_name) do
     tag = create_tag(tag_name)
-    add_tag(post, tag.id)
+    add_tag(post, tag)
   end
 
-  def add_tag(%Post{id: pid}, tid) do
-    add_tag(pid, tid)
-  end
+  def add_tag(%Post{id: pid} = post, %Tag{id: tid} = tag) do
+    tags = get_tags_for_post(post)
 
-  def add_tag(pid, tid) do
-    %TagPost{}
-    |> TagPost.create_changeset(%{post_id: pid, tag_id: tid})
-    |> Repo.insert()
+    if tag in tags do
+      {:ok, tag}
+    else
+      %TagPost{}
+      |> TagPost.create_changeset(%{post_id: pid, tag_id: tid})
+      |> Repo.insert()
+    end
   end
 
   def remove_tag(post, tag_name) when is_binary(tag_name) do
     case Repo.get_by(Tag, %{name: tag_name}) do
       nil -> nil
-      tag -> remove_tag(post, tag.id)
+      tag -> remove_tag(post, tag)
     end
   end
 
-  def remove_tag(%Post{id: pid}, tid) do
-    remove_tag(pid, tid)
-  end
-
-  def remove_tag(pid, tid) do
+  def remove_tag(%Post{id: pid}, %Tag{id: tid}) do
     case Repo.get_by(TagPost, %{post_id: pid, tag_id: tid}) do
       nil -> nil
       tag_post -> Repo.delete(tag_post)
@@ -180,6 +188,14 @@ defmodule Embers.Tags do
 
   def tags_loaded(%Post{tags: tags}) do
     tags |> Enum.map(& &1.name)
+  end
+
+  defp get_tags_for_post(post) do
+    if Ecto.assoc_loaded?(post.tags) do
+      post.tags
+    else
+      post |> Ecto.assoc(:tags) |> Repo.all()
+    end
   end
 
   def update_tags(post, new_tags) when is_list(new_tags) do
@@ -195,7 +211,7 @@ defmodule Embers.Tags do
   end
 
   @spec list_tag_posts(String.t(), keyword) :: Embers.Paginator.Page.t()
-  def list_tag_posts(tag, params) when is_binary(tag) do
+  def list_tag_posts(tag, params \\ []) when is_binary(tag) do
     from(
       post in Post,
       where: is_nil(post.deleted_at),
@@ -215,6 +231,7 @@ defmodule Embers.Tags do
     )
     |> Paginator.paginate(params)
     |> fill_nsfw()
+    |> Paginator.map(&Embers.Posts.populate_user/1)
   end
 
   defp fill_nsfw(page) do

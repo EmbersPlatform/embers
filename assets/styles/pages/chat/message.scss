@@ -1,0 +1,19 @@
+chat-message {
+  display: block;
+
+  &.error {
+    color: var(--danger);
+  }
+
+  &.sending {
+    opacity: 0.6;
+  }
+
+  .error-message {
+    font-size: 0.8em;
+
+    button {
+      font-size: 1em;
+    }
+  }
+}

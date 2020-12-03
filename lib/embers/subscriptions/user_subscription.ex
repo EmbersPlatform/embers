@@ -7,9 +7,10 @@ defmodule Embers.Subscriptions.UserSubscription do
   alias __MODULE__
   alias Embers.Repo
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "user_subscriptions" do
-    belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:source, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:source, Embers.Accounts.User, type: Embers.Hashid)
     field(:level, :integer, null: false, default: 1)
 
     timestamps()

@@ -38,12 +38,16 @@ defmodule EmbersWeb.UserSocket do
   #     EmbersWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: "user_socket:#{socket.assigns.user.id}"
 
   ## Channels
   channel("feed:*", EmbersWeb.FeedChannel)
 
   channel("user:*", EmbersWeb.UserChannel)
+
+  channel("post:*", EmbersWeb.PostChannel)
+
+  channel("mod", EmbersWeb.ModChannel)
 
   # "user_presence:*" is not meant to be joined, added here to clarify that the topic prefix is used be the UserChannel
   channel("user_presence:*", EmbersWeb.UserChannel)

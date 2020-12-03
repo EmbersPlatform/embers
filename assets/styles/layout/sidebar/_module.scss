@@ -1,0 +1,184 @@
+#sidebar {
+  width: var(--sidebar-width);
+  background: var(--sidebar-background);
+  color: var(--sidebar-foreground);
+  border-right: 1px solid #0003;
+  box-sizing: border-box;
+  height: 100vh;
+  position: fixed;
+  left: calc(var(--sidebar-width) * -1);
+  top: 0;
+  transition: transform 100ms ease;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+
+  @include media(">=tablet") {
+    left: calc(var(--navigation-width) - var(--sidebar-width));
+    z-index: 4;
+  }
+
+  @include media(">=desktop") {
+    left: var(--navigation-width);
+    z-index: auto;
+  }
+
+  & > section {
+    padding: 1em;
+    height: 100vh;
+    overflow: auto;
+
+    & > * {
+      padding: 0 1em;
+    }
+
+    & > h1 {
+      margin: 0;
+      display: block;
+      font-size: 0.8em;
+      line-height: 0.8em;
+      color: var(--sidebar-title-color);
+      text-transform: uppercase;
+      padding: 1.2em;
+      font-weight: 400;
+    }
+
+    & > ul {
+      margin: 0;
+      padding: 0;
+      position: relative;
+    }
+
+    & > ul:before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 2.6em;
+      width: 4px;
+      height: calc(100% + 5px);
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    & > ul > li > a {
+      width: 100%;
+      height: 40px;
+      padding: 0 10px;
+      z-index: 0;
+      background: transparent;
+      transition: all 0.3s ease-out;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: flex-start;
+      align-items: center;
+      border-radius: 3px;
+      box-sizing: border-box;
+      cursor: pointer;
+      font-weight: 400;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      color: var(--sidebar-foreground);
+    }
+
+    & > ul > li > a:hover {
+      background: var(--sidebar-background-hover);
+      color: var(--sidebar-foreground-hover);
+    }
+
+    & > ul > li > a.active {
+      background: var(--sidebar-background-accent);
+      color: var(--sidebar-foreground-accent);
+    }
+
+    & > ul > li + li {
+      margin-top: 0.3em;
+    }
+
+    & > ul > li > a svg {
+      width: 1.1em;
+      height: 1.1em;
+      margin-right: 1.8em;
+    }
+
+    & > ul > li > a svg * {
+      fill: var(--sidebar-foreground);
+    }
+
+    & > ul > li > a:hover svg * {
+      fill: var(--sidebar-foreground-hover);
+    }
+
+    & > ul > li > a.active svg * {
+      fill: var(--sidebar-foreground-accent);
+    }
+  }
+  & > footer {
+    margin-top: auto;
+    height: var(--navigation-width);
+    background: var(--navigation-background);
+    color: var(--navigation-foreground);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+
+    @include media(">=tablet") {
+      display: none;
+    }
+
+    & > a,
+    & > button {
+      width: 25px;
+      height: 25px;
+      box-sizing: border-box;
+      color: var(--navigation-foreground);
+      background: none;
+      border: none;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      svg path {
+        fill: var(--navigation-foreground);
+      }
+    }
+  }
+
+  .nav-user-menu {
+    .user-avatar {
+      width: 2.8em;
+      height: 2.8em;
+    }
+
+    [pop-up-content] {
+      bottom: 100%;
+      top: auto;
+      margin: 0;
+      transform: translateX(-60%);
+    }
+  }
+}
+
+.sidebar-overlay {
+  opacity: 0;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.5);
+
+  @include media(">=desktop") {
+    display: none;
+  }
+}

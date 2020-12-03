@@ -8,10 +8,12 @@ defmodule Embers.Application do
 
     # Define workers and child supervisors to be supervised
     children = [
+      {Phoenix.PubSub, name: Embers.PubSub},
       # Start the Ecto repository
-      supervisor(Embers.Repo, []),
+      Embers.Repo,
       # Start the endpoint when the application starts
-      supervisor(EmbersWeb.Endpoint, []),
+      EmbersWeb.Endpoint,
+      EmbersWeb.Telemetry,
       # Start your own worker by calling: Embers.Worker.start_link(arg1, arg2, arg3)
       # worker(Embers.Worker, [arg1, arg2, arg3]),
       EmbersWeb.Presence,
@@ -25,6 +27,7 @@ defmodule Embers.Application do
     EmbersWeb.NotificationSubscriber.register()
     EmbersWeb.ActivitySubscriber.register()
     EmbersWeb.ChatSubscriber.register()
+    EmbersWeb.ModSubscriber.register()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

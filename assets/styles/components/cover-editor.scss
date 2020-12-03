@@ -1,0 +1,27 @@
+cover-editor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &>img {
+    width: 100%;
+  }
+
+  &> button {
+    margin-top: 1em;
+  }
+
+  .croppie-container .cr-viewport, .croppie-container .cr-resizer {
+    border: none;
+  }
+
+  dialog-box {
+    width: 960px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 1em;
+  }
+}

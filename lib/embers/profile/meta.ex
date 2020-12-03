@@ -5,16 +5,16 @@ defmodule Embers.Profile.Meta do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Embers.Helpers.IdHasher
   alias Embers.Profile.Meta
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "user_metas" do
     field(:avatar_version, :string)
     field(:avatar, :map, virtual: true)
     field(:bio, :string)
     field(:cover_version, :string)
     field(:cover, :string, virtual: true)
-    belongs_to(:user, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
 
     timestamps()
   end
@@ -25,6 +25,18 @@ defmodule Embers.Profile.Meta do
     |> cast(attrs, [:user_id, :bio, :avatar, :avatar_version, :cover_version])
     |> validate_required([:user_id])
     |> validate_length(:bio, max: 255)
+  end
+
+  def update_cover_changeset(meta) do
+    meta
+    |> Ecto.Changeset.change(cover_version: Integer.to_string(:os.system_time(:seconds)))
+  end
+
+  def update_avatar_changeset(meta) do
+    meta
+    |> Ecto.Changeset.change(
+      avatar_version: DateTime.utc_now() |> DateTime.to_unix() |> Integer.to_string()
+    )
   end
 
   def avatar_map(%Meta{avatar_version: nil} = _meta) do
@@ -44,7 +56,7 @@ defmodule Embers.Profile.Meta do
   end
 
   def avatar_map(%Meta{avatar_version: version} = meta) do
-    id_hash = IdHasher.encode(meta.user_id)
+    id = meta.user_id
 
     path =
       Application.get_env(:embers, Embers.Profile)
@@ -53,9 +65,9 @@ defmodule Embers.Profile.Meta do
     base = get_base()
 
     %{
-      small: Path.join([base, path, "#{id_hash}_small.png?#{version}"]),
-      medium: Path.join([base, path, "#{id_hash}_medium.png?#{version}"]),
-      big: Path.join([base, path, "#{id_hash}_large.png?#{version}"])
+      small: Path.join([base, path, "#{id}_small.png?#{version}"]),
+      medium: Path.join([base, path, "#{id}_medium.png?#{version}"]),
+      big: Path.join([base, path, "#{id}_large.png?#{version}"])
     }
   end
 
@@ -68,7 +80,7 @@ defmodule Embers.Profile.Meta do
   end
 
   def cover(%Meta{cover_version: version} = meta) do
-    id_hash = IdHasher.encode(meta.user_id)
+    id = meta.user_id
 
     path =
       Application.get_env(:embers, Embers.Profile)
@@ -76,7 +88,7 @@ defmodule Embers.Profile.Meta do
 
     base = get_base()
 
-    Path.join([base, path, id_hash <> ".jpg?#{version}"])
+    Path.join([base, path, id <> ".jpg?#{version}"])
   end
 
   def load_avatar_map(%Meta{} = meta) do

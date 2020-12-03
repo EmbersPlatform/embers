@@ -1,24 +1,17 @@
-defmodule EmbersWeb.SearchView do
+defmodule EmbersWeb.Web.SearchView do
   @moduledoc false
 
   use EmbersWeb, :view
 
-  def render("results.json", %{entries: posts} = metadata) do
+  def render("search_results.json", %{page: page} = assigns) do
     %{
-      items:
-        Enum.map(posts, fn post ->
-          render(
-            EmbersWeb.PostView,
-            "show.json",
-            %{post: post, current_user: metadata.current_user}
-          )
-        end),
-      next: metadata.next,
-      last_page: metadata.last_page
+      body: raw(render_many(page.entries, EmbersWeb.Web.PostView, "post.html", assigns)),
+      next: page.next,
+      last_page: page.last_page
     }
   end
 
   def render("user_results.json", %{results: results}) do
-    render_many(results, EmbersWeb.UserView, "user.json")
+    render_many(results, EmbersWeb.Web.UserView, "user.json")
   end
 end

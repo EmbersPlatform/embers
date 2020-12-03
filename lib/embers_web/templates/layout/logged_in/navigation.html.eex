@@ -1,0 +1,159 @@
+<nav id="navigation" is="embers-navigation" class="soft-kw-hide">
+  <a href="/" id="navigation-logo" class="mobile-hidden" aria-hidden="true">
+    <%= svg_image("logo") %>
+  </a>
+  <ul class="mobile-hidden">
+    <li>
+      <%= active_link(@conn,
+        to: page_path(@conn, :index),
+        active: :exact,
+        "aria-label": gettext("Home"),
+        title: gettext("Home"),
+        "up-preload": true
+      ) do %>
+        <%= svg_image("home") %>
+      <% end %>
+    </li>
+    <li>
+      <%= active_link(@conn,
+        to: "/discover",
+        active: :exact,
+        "aria-label": gettext("Discover"),
+        title: gettext("Discover")
+      ) do %>
+        <%= svg_image("discover") %>
+      <% end %>
+    </li>
+    <li class="tablet-only">
+      <button class="sidebar-button">
+        <%= svg_image("hamburger") %>
+      </button>
+    </li>
+  </ul>
+  <e-separator class="mobile-hidden"></e-separator>
+
+  <% notifications = Embers.Notifications.list_notifications_paginated(@conn.assigns.current_user.id, limit: 20) %>
+  <% unread_notifications_count = Enum.count(notifications.entries, fn n ->
+    n.status == 0
+  end) %>
+
+  <nav is="notifications-panel"
+    id="notifications-panel"
+    data-next="<%= notifications.next %>"
+    data-last_page="<%= notifications.last_page %>"
+    data-unread-count="<%= unread_notifications_count %>"
+    up-keep
+  >
+    <header><%= gettext "Notifications" %></header>
+    <section>
+      <%= render(EmbersWeb.Web.NotificationView, "notifications.html",
+        notifications: notifications.entries
+      ) %>
+    </section>
+    <loading-indicator></loading-indicator>
+    <intersect-observer data-height="10"></intersect-observerr>
+  </nav>
+  <ul class="mobile-hidden">
+    <li>
+      <button
+        is="notifications-bell"
+        id="notifications-bell-desktop"
+        up-keep
+        class="plain-button"
+        notifications-panel-trigger
+        data-unread-count="<%= unread_notifications_count %>"
+      >
+        <%= svg_image("bell") %>
+        <span class="counter"></span>
+      </button>
+    </li>
+    <li>
+      <%= active_link(@conn,
+        to: "/chat",
+        active: :exact,
+        title: gettext("Chat"),
+        "aria-label":  gettext("Chat")
+      ) do %>
+        <%= svg_image("inbox") %>
+        <unread-chat-counter></unread-chat-counter>
+      <% end %>
+    </li>
+    <li class="nav-user-menu-li">
+      <pop-up class="nav-user-menu" data-controller="user-menu">
+        <img src="<%= assigns.current_user.meta.avatar.small %>" class="user-avatar" pop-up-trigger/>
+        <ul pop-up-content>
+          <li>
+            <%= link("My profile",
+                to: decoded_path(:user_path, Endpoint, :show, @conn.assigns.current_user.canonical),
+                class: "button-link"
+              )
+            %>
+          </li>
+          <li>
+            <button class="plain-button" data-action="user-menu#log_out">Log out</button>
+          </li>
+        </ul>
+      </pop-up>
+    </li>
+    <li>
+      <%= active_link(@conn,
+        to: "/settings",
+        "aria-label": gettext("Settings"),
+        title: gettext("Settings")
+      ) do %>
+        <%= svg_image("settings") %>
+      <% end %>
+    </li>
+  </ul>
+  <ul class="desktop-hidden">
+    <li>
+      <button class="sidebar-button">
+        <%= svg_image("hamburger") %>
+      </button>
+    </li>
+    <li>
+      <%= active_link(@conn,
+        to: page_path(@conn, :index),
+        active: :exact,
+        title: gettext("Home"),
+        "aria-label": gettext("Home")
+      ) do %>
+        <%= svg_image("home") %>
+      <% end %>
+    </li>
+    <li>
+      <%= active_link(@conn,
+        to: "/discover",
+        active: :exact,
+        title: gettext("Discover"),
+        "aria-label":  gettext("Discover")
+      ) do %>
+        <%= svg_image("discover") %>
+      <% end %>
+    </li>
+    <li>
+      <button
+        is="notifications-bell"
+        class="plain-button"
+        notifications-panel-trigger
+        id="notifications-bell-mobile"
+        up-keep
+        data-unread-count="<%= unread_notifications_count %>"
+      >
+        <%= svg_image("bell") %>
+        <span class="counter"></span>
+      </button>
+    </li>
+    <li>
+      <%= active_link(@conn,
+        to: "/chat",
+        active: :exact,
+        title: gettext("Chat"),
+        "aria-label":  gettext("Chat")
+      ) do %>
+        <%= svg_image("inbox") %>
+        <unread-chat-counter></unread-chat-counter>
+      <% end %>
+    </li>
+  </ul>
+</nav>

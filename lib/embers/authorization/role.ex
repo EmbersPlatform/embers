@@ -5,6 +5,7 @@ defmodule Embers.Authorization.Role do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "roles" do
     field(:name, :string, null: false)
     field(:permissions, {:array, :string})

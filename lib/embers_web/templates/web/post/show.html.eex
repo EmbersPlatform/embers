@@ -1,0 +1,69 @@
+<%= if authenticated?(@conn) do %>
+  <%= EmbersWeb.LayoutView.sidebar assigns %>
+<% end %>
+<div id="view" view="post" class="<%= attr_list([{"has-sidebar", authenticated?(@conn)}]) %>">
+  <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
+  <main class="padded columns-layout">
+    <div class="main-content">
+      <%= if assigns[:parent] do %>
+        <%= render("post_compacted.html", conn: @conn, post: @parent) %>
+        <%= render("reply_thread.html", conn: @conn, reply: @post) %>
+      <%= else %>
+        <%= render("post.html", conn: @conn, post: @post) %>
+      <% end %>
+      <section id="comments"
+        data-controller="comments"
+        data-post_id="<%= @post.id %>"
+        data-next="<%= @replies_page.next %>"
+        data-last_page="<%= @replies_page.last_page %>"
+      >
+        <h2>
+          <%= if assigns[:parent] do %>
+            <%= ngettext("1 reply", "%{count} replies", @post.replies_count) %>
+          <%= else %>
+            <%= ngettext("1 comment", "%{count} comments", @post.replies_count) %>
+          <% end %>
+        </h2>
+        <div class="comment-list" data-target="comments.commentList">
+          <%= for reply <- @replies_page.entries do %>
+            <%= render("reply_thread.html", conn: @conn, reply: reply) %>
+          <% end %>
+        </div>
+        <%= unless @replies_page.last_page do %>
+          <button
+            class="button load-more-button"
+            data-action="comments#load_more"
+            data-target="comments.load_more_button"
+          ><%= gettext("Load more comments") %></button>
+        <% end %>
+        <post-editor
+          as_thread
+          notags
+          data-action="publish->comments#onpublish" data-parent_id="<%= @post.id %>"
+          placeholder="<%= gettext "Add a reply!" %>"
+        ></post-editor>
+      </section>
+    </div>
+    <aside>
+      <section class="user-preview mobile-hidden">
+        <figure style="background-image: url(<%= @post.user.meta.cover %>);" class="cover">
+        </figure>
+        <div class="user-avatar">
+          <img src="<%= @post.user.meta.avatar.medium %>">
+        </div>
+        <p class="username"><%= @post.user.username %></p>
+        <p class="bio">
+          <%= @post.user.meta.bio %>
+        </p>
+      </section>
+      <a href="https://discord.gg/uADqWPs" class="join-discord-notice" target="_blank">
+        <span><%= gettext "Join our discord!" %></span>
+        <img src="https://www.embers.pw/img/external/discord_logo.svg" alt="discord logo">
+      </a>
+      <a href="https://ko-fi.com/A1482YS9" class="donate-kofi-notice" target="_blank">
+        <img src="https://www.embers.pw/img/external/ko-fi.svg" alt="ko-fi logo">
+        <span><%= gettext "Donate on ko-fi" %></span>
+      </a>
+    </aside>
+  </main>
+</div>

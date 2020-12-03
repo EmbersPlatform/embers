@@ -1,0 +1,61 @@
+<%= if authenticated?(@conn) do %>
+<div class="reply-actions">
+  <%= if Embers.Authorization.can?(@conn.assigns.current_user, "access_mod_tools") do %>
+    <div class="hover-menu-wrapper">
+      <button class="plain-button">
+        <%= svg_image "icons/gavel" %>
+      </button>
+        <div class="hover-menu bottom-right">
+          <ol>
+            <li>
+              <button class="plain-button" data-action="click->reply#toggle_nsfw">
+                <span class="is-nsfw"><%= gettext("Is NSFW") %></span>
+                <span class="isnt-nsfw"><%= gettext("Isn't NSFW") %></span>
+              </button>
+            </li>
+            <li>
+              <button class="plain-button danger">
+                <span>
+                  <%= gettext("Disable") %>
+                </span>
+              </button>
+            </li>
+            <li>
+              <button class="plain-button danger">
+                <span>
+                  <%= gettext("Ban user") %>
+                </span>
+              </button>
+            </li>
+          </ol>
+        </div>
+    </div>
+  <% end %>
+  <div class="hover-menu-wrapper">
+    <button class="plain-button">
+      <%= svg_image "icons/ellipsis-v" %>
+    </button>
+    <div class="hover-menu bottom-right">
+      <ol>
+        <li>
+          <button class="plain-button" data-action="click->reply#show_reactions_modal">
+            <span><%= gettext("Reactions") %></span>
+          </button>
+        </li>
+        <li>
+          <button class="plain-button">
+            <span><%= gettext("Report") %></span>
+          </button>
+        </li>
+        <%= if is_owner?(@conn, @reply) do %>
+          <li>
+            <button class="plain-button danger" data-action="click->reply#confirm_delete">
+              <span><%= gettext("Delete") %></span>
+            </button>
+          </li>
+        <% end %>
+      </ol>
+    </div>
+  </div>
+</div>
+<% end %>

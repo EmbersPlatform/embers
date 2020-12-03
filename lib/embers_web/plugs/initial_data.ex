@@ -18,7 +18,7 @@ defmodule EmbersWeb.Plugs.InitialData do
     tags = Subscriptions.Tags.list_subscribed_tags(user.id)
 
     tags =
-      EmbersWeb.TagView.render(
+      EmbersWeb.Web.TagView.render(
         "tags.json",
         %{tags: tags}
       )
@@ -26,16 +26,12 @@ defmodule EmbersWeb.Plugs.InitialData do
     notifications = Notifications.list_notifications_paginated(user.id)
 
     notifications =
-      EmbersWeb.NotificationView.render(
+      EmbersWeb.Web.NotificationView.render(
         "notifications.json",
         notifications
       )
 
-    unread_conversations =
-      Embers.Chat.list_unread_conversations(user.id)
-      |> Enum.map(fn x ->
-        %{x | party: Embers.Helpers.IdHasher.encode(x.party)}
-      end)
+    unread_conversations = Embers.Chat.list_unread_conversations(user.id)
 
     conn
     |> assign(:user, user)

@@ -1,0 +1,54 @@
+post-viewer-modal {
+  dialog-box {
+    width: 660px;
+    padding: 1em;
+    box-sizing: border-box;
+
+    &>header {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 1.4em;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--primary);
+      padding: 0.5em 0;
+
+      /* @include media(">=tablet") {
+        display: none;
+      } */
+
+      button {
+        width: 3em;
+      }
+    }
+  }
+}
+
+.up-modal-dialog {
+  z-index: 500;
+}
+.up-modal-content {
+  padding: 0;
+  max-width: none!important;
+}
+
+.post-preview-modal {
+  width: 660px;
+  padding: 1em;
+  box-sizing: border-box;
+  max-width: 100vw;
+
+  &>header {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    font-size: 1.4em;
+
+    button {
+      width: 3em;
+    }
+  }
+}

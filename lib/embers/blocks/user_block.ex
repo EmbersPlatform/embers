@@ -6,9 +6,10 @@ defmodule Embers.Blocks.UserBlock do
 
   @type t :: %__MODULE__{}
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "user_blocks" do
-    belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:source, Embers.Accounts.User)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:source, Embers.Accounts.User, type: Embers.Hashid)
     field(:level, :integer, null: false, default: 1)
 
     timestamps()

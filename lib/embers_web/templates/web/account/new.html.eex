@@ -1,0 +1,49 @@
+<section id="login">
+  <h1><%= gettext("Create account") %></h1>
+
+  <%= form_for @changeset, account_path(@conn, :create), fn f -> %>
+    <%= if error = get_flash(@conn, :error) do %>
+      <div class="alert alert--danger">
+        <%= error %>
+      </div>
+    <% end %>
+    <%= if info = get_flash(@conn, :info) do %>
+      <div class="alert alert--info">
+        <%= info %>
+      </div>
+    <% end %>
+
+    <%= if error = get_flash(@conn, :error) do %>
+      <div class="error">
+        <%= error %>
+      </div>
+    <% end %>
+    <fieldset>
+      <%= text_input f, :username, class: "form-control", placeholder: "nombre_de_usuario1", required: true %>
+      <%= error_tag f, :username %>
+    </fieldset>
+
+    <fieldset>
+      <%= email_input f, :email, class: "form-control", placeholder: "micorreo@proveedor.dominio", required: true %>
+      <%= error_tag f, :email %>
+    </fieldset>
+
+    <fieldset>
+      <%= password_input f, :password, class: "form-control", placeholder: "mi clave secreta", required: true %>
+      <%= error_tag f, :password %>
+    </fieldset>
+
+
+    <fieldset>
+      <%= password_input f, :password_confirmation, class: "form-control", placeholder: "mi clave secreta de nuevo", required: true %>
+      <%= error_tag f, :password_confirmation %>
+    </fieldset>
+
+    <%= raw Recaptcha.Template.display(size: "invisible") %>
+    <button type="submit" class="button primary">
+      <%= gettext("Create account") %>
+    </button>
+  <% end %>
+</section>
+
+<script src="https://www.google.com/recaptcha/api.js"></script>

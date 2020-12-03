@@ -1,0 +1,25 @@
+report-reasons-dialog header {
+  font-size: 1.2em;
+  padding: 0.5em;
+  background: var(--secondary-accent);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+report-reasons-dialog header > * + * {
+  margin-left: 0.5em;
+}
+
+report-reasons-dialog .report-reasons {
+  padding: 0.5em;
+}
+
+report-reasons-dialog .report-reasons + * {
+  border-top: var(--border);
+  margin-top: 0.5em;
+}
+
+report-reasons-dialog .report-reasons p {
+  margin: 0;
+}

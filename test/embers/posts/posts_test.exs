@@ -26,10 +26,10 @@ defmodule Embers.PostsTest do
       {:ok, post} = Posts.get_post(post_id)
 
       assert %{
-        user: %Embers.Accounts.User{
-          meta: %Embers.Profile.Meta{}
-          }
-        } = post
+               user: %Embers.Accounts.User{
+                 meta: %Embers.Profile.Meta{}
+               }
+             } = post
     end
 
     test "loads related post" do
@@ -46,13 +46,14 @@ defmodule Embers.PostsTest do
       %{id: post_id} = insert(:post, related_to: original_post)
 
       {:ok, post} = Posts.get_post(post_id)
+
       assert %{
-        related_to: %Post{
-            user: %Embers.Accounts.User{
-            meta: %Embers.Profile.Meta{}
-            }
-          }
-        } = post
+               related_to: %Post{
+                 user: %Embers.Accounts.User{
+                   meta: %Embers.Profile.Meta{}
+                 }
+               }
+             } = post
     end
 
     test "loads media" do
@@ -60,9 +61,10 @@ defmodule Embers.PostsTest do
       %{id: post_id} = insert(:post, media: [media])
 
       {:ok, post} = Posts.get_post(post_id)
+
       assert %{
-          media: [%Embers.Media.MediaItem{}]
-        } = post
+               media: [%Embers.Media.MediaItem{}]
+             } = post
     end
 
     test "loads links" do
@@ -70,9 +72,10 @@ defmodule Embers.PostsTest do
       %{id: post_id} = insert(:post, links: [link])
 
       {:ok, post} = Posts.get_post(post_id)
+
       assert %{
-          links: [%Embers.Links.Link{}]
-        } = post
+               links: [%Embers.Links.Link{}]
+             } = post
     end
 
     test "loads tags" do
@@ -81,9 +84,10 @@ defmodule Embers.PostsTest do
       insert(:tag_post, tag: tag, post: post)
 
       {:ok, post} = Posts.get_post(post.id)
+
       assert %{
-        tags: [%Embers.Tags.Tag{}]
-      } = post
+               tags: [%Embers.Tags.Tag{}]
+             } = post
     end
 
     test "loads reactions" do
@@ -91,17 +95,19 @@ defmodule Embers.PostsTest do
       reaction = insert(:reaction, post: post)
 
       {:ok, post} = Posts.get_post(post.id)
+
       assert %{
-        reactions: [%Embers.Reactions.Reaction{}]
-      } = post
+               reactions: [%Embers.Reactions.Reaction{}]
+             } = post
     end
   end
 
   describe "create_post" do
     test "creates a post" do
       user = insert(:user)
+
       assert {:ok, %Post{}} =
-          Posts.create_post(%{user_id: user.id, body: "test"}, emit_event?: false)
+               Posts.create_post(%{user_id: user.id, body: "test"}, emit_event?: false)
     end
 
     test "return {:error, reason} tuple on error" do

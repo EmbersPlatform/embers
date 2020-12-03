@@ -8,6 +8,7 @@ defmodule Embers.Tags.Tag do
 
   @max_length 100
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "tags" do
     field(:name, :string, null: false)
     field(:description, :string)
@@ -16,13 +17,14 @@ defmodule Embers.Tags.Tag do
   end
 
   def changeset(changeset, attrs), do: create_changeset(changeset, attrs)
+
   def create_changeset(changeset, attrs) do
     changeset
     |> cast(attrs, [:name, :description])
     |> validate_required(:name)
     |> validate_length(:name, min: 2, max: @max_length)
     |> validate_name()
-    |> validate_format(:name, ~r/^\w+$/)
+    |> validate_format(:name, ~r/^\w+$/u)
     |> trim_desc(attrs)
   end
 
@@ -31,7 +33,9 @@ defmodule Embers.Tags.Tag do
   end
 
   defp validate_name(changeset) do
-    if String.valid?(get_change(changeset, :name)) do
+    new_name = get_change(changeset, :name)
+
+    if String.valid?(new_name) or is_nil(new_name) do
       changeset
     else
       add_error(changeset, :name, "invalid tag name")
@@ -44,4 +48,10 @@ defmodule Embers.Tags.Tag do
   end
 
   defp trim_desc(changeset, _), do: changeset
+
+  defimpl Jason.Encoder do
+    def encode(value, opts) do
+      Jason.Encode.map(Map.take(value, [:id, :name, :description]), opts)
+    end
+  end
 end

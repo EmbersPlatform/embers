@@ -1,0 +1,4 @@
+@mixin box {
+  border: var(--border);
+  box-shadow: var(--box-shadow);
+}

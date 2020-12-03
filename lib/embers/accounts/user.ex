@@ -47,6 +47,7 @@ defmodule Embers.Accounts.User do
 
   @type t() :: %__MODULE__{}
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "users" do
     field(:username, :string)
     field(:canonical, :string)
@@ -70,6 +71,7 @@ defmodule Embers.Accounts.User do
     has_many(:bans, Embers.Moderation.Ban)
 
     many_to_many(:roles, Embers.Authorization.Role, join_through: "role_user")
+    field(:permissions, {:array, :string}, virtual: true)
 
     timestamps()
   end
@@ -128,8 +130,10 @@ defmodule Embers.Accounts.User do
   end
 
   defp validate_non_temporary_email(%{valid?: false} = changeset), do: changeset
+
   defp validate_non_temporary_email(changeset) do
     email = get_change(changeset, :email)
+
     if is_nil(email) do
       changeset
     else
@@ -193,6 +197,7 @@ defmodule Embers.Accounts.User do
     |> prepare_changes(fn changeset ->
       canonical = get_change(changeset, :canonical)
       query = from(u in User, where: u.canonical == ^canonical)
+
       case changeset.repo.exists?(query) do
         false -> changeset
         true -> add_error(changeset, :username, "has already been taken")

@@ -1,0 +1,30 @@
+[is=emb-post-id-link] {
+  position: relative;
+  display: inline-block;
+
+  summary::-webkit-details-marker{display:none}
+
+  summary {
+    cursor: pointer;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 1em;
+    left: 0;
+    padding: 0.5em;
+    @include box;
+    background: var(--primary);
+
+    &>button,
+    &>a {
+      border: 0.2em solid rgba(0,0,0,0.2);
+
+      &+* {
+        margin-left: 0.5em;
+      }
+    }
+  }
+}

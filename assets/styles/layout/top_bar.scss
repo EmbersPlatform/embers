@@ -1,0 +1,40 @@
+#top-bar {
+  background: var(--top-nav-background);
+  color: var(--top-nav-foreground);
+  position: sticky;
+  top: 0;
+  height: 55px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  padding: 0 1em;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+}
+
+#top-bar input[type="search"] {
+  flex: 1 1 auto;
+  background: var(--primary);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  height: 35px;
+  padding: 0 10px;
+  color: var(--color);
+}
+
+#top-bar {
+  .button, .button-link, .plain-button + * {
+    margin-left: 0.5em;
+  }
+}
+
+@include media("<tablet") {
+  #top-bar {
+    padding: 0 0.5em;
+    height: 55px;
+  }
+
+  #top-bar input[type="search"] {
+    height: 35px;
+  }
+
+}

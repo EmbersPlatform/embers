@@ -1,0 +1,30 @@
+[view=moderation][subview=dashboard]{
+
+  .last-users {
+    padding: 0.5em;
+    @include box;
+    background: var(--primary);
+
+    ul {
+      margin: 0;
+      padding: 0;
+      margin-bottom: 1em;
+
+      &>li {
+        margin: 0;
+        display: flex;
+        flex-direction: row;
+
+        &>*+* {
+          margin-left: 0.5em;
+        }
+
+        &>.avatar {
+          width: 1.5em;
+          height: 1.5em;
+        }
+      }
+    }
+  }
+}
+

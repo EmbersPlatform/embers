@@ -1,0 +1,13 @@
+<reaction-picker data-action="select->reactable#onAddReaction">
+  <button class="plain-button" trigger><%= svg_image("new-reaction") %></button>
+  <ul list>
+    <%= for reaction <- ~w(thumbsup thumbsdown grin cry thinking point_up angry tada heart eggplant hot_pepper cookie) do %>
+      <button
+        class="plain-button"
+        data-reaction="<%= reaction %>"
+      >
+        <img src="/svg/reactions/<%= reaction %>.svg">
+      </button>
+    <% end %>
+  </ul>
+</reaction-picker>

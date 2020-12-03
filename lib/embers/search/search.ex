@@ -84,7 +84,7 @@ defmodule Embers.Search do
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
         preload: [
-          [:media, :reactions, :tags]
+          [:media, :reactions, :tags, :links]
         ],
         preload: [
           user: {user, meta: meta}

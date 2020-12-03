@@ -1,0 +1,81 @@
+chat-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0!important;
+
+  .conversation-user,
+  .new-message-button {
+    &:hover {
+      background-color: var(--secondary);
+    }
+  }
+
+  .conversation-user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.5em;
+
+    >*+* {
+      margin-left: 1em;
+    }
+
+    &+* {
+      margin-top: 0.5em;
+    }
+
+    .avatar {
+      flex-shrink: 0;
+
+      width: 2.5em;
+      height: 2.5em;
+    }
+
+    .username {
+      text-overflow: ellipsis;
+      flex: 1 auto;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .conversation-unread-count {
+      background: var(--accent);
+      color: var(--link);
+      padding: 0.2em 0.3em;
+      border-radius: 2em;
+    }
+  }
+
+  .new-message-button {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.5em;
+    color: var(--text);
+    cursor: pointer;
+    width: 100%;
+
+    >*+* {
+      margin-left: 1em;
+    }
+
+    >svg {
+      flex-shrink: 0;
+      padding: 0.5em;
+      width: 2.5em;
+      height: 2.5em;
+
+      * {
+        fill: currentColor;
+      }
+    }
+
+    >span {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+.tag-card {
+  @include box;
+  padding: 1em;
+  display: flex;
+  flex-direction: row;
+  --icon-size: 4.5em;
+
+  .tag-card-icon {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    border-radius: 0.5em;
+    background: rgba(0, 0, 0, 0.1);
+    margin-right: 1.2em;
+
+    & > span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      line-height: var(--icon-size);
+    }
+  }
+
+  .tag-card-summary > a > p {
+    margin: 0;
+    margin-top: 0.2em;
+  }
+
+  .tag-card-summary > a {
+    display: block;
+  }
+
+  .tag-card-name {
+    font-size: 1.5em;
+  }
+
+  follow-tag {
+    margin-left: 1.2em;
+  }
+}

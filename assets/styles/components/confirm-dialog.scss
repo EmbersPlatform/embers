@@ -1,0 +1,10 @@
+confirm-dialog {
+  .confirm-dialog-title {
+    margin: 0;
+    font-size: 1.2em;
+  }
+
+  dialog-box > *+* {
+    margin-top: 0.5em;
+  }
+}

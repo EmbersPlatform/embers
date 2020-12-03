@@ -13,12 +13,12 @@ defmodule Embers.Chat do
       %Message{}
       |> Message.changeset(attrs)
 
-    temp_id = Keyword.get(opts, :temp_id, nil)
+    nonce = Keyword.get(opts, :nonce, nil)
 
     case Repo.insert(message) do
       {:ok, message} ->
         message = message |> Repo.preload(sender: :meta, receiver: :meta)
-        Embers.Event.emit(:chat_message_created, %{message: message, temp_id: temp_id})
+        Embers.Event.emit(:chat_message_created, %{message: %{message | nonce: nonce}})
         {:ok, message}
 
       error ->
@@ -56,40 +56,40 @@ defmodule Embers.Chat do
     list_conversations_with(user_id)
   end
 
-  def list_conversations_with(user_id) when is_integer(user_id) do
+  def list_conversations_with(user_id) do
     receivers =
       from(m in Message,
         where: m.sender_id == ^user_id,
+        distinct: m.receiver_id,
         left_join: user in assoc(m, :receiver),
         left_join: meta in assoc(user, :meta),
         order_by: [desc: m.inserted_at],
-        group_by: [user.id, meta.id, m.inserted_at],
-        select: [m.inserted_at, user, meta]
+        select: {m.inserted_at, user, meta}
       )
       |> Repo.all()
-      |> Enum.map(fn [date, user, meta] ->
-        [date, %{user | meta: meta}]
+      |> Enum.map(fn {date, user, meta} ->
+        {date, %{user | meta: meta}}
       end)
 
     senders =
       from(m in Message,
         where: m.receiver_id == ^user_id,
+        distinct: m.sender_id,
         left_join: user in assoc(m, :sender),
         left_join: meta in assoc(user, :meta),
         order_by: [desc: m.inserted_at],
-        group_by: [user.id, meta.id, m.inserted_at],
-        select: [m.inserted_at, user, meta]
+        select: {m.inserted_at, user, meta}
       )
       |> Repo.all()
-      |> Enum.map(fn [date, user, meta] ->
-        [date, %{user | meta: meta}]
+      |> Enum.map(fn {date, user, meta} ->
+        {date, %{user | meta: meta}}
       end)
 
     Enum.concat(receivers, senders)
-    |> Enum.uniq_by(fn [_date, user] -> user.id end)
-    |> Enum.sort_by(fn [date, _user] -> date end)
+    |> Enum.uniq_by(fn {_date, user} -> user.id end)
+    |> Enum.sort_by(fn {d, _user} -> {d.year, d.month, d.day} end)
     |> Enum.reverse()
-    |> Enum.map(fn [date, user] -> %{user | inserted_at: date} end)
+    |> Enum.map(fn {date, user} -> %{user | inserted_at: date} end)
   end
 
   def list_unread_conversations(user_id) do
@@ -98,6 +98,17 @@ defmodule Embers.Chat do
       where: is_nil(m.read_at),
       group_by: m.sender_id,
       select: %{party: m.sender_id, unread: count(m.sender_id)}
+    )
+    |> Repo.all()
+  end
+
+  def get_unread_conversations(user_id) do
+    from(m in Message,
+      where: m.receiver_id == ^user_id,
+      where: is_nil(m.read_at),
+      left_join: partner in assoc(m, :sender),
+      group_by: partner.canonical,
+      select: %{partner: partner.canonical, unread: count(m.sender_id)}
     )
     |> Repo.all()
   end

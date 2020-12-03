@@ -22,9 +22,12 @@ defmodule Embers.Feed.Activity do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "feed_activity" do
-    belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:post, Embers.Posts.Post)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:post, Embers.Posts.Post, type: Embers.Hashid)
+
+    timestamps()
   end
 
   @doc false

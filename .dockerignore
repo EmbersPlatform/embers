@@ -1,0 +1,8 @@
+node_modules
+deps
+uploads
+.vscode
+.elixir_ls
+.cache
+_build
+artifacts

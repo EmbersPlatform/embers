@@ -1,0 +1,16 @@
+.notification--reaction .reaction-icon {
+  width: 1.5em;
+  height: 1.5em;
+  background: var(--toast-background);
+  position: absolute;
+  left: 1.2em;
+  bottom: -0.2em;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 0.2em solid var(--toast-background);
+}
+
+.notification-content.notification--reaction .icon {
+  border-radius: 50%;
+  margin-right: 1.2em;
+}

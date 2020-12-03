@@ -1,0 +1,85 @@
+@import "./variables.scss";
+@import "./themes.scss";
+
+@import "~include-media/dist/_include-media.scss";
+
+@import "./mixins/module";
+
+@import "./utils/module";
+
+@import "./turbolinks.scss";
+
+@import "./elements/module";
+@import "./components/module";
+
+@import "./landing/module";
+@import "./top_nav/module";
+
+@import "./layout/module";
+
+@import "./pages/module";
+
+@import "./notices/module";
+
+@import "./moderation/module";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: $font-family;
+  font-size: var(--font-size);
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  background: var(--background);
+  color: var(--text);
+
+  @include media("<tablet") {
+    &:not(.no-navigation) {
+      padding-bottom: var(--navigation-width);
+    }
+  }
+}
+
+#board {
+  transition: opacity 250ms ease-in-out;
+  opacity: 1;
+}
+
+body.loading-page #board{
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+#view main {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.mobile-hidden {
+  @include media("<tablet") {
+    display: none !important;
+  }
+}
+
+.desktop-hidden {
+  @include media(">=tablet") {
+    display: none !important;
+  }
+}
+
+.tablet-only {
+  @include media("<tablet") {
+    display: none !important;
+  }
+
+  @include media(">=desktop") {
+    display: none !important;
+  }
+}

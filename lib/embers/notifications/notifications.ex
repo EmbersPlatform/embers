@@ -54,6 +54,18 @@ defmodule Embers.Notifications do
     Repo.get!(Notification, id)
   end
 
+  def count_unseen(user_id) do
+    query =
+      from(
+        notif in Notification,
+        where: notif.recipient_id == ^user_id,
+        where: notif.status == 0,
+        select: count(notif.id)
+      )
+
+    Repo.one(query)
+  end
+
   @doc """
   Creates a notification.
 
@@ -123,7 +135,7 @@ defmodule Embers.Notifications do
       iex> list_notifications_paginated(1)
       [entries: [%Notification{}, ...], ...]
   """
-  def list_notifications_paginated(user_id, opts \\ []) when is_integer(user_id) do
+  def list_notifications_paginated(user_id, opts \\ []) do
     query =
       from(
         notif in Notification,
@@ -137,6 +149,7 @@ defmodule Embers.Notifications do
       )
 
     results = Paginator.paginate(query, opts)
+    results = update_in(results.entries, &load_avatars/1)
 
     mark_as_read = Keyword.get(opts, :mark_as_read, false)
 
@@ -144,6 +157,7 @@ defmodule Embers.Notifications do
       if mark_as_read do
         ids = Enum.map(results.entries, fn o -> o.id end)
         set_status(ids, 1)
+        Embers.Event.emit(:all_notifications_read, user_id)
 
         %{
           results
@@ -154,17 +168,23 @@ defmodule Embers.Notifications do
     results
   end
 
+  defp load_avatars(notifications) do
+    Enum.map(notifications, fn notif ->
+      update_in(notif.from.meta, &Embers.Profile.Meta.load_avatar_map/1)
+    end)
+  end
+
   @doc """
   Sets the `status` a notification with id `id` to `status`. Defaults to `read` status.
 
   ## Examples
-      set_read(id, 0) // unseen
-      set_read(id, 1) // seen
-      set_read(id, 2) // read
+      set_read(id, 0) # unseen
+      set_read(id, 1) # seen
+      set_read(id, 2) # read
   """
   def set_status(id, status \\ 2)
 
-  def set_status(id, status) when is_integer(id) do
+  def set_status(id, status) when is_binary(id) do
     Repo.update_all(
       from(
         notif in Notification,

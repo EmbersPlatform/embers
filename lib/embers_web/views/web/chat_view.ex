@@ -1,60 +1,60 @@
-defmodule EmbersWeb.ChatView do
+defmodule EmbersWeb.Web.ChatView do
   @moduledoc false
 
   use EmbersWeb, :view
 
-  import Embers.Helpers.IdHasher
-
   def render("message.json", %{message: message}) do
     %{
-      id: encode(message.id),
+      id: message.id,
       text: message.text,
       read_at: message.read_at,
-      inserted_at: message.inserted_at
+      inserted_at: message.inserted_at,
+      nonce: message.nonce
     }
     |> handle_users(message)
   end
 
-  def render("ws_message.json", %{message: message, temp_id: temp_id}) do
+  def render("messages.json", %{messages: messages}) do
     %{
-      message: render("message.json", %{message: message}),
-      temp_id: temp_id
-    }
-  end
-
-  def render("conversations.json", %{conversations: conversations}) do
-    render_many(conversations, EmbersWeb.UserView, "user.json")
-  end
-
-  def render("messages.json", %{entries: messages} = metadata) do
-    %{
-      items:
-        Enum.map(messages, fn message ->
+      body:
+        Enum.map(messages.entries, fn message ->
           render(
             __MODULE__,
             "message.json",
             %{message: message}
           )
         end),
-      next: metadata.next,
-      last_page: metadata.last_page
+      next: messages.next,
+      last_page: messages.last_page
     }
+  end
+
+  def render("conversations.json", %{conversations: conversations}) do
+    render_many(conversations, EmbersWeb.Api.UserView, "user.json")
   end
 
   defp handle_users(view, message) do
     view =
       if Ecto.assoc_loaded?(message.sender) do
-        Map.put(view, :sender, render_one(message.sender, EmbersWeb.UserView, "user.json"))
+        Map.put(
+          view,
+          :sender,
+          render_one(message.sender, EmbersWeb.Api.UserView, "user.json")
+        )
       end || view
 
-    view = Map.put(view, :sender_id, encode(message.sender_id))
+    view = Map.put(view, :sender_id, message.sender_id)
 
     view =
       if Ecto.assoc_loaded?(message.receiver) do
-        Map.put(view, :receiver, render_one(message.receiver, EmbersWeb.UserView, "user.json"))
+        Map.put(
+          view,
+          :receiver,
+          render_one(message.receiver, EmbersWeb.Api.UserView, "user.json")
+        )
       end || view
 
-    view = Map.put(view, :receiver_id, encode(message.receiver_id))
+    view = Map.put(view, :receiver_id, message.receiver_id)
 
     view
   end

@@ -15,6 +15,7 @@ defmodule Embers.Mixfile do
       source_url: "https://gitlab.com/embers-project/embers/embers",
       docs: docs(),
       releases: [
+        embers: [],
         tar: [
           include_executables_for: [:unix],
           steps: [:assemble, :tar],
@@ -33,9 +34,8 @@ defmodule Embers.Mixfile do
       extra_applications: [
         :logger,
         :runtime_tools,
+        :os_mon,
         :recaptcha,
-        :scrivener_ecto,
-        :scrivener_html,
         :ex_rated,
         :swoosh,
         :gen_smtp
@@ -52,16 +52,22 @@ defmodule Embers.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.4.0"},
-      {:phoenix_pubsub, "~> 1.1"},
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:phoenix, "~> 1.5.0"},
+      {:phoenix_pubsub, "~> 2.0"},
+      {:phoenix_live_dashboard, "~> 0.1"},
       {:phoenix_ecto, "~> 4.0"},
+      {:telemetry_poller, "~> 0.4"},
+      {:telemetry_metrics, "~> 0.4"},
       {:ecto_sql, "~> 3.0"},
+      {:ecto_psql_extras, "~> 0.2"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:plug_cowboy, "~> 2.1"},
       {:gettext, "~> 0.11"},
+      {:ex_cldr, "~> 2.18"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
       {:phauxth, "~> 2.1"},
       {:swoosh, "~> 0.23"},
       {:mail, "~> 0.2"},
@@ -69,7 +75,7 @@ defmodule Embers.Mixfile do
       {:not_qwerty123, "~> 2.3"},
       {:pbkdf2_elixir, "~> 1.0"},
       {:uuid, "~> 1.1"},
-      {:ex_aws, "~> 2.0"},
+      {:ex_aws, "~> 2.1.5"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.16"},
       {:httpoison, "~> 1.5"},
@@ -78,7 +84,7 @@ defmodule Embers.Mixfile do
       {:hashids, "~> 2.0"},
       {:ex_doc, "~> 0.20", only: :dev, runtime: false},
       {:ex_machina, "~> 2.2"},
-      {:timex, "~> 3.0"},
+      {:timex, "~> 3.6"},
       {:mogrify, "~> 0.7.0"},
       {:ffmpex, "~> 0.5.2"},
       {:silent_video, "~> 0.3.0"},
@@ -89,10 +95,11 @@ defmodule Embers.Mixfile do
       {:fastimage, "~> 0.0.7"},
       {:benchee, "~> 1.0", only: :dev},
       {:benchee_html, "~> 1.0", only: :dev},
-      {:scrivener_ecto, "~> 2.0"},
-      {:scrivener_html, "~> 1.8"},
       {:ex_rated, "~> 1.2"},
-      {:remote_ip, "~> 0.2.1"}
+      {:phoenix_inline_svg, "~> 1.3"},
+      {:phoenix_active_link, "~> 0.3.0"},
+      {:remote_ip, "~> 0.2.1"},
+      {:sentry, "~> 8.0"}
     ]
   end
 

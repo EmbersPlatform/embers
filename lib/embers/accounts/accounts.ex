@@ -58,15 +58,31 @@ defmodule Embers.Accounts do
   @spec list_users_paginated(keyword()) :: Embers.Paginator.Page.t()
   def list_users_paginated(opts \\ []) do
     order = Keyword.get(opts, :order, :asc)
+    filters = Keyword.get(opts, :filters, [])
+    preloads = Keyword.get(opts, :preloads, [])
+
     query =
       from(
         users in User,
-        order_by: [{^order, users.inserted_at}]
+        order_by: [{^order, users.inserted_at}],
+        preload: ^([:meta] ++ preloads)
       )
       |> maybe_filter_by_name_query(opts)
+      |> maybe_apply_filters(filters)
       |> maybe_preload_query(opts)
 
     Paginator.paginate(query, opts)
+    |> Paginator.map(fn user ->
+      user
+      |> Map.update!(:meta, &Embers.Profile.Meta.load_avatar_map/1)
+      |> Map.update!(:meta, &Embers.Profile.Meta.load_cover/1)
+    end)
+  end
+
+  defp maybe_apply_filters(query, filters) do
+    Enum.reduce(filters, query, fn {field, value}, q ->
+      from(users in q, where: ilike(field(users, ^field), ^"%#{value}%"))
+    end)
   end
 
   defp maybe_filter_by_name_query(query, opts) do
@@ -106,7 +122,7 @@ defmodule Embers.Accounts do
       %User{}
   """
   def get_by_identifier(identifier) when is_binary(identifier) do
-    get_by(canonical: identifier)
+    get_by(%{"canonical" => identifier})
   end
 
   def get_by_identifier(identifier) when is_integer(identifier) do
@@ -118,9 +134,12 @@ defmodule Embers.Accounts do
   """
   def get_populated(identifier, opts \\ []) do
     query =
-      case is_integer(identifier) do
-        true -> User |> where([user], user.id == ^identifier)
-        false -> User |> where([user], user.canonical == ^String.downcase(identifier))
+      case identifier do
+        %{"canonical" => canonical} ->
+          from(user in User, where: user.canonical == ^canonical)
+
+        id when is_binary(id) ->
+          from(user in User, where: user.id == ^id)
       end
 
     user =
@@ -187,7 +206,7 @@ defmodule Embers.Accounts do
       |> Multi.run(:meta, &multi_attach_meta/2)
       |> Multi.run(:settings, &multi_attach_settings/2)
 
-    case Repo.transaction(multi) |> IO.inspect(label: "USER TRANSACTION") do
+    case Repo.transaction(multi) do
       {:ok, %{user: user}} ->
         {:ok, user}
 
@@ -327,7 +346,7 @@ defmodule Embers.Accounts do
   def load_stats_map(%User{} = user) do
     stats = %{
       followers: get_followers_count(user),
-      friends: get_friends_count(user),
+      following: get_following_count(user),
       posts: get_posts_count(user),
       comments: get_comments_count(user)
     }
@@ -351,7 +370,7 @@ defmodule Embers.Accounts do
   @doc """
   Gets the count of friends
   """
-  def get_friends_count(%User{} = user) do
+  def get_following_count(%User{} = user) do
     count =
       Embers.Subscriptions.UserSubscription
       |> where([s], s.user_id == ^user.id)

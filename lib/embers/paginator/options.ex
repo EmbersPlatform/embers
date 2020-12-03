@@ -5,12 +5,14 @@ defmodule Embers.Paginator.Options do
           before: any(),
           after: any(),
           limit: integer(),
-          max_limit: integer()
+          max_limit: integer(),
+          inclusive_cursor: boolean()
         }
   defstruct before: nil,
             after: nil,
-            limit: 50,
-            max_limit: 100
+            limit: 20,
+            max_limit: 100,
+            inclusive_cursor: true
 
   @spec build(keyword()) :: Embers.Paginator.Options.t()
   def build(opts \\ []) do
@@ -18,7 +20,8 @@ defmodule Embers.Paginator.Options do
       struct(__MODULE__, %{
         after: Keyword.get(opts, :after),
         before: Keyword.get(opts, :before),
-        limit: Keyword.get(opts, :limit)
+        limit: Keyword.get(opts, :limit),
+        inclusive_cursor: Keyword.get(opts, :inclusive_cursor)
       })
 
     opts =
@@ -28,13 +31,17 @@ defmodule Embers.Paginator.Options do
 
     opts =
       if is_nil(opts.limit) do
-        %{opts | limit: 50}
+        %{opts | limit: 20}
       end || opts
 
     opts =
       if opts.limit > opts.max_limit do
         %{opts | limit: opts.max_limit}
-        opts
+      end || opts
+
+    opts =
+      if is_nil(opts.inclusive_cursor) do
+        %{opts | inclusive_cursor: true}
       end || opts
 
     opts

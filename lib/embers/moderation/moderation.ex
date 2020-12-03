@@ -14,7 +14,7 @@ defmodule Embers.Moderation do
     banned?(user.id)
   end
 
-  def banned?(user_id) when is_integer(user_id) do
+  def banned?(user_id) when is_binary(user_id) do
     not is_nil(get_active_ban(user_id))
   end
 
@@ -24,7 +24,7 @@ defmodule Embers.Moderation do
     Timex.compare(ban.expires_at, Timex.now(), :days) <= 0
   end
 
-  def get_active_ban(user_id) when is_integer(user_id) do
+  def get_active_ban(user_id) when is_binary(user_id) do
     Repo.one(bans_query(user_id))
   end
 
@@ -32,14 +32,32 @@ defmodule Embers.Moderation do
     get_active_ban(user.id)
   end
 
+  @doc """
+  Returns a page with active bans, ordered by date.
+  See `Embers.Paginator.paginate/2` for options.
+  """
+  @spec list_all_bans(options :: keyword()) :: Paginator.Page.t(Ban.t())
   def list_all_bans(opts \\ []) do
-    from(ban in Ban, order_by: [desc: ban.id], where: is_nil(ban.deleted_at))
+    from(ban in Ban,
+      order_by: [desc: ban.id],
+      where: is_nil(ban.deleted_at),
+      preload: [user: [:meta]]
+    )
     |> Paginator.paginate(opts)
+    |> Paginator.map(fn ban ->
+      update_in(ban.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
+    end)
   end
 
-  def list_bans(user, opts \\ [])
+  @doc """
+  Lists bans for the given user.
+  See `Embers.Paginator.paginate/2` for options.
+  """
+  @spec list_bans_for(user :: String.t() | User.t(), options :: keyword()) ::
+          Paginator.Page.t(Ban.t())
+  def list_bans_for(user, opts \\ [])
 
-  def list_bans(user_id, opts) when is_integer(user_id) do
+  def list_bans_for(user_id, opts) when is_binary(user_id) do
     user_id
     |> bans_query(opts)
     |> Repo.all()
@@ -51,7 +69,7 @@ defmodule Embers.Moderation do
 
   def ban_user(user, opts \\ [])
 
-  def ban_user(user_id, opts) when is_integer(user_id) do
+  def ban_user(user_id, opts) when is_binary(user_id) do
     if is_nil(get_active_ban(user_id)) do
       duration = Keyword.get(opts, :duration, 7)
 
@@ -100,7 +118,7 @@ defmodule Embers.Moderation do
     ban_user(user.id, opts)
   end
 
-  def unban_user(user_id) when is_integer(user_id) do
+  def unban_user(user_id) when is_binary(user_id) do
     case get_active_ban(user_id) do
       nil -> {:ok, nil}
       ban -> soft_delete(ban)

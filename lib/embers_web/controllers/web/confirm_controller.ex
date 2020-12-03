@@ -1,4 +1,4 @@
-defmodule EmbersWeb.ConfirmController do
+defmodule EmbersWeb.Web.ConfirmController do
   @moduledoc false
 
   use EmbersWeb, :controller

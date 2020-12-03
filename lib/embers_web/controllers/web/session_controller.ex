@@ -1,4 +1,4 @@
-defmodule EmbersWeb.SessionController do
+defmodule EmbersWeb.Web.SessionController do
   @moduledoc false
   use EmbersWeb, :controller
 
@@ -10,7 +10,6 @@ defmodule EmbersWeb.SessionController do
   alias EmbersWeb.Remember
 
   plug(:guest_check when action in [:new, :create, :create_api])
-  plug(:put_layout, "app_no_js.html")
 
   plug(
     :rate_limit_authentication,
@@ -66,7 +65,6 @@ defmodule EmbersWeb.SessionController do
         conn
         |> delete_session(:phauxth_session_id)
         |> Remember.delete_rem_cookie()
-        |> put_status(:no_content)
         |> json(nil)
 
       _ ->
@@ -89,7 +87,6 @@ defmodule EmbersWeb.SessionController do
           {:ok, user} ->
             conn
             |> Login.add_session(user, user_params)
-            |> put_status(:no_content)
             |> json(%{message: :success})
 
           {:error, _message} ->

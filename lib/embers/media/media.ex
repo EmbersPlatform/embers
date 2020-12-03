@@ -98,6 +98,16 @@ defmodule Embers.Media do
     end
   end
 
+  def format_url(url) when is_binary(url) do
+    uri = URI.parse(url)
+
+    if is_nil(uri.host) do
+      "/#{uri.path}"
+    else
+      URI.to_string(uri)
+    end
+  end
+
   @doc """
   Soft deletes a media
   """
@@ -149,7 +159,7 @@ defmodule Embers.Media do
     |> Repo.all()
   end
 
-  def prune do
+  def prune_expired do
     stream =
       expired_query()
       |> Repo.stream()
@@ -163,6 +173,36 @@ defmodule Embers.Media do
     end)
 
     :ok
+  end
+
+  @doc """
+  Returns a list with all the orphan medias ids
+  """
+  @spec list_orphans_ids() :: [String.t()]
+  def list_orphans_ids do
+    from(
+      media in MediaItem,
+      left_join: mp in "posts_medias",
+      on: mp.media_item_id == media.id,
+      where: is_nil(mp.id),
+      select: media.id
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  TODO
+  """
+  @spec prune_orphans() :: {:ok, integer()}
+  def prune_orphans do
+    from(
+      media in MediaItem,
+      left_join: mp in "posts_medias",
+      on: mp.media_item_id == media.id,
+      where: is_nil(mp.id),
+      select: count(media.id)
+    )
+    |> Repo.all()
   end
 
   defp remove_url(%{type: "link"}), do: :ok

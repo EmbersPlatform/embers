@@ -1,0 +1,14 @@
+
+<%= EmbersWeb.LayoutView.sidebar assigns do %>
+  <%= render("_sidebar.html", assigns) %>
+<% end %>
+<div id="view" view="settings" subview="account" class="has-sidebar">
+  <%= render_shared("top_bar.html", assigns) %>
+  <main class="padded">
+    <h1><%= gettext "Content" %></h1>
+    <content-options
+      data-settings_nsfw="<%= @settings.content_nsfw %>"
+      data-settings_collapse_media="<%= @settings.content_collapse_media %>"
+    ></content-options>
+  </main>
+</div>

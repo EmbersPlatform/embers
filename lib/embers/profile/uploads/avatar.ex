@@ -1,6 +1,5 @@
 defmodule Embers.Profile.Uploads.Avatar do
   @moduledoc false
-  alias Embers.Helpers.IdHasher
   alias Embers.Uploads
 
   @path Keyword.get(Application.get_env(:embers, Embers.Profile), :avatar_path, "user/avatar")
@@ -13,20 +12,20 @@ defmodule Embers.Profile.Uploads.Avatar do
     upload(avatar, user.id)
   end
 
-  def upload(avatar, user_id) when is_integer(user_id) do
+  def upload(avatar, user_id) do
     if valid?(avatar) do
       small = make_small(avatar)
       medium = make_medium(avatar)
       large = make_large(avatar)
 
-      id = IdHasher.encode(user_id)
-
       with {:ok, _} <-
-             Uploads.upload(small.path, "#{@path}/#{id}_small.png", content_type: "image/png"),
+             Uploads.upload(small.path, "#{@path}/#{user_id}_small.png", content_type: "image/png"),
            {:ok, _} <-
-             Uploads.upload(medium.path, "#{@path}/#{id}_medium.png", content_type: "image/png"),
+             Uploads.upload(medium.path, "#{@path}/#{user_id}_medium.png",
+               content_type: "image/png"
+             ),
            {:ok, _} <-
-             Uploads.upload(large.path, "#{@path}/#{id}_large.png", content_type: "image/png") do
+             Uploads.upload(large.path, "#{@path}/#{user_id}_large.png", content_type: "image/png") do
         :ok
       else
         error -> error
@@ -40,8 +39,7 @@ defmodule Embers.Profile.Uploads.Avatar do
     delete(user.id)
   end
 
-  def delete(user_id) when is_integer(user_id) do
-    id = IdHasher.encode(user_id)
+  def delete(user_id) do
     meta = Embers.Repo.get_by(Embers.Profile.Meta, user_id: user_id)
 
     case meta.avatar_version do
@@ -49,9 +47,9 @@ defmodule Embers.Profile.Uploads.Avatar do
         :ok
 
       _ ->
-        with :ok <- Uploads.delete("#{@path}/#{id}_small.png"),
-             :ok <- Uploads.delete("#{@path}/#{id}_medium.png"),
-             :ok <- Uploads.delete("#{@path}/#{id}_large.png"),
+        with :ok <- Uploads.delete("#{@path}/#{user_id}_small.png"),
+             :ok <- Uploads.delete("#{@path}/#{user_id}_medium.png"),
+             :ok <- Uploads.delete("#{@path}/#{user_id}_large.png"),
              {:ok, _} <-
                Embers.Profile.Meta.changeset(meta, %{avatar_version: nil}) |> Embers.Repo.update() do
           :ok
@@ -66,7 +64,8 @@ defmodule Embers.Profile.Uploads.Avatar do
   end
 
   defp valid?(file) do
-    ~w(.jpg .jpeg .gif .png) |> Enum.member?(Path.extname(file.filename))
+    [_, type] = String.split(file.content_type, "/")
+    ~w(jpg jpeg gif png) |> Enum.member?(type)
   end
 
   defp make_small(image) do

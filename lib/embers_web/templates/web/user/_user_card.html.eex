@@ -1,0 +1,31 @@
+<div class="user-card">
+  <div class="cover" style="background-image: url(<%= @user.meta.cover %>);"></div>
+  <section class="user-resume">
+    <%= link(
+      to: decoded_path(:user_path, Endpoint, :show, @user.canonical),
+        label: @user.username,
+        class: "username",
+        "up-preload": true
+    ) do %>
+      <img class="avatar" src="<%= @user.meta.avatar.medium %>">
+      <span class="display-name">
+        <bdi><%= @user.username %></bdi>
+        <%= if authenticated?(@conn) and @user.follows_me do %>
+          <small class="badge">Te sigue</small>
+        <% end %>
+      </span>
+    <% end %>
+    <%= if authenticated?(@conn) && @user.id != @conn.assigns.current_user.id do %>
+      <button
+        is="follow-button"
+        class="button"
+        data-id="<%= @user.id %>"
+        <%= if authenticated?(@conn) and @user.following, do: "following" %>
+        textless
+      ></button>
+    <% end %>
+  </section>
+  <p class="bio">
+    <%= @user.meta.bio%>
+  </p>
+</div>

@@ -1,25 +1,27 @@
 defmodule EmbersWeb.NotificationSubscriber do
   @moduledoc false
 
-  use Embers.EventSubscriber, topics: ~w(notification_created post_reacted comment_reacted)
+  use Embers.EventSubscriber,
+    topics:
+      ~w(notification_created post_reacted comment_reacted notification_read all_notifications_read)
 
-  import Embers.Helpers.IdHasher
-
-  alias EmbersWeb.NotificationView
+  alias EmbersWeb.Web.NotificationView
   alias Embers.Profile.Meta
 
   require Logger
 
   def handle_event(:notification_created, event) do
     notification = event.data
-    recipient = encode(notification.recipient_id)
+    recipient = notification.recipient_id
 
     Logger.info("Sending ws notification to #{recipient}")
 
     EmbersWeb.Endpoint.broadcast!(
       "user:#{recipient}",
       "notification",
-      NotificationView.render("notification.json", %{notification: %{notification | status: 0}})
+      NotificationView.render("notification.json", %{
+        notification: %{notification | status: 0}
+      })
     )
   end
 
@@ -31,7 +33,7 @@ defmodule EmbersWeb.NotificationSubscriber do
       | user: %{reaction.user | meta: reaction.user.meta |> Meta.load_avatar_map()}
     }
 
-    recipient = encode(reaction.post.user_id)
+    recipient = reaction.post.user_id
 
     EmbersWeb.Endpoint.broadcast!(
       "user:#{recipient}",
@@ -39,7 +41,7 @@ defmodule EmbersWeb.NotificationSubscriber do
       %{
         ephemeral: true,
         type: "post_reaction",
-        post_id: encode(reaction.post_id),
+        post_id: reaction.post_id,
         from: reaction.user.username,
         reaction: reaction.name,
         avatar: reaction.user.meta.avatar.small
@@ -58,7 +60,7 @@ defmodule EmbersWeb.NotificationSubscriber do
         }
     }
 
-    recipient = encode(reaction.post.user_id)
+    recipient = reaction.post.user_id
 
     EmbersWeb.Endpoint.broadcast!(
       "user:#{recipient}",
@@ -66,11 +68,32 @@ defmodule EmbersWeb.NotificationSubscriber do
       %{
         ephemeral: true,
         type: "post_reaction",
-        post_id: encode(reaction.post_id),
+        post_id: reaction.post_id,
         from: reaction.user.username,
         reaction: reaction.name,
         avatar: reaction.user.meta.avatar.small
       }
+    )
+  end
+
+  def handle_event(:notification_read, %{data: notification}) do
+    recipient = notification.user_id
+
+    EmbersWeb.Endpoint.broadcast!(
+      "user:#{recipient}",
+      "notification_read",
+      %{id: notification.id}
+    )
+  end
+
+  def handle_event(:all_notifications_read, %{data: user_id}) do
+    IO.inspect("NOTIFICATIONS READ FOR #{user_id}")
+    recipient = user_id
+
+    EmbersWeb.Endpoint.broadcast!(
+      "user:#{recipient}",
+      "all_notifications_read",
+      %{}
     )
   end
 end

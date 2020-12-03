@@ -20,6 +20,13 @@ defmodule Embers.Authorization.Roles do
   end
 
   @doc """
+    Gets a role by it's id, or `nil` if none is found
+  """
+  def get_by_id(id) do
+    Repo.get_by(Role, id: id)
+  end
+
+  @doc """
     Gets a role by it's name, nor `nil` if none is found
   """
   @spec get(String.t()) :: Role.t() | nil
@@ -34,7 +41,7 @@ defmodule Embers.Authorization.Roles do
   @doc """
     Same as `get/1` but raises if no role was found
   """
-  @spec get(String.t()) :: Role.t()
+  @spec get!(String.t()) :: Role.t()
   def get!(name) do
     Repo.one!(
       from(role in Role,
@@ -72,6 +79,18 @@ defmodule Embers.Authorization.Roles do
   end
 
   @doc """
+  Gets the roles for the user, or fetchs them from db if not loaded
+  """
+  @spec roles_for(User.t()) :: [Role.t()]
+  def roles_for(%User{} = user) do
+    if Ecto.assoc_loaded?(user.roles) do
+      user.roles
+    else
+      roles_for(user.id)
+    end
+  end
+
+  @doc """
   Finds a user by it's `id` and returns the list of `Role`s associated to it.
   """
   @spec roles_for(integer()) :: [Role.t()]
@@ -91,8 +110,8 @@ defmodule Embers.Authorization.Roles do
   """
   def attach_role(role, user)
 
-  @spec attach_role(integer(), integer()) :: RoleUser.t() | nil
-  def attach_role(role_id, user_id) when is_integer(role_id) and is_integer(user_id) do
+  @spec attach_role(String.t(), String.t()) :: RoleUser.t() | nil
+  def attach_role(role_id, user_id) when is_binary(role_id) and is_binary(user_id) do
     changeset = RoleUser.changeset(%RoleUser{}, %{role_id: role_id, user_id: user_id})
     Repo.insert(changeset)
   end
@@ -102,24 +121,11 @@ defmodule Embers.Authorization.Roles do
     attach_role(role.id, user.id)
   end
 
-  @spec attach_role(String.t(), integer()) :: RoleUser.t() | nil
-  def attach_role(rolename, user_id) when is_binary(rolename) and is_integer(user_id) do
-    case get(rolename) do
-      nil -> nil
-      role -> attach_role(role.id, user_id)
-    end
-  end
-
-  @spec attach_role(String.t(), User.t()) :: RoleUser.t() | nil
-  def attach_role(rolename, %User{} = user) when is_binary(rolename) do
-    attach_role(rolename, user.id)
-  end
-
   @doc """
   Detachs the role form the user.
   Returns the `RoleUser` that did represent the association.
   """
-  def detach_role(role_id, user_id) when is_integer(role_id) and is_integer(user_id) do
+  def detach_role(role_id, user_id) when is_binary(role_id) and is_binary(user_id) do
     case Repo.get_by(RoleUser, %{role_id: role_id, user_id: user_id}) do
       nil -> nil
       role -> Repo.delete(role)
@@ -128,17 +134,6 @@ defmodule Embers.Authorization.Roles do
 
   def detach_role(%Role{} = role, %User{} = user) do
     detach_role(role.id, user.id)
-  end
-
-  def detach_role(rolename, user_id) when is_binary(rolename) and is_integer(user_id) do
-    case get(rolename) do
-      nil -> nil
-      role -> detach_role(role.id, user_id)
-    end
-  end
-
-  def detach_role(rolename, %User{} = user) when is_binary(rolename) do
-    detach_role(rolename, user.id)
   end
 
   @doc """

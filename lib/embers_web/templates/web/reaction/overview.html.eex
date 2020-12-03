@@ -1,0 +1,9 @@
+<%= for reaction <- @reactions do %>
+  <button
+    class="reaction"
+    data-name="<%= reaction.name %>"
+  >
+    <img src="/svg/reactions/<%= reaction.name %>.svg">
+    <span class="reaction-total"><%= reaction.count %></span>
+  </button>
+<% end %>

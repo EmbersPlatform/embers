@@ -30,10 +30,11 @@ defmodule Embers.Posts.PostTest do
 
       post =
         Post.changeset(%Post{}, @valid_attrs |> Map.put(:user_id, user.id))
-        |> Repo.insert
+        |> Repo.insert()
+
       bad_post =
         Post.changeset(%Post{}, @valid_attrs |> Map.put(:user_id, -1))
-        |> Repo.insert
+        |> Repo.insert()
 
       assert {:ok, %Post{}} = post
       assert {:error, bad_changeset} = bad_post
@@ -82,17 +83,20 @@ defmodule Embers.Posts.PostTest do
     end
 
     test "only one of parent_id and related_to_id can be present" do
-      changeset = Post.changeset(%Post{}, %{
-        user_id: 1,
-        parent_id: 1,
-        related_to_id: 1
-      })
+      changeset =
+        Post.changeset(%Post{}, %{
+          user_id: 1,
+          parent_id: 1,
+          related_to_id: 1
+        })
 
       refute changeset.valid?
+
       assert %{
-        invalid_data:
-          ["only one of `parent_id` and `related_to_id` can be present at the same time"]
-        } = errors_on(changeset)
+               invalid_data: [
+                 "only one of `parent_id` and `related_to_id` can be present at the same time"
+               ]
+             } = errors_on(changeset)
     end
 
     test "parent post must exist" do
@@ -109,6 +113,7 @@ defmodule Embers.Posts.PostTest do
       user = insert(:user)
       post = insert(:post)
       changeset = Post.changeset(%Post{}, %{user_id: user.id, related_to_id: post.id})
+
       bad_post =
         Post.changeset(%Post{}, %{user_id: user.id, related_to_id: -1})
         |> Repo.insert()
@@ -163,6 +168,7 @@ defmodule Embers.Posts.PostTest do
     test "increments the replies_count" do
       user = insert(:user)
       parent = insert(:post)
+
       changeset =
         Post.create_changeset(
           %Post{},
@@ -181,6 +187,7 @@ defmodule Embers.Posts.PostTest do
     test "increments the shares_count" do
       user = insert(:user)
       related = insert(:post)
+
       changeset =
         Post.create_changeset(
           %Post{},

@@ -1,0 +1,26 @@
+toast-notification {
+  display: block;
+  width: 100%;
+  background: var(--toast-background, var(--primary));
+  color: var(--toast-foreground, var(--color));
+  padding: 0.5em;
+  box-shadow: var(--box-shadow);
+  border: var(--border);
+  border-radius: var(--border-radius);
+}
+
+toast-notification + toast-notification {
+  margin-top: 0.5em;
+}
+
+toast-notification.success {
+  border-left: 0.3em solid var(--success);
+}
+
+toast-notification.danger {
+  border-left: 0.3em solid var(--danger);
+}
+
+toast-notification.warning {
+  border-left: 0.3em solid var(--warning);
+}

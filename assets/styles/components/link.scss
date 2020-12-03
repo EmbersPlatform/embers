@@ -1,0 +1,56 @@
+.link {
+  width: 95%;
+  margin: 0 auto;
+
+  .link-preview {
+    max-height: 600px;
+    overflow: hidden;
+    text-align: center;
+
+    img {
+      max-width: 100%;
+      box-shadow: var(--box-shadow);
+      border-radius: .5em;
+    }
+  }
+
+  .responsive-embed > iframe {
+    box-shadow: var(--box-shadow);
+  }
+
+  .responsive-embed,
+  .link-preview {
+    max-width: 95%;
+    margin: 0 auto;
+    margin-bottom: -4em;
+    z-index: 1;
+    border-radius: .5em;
+    min-height: 4em;
+  }
+
+  .link-description {
+    padding: 1em;
+    padding-top: 5em;
+    background: var(--link-background);
+
+    &>a * {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--link-foreground);
+      max-width: 60vw;
+    }
+
+    h3 {
+      color: var(--link-foreground);
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    p + p {
+      margin-top: 0.5em;
+    }
+  }
+}

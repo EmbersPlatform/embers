@@ -1,4 +1,4 @@
-defmodule EmbersWeb.ReactionView do
+defmodule EmbersWeb.Web.ReactionView do
   @moduledoc false
 
   use EmbersWeb, :view
@@ -18,16 +18,13 @@ defmodule EmbersWeb.ReactionView do
     }
   end
 
-  def render("stats.json", %{stats: stats}) do
-    stats
-    |> Enum.reduce(%{}, fn x, acc ->
-      Map.put(acc, x.name, x.count)
-    end)
+  def render("overview.json", %{reactions: reactions}) do
+    reactions
   end
 
   defp maybe_user(reaction) do
     if Ecto.assoc_loaded?(reaction.user) do
-      render_one(reaction.user, EmbersWeb.UserView, "user.json")
+      render_one(reaction.user, EmbersWeb.Api.UserView, "user.json")
     end
   end
 end

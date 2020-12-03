@@ -7,7 +7,6 @@ defmodule Embers.Paginator do
 
   import Ecto.Query, warn: false
 
-  alias Embers.Helpers.IdHasher
   alias Embers.Paginator.Options
   alias Embers.Paginator.Page
   alias Embers.Repo
@@ -22,10 +21,10 @@ defmodule Embers.Paginator do
   * `after` - Fetch the records after this id
   * `before` - Fetch the records before this id
   * `limit` - Limits the number of records returned per page. Note that this number
-    will be capped by `:max_limit`. Defaults to 50
+    will be capped by `:max_limit`. Defaults to 20
   * `max_limit` - Sets a maximum cap for `:limit`. This option can be useful when `:limit`
     is set dynamically (e.g from a URL param set by a user) but you still want to
-    enforce a maximum. Defaults to `500`.
+    enforce a maximum. Defaults to `100`.
 
   ## Usage
 
@@ -45,16 +44,32 @@ defmodule Embers.Paginator do
 
     query =
       unless is_nil(opts.before) do
-        from(q in query,
-          where: q.id <= ^opts.before
-        )
+        case opts.inclusive_cursor do
+          true ->
+            from(q in query,
+              where: q.id <= ^opts.before
+            )
+
+          false ->
+            from(q in query,
+              where: q.id < ^opts.before
+            )
+        end
       end || query
 
     query =
       unless is_nil(opts.after) do
-        from(q in query,
-          where: q.id >= ^opts.after
-        )
+        case opts.inclusive_cursor do
+          true ->
+            from(q in query,
+              where: q.id >= ^opts.after
+            )
+
+          false ->
+            from(q in query,
+              where: q.id > ^opts.after
+            )
+        end
       end || query
 
     all_entries = Repo.all(query)
@@ -73,9 +88,31 @@ defmodule Embers.Paginator do
       if last_page or is_nil(last_entry) do
         nil
       else
-        IdHasher.encode(last_entry.id)
+        last_entry.id
       end
 
     %Page{entries: entries, next: next, last_page: last_page}
+  end
+
+  @doc """
+  Adds the `embers-page-metadata` header to a given `Plug.Conn`.
+  It contains a json encoded map with the page's `next` and `last_page`.
+  """
+  @spec put_page_headers(Plug.Conn.t(), Embers.Paginator.Page.t()) :: Plug.Conn.t()
+  def put_page_headers(conn, page) do
+    {:ok, page_metadata} =
+      Map.from_struct(page)
+      |> Map.drop([:entries])
+      |> Jason.encode()
+
+    conn
+    |> Plug.Conn.put_resp_header("embers-page-metadata", page_metadata)
+  end
+
+  @doc """
+  Applies the function to each element in the page entries
+  """
+  def map(page, fun) do
+    update_in(page.entries, fn entries -> Enum.map(entries, fun) end)
   end
 end

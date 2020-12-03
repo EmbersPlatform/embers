@@ -1,9 +1,17 @@
 defmodule EmbersWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :embers
 
+  plug(Unpoly)
   plug(RemoteIp)
 
   socket("/socket", EmbersWeb.UserSocket)
+  socket("/live", Phoenix.LiveView.Socket)
+
+  plug(Phoenix.LiveDashboard.RequestLogger,
+    param_key: "request_logger",
+    cookie_key: "request_logger"
+  )
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -15,7 +23,7 @@ defmodule EmbersWeb.Endpoint do
     from: :embers,
     gzip: true,
     only:
-      ~w(css fonts admin uploads img images emoji js favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
+      ~w(dist fonts uploads locales img svg images emoji favicon.ico robots.txt manifest.json offline.html error.html service-worker.js)
   )
 
   plug(Plug.Static, at: "/user/avatar", from: Path.expand('./uploads/user/avatar'), gzip: true)
@@ -53,6 +61,8 @@ defmodule EmbersWeb.Endpoint do
     length: 5_000_000
   )
 
+  plug(Sentry.PlugContext)
+
   plug(Plug.MethodOverride)
   plug(Plug.Head)
 
@@ -65,7 +75,8 @@ defmodule EmbersWeb.Endpoint do
     # 7 days
     max_age: 24 * 60 * 60 * 7,
     key: "_embers_key",
-    signing_salt: "8LHeFKPR"
+    signing_salt: "8LHeFKPR",
+    same_site: "Strict"
   )
 
   plug(Corsica,

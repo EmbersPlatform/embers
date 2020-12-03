@@ -1,0 +1,12 @@
+[view=discover] main {
+  max-width: 1024px!important;
+
+  masonry-layout > .post {
+    width: 325px;
+    margin-bottom: 20px;
+
+    @include media("<=tablet") {
+      width: 100%;
+    }
+  }
+}

@@ -1,4 +1,4 @@
-defmodule EmbersWeb.PasswordResetController do
+defmodule EmbersWeb.Web.PasswordResetController do
   @moduledoc false
 
   use EmbersWeb, :controller
@@ -7,8 +7,6 @@ defmodule EmbersWeb.PasswordResetController do
   alias EmbersWeb.{Auth.Token, Email}
   alias EmbersWeb.Router.Helpers, as: Routes
   alias Phauxth.Confirm.PassReset
-
-  plug(:put_layout, "app_no_js.html")
 
   def new(conn, _params) do
     render(conn, "new.html")
@@ -30,7 +28,7 @@ defmodule EmbersWeb.PasswordResetController do
   end
 
   def edit(conn, _params) do
-    render(conn, ForksTheEggSampleWeb.ErrorView, "404.html")
+    render(conn, ForksTheEggSampleWeb.Web.ErrorView, "404.html")
   end
 
   def update(conn, %{"password_reset" => params}) do

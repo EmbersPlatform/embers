@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -11,6 +11,8 @@ config :embers, EmbersWeb.Endpoint,
   debug_errors: true,
   code_reloader: true,
   check_origin: false
+
+config :logger, compile_time_purge_matching: [[application: :remote_ip]]
 
 # ## SSL Support
 #
@@ -32,7 +34,6 @@ config :embers, EmbersWeb.Endpoint,
 config :embers, EmbersWeb.Endpoint,
   live_reload: [
     patterns: [
-      ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
       ~r{lib/embers_web/views/.*(ex)$},
       ~r{lib/embers_web/templates/.*(eex)$}

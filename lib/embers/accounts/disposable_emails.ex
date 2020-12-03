@@ -10,7 +10,7 @@ defmodule Embers.Accounts.DisposableEmail do
       d in "domains_blacklist",
       where: d.domain == ^domain
     )
-    |> Repo.exists?
+    |> Repo.exists?()
   end
 
   defp extract_domain(input) do

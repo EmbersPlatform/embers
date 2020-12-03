@@ -1,6 +1,5 @@
 defmodule Embers.Profile.Uploads.Cover do
   @moduledoc false
-  alias Embers.Helpers.IdHasher
   alias Embers.Uploads
 
   @path Keyword.get(Application.get_env(:embers, Embers.Profile), :cover_path, "user/cover")
@@ -9,14 +8,12 @@ defmodule Embers.Profile.Uploads.Cover do
     upload(cover, user.id)
   end
 
-  def upload(cover, user_id) when is_integer(user_id) do
+  def upload(cover, user_id) do
     if valid?(cover) do
       processed = process(cover)
 
-      id = IdHasher.encode(user_id)
-
       with {:ok, _} <-
-             Uploads.upload(processed.path, "#{@path}/#{id}.jpg", content_type: "image/png") do
+             Uploads.upload(processed.path, "#{@path}/#{user_id}.jpg", content_type: "image/png") do
         :ok
       else
         error -> error
@@ -30,10 +27,8 @@ defmodule Embers.Profile.Uploads.Cover do
     delete(user.id)
   end
 
-  def delete(user_id) when is_integer(user_id) do
-    id = IdHasher.encode(user_id)
-
-    with :ok <- Uploads.delete("#{@path}/#{id}.jpg") do
+  def delete(user_id) do
+    with :ok <- Uploads.delete("#{@path}/#{user_id}.jpg") do
       :ok
     else
       error -> error
@@ -45,7 +40,8 @@ defmodule Embers.Profile.Uploads.Cover do
   end
 
   defp valid?(file) do
-    ~w(.jpg .jpeg .gif .png) |> Enum.member?(Path.extname(file.filename))
+    [_, type] = String.split(file.content_type, "/")
+    ~w(jpg jpeg gif png) |> Enum.member?(type)
   end
 
   defp process(image) do

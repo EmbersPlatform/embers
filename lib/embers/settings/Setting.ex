@@ -3,6 +3,7 @@ defmodule Embers.Settings.Setting do
 
   import Ecto.Changeset
 
+  @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "settings" do
     field(:name, :string, null: false)
     field(:string_value, :string)

@@ -11,8 +11,8 @@ defmodule Embers.Reactions.Reaction do
 
   schema "reactions" do
     field(:name, :string, null: false)
-    belongs_to(:user, Embers.Accounts.User)
-    belongs_to(:post, Embers.Posts.Post)
+    belongs_to(:user, Embers.Accounts.User, type: Embers.Hashid)
+    belongs_to(:post, Embers.Posts.Post, type: Embers.Hashid)
 
     timestamps()
   end
@@ -41,6 +41,7 @@ defmodule Embers.Reactions.Reaction do
 
       post ->
         changeset
+        |> validate_is_not_owner(post)
         |> check_if_can_react(attrs, post)
     end
   end
@@ -49,6 +50,14 @@ defmodule Embers.Reactions.Reaction do
     if Blocks.blocked?(user_id, post.user_id) do
       changeset
       |> Ecto.Changeset.add_error(:blocked, "post owner has blocked the user")
+    else
+      changeset
+    end
+  end
+
+  def validate_is_not_owner(changeset, post) do
+    if get_change(changeset, :user_id) == post.user_id do
+      Ecto.Changeset.add_error(changeset, :is_owner, "can't react to posts made by the same user")
     else
       changeset
     end

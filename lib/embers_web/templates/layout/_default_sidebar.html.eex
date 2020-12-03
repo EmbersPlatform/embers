@@ -1,0 +1,41 @@
+<h1><%= gettext("Home") %></h1>
+<ul>
+  <li>
+    <%= active_link(@conn,
+      to: "/",
+      active: :exact,
+      "aria-label": gettext("Activity"),
+      title: gettext("Activity"),
+      "up-preload": true
+    ) do %>
+      <span>
+        <%= svg_image("activity") %>
+      </span>
+      <span><%= gettext("Activity") %></span>
+    <% end %>
+  </li>
+  <li>
+    <%= active_link(@conn,
+      to: favorite_path(@conn, :list),
+      active: :exact,
+      "aria-label": gettext("Favorites"),
+      title: gettext("Favorites"),
+      "up-preload": true
+    ) do %>
+      <span>
+        <%= svg_image("icons/star_outline") %>
+      </span>
+      <span><%= gettext("Favorites") %></span>
+    <% end %>
+  </li>
+  <li>
+    <a href="/subs">
+      <span>
+        <%= svg_image("subs") %>
+      </span>
+      <span>Tags</span>
+    </a>
+  </li>
+</ul>
+<h1><%= gettext("Online friends") %></h1>
+<online-friends></online-friends>

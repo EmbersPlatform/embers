@@ -69,11 +69,13 @@ defmodule Embers.Posts do
       nil ->
         {:error, :not_found}
 
-      %{deleted_at: deleted_at} when not is_nil(deleted_at) ->
-        {:error, :post_disabled}
-
       post ->
-        {:ok, post |> Post.fill_nsfw()}
+        post =
+          post
+          |> Post.fill_nsfw()
+          |> put_user_avatar()
+
+        {:ok, post}
     end
   end
 
@@ -94,6 +96,7 @@ defmodule Embers.Posts do
 
     with {:ok, post} <- Repo.insert(post_changeset) do
       {:ok, post} = get_post(post.id)
+      post = put_user_avatar(post)
       emit_event? = Keyword.get(opts, :emit_event?, true)
 
       if emit_event? do
@@ -248,8 +251,20 @@ defmodule Embers.Posts do
   @doc """
   Gets the replies of a post
   """
-  def get_post_replies(parent_id, opts \\ []) do
+  def get_post_replies(parent_id, opts \\ [])
+
+  def get_post_replies(nil, _) do
+    %Paginator.Page{
+      entries: [],
+      next: nil,
+      last_page: true
+    }
+  end
+
+  def get_post_replies(parent_id, opts) do
     order = Keyword.get(opts, :order, :asc)
+    replies = Keyword.get(opts, :replies)
+    replies_order = Keyword.get(opts, :replies_order, {:asc, :inserted_at})
 
     query =
       from(
@@ -258,18 +273,32 @@ defmodule Embers.Posts do
         left_join: user in assoc(post, :user),
         left_join: meta in assoc(user, :meta),
         preload: [user: {user, meta: meta}],
-        preload: [:reactions, :media, :links, :tags]
+        preload: [:reactions, :media, :links, :tags],
+        order_by: [{^order, post.inserted_at}]
       )
 
-    query =
-      case order do
-        :desc -> from(post in query, order_by: [desc: post.inserted_at])
-        :asc -> from(post in query, order_by: [asc: post.inserted_at])
-      end
+    maybe_load_replies = fn page ->
+      if is_integer(replies) do
+        entries =
+          page.entries
+          |> Repo.preload_lateral(
+            :replies,
+            limit: replies,
+            assocs: [:reactions, :media, :links, :tags, user: [:meta]],
+            order_by: replies_order,
+            reverse: elem(replies_order, 0) == :desc
+          )
+          |> Embers.Feed.Utils.load_avatars()
+
+        put_in(page.entries, entries)
+      end || page
+    end
 
     query
     |> Paginator.paginate(opts)
     |> fill_nsfw()
+    |> load_avatars()
+    |> maybe_load_replies.()
   end
 
   defp fill_nsfw(page) do
@@ -279,22 +308,111 @@ defmodule Embers.Posts do
     }
   end
 
+  def populate_user(post) do
+    post = update_in(post.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
+    post = update_in(post.user.meta, &Embers.Profile.Meta.load_cover/1)
+    post
+  end
+
   def bulk_delete_after_date(user_id, after_days \\ 0) do
     after_date =
       Timex.now()
       |> Timex.shift(days: -after_days)
 
-    query = from(
-      post in Post,
-      where: post.user_id == ^user_id
-    )
+    query =
+      from(
+        post in Post,
+        where: post.user_id == ^user_id
+      )
 
-    query = if after_days == -1 do
-      query
-    else
-      from(post in query, where: post.inserted_at >= ^after_date)
-    end
+    query =
+      if after_days == -1 do
+        query
+      else
+        from(post in query, where: post.inserted_at >= ^after_date)
+      end
 
     Repo.delete_all(query)
+  end
+
+  defp put_user_avatar(post) do
+    post = put_in(post.user.meta.avatar, Embers.Profile.Meta.avatar_map(post.user.meta))
+
+    if Ecto.assoc_loaded?(post.related_to) and not is_nil(post.related_to) do
+      avatar = Embers.Profile.Meta.avatar_map(post.related_to.user.meta)
+      put_in(post.related_to.user.meta.avatar, avatar)
+    else
+      post
+    end
+  end
+
+  defp load_avatars(page) do
+    Map.update!(page, :entries, fn posts ->
+      Enum.map(posts, fn post ->
+        update_in(post.user.meta, &Embers.Profile.Meta.load_avatar_map/1)
+      end)
+    end)
+  end
+
+  @doc """
+  Returns a list with the post preloads, to be used with Repo.preload
+
+  ## Options
+  - `:with_related?`: If `true`, adds preloads for the related post. Defaults
+    to `false`.
+  """
+  @spec post_preloads(options :: keyword()) :: [atom() | {atom(), any()}]
+  def post_preloads(opts \\ []) do
+    with_related? = Keyword.get(opts, :with_related?, false)
+    preloads = [:reactions, :media, :links, :tags, user: [:meta]]
+
+    preloads =
+      if with_related? do
+        preloads ++ [related_to: post_preloads()]
+      else
+        preloads
+      end
+
+    preloads
+  end
+
+  @doc """
+  Lists the disabled posts
+  See `Embers.Paginator.paginate/2` for the options
+  """
+  @spec list_disabled(options :: keyword()) :: Paginator.Page.t(Post.t())
+  def list_disabled(opts \\ []) do
+    from(post in Post,
+      where: not is_nil(post.deleted_at),
+      order_by: [desc: post.inserted_at],
+      preload: ^post_preloads(with_related?: true)
+    )
+    |> Paginator.paginate(opts)
+    |> Paginator.map(&populate_user/1)
+  end
+
+  @spec prune_disabled(days_limit :: pos_integer()) :: {:ok, integer()}
+  def prune_disabled(days_limit \\ 7) when is_integer(days_limit) and days_limit > 0 do
+    since_date =
+      Timex.now()
+      |> Timex.shift(days: -days_limit)
+
+    {affected, _} =
+      from(post in Post,
+        where: not is_nil(post.deleted_at),
+        where: post.inserted_at < ^since_date
+      )
+      |> Repo.delete_all()
+
+    {:ok, affected}
+  end
+
+  @spec count_disabled() :: integer()
+  def count_disabled() do
+    from(post in Post,
+      where: not is_nil(post.deleted_at),
+      select: count(post.id)
+    )
+    |> Repo.one()
   end
 end

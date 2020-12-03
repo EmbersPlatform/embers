@@ -1,0 +1,51 @@
+[post-report-summary] {
+  display: flex;
+  flex-direction: row;
+
+  &>article{
+    flex-basis: 60%;
+  }
+
+  .post-report-summary-actions {
+    margin: 0!important;
+    padding: 1em;
+    flex-basis: 40%;
+
+    p {
+      margin: 0;
+      margin-bottom: 0.5em;
+    }
+  }
+
+  .post-report-summary-reason {
+    padding-left: 1em;
+    font-style: italic;
+  }
+
+  .see-report-reasons {
+    margin: 1em 0;
+    padding: 0.5em;
+    border: var(--border);
+  }
+
+  .post-report-actions {
+    margin: -0.2em 0;
+
+    &>*{
+      margin: 0.2em 0;
+    }
+  }
+
+  @include media("<=tablet") {
+    flex-direction: column-reverse;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1em;
+
+    .post-report-summary-actions {
+      padding: 0.5em;
+      padding-top: 0;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+#login {
+  max-width: 40vw;
+  margin: 0 auto;
+
+  form fieldset {
+    margin-bottom: 1em;
+  }
+
+  [type=submit] {
+    width: 100%;
+    margin-bottom: 1em;
+    height: 3em;
+    text-transform: uppercase;
+  }
+
+  .form-links {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+}

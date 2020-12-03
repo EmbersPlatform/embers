@@ -1,0 +1,7 @@
+<%= EmbersWeb.Web.PostView.render("post.html",
+  conn: @conn,
+  post: @activity.post,
+  sharers: @activity.sharers,
+  with_replies: assigns[:with_replies],
+  activity: true
+) %>

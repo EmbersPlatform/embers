@@ -28,7 +28,7 @@ defmodule Embers.Media.Pruner do
   defp prune do
     count = Media.get_expired() |> Enum.count()
     Logger.info("MEDIA PRUNER Pruning #{inspect(count)} medias...")
-    Media.prune()
+    Media.prune_expired()
     Logger.info("MEDIA PRUNER Media pruning finished.")
     reschedule()
   end
