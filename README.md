@@ -10,13 +10,33 @@ La capa web del sistema está basado en Phoenix Framework.
 
 ### Requisitos previos
 
-- Base de datos PostgreSQL funcionando
+- [Elixir](https://elixir-lang.org/) (y Erlang)
+- Servidor [PostgreSQL](https://www.postgresql.org/)
+- [NodeJS](https://nodejs.org)
+- Un registro de sitio en [Google Recaptcha](https://developers.google.com/recaptcha/) con dominio localhost
 
 ### Backend
 
+- Crear un archivo `config/ENV.secret.exs` y completar la configuración de acuerdo al entorno actual(ENV puede ser `dev`, `prod`, `test`), como las credenciales de la base de datos y de recaptcha.
+
+  ```elixir
+  use Mix.Config
+
+  # Configure your database
+  config :embers, Embers.Repo,
+    username: "nombre_de_usuario_en_postgres",
+    password: "contraseña_de_usuario_en_postgres",
+    database: "nombre_de_base_de_datos",
+    hostname: "localhost"
+
+  config :recaptcha,
+    public_key: "xxxxxxxxxxxxxxx",
+    secret: "xxxxxxxxxxxxxxx"
+  ```
+
 - Instalar las dependencias con `mix deps.get`
-- Crear un archivo `config/ENV.secret.exs` y completar la configuración de acuerdo al entorno actual(ENV puede ser `dev`, `prod`, `test`), como las credenciales de la base de datos.
 - Crear y migrar la base de datos con `mix ecto.create && mix ecto.migrate`. Si este paso falla, intentar con `mix ecto.reset`.
+- Insertar los datos iniciales a la base con `mix run priv/repo/seeds.exs`
 - Iniciar el servidor con `mix phx.server`, o `iex -S mix phx.server` para poder usar `iex`.
 
 ### Frontend
@@ -27,13 +47,11 @@ Los archivos que deben ser compilados se encuentran en `/assets`. Los archivos y
 
 Para compilar el frontend:
 
-- Instalar dependencias de Node.js con `cd assets && npm install`.
-- Si se esta trabajando en Windows, instalar cross-env con `npm install cross-env`.
-- Crear las carpetas `priv/static/css` y `priv/static/js`.
-- Correr `mix embers.static` para mover los archivos estaticos en `assets/static` a `priv/static`.
-- Compilar el frontend con `npm run dev`, o `npm run watch` para compilar cuando un archivo cambia.
+- Instalar dependencias `npm install`.
+- Copiar assets/static a priv, ej. `cp -R assets/static priv`
+- Compilar el frontend con `npm run dev`
 
-Ahora se puede acceder a Embers entrando a [`localhost:4000`](http://localhost:4000) desde el buscador.
+Ahora se puede acceder a Embers entrando a [`localhost:4000`](http://localhost:4000).
 
 ## Links adicionales
 
