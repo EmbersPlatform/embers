@@ -27,6 +27,8 @@ config :embers,
          pool_size: System.get_env("DB_POOL_SIZE", "10") |> String.to_integer()
        )
 
+config :embers, :db_extensions, pg_trgm: System.get_env("DB_ENABLE_PG_TRGM", "true") == "true"
+
 # Configure Recaptcha
 config :recaptcha,
   public_key: System.fetch_env!("RECAPTCHA_PUBLIC_KEY"),

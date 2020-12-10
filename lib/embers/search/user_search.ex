@@ -13,10 +13,10 @@ defmodule Embers.Search.UserSearch do
       from(
         u in User,
         where: ilike(u.canonical, ^search_term),
-        order_by: fragment("similarity(?, ?) DESC", u.canonical, ^search_term),
         preload: [:meta],
         limit: 10
       )
+      |> maybe_order_by_similarity(search_term)
 
     results = Repo.all(query)
 
@@ -25,5 +25,19 @@ defmodule Embers.Search.UserSearch do
     else
       results
     end
+  end
+
+  defp maybe_order_by_similarity(query, search_term) do
+    if pg_trgm_available?() do
+      from(u in query,
+        order_by: fragment("similarity(?, ?) DESC", u.canonical, ^search_term)
+      )
+    else
+      query
+    end
+  end
+
+  defp pg_trgm_available?() do
+    Application.get_env(:embers, :db_extensions) |> Keyword.get(:pg_trgm, true)
   end
 end
