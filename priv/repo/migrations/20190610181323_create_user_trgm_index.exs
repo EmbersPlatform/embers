@@ -4,7 +4,7 @@ defmodule Embers.Repo.Migrations.CreateUserTrgmIndex do
   def up do
     if pg_trgm_enabled?() do
       execute(
-        "CREATE INDEX IF NOT EXISTS users_canonical_trgm_index ON users USING gin (canonical gin_trgm_ops);",
+        "CREATE INDEX IF NOT EXISTS users_canonical_trgm_index ON users USING gin (canonical gin_trgm_ops);"
       )
     end
   end
