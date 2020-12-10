@@ -80,4 +80,7 @@ case System.fetch_env("SENTRY_ENABLE") do
         env: "production"
       },
       included_environments: [:prod]
+
+  _ ->
+    nil
 end
