@@ -21,6 +21,7 @@ defmodule EmbersWeb.Email do
   """
 
   import Swoosh.Email
+  import EmbersWeb.Gettext
 
   alias EmbersWeb.Mailer
 
@@ -31,8 +32,12 @@ defmodule EmbersWeb.Email do
     host = host()
 
     prep_mail(address)
-    |> subject("Confirmar cuenta")
-    |> text_body("Confirma tu cuenta en este enlace http://#{host}/confirm?key=#{key}")
+    |> subject(gettext("Account confirmation"))
+    |> text_body(
+      gettext("Confirm your account by following this link %{link}",
+        link: "http://#{host}/confirm?key=#{key}"
+      )
+    )
     |> Mailer.deliver()
   end
 
@@ -41,9 +46,11 @@ defmodule EmbersWeb.Email do
   """
   def reset_request(address, nil) do
     prep_mail(address)
-    |> subject("Recuperar contraseña")
+    |> subject(gettext("Password recovery"))
     |> text_body(
-      "You requested a password reset, but no user is associated with the email you provided."
+      gettext(
+        "You requested a password reset, but no user is associated with the email you provided."
+      )
     )
     |> Mailer.deliver()
   end
@@ -52,11 +59,12 @@ defmodule EmbersWeb.Email do
     host = host()
 
     prep_mail(address)
-    |> subject("Restablecer contraseña")
+    |> subject(gettext("Password recovery"))
     |> text_body(
-      "Para restablecer tu contraseña haz clic en este enlace: http://#{host}/password_resets/edit?key=#{
-        key
-      }"
+      gettext(
+        "Follow this link to reset your password: %{link}",
+        link: "http://#{host}/password_resets/edit?key=#{key}"
+      )
     )
     |> Mailer.deliver()
   end
@@ -66,8 +74,8 @@ defmodule EmbersWeb.Email do
   """
   def confirm_success(address) do
     prep_mail(address)
-    |> subject("Cuenta confirmada")
-    |> text_body("Tu cuenta ha sido confirmada.")
+    |> subject(gettext("Account confirmed"))
+    |> text_body(gettext("Your account has been confirmed."))
     |> Mailer.deliver()
   end
 
@@ -76,15 +84,15 @@ defmodule EmbersWeb.Email do
   """
   def reset_success(address) do
     prep_mail(address)
-    |> subject("Recuperar contraseña")
-    |> text_body("Tu contraseña ha sido restablecida.")
+    |> subject(gettext("Password recovery"))
+    |> text_body(gettext("Your password has been reset"))
     |> Mailer.deliver()
   end
 
   defp prep_mail(address) do
     new()
     |> to(address)
-    |> from("noreply@embers.pw")
+    |> from("noreply@#{host()}")
   end
 
   defp host do

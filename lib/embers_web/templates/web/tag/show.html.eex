@@ -2,31 +2,25 @@
 <div id="view" view="tag" class="has-sidebar">
   <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
   <main class="padded columns-layout" is="emb-show-tag-page" data-tag="<%= Jason.encode!(@tag) %>">
-    <div class="main-content"
-      infinite-scroll
-      data-source="<%= tag_path(@conn, :show, @tag.name) %>"
-      data-last-page="<%= @page.last_page %>"
-      data-next="<%= @page.next %>"
-    >
+    <div class="main-content" infinite-scroll data-source="<%= tag_path(@conn, :show, @tag.name) %>"
+      data-last-page="<%= @page.last_page %>" data-next="<%= @page.next %>">
       <h1>
         <span>#<%= @tag.name %></span>
         <%= if authenticated?(@conn) do %>
-          <follow-tag
-            data-tag-id="<%= @tag.id %>"
-            data-level="<%= @sub_level %>"
-          ></follow-tag>
-          <%= if Embers.Authorization.can?("access-mod-tools", @current_user) do %>
-            <button class="button" ref="editBtn">Editar</button>
-          <% end %>
+        <follow-tag data-tag-id="<%= @tag.id %>" data-level="<%= @sub_level %>"></follow-tag>
+        <%= if Embers.Authorization.can?("access-mod-tools", @current_user) do %>
+        <button class="button" ref="editBtn">Editar</button>
+        <% end %>
         <% end %>
       </h1>
       <p class="tag-description"><%= @tag.description %></p>
       <%= if authenticated?(@conn) do %>
-        <post-editor data-with-tags="<%= @tag.name %>" class="boxed" placeholder="<%= gettext("Share something in #%{name}", name: @tag.name) %>"></post-editor>
+      <post-editor data-with-tags="<%= @tag.name %>" class="boxed"
+        placeholder="<%= gettext("Share something in #%{name}", name: @tag.name) %>"></post-editor>
       <% end %>
       <div class="feed" infinite-scroll-viewport>
         <%= for post <- @page.entries do %>
-          <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
+        <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
         <% end %>
       </div>
       <intersect-observer infinite-scroll-intersect></intersect-observer>
@@ -36,17 +30,17 @@
       <div class="content">
         <popular-tags class="tags-widget"></popular-tags>
         <%= if authenticated?(@conn) do %>
-          <emb-pinned-tags></emb-pinned-tags>
+        <emb-pinned-tags></emb-pinned-tags>
         <% end %>
         <aside>
-        <a href="https://discord.gg/uADqWPs" class="join-discord-notice" target="_blank">
-          <span><%= gettext "Join our discord!" %></span>
-          <img src="https://www.embers.pw/img/external/discord_logo.svg" alt="discord logo">
-        </a>
-        <a href="https://ko-fi.com/A1482YS9" class="donate-kofi-notice" target="_blank">
-          <img src="https://www.embers.pw/img/external/ko-fi.svg" alt="ko-fi logo">
-          <span><%= gettext "Donate on ko-fi" %></span>
-        </a>
+          <a href="https://discord.gg/uADqWPs" class="join-discord-notice" target="_blank">
+            <span><%= gettext "Join our discord!" %></span>
+            <img src="/img/external/discord_logo.svg" alt="discord logo">
+          </a>
+          <a href="https://ko-fi.com/A1482YS9" class="donate-kofi-notice" target="_blank">
+            <img src="/img/external/ko-fi.svg" alt="ko-fi logo">
+            <span><%= gettext "Donate on ko-fi" %></span>
+          </a>
       </div>
     </aside>
   </main>

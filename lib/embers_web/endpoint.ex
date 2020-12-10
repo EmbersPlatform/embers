@@ -79,13 +79,6 @@ defmodule EmbersWeb.Endpoint do
     same_site: "Strict"
   )
 
-  plug(Corsica,
-    origins: [
-      "http://localhost:3000",
-      "https://canary.embers.pw"
-    ]
-  )
-
   plug(EmbersWeb.Router)
 
   @doc """

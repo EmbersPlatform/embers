@@ -7,7 +7,7 @@ A social platform based on Elixir and Phoenix Framework
 > messy/undocumented.
 
 > This was previously a spanish-only project, some parts may need to be
-> translated to english.
+> translated to english. Email-related stuff may be broken.
 
 ## Getting started
 
