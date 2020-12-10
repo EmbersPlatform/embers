@@ -28,31 +28,39 @@ the more massive social networks.
 ## Features
 
 **Real-time timeline**
+
 See what your friends post in real time in your home timeline.
 
 **Media attachments**
+
 Upload images and short webm/mp4 videos attached to your posts.
 
 **React to posts**
+
 Instead of just having a binary +1/-1 system, you can use one(or more!) of a
 set of predefined reactions, like love or sadness.
 
 **Save what you like**
+
 You can add the posts you like to your personal favorites list and keep them
 for later.
 
 **Tag your content**
+
 Add tags to your posts, either via #hashtags or with a dedicated interface(to
 avoid polluting images with hashtags).
 
 **Follow and block people and tags**
+
 You can follow people to see their posts in your timeline, you can follow tags
 too. You can also block them to never see them again.
 
 **Content warnings**
+
 A tag based content warning allows you to filter Not Safe For Work content.
 
 **Moderation tools**
+
 You can report posts that violate your Code of Conduct, moderators can remove
 infringing content, ban users, and manually add content warnings.
 
