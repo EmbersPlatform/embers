@@ -24,7 +24,7 @@ repo_opts =
 config :embers,
        Embers.Repo,
        Keyword.merge(repo_opts,
-         pool_size: 10
+         pool_size: System.get_env("DB_POOL_SIZE", 10)
        )
 
 # Configure Recaptcha
