@@ -6,7 +6,6 @@ defmodule EmbersWeb.Web.UserController do
   alias Embers.Repo
 
   alias Embers.Accounts
-  alias Embers.Accounts.User
   alias Embers.Feed
 
   alias Embers.Profile.Meta

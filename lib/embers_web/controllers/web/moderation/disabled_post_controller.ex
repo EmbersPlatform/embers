@@ -34,8 +34,7 @@ defmodule EmbersWeb.Web.Moderation.DisabledPostController do
     end
   end
 
-  @todo
-  def prune(conn, _params) do
+  def prune(_conn, _params) do
     :not_implemented
   end
 end

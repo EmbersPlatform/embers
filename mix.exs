@@ -38,7 +38,8 @@ defmodule Embers.Mixfile do
         :recaptcha,
         :ex_rated,
         :swoosh,
-        :gen_smtp
+        :gen_smtp,
+        :mnesia
       ]
     ]
   end
@@ -53,6 +54,8 @@ defmodule Embers.Mixfile do
   defp deps do
     [
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.20", only: :dev, runtime: false},
+      {:sentry, "~> 8.0"},
       {:phoenix, "~> 1.5.0"},
       {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_live_dashboard, "~> 0.1"},
@@ -64,9 +67,13 @@ defmodule Embers.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_inline_svg, "~> 1.3"},
+      {:phoenix_active_link, "~> 0.3.0"},
       {:plug_cowboy, "~> 2.1"},
+      {:remote_ip, "~> 0.2.1"},
       {:gettext, "~> 0.11"},
       {:ex_cldr, "~> 2.18"},
+      {:ex_cldr_numbers, "~> 2.16"},
       {:jason, "~> 1.0"},
       {:phauxth, "~> 2.1"},
       {:swoosh, "~> 0.23"},
@@ -82,24 +89,19 @@ defmodule Embers.Mixfile do
       {:sweet_xml, "~> 0.6"},
       {:recaptcha, "~> 2.3"},
       {:hashids, "~> 2.0"},
-      {:ex_doc, "~> 0.20", only: :dev, runtime: false},
       {:ex_machina, "~> 2.2"},
       {:timex, "~> 3.6"},
       {:mogrify, "~> 0.7.0"},
       {:ffmpex, "~> 0.5.2"},
       {:silent_video, "~> 0.3.0"},
+      {:fastimage, "~> 0.0.7"},
+      {:oembed, "~> 0.3.0"},
       {:event_bus, "~> 1.6"},
       {:corsica, "~> 1.0"},
       {:cachex, "~> 3.1"},
-      {:oembed, "~> 0.3.0"},
-      {:fastimage, "~> 0.0.7"},
       {:benchee, "~> 1.0", only: :dev},
       {:benchee_html, "~> 1.0", only: :dev},
-      {:ex_rated, "~> 1.2"},
-      {:phoenix_inline_svg, "~> 1.3"},
-      {:phoenix_active_link, "~> 0.3.0"},
-      {:remote_ip, "~> 0.2.1"},
-      {:sentry, "~> 8.0"}
+      {:ex_rated, "~> 1.2"}
     ]
   end
 

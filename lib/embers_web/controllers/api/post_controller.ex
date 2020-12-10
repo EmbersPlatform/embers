@@ -149,14 +149,10 @@ defmodule EmbersWeb.Api.PostController do
     Embers.Authorization.is_owner?(user, post) || Embers.Authorization.can?("delete_post", user)
   end
 
-  defp populate_user(nil, _), do: nil
-
   defp populate_user(post, %Plug.Conn{assigns: %{current_user: current_user}})
        when not is_nil(current_user) do
-    %{
-      post
-      | user: Embers.Accounts.load_following_status(post.user, current_user.id)
-    }
+    following_status = Embers.Accounts.load_following_status(post.user, current_user.id)
+    Map.put(post, :user, following_status)
   end
 
   defp populate_user(post, _), do: post

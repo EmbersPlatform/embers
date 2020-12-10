@@ -1,5 +1,5 @@
 defmodule Embers.Hashid do
-  @behaviour Ecto.Type
+  use Ecto.Type
 
   alias Embers.Helpers.IdHasher
 
@@ -13,7 +13,7 @@ defmodule Embers.Hashid do
     {:ok, id}
   end
 
-  def cast(other) do
+  def cast(_other) do
     :error
   end
 
@@ -26,9 +26,5 @@ defmodule Embers.Hashid do
 
   def load(id) when is_integer(id) do
     {:ok, IdHasher.encode(id)}
-  end
-
-  def equal?(term1, term2) do
-    term1 === term2
   end
 end

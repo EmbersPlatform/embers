@@ -7,19 +7,6 @@ defmodule Embers.Audit do
   alias Embers.AuditEntry, as: Entry
   alias Embers.Repo
 
-  @deprecated "Use list_entries/1 instead"
-  def list(opts \\ []) do
-    action = Keyword.get(opts, :action)
-    query = from(entry in Entry, preload: [:user], order_by: [desc: entry.inserted_at])
-
-    query =
-      if action do
-        from(entry in query, where: entry.action == ^action)
-      end || query
-
-    Repo.paginate(query, opts)
-  end
-
   @spec list_entries(opts :: keyword()) :: Embers.Paginator.Page.t(Entry.t())
   def list_entries(opts \\ []) do
     from(entry in Entry,

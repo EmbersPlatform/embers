@@ -3,8 +3,6 @@ defmodule EmbersWeb.Api.ChatView do
 
   use EmbersWeb, :view
 
-  import Embers.Helpers.IdHasher
-
   def render("message.json", %{message: message}) do
     %{
       id: message.id,

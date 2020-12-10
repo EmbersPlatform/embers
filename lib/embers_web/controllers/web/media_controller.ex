@@ -28,8 +28,6 @@ defmodule EmbersWeb.Web.MediaController do
         |> render("422.json", error: "Invalid image file")
 
       {:error, _error} ->
-        IO.puts(_error |> elem(0))
-
         conn
         |> put_status(500)
         |> put_view(EmbersWeb.Web.ErrorView)

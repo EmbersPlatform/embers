@@ -23,23 +23,12 @@ defmodule Embers.Tags.Tag do
     |> cast(attrs, [:name, :description])
     |> validate_required(:name)
     |> validate_length(:name, min: 2, max: @max_length)
-    |> validate_name()
     |> validate_format(:name, ~r/^\w+$/u)
     |> trim_desc(attrs)
   end
 
   def valid_name?(name) do
     Regex.match?(~r/^\w+$/, name)
-  end
-
-  defp validate_name(changeset) do
-    new_name = get_change(changeset, :name)
-
-    if String.valid?(new_name) or is_nil(new_name) do
-      changeset
-    else
-      add_error(changeset, :name, "invalid tag name")
-    end
   end
 
   defp trim_desc(changeset, %{"description" => body} = _attrs) when not is_nil(body) do

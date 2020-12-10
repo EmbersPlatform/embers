@@ -3,8 +3,6 @@ defmodule EmbersWeb.Web.Moderation.TagController do
 
   use EmbersWeb, :controller
 
-  import EmbersWeb.Authorize
-
   alias Embers.Posts
   alias Embers.Tags
   alias EmbersWeb.Plugs.CheckPermissions

@@ -4,8 +4,6 @@ defmodule Embers.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   def start(_type, _args) do
-    import Supervisor.Spec
-
     # Define workers and child supervisors to be supervised
     children = [
       {Phoenix.PubSub, name: Embers.PubSub},
@@ -17,7 +15,7 @@ defmodule Embers.Application do
       # Start your own worker by calling: Embers.Worker.start_link(arg1, arg2, arg3)
       # worker(Embers.Worker, [arg1, arg2, arg3]),
       EmbersWeb.Presence,
-      worker(Cachex, [:embers, []]),
+      {Cachex, name: :embers},
       {Task.Supervisor, name: TaskSupervisor, restart: :transient}
     ]
 

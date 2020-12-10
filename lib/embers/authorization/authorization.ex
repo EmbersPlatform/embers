@@ -66,11 +66,10 @@ defmodule Embers.Authorization do
   Checks if the user is the owner of a resource. This is useful when you want to
   check if the user can delete a post.
   """
-  @spec is_owner?(User.t(), %{user_id: integer()}) :: boolean()
+  @spec is_owner?(User.t() | any(), %{user_id: integer()} | any()) :: boolean()
   def is_owner?(%User{} = user, %{user_id: user_id} = _resource) do
     user.id == user_id
   end
 
-  @spec is_owner?(any(), any()) :: boolean()
   def is_owner?(_, _), do: false
 end

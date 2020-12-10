@@ -79,14 +79,10 @@ defmodule Embers.Media do
             %{height: height, width: width} ->
               metadata =
                 media_data.metadata
-                |> put_in([:height], height)
-                |> put_in([:width], width)
+                |> Map.put(:height, height)
+                |> Map.put(:width, width)
 
               %{media_data | metadata: metadata}
-
-            error ->
-              Logger.error("Couldn't get image dimentions: #{inspect(error)}")
-              media_data
           end
         end || media_data
 

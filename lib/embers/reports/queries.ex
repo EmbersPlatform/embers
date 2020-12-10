@@ -1,6 +1,5 @@
 defmodule Embers.Reports.Queries do
   import Ecto.Query
-  alias Embers.Reports.PostReport
 
   def with_post(query) do
     from(report in query,

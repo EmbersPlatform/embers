@@ -23,7 +23,7 @@ defmodule Embers.Subscriptions.Tags do
     Repo.insert(subscription)
   end
 
-  def create_or_update_subscription(attrs \\ %{}) do
+  def create_or_update_subscription(attrs) do
     case get_sub_for(attrs.source_id, attrs.user_id) do
       nil ->
         subscription = TagSubscription.create_changeset(%TagSubscription{}, attrs)
@@ -193,7 +193,7 @@ defmodule Embers.Subscriptions.Tags do
   end
 
   @spec list_pinned(binary(), keyword()) :: [TagSubscription.t()]
-  def list_pinned(user_id, opts \\ []) do
+  def list_pinned(user_id, _opts \\ []) do
     Repo.all(
       from(
         sub in TagSubscription,

@@ -8,11 +8,6 @@ defmodule EmbersWeb.PostChannel do
     {:ok, socket}
   end
 
-  defp check_user(id, socket) do
-    %Phoenix.Socket{assigns: %{user: user}} = socket
-    id == user.id
-  end
-
   def handle_out("reactions_updated", payload, %{assigns: %{user: nil}} = socket) do
     push(socket, "reactions_updated", Map.drop(payload, [:user_id]))
     {:noreply, socket}
