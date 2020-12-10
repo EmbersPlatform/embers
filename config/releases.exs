@@ -7,12 +7,25 @@ config :embers, Embers.Profile, bucket: System.fetch_env!("EMBERS_PROFILE_BUCKET
 config :embers, Embers.Email, host: System.fetch_env!("EMBERS_HOST")
 
 # Configure your database
-config :embers, Embers.Repo,
-  username: System.fetch_env!("DB_USER"),
-  password: System.fetch_env!("DB_PWD"),
-  database: System.fetch_env!("DB_NAME"),
-  hostname: System.fetch_env!("DB_HOST"),
-  pool_size: 10
+repo_opts =
+  case System.fetch_env("DB_URL") do
+    :error ->
+      [
+        username: System.fetch_env!("DB_USER"),
+        password: System.fetch_env!("DB_PWD"),
+        database: System.fetch_env!("DB_NAME"),
+        hostname: System.fetch_env!("DB_HOST")
+      ]
+
+    {:ok, url} ->
+      [url: url]
+  end
+
+config :embers,
+       Embers.Repo,
+       Keyword.merge(repo_opts,
+         pool_size: 10
+       )
 
 # Configure Recaptcha
 config :recaptcha,
