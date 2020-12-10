@@ -14,6 +14,7 @@ defmodule Embers.Mixfile do
       deps: deps(),
       source_url: "https://gitlab.com/embers-project/embers/embers",
       docs: docs(),
+      default_release: :embers,
       releases: [
         embers: [],
         tar: [
