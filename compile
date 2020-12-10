@@ -1,0 +1,9 @@
+cd $phoenix_dir
+
+rm -rf priv/static
+
+cp -R assets/static priv
+
+yarn && yarn build
+
+mix "${phoenix_ex}.digest"
