@@ -2,16 +2,16 @@
 
 A social platform based on Elixir and Phoenix Framework
 
+![](docs/images/screenshot.png)
+
 > **Warning**: the current frontend code is being refactored and it may break
-> often. Backend code requires refactoring, as many parts of it are
-> messy/undocumented.
+> often. For instance, landing page is non-existent.Backend code requires
+> refactoring, as many parts of it are messy/undocumented.
 
 > This was previously a spanish-only project, some parts may need to be
 > translated to english. Email-related stuff may be broken.
 
-## Getting started
-
-### Requisites
+## Requirements
 
 - [Elixir](https://elixir-lang.org/) (and Erlang). Works fine with Elixir 1.11
   and OTP 23.
@@ -20,6 +20,8 @@ A social platform based on Elixir and Phoenix Framework
 - [Google Recaptcha](https://developers.google.com/recaptcha/) keys
 
 If using docker-compose, only Google Recaptcha keys are needed.
+
+## Getting started
 
 ### Backend
 
