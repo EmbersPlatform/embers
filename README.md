@@ -19,6 +19,10 @@ learning exercise, so there weren't clear goals from the start. However, it is
 an opportunity to build spaces for small communities that feel out of place in
 the more massive social networks.
 
+## Demo
+
+You can find a running demo at http://embers.gigalixirapp.com/
+
 ## Goals
 
 - Work in low-end devices.
@@ -71,6 +75,8 @@ infringing content, ban users, and manually add content warnings.
 - [PostgreSQL](https://www.postgresql.org/)
 - [NodeJS](https://nodejs.org)
 - [Google Recaptcha](https://developers.google.com/recaptcha/) keys
+- [FFmpeg](https://ffmpeg.org/)
+- [ImageMagick](https://imagemagick.org/index.php)
 
 If using docker-compose, only Google Recaptcha keys are needed.
 
