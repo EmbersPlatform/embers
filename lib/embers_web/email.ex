@@ -92,10 +92,14 @@ defmodule EmbersWeb.Email do
   defp prep_mail(address) do
     new()
     |> to(address)
-    |> from("noreply@#{host()}")
+    |> from("noreply@#{email_host()}")
   end
 
   defp host do
+    EmbersWeb.Endpoint.host()
+  end
+
+  defp email_host do
     Application.get_env(:embers, Embers.Email)[:host]
   end
 end
