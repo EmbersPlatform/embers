@@ -33,14 +33,7 @@
         <emb-pinned-tags></emb-pinned-tags>
         <% end %>
         <aside>
-          <a href="https://discord.gg/uADqWPs" class="join-discord-notice" target="_blank">
-            <span><%= gettext "Join our discord!" %></span>
-            <img src="/img/external/discord_logo.svg" alt="discord logo">
-          </a>
-          <a href="https://ko-fi.com/A1482YS9" class="donate-kofi-notice" target="_blank">
-            <img src="/img/external/ko-fi.svg" alt="ko-fi logo">
-            <span><%= gettext "Donate on ko-fi" %></span>
-          </a>
+          <%= render_shared("social_links.html") %>
       </div>
     </aside>
   </main>
