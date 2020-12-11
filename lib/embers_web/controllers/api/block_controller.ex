@@ -62,7 +62,7 @@ defmodule EmbersWeb.Api.BlockController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(EmbersWeb.Web.ErrorView, "422.json", changeset: changeset)
+        |> render(EmbersWeb.ErrorView, "422.json", changeset: changeset)
     end
   end
 end

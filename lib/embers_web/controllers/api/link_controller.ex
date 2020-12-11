@@ -17,13 +17,13 @@ defmodule EmbersWeb.Api.LinkController do
       {:error, :file_not_supported} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.Web.ErrorView)
+        |> put_view(EmbersWeb.ErrorView)
         |> render("422.json", error: gettext("Couldn't process link"))
 
       {:error, _error} ->
         conn
         |> put_status(500)
-        |> put_view(EmbersWeb.Web.ErrorView)
+        |> put_view(EmbersWeb.ErrorView)
         |> render("500.json", error: gettext("Internal error"))
     end
   end

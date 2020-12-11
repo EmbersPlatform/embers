@@ -24,13 +24,13 @@ defmodule EmbersWeb.Api.MediaController do
       {:error, :file_not_supported} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.Web.ErrorView)
+        |> put_view(EmbersWeb.ErrorView)
         |> render("422.json", error: "Invalid image file")
 
       {:error, _error} ->
         conn
         |> put_status(500)
-        |> put_view(EmbersWeb.Web.ErrorView)
+        |> put_view(EmbersWeb.ErrorView)
         |> render("500.json", error: "Internal error")
     end
   end

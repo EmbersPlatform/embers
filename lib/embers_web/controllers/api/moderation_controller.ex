@@ -31,13 +31,13 @@ defmodule EmbersWeb.Api.ModerationController do
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.Web.ErrorView)
+        |> put_view(EmbersWeb.ErrorView)
         |> render("422.json", changeset: changeset)
 
       {:error, reason} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> put_view(EmbersWeb.Web.ErrorView)
+        |> put_view(EmbersWeb.ErrorView)
         |> render("422.json", %{error: reason})
     end
   end
