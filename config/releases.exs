@@ -2,6 +2,18 @@ import Config
 
 config :embers, EmbersWeb.Gettext, default_locale: System.get_env("DEFAULT_LOCALE", "en")
 
+config :logger,
+  level: :info,
+  backends: [:console, Sentry.LoggerBackend]
+
+config :embers, EmbersWeb.Endpoint,
+  http: [port: System.fetch_env!("PORT"), compress: true],
+  url: [host: System.fetch_env!("EMBERS_HOST"), port: System.fetch_env!("PORT")],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  server: true,
+  root: ".",
+  check_origin: false
+
 config :embers, Embers.Media, bucket: System.fetch_env!("EMBERS_MEDIA_BUCKET")
 config :embers, Embers.Profile, bucket: System.fetch_env!("EMBERS_PROFILE_BUCKET")
 config :embers, Embers.Email, host: System.get_env("MAIL_HOST", System.fetch_env!("EMBERS_HOST"))
