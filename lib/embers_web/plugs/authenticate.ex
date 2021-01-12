@@ -44,7 +44,10 @@ defmodule EmbersWeb.Authenticate do
     nil
   end
 
-  def set_user(nil, conn), do: assign(conn, :current_user, nil)
+  def set_user(nil, conn) do
+    conn
+    |> assign(:current_user, nil)
+  end
 
   def set_user(user, conn) do
     token = Token.sign(%{"user_id" => user.id})

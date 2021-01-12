@@ -60,17 +60,12 @@ defmodule EmbersWeb.Web.SessionController do
         get_session(conn, :session_id)
       end || session_id
 
-    case session_id |> Sessions.get_session() |> Sessions.delete_session() do
-      {:ok, %{user_id: ^user_id}} ->
-        conn
-        |> delete_session(:phauxth_session_id)
-        |> Remember.delete_rem_cookie()
-        |> json(nil)
+    session_id |> Sessions.get_session() |> Sessions.delete_session()
 
-      _ ->
-        conn
-        |> json(%{error: "unauthorized"})
-    end
+    conn
+    |> delete_session(:phauxth_session_id)
+    |> Remember.delete_rem_cookie()
+    |> json(nil)
   end
 
   # Deprecate API session creation in favour of classic web login form?
