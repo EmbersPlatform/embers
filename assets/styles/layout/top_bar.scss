@@ -15,7 +15,7 @@
 #top-bar input[type="search"] {
   flex: 1 1 auto;
   background: var(--primary);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: var(--border);
   height: 35px;
   padding: 0 10px;
   color: var(--color);

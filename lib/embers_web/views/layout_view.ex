@@ -77,7 +77,7 @@ defmodule EmbersWeb.LayoutView do
   end
 
   def sidebar(content, assigns) do
-    conn = assigns.conn
+    conn = assigns[:conn] || %{assigns[:socket] | assigns: assigns}
     user = conn.assigns.current_user
 
     if is_nil(user) do
@@ -109,7 +109,7 @@ defmodule EmbersWeb.LayoutView do
               </li>
             </ul>
           </pop-up>
-          <%= active_link(@conn,
+          <%= link(
             to: "/settings",
             "aria-label": gettext("Settings"),
             title: gettext("Settings")

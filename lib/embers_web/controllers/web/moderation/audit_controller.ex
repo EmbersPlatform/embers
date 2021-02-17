@@ -10,7 +10,7 @@ defmodule EmbersWeb.Web.Moderation.AuditController do
 
     opts = [before: before]
 
-    entries = Audit.list_entries(opts) |> IO.inspect()
+    entries = Audit.list_entries(opts)
 
     conn
     |> assign(:entries, entries)

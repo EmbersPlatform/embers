@@ -43,7 +43,7 @@ defmodule EmbersWeb.Web.PostView do
     reactions = get_reactions(post, viewer_id)
 
     for reaction <- reactions do
-      reaction_image = static_path(Endpoint, "/svg/reactions/#{reaction.name}.svg")
+      reaction_image = Routes.static_path(Endpoint, "/svg/reactions/#{reaction.name}.svg")
 
       ~E"""
       <button

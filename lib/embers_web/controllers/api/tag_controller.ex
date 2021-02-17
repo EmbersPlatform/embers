@@ -72,7 +72,7 @@ defmodule EmbersWeb.Api.TagController do
         %Plug.Conn{assigns: %{current_user: user}} = conn,
         %{"name" => name} = params
       ) do
-    source = Accounts.get_by_identifier(name)
+    source = Accounts.get_user_by_username(name)
     level = Map.get(params, "level", 1)
 
     sub_params = %{

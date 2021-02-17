@@ -1,6 +1,6 @@
 <%= EmbersWeb.LayoutView.sidebar(assigns) %>
 <div id="view" view="subs" subview="tags" class="has-sidebar">
-  <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
+  <%= if not is_nil(@current_user), do: render_shared("top_bar.html", assigns) %>
   <main class="padded">
     <div class="main-content">
       <h1><%= gettext("My tags") %></h1>

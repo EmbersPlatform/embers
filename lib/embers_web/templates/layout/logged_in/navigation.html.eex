@@ -5,13 +5,13 @@
   <ul class="mobile-hidden">
     <li>
       <%= active_link(@conn,
-        to: page_path(@conn, :index),
+        to: Routes.page_path(@conn, :index),
         active: :exact,
         "aria-label": gettext("Home"),
         title: gettext("Home"),
         "up-preload": true
       ) do %>
-        <%= svg_image("home") %>
+      <%= svg_image("home") %>
       <% end %>
     </li>
     <li>
@@ -21,7 +21,7 @@
         "aria-label": gettext("Discover"),
         title: gettext("Discover")
       ) do %>
-        <%= svg_image("discover") %>
+      <%= svg_image("discover") %>
       <% end %>
     </li>
     <li class="tablet-only">
@@ -37,13 +37,8 @@
     n.status == 0
   end) %>
 
-  <nav is="notifications-panel"
-    id="notifications-panel"
-    data-next="<%= notifications.next %>"
-    data-last_page="<%= notifications.last_page %>"
-    data-unread-count="<%= unread_notifications_count %>"
-    up-keep
-  >
+  <nav is="notifications-panel" id="notifications-panel" data-next="<%= notifications.next %>"
+    data-last_page="<%= notifications.last_page %>" data-unread-count="<%= unread_notifications_count %>" up-keep>
     <header><%= gettext "Notifications" %></header>
     <section>
       <%= render(EmbersWeb.Web.NotificationView, "notifications.html",
@@ -51,18 +46,13 @@
       ) %>
     </section>
     <loading-indicator></loading-indicator>
-    <intersect-observer data-height="10"></intersect-observerr>
+    <intersect-observer data-height="10">
+      </intersect-observerr>
   </nav>
   <ul class="mobile-hidden">
     <li>
-      <button
-        is="notifications-bell"
-        id="notifications-bell-desktop"
-        up-keep
-        class="plain-button"
-        notifications-panel-trigger
-        data-unread-count="<%= unread_notifications_count %>"
-      >
+      <button is="notifications-bell" id="notifications-bell-desktop" up-keep class="plain-button"
+        notifications-panel-trigger data-unread-count="<%= unread_notifications_count %>">
         <%= svg_image("bell") %>
         <span class="counter"></span>
       </button>
@@ -74,13 +64,13 @@
         title: gettext("Chat"),
         "aria-label":  gettext("Chat")
       ) do %>
-        <%= svg_image("inbox") %>
-        <unread-chat-counter></unread-chat-counter>
+      <%= svg_image("inbox") %>
+      <unread-chat-counter></unread-chat-counter>
       <% end %>
     </li>
     <li class="nav-user-menu-li">
       <pop-up class="nav-user-menu" data-controller="user-menu">
-        <img src="<%= assigns.current_user.meta.avatar.small %>" class="user-avatar" pop-up-trigger/>
+        <img src="<%= @current_user.meta.avatar.small %>" class="user-avatar" pop-up-trigger />
         <ul pop-up-content>
           <li>
             <%= link("My profile",
@@ -101,7 +91,7 @@
         "aria-label": gettext("Settings"),
         title: gettext("Settings")
       ) do %>
-        <%= svg_image("settings") %>
+      <%= svg_image("settings") %>
       <% end %>
     </li>
   </ul>
@@ -113,12 +103,12 @@
     </li>
     <li>
       <%= active_link(@conn,
-        to: page_path(@conn, :index),
+        to: Routes.page_path(@conn, :index),
         active: :exact,
         title: gettext("Home"),
         "aria-label": gettext("Home")
       ) do %>
-        <%= svg_image("home") %>
+      <%= svg_image("home") %>
       <% end %>
     </li>
     <li>
@@ -128,18 +118,12 @@
         title: gettext("Discover"),
         "aria-label":  gettext("Discover")
       ) do %>
-        <%= svg_image("discover") %>
+      <%= svg_image("discover") %>
       <% end %>
     </li>
     <li>
-      <button
-        is="notifications-bell"
-        class="plain-button"
-        notifications-panel-trigger
-        id="notifications-bell-mobile"
-        up-keep
-        data-unread-count="<%= unread_notifications_count %>"
-      >
+      <button is="notifications-bell" class="plain-button" notifications-panel-trigger id="notifications-bell-mobile"
+        up-keep data-unread-count="<%= unread_notifications_count %>">
         <%= svg_image("bell") %>
         <span class="counter"></span>
       </button>
@@ -151,8 +135,8 @@
         title: gettext("Chat"),
         "aria-label":  gettext("Chat")
       ) do %>
-        <%= svg_image("inbox") %>
-        <unread-chat-counter></unread-chat-counter>
+      <%= svg_image("inbox") %>
+      <unread-chat-counter></unread-chat-counter>
       <% end %>
     </li>
   </ul>

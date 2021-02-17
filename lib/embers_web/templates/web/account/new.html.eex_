@@ -1,7 +1,7 @@
 <section id="login">
   <h1><%= gettext("Create account") %></h1>
 
-  <%= form_for @changeset, account_path(@conn, :create), fn f -> %>
+  <%= form_for @changeset, Routes.account_path(@conn, :create), fn f -> %>
     <%= if error = get_flash(@conn, :error) do %>
       <div class="alert alert--danger">
         <%= error %>

@@ -87,7 +87,6 @@ defmodule EmbersWeb.NotificationSubscriber do
   end
 
   def handle_event(:all_notifications_read, %{data: user_id}) do
-    IO.inspect("NOTIFICATIONS READ FOR #{user_id}")
     recipient = user_id
 
     EmbersWeb.Endpoint.broadcast!(

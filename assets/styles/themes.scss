@@ -9,6 +9,8 @@
   --danger-alt: #fff;
   --warning: #ffc107;
   --warning-alt: #fff;
+  --info: #2e9aff;
+  --info-alt: #fff;
 
   --accent: #eb3d2d;
 
@@ -26,7 +28,7 @@
 }
 
 [theme=dark] {
-  --primary: #222327;
+  --primary: #1f2023;
   --secondary: #26272b;
   --secondary-accent: #1a1a1d;
 
@@ -111,15 +113,15 @@
   --secondary: #f3f3f3;
   --secondary-accent: #f2f2f2;
 
-  --warning: #fa7000;
-  --success: #269d20;
+  --warning: #BD5500;
+  --success: #177F12;
 
   --background: var(--secondary);
   --text: #222327;
   --text-secondary: #222327;
   --link: #000;
   --link-hover: var(--link);
-  --accent-foreground: #fff;
+  --accent-foreground: #000;
 
   --logo-foreground: var(--primary);
 

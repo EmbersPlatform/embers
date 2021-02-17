@@ -7,6 +7,7 @@
 @import "./editor/_module.scss";
 @import "./fabs-zone.scss";
 @import "./feed.scss";
+@import "./field.scss";
 @import "./help-block.scss";
 @import "./hover-menu.scss";
 @import "./link.scss";
@@ -35,9 +36,12 @@
 @import "./row-user.scss";
 @import "./online-friends.scss";
 @import "./tag-card.scss";
+@import "./hash-identicon.scss";
+@import "./password-input.scss";
 
 @import "./design-options.scss";
 @import "./privacy-options.scss";
+@import "./change-password-field.scss";
 
 @import "./reply/_module.scss";
 @import "./post/_module.scss";

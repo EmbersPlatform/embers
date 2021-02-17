@@ -1,0 +1,56 @@
+[view=settings][subview=security] {
+
+  .session {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .session > *+* {
+    margin-left: 1em;
+  }
+
+  .sessions > .session {
+    margin-bottom: 1em;
+  }
+
+  .session .ua-icon{
+    width: 3em;
+    height: 3em;
+
+    &>img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .session .ua-details {
+    flex: 1 auto;
+
+    &>*+* {
+      margin-top: 0.3em;
+    }
+
+    .ua-name {
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.5em;
+    }
+
+    .ua-device {
+      display: flex;
+      align-items: center;
+    }
+
+    svg {
+      width: 1em;
+      height: 1em;
+      margin-right: 0.5em;
+    }
+
+    .ua-date {
+      display: block;
+      font-style: italic;
+      font-size: 0.9em;
+    }
+  }
+}

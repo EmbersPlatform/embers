@@ -1,13 +1,25 @@
 defmodule EmbersWeb.Router do
   use EmbersWeb, :router
 
+  import EmbersWeb.UserAuth
+
   import Phoenix.LiveDashboard.Router
 
   alias EmbersWeb.Plugs.{CheckPermissions, GetPermissions}
 
+  # See https://github.com/elixir-cldr/cldr/issues/135#issuecomment-629119938
+  require EmbersWeb.Cldr
+
   pipeline :browser do
     plug(:accepts, ["html", "json"])
     plug(:fetch_session)
+
+    plug(:fetch_live_flash)
+    # plug(:put_root_layout, {EmbersWeb.LayoutView, :root})
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
+
+    plug(:fetch_current_user)
 
     plug(Cldr.Plug.SetLocale,
       apps: [:cldr, :gettext],
@@ -16,28 +28,20 @@ defmodule EmbersWeb.Router do
       cldr: EmbersWeb.Cldr
     )
 
-    plug(:fetch_flash)
-    plug(:protect_from_forgery)
-    plug(:put_secure_browser_headers)
-    plug(EmbersWeb.Authenticate)
-    plug(EmbersWeb.Remember)
     plug(GetPermissions)
     plug(EmbersWeb.Plugs.LoadSettings)
     plug(EmbersWeb.Plugs.SelectLayout)
     plug(EmbersWeb.Plugs.ModData)
   end
 
+  pipeline :live_layout do
+    plug(:put_root_layout, {EmbersWeb.LayoutView, :root})
+    plug(:require_authenticated_user)
+  end
+
   pipeline :admin do
     plug(:accepts, ["html"])
-    plug(:fetch_session)
-    plug(:fetch_flash)
-    plug(:put_secure_browser_headers)
-    plug(EmbersWeb.Authenticate)
-    plug(EmbersWeb.Remember)
-    plug(GetPermissions)
     plug(CheckPermissions, permission: "access_backoffice")
-
-    plug(:protect_from_forgery)
   end
 
   scope "/" do
@@ -46,9 +50,36 @@ defmodule EmbersWeb.Router do
     live_dashboard("/dashboard", ecto_repos: [Embers.Repo], metrics: EmbersWeb.Telemetry)
   end
 
-  scope "/" do
-    pipe_through(:browser)
-    get("/auth_data", EmbersWeb.Api.PageController, :auth)
+  ## Authentication routes
+
+  scope "/", EmbersWeb do
+    pipe_through([:browser, :redirect_if_user_is_authenticated])
+
+    get("/register", UserRegistrationController, :new)
+    post("/register", UserRegistrationController, :create)
+    get("/login", UserSessionController, :new)
+    post("/login", UserSessionController, :create)
+    get("/reset_password", UserResetPasswordController, :new)
+    post("/reset_password", UserResetPasswordController, :create)
+    get("/reset_password/:token", UserResetPasswordController, :edit)
+    put("/reset_password/:token", UserResetPasswordController, :update)
+  end
+
+  scope "/", EmbersWeb do
+    pipe_through([:browser, :require_authenticated_user])
+
+    get("/users/settings", UserSettingsController, :edit)
+    put("/users/settings", UserSettingsController, :update)
+    get("/users/settings/confirm_email/:token", UserSettingsController, :confirm_email)
+  end
+
+  scope "/", EmbersWeb do
+    pipe_through([:browser])
+
+    delete("/logout", UserSessionController, :delete)
+    get("/users/confirm", UserConfirmationController, :new)
+    post("/users/confirm", UserConfirmationController, :create)
+    get("/users/confirm/:token", UserConfirmationController, :confirm)
   end
 
   scope "/", EmbersWeb.Web do
@@ -60,35 +91,31 @@ defmodule EmbersWeb.Router do
     get("/static/faq", PageController, :faq)
     get("/static/acknowledgments", PageController, :acknowledgments)
 
-    # Authentication
-    get("/login", SessionController, :new)
-    post("/login", SessionController, :create)
-    delete("/sessions", SessionController, :delete)
-    get("/confirm", ConfirmController, :index)
-
-    # Password reset
-    get("/password_resets/new", PasswordResetController, :new)
-    post("/password_resets/new", PasswordResetController, :create)
-    get("/password_resets/edit", PasswordResetController, :edit)
-    put("/password_resets/edit", PasswordResetController, :update)
-
-    # Account creation
-    get("/register", AccountController, :new)
-    post("/register", AccountController, :create)
-
     # Settings
     scope "/settings" do
-      get("/", SettingsController, :show_profile)
       patch("/", SettingsController, :update)
       post("/reset_pass", SettingsController, :reset_pass)
-      get("/profile", SettingsController, :show_profile)
+
+      put("/account/update_password", SettingsController, :update_password)
+      put("/account/update_email", SettingsController, :update_email)
+      get("/account/confirm_email/:token", SettingsController, :confirm_email)
+
       patch("/profile/update_profile", SettingsController, :update_profile)
       post("/profile/update_cover", SettingsController, :update_cover)
       post("/profile/update_avatar", SettingsController, :update_avatar)
+
+      # get("/security", SettingsController, :show_security)
+    end
+
+    scope "/settings" do
+      pipe_through(:live_layout)
+
+      get("/", SettingsController, :show_profile)
+      get("/profile", SettingsController, :show_profile)
       get("/content", SettingsController, :show_content)
       get("/design", SettingsController, :show_design)
-      get("/privacy", SettingsController, :show_privacy)
-      get("/security", SettingsController, :show_security)
+      live("/privacy", Settings.PrivacyLive.Index, :index)
+      live("/security", Settings.SecurityLive.Index, :index)
     end
 
     # Feeds
@@ -232,101 +259,5 @@ defmodule EmbersWeb.Router do
       get("/roles", RoleController, :index)
       put("/roles/:role_id", RoleController, :update)
     end
-  end
-
-  scope "/api/v1", EmbersWeb.Api, as: :api do
-    pipe_through(:browser)
-    # should be deprecated?
-    # post("/auth",SessionController, :create_api)
-
-    # User
-    get("/users/:id", UserController, :show)
-
-    # Account settings
-    put("/account/meta", MetaController, :update)
-    post("/account/avatar", MetaController, :upload_avatar)
-    post("/account/cover", MetaController, :upload_cover)
-    put("/account/settings", SettingController, :update)
-    post("/account/reset_pass", UserController, :reset_pass)
-
-    # Mod specific routes
-    # TODO move to an admin protected scope
-    post("/moderation/ban", ModerationController, :ban_user)
-    post("/moderation/post/update_tags", ModerationController, :update_tags)
-
-    post("/friends", FriendController, :create)
-    post("/friends/name", FriendController, :create_by_name)
-    delete("/friends/:id", FriendController, :destroy)
-    delete("/friends/name/:name", FriendController, :destroy_by_name)
-
-    get("/blocks/ids", BlockController, :list_ids)
-    get("/blocks/list", BlockController, :list)
-    post("/blocks", BlockController, :create)
-    delete("/blocks/:id", BlockController, :destroy)
-
-    get("/tag_blocks/ids", TagBlockController, :list_ids)
-    get("/tag_blocks/list", TagBlockController, :list)
-    post("/tag_blocks", TagBlockController, :create)
-    delete("/tag_blocks/:id", TagBlockController, :destroy)
-
-    get("/tags/popular", TagController, :popular)
-    get("/tags/hot", TagController, :hot)
-
-    get("/subscriptions/tags/ids", TagController, :list_ids)
-    get("/subscriptions/tags/list", TagController, :list)
-    post("/subscriptions/tags", TagController, :create)
-    delete("/subscriptions/tags/:id", TagController, :destroy)
-
-    get("/tags/:name", TagController, :show_tag)
-    get("/tags/:name/posts", TagController, :show_tag_posts)
-
-    get("/following/:id/ids", FriendController, :list_ids)
-    get("/following/:id/list", FriendController, :list)
-    get("/followers/:id/ids", FriendController, :list_followers_ids)
-    get("/followers/:id/list", FriendController, :list_followers)
-
-    resources("/posts", PostController, only: [:show, :create, :delete])
-    get("/posts/:id/replies", PostController, :show_replies)
-    post("/posts/:post_id/reaction/:name", ReactionController, :create)
-    delete("/posts/:post_id/reaction/:name", ReactionController, :delete)
-    post("/posts/:post_id/report", PostReportController, :create)
-
-    get(
-      "/posts/:post_id/reactions/overview",
-      ReactionController,
-      :reactions_overview
-    )
-
-    get(
-      "/posts/:post_id/reactions/:reaction_name",
-      ReactionController,
-      :reactions_by_name
-    )
-
-    get("/reactions/valid", ReactionController, :list_valid_reactions)
-
-    get("/feed", FeedController, :timeline)
-    get("/feed/public", FeedController, :get_public_feed)
-    get("/feed/user/:id", FeedController, :user_statuses)
-    delete("/feed/activity/:id", FeedController, :hide_post)
-
-    get("/feed/favorites", FavoriteController, :list)
-    post("/feed/favorites/:post_id", FavoriteController, :create)
-    delete("/feed/favorites/:post_id", FavoriteController, :destroy)
-
-    post("/media", MediaController, :upload)
-    post("/link", LinkController, :parse)
-
-    get("/notifications", NotificationController, :index)
-    put("/notifications/:id", NotificationController, :read)
-
-    get("/search/:query", SearchController, :search)
-    get("/search_typeahead/user/:username", SearchController, :user_typeahead)
-
-    get("/chat/conversations", ChatController, :list_conversations)
-    post("/chat/conversations", ChatController, :create)
-    get("/chat/conversations/:id", ChatController, :list_messages)
-    put("/chat/conversations/:id", ChatController, :read)
-    get("/chat/unread", ChatController, :list_unread_conversations)
   end
 end

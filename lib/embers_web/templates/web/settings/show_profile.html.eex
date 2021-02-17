@@ -1,25 +1,31 @@
-
 <%= EmbersWeb.LayoutView.sidebar assigns do %>
-  <%= render("_sidebar.html", assigns) %>
+<%= render("_sidebar.html", assigns) %>
 <% end %>
-<div id="view" view="settings" subview="design" class="has-sidebar">
+<div id="view" view="settings" subview="profile" class="has-sidebar">
   <%= render_shared("top_bar.html", assigns) %>
   <main class="padded">
     <h1><%= gettext("Profile") %></h1>
+    <%= if error = get_flash(@conn, :error) do %>
+    <div class="alert alert--danger">
+      <%= error %>
+    </div>
+    <% end %>
+    <%= if info = get_flash(@conn, :info) do %>
+    <div class="alert alert--info">
+      <%= info %>
+    </div>
+    <% end %>
     <section class="profile-settings">
-      <profile-options
-        data-username="<%= @user.username %>"
-        data-email="<%= @user.email %>"
-        data-bio="<%= @user.meta.bio %>"
-      ></profile-options>
+      <profile-options data-username="<%= @user.username %>" data-email="<%= @user.email %>"
+        data-bio="<%= @user.meta.bio %>"></profile-options>
       <div class="pic-editors">
-        <avatar-editor
-          data-src="<%= @user.meta.avatar.medium %>"
-        ></avatar-editor>
-        <cover-editor
-          data-src="<%= @user.meta.cover %>"
-        ></cover-editor>
+        <avatar-editor data-src="<%= @user.meta.avatar.medium %>"></avatar-editor>
+        <cover-editor data-src="<%= @user.meta.cover %>"></cover-editor>
       </div>
     </section>
+    <h2><%= gettext("Password") %></h2>
+    <emb-change-password-field>
+      <button class="button primary" data-action="show_modal">Change password</button>
+    </emb-change-password-field>
   </main>
 </div>

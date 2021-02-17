@@ -29,7 +29,7 @@ defmodule EmbersWeb.Web.BlockController do
   end
 
   def create(conn, %{"name" => name}) do
-    source = Embers.Accounts.get_by_identifier(name)
+    source = Embers.Accounts.get_user_by_username(name)
 
     do_create_block(conn, conn.assigns.current_user.id, source.id)
   end

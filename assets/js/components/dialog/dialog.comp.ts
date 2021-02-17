@@ -12,7 +12,7 @@ import { Component } from "../component";
 export default class ModalDialog extends Component(HTMLElement) {
   static component = "ModalDialog";
 
-  static tagName =  "element";
+  static tagName = "element";
 
   static booleanAttributes = ["focusable"];
   static mappedAttributes = ["opened"];
@@ -37,7 +37,7 @@ export default class ModalDialog extends Component(HTMLElement) {
    */
   showModal() {
     this.opened = true;
-    this.dialog.current.showModal();
+    setTimeout(() => this.dialog.current.showModal());
   }
 
   /**
@@ -64,12 +64,7 @@ export default class ModalDialog extends Component(HTMLElement) {
     const close = () => this.close();
 
     return html`
-      <dialog
-        ref=${this.dialog}
-        oncancel=${oncancel}
-        onclose=${onclose}
-        tabindex=${this.focusable ? -1 : null}
-      >
+      <dialog ref=${this.dialog} oncancel=${oncancel} onclose=${onclose} tabindex=${this.focusable ? -1 : null}>
         <dialog-backdrop onclick=${close}></dialog-backdrop>
         <dialog-box> ${contents} </dialog-box>
       </dialog>

@@ -25,6 +25,10 @@ import * as PostController from "./controllers/post";
 import * as MediasController from "./controllers/medias";
 import * as ContentWarningController from "./controllers/content-warning";
 
+import "./components/hash-identicon";
+import "./components/password-input";
+import "./components/password-confirm";
+
 const application = Application.start();
 application.register(PostController.name, PostController.default);
 application.register(MediasController.name, MediasController.default);

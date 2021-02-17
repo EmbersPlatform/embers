@@ -48,7 +48,7 @@ defmodule EmbersWeb.Web.SessionController do
       {:error, message} ->
         conn
         |> put_flash(:login_error, message)
-        |> redirect(to: Routes.session_path(conn, :new))
+        |> redirect(to: Routes.user_session_path(conn, :new))
     end
   end
 

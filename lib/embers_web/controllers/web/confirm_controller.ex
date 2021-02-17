@@ -15,12 +15,12 @@ defmodule EmbersWeb.Web.ConfirmController do
 
         conn
         |> put_flash(:info, "Tu cuenta ha sido confirmada, ¡Ya puedes iniciar sesión!")
-        |> redirect(to: Routes.session_path(conn, :new))
+        |> redirect(to: Routes.user_session_path(conn, :new))
 
       {:error, message} ->
         conn
         |> put_flash(:error, message)
-        |> redirect(to: Routes.session_path(conn, :new))
+        |> redirect(to: Routes.user_session_path(conn, :new))
     end
   end
 end

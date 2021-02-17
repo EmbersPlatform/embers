@@ -8,7 +8,5 @@ define("[media-preview-image]", {
     if (height > 600) {
       this.element.classList.add("tall-image");
     }
-
-    console.debug(image, height);
   },
 });

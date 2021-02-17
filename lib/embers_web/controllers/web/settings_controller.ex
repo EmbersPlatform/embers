@@ -5,30 +5,66 @@ defmodule EmbersWeb.Web.SettingsController do
 
   import EmbersWeb.Authorize
 
+  alias Embers.Accounts
   alias Embers.Profile
   alias Embers.Profile.Settings
+  alias EmbersWeb.UserAuth
 
-  action_fallback(EmbersWeb.Web.SettingsFallbackController)
+  action_fallback(EmbersWeb.Web.FallbackController)
 
   plug(:user_check)
+  plug(:assign_email_and_password_changesets when action in [:show_account])
 
-  def show_account(conn, _params) do
+  def update_email(conn, params) do
+    %{"current_password" => password, "email" => email} = params
     user = conn.assigns.current_user
-    profile = Embers.Profile.get_meta_for(user.id)
 
-    conn
-    |> render("show_account.html",
-      page_title: gettext("Account settings"),
-      user: user,
-      profile: profile
-    )
+    with {:ok, applied_user} <- Accounts.apply_user_email(user, password, %{email: email}) do
+      Accounts.deliver_update_email_instructions(
+        applied_user,
+        user.email,
+        &Routes.settings_url(conn, :confirm_email, &1)
+      )
+
+      conn
+      |> json(nil)
+    end
   end
 
-  def update_account(conn, params) do
-    IO.inspect(params)
+  def update_password(conn, params) do
+    %{"current_password" => password} = params
+
+    user = conn.assigns.current_user
+
+    password_params = Map.take(params, ~w[password password_confirmation])
+
+    with {:ok, user} <- Accounts.update_user_password(user, password, password_params) do
+      conn
+      |> UserAuth.log_in(user)
+      |> json(nil)
+    end
+  end
+
+  def confirm_email(conn, %{"token" => token}) do
+    case Accounts.update_user_email(conn.assigns.current_user, token) do
+      :ok ->
+        conn
+        |> put_flash(:info, "Email changed successfully.")
+        |> redirect(to: Routes.settings_path(conn, :show_profile))
+
+      :error ->
+        conn
+        |> put_flash(:error, "Email change link is invalid or it has expired.")
+        |> redirect(to: Routes.settings_path(conn, :show_profile))
+    end
+  end
+
+  defp assign_email_and_password_changesets(conn, _opts) do
+    user = conn.assigns.current_user
 
     conn
-    |> show_account(params)
+    |> assign(:email_changeset, Accounts.change_user_email(user))
+    |> assign(:password_changeset, Accounts.change_user_password(user))
   end
 
   def show_profile(conn, _params) do
@@ -36,6 +72,7 @@ defmodule EmbersWeb.Web.SettingsController do
     profile = Embers.Profile.get_meta_for(user.id)
 
     conn
+    |> assign(:sidebar, :profile)
     |> render("show_profile.html",
       page_title: "Profile settings",
       user: user,
@@ -68,14 +105,15 @@ defmodule EmbersWeb.Web.SettingsController do
     with {:ok, meta} <- Profile.update_cover(meta, file) do
       render(conn, "cover.json", cover: meta.cover)
     end
-    |> IO.inspect(label: "ERROR")
   end
 
   def show_content(conn, _params) do
     user = conn.assigns.current_user
     settings = Embers.Profile.Settings.get_setting!(user.id)
 
-    render(conn, "show_content.html", page_title: gettext("Content settings"), settings: settings)
+    conn
+    |> assign(:sidebar, :content)
+    |> render("show_content.html", page_title: gettext("Content settings"), settings: settings)
   end
 
   def update(conn, params) do
@@ -91,46 +129,14 @@ defmodule EmbersWeb.Web.SettingsController do
     user = conn.assigns.current_user
     settings = Embers.Profile.Settings.get_setting!(user.id)
 
-    render(conn, "show_design.html", page_title: gettext("Design settings"), settings: settings)
+    conn
+    |> assign(:sidebar, :design)
+    |> render("show_design.html", page_title: gettext("Design settings"), settings: settings)
   end
 
   def show_privacy(conn, _params) do
-    render(conn, "show_privacy.html", page_title: gettext("Privacy settings"))
-  end
-
-  def show_security(conn, _params) do
-    render(conn, "show_security.html", page_title: gettext("Security settings"))
-  end
-
-  def reset_pass(conn, _params) do
-    email = conn.assigns.current_user.email
-
-    rate_limit =
-      EmbersWeb.RateLimit.peek_rate(
-        "reset_password:#{email}",
-        :timer.minutes(1),
-        1
-      )
-
-    with(
-      :ok <- rate_limit,
-      {:ok, _} = Embers.Accounts.create_password_reset(%{"email" => email})
-    ) do
-      key = EmbersWeb.Auth.Token.sign(%{"email" => email})
-      EmbersWeb.Email.reset_request(email, key)
-
-      ExRated.check_rate(
-        "reset_password:#{email}",
-        :timer.minutes(1),
-        1
-      )
-
-      conn |> json(nil)
-    else
-      :rate_limited ->
-        conn
-        |> put_status(:too_many_requests)
-        |> json(%{error: :rate_limited})
-    end
+    conn
+    |> assign(:sidebar, :privacy)
+    |> render("show_privacy.html", page_title: gettext("Privacy settings"))
   end
 end

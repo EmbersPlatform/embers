@@ -36,7 +36,7 @@ defmodule EmbersWeb.Authenticate do
   def report({:ok, user}, meta) do
     Log.info(%Log{user: user.id, message: "user authenticated", meta: meta})
 
-    Embers.Accounts.get_populated(user.id)
+    Embers.Accounts.get_user_by_id(user.id)
   end
 
   def report({:error, message}, meta) do

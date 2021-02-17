@@ -67,7 +67,7 @@ defmodule EmbersWeb.Api.FriendController do
         %Plug.Conn{assigns: %{current_user: user}} = conn,
         %{"name" => name} = _params
       ) do
-    source = Embers.Accounts.get_by_identifier(name)
+    source = Embers.Accounts.get_user_by_username(name)
 
     sub_params = %{
       user_id: user.id,

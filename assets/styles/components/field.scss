@@ -1,0 +1,36 @@
+.field {
+  margin-bottom: 1.250rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  &>*+* {
+    margin-left: 1em;
+  }
+}
+
+.field-block {
+  display: block;
+
+  &>*+* {
+    margin-left: 0;
+  }
+}
+
+.field-row {
+  flex: 1 auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.field-title {
+  display: block;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.25em;
+}
+
+.field-description {
+  font-size: 0.8em;
+}

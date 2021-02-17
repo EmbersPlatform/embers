@@ -5,8 +5,17 @@ defmodule EmbersWeb.Endpoint do
   plug(Unpoly)
   plug(RemoteIp)
 
+  @session_options [
+    store: :cookie,
+    # 7 days
+    # max_age: 24 * 60 * 60 * 7,
+    key: "_embers_key",
+    signing_salt: "8LHeFKPR",
+    same_site: "Strict"
+  ]
+
   socket("/socket", EmbersWeb.UserSocket)
-  socket("/live", Phoenix.LiveView.Socket)
+  socket("/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]])
 
   plug(Phoenix.LiveDashboard.RequestLogger,
     param_key: "request_logger",
@@ -71,12 +80,7 @@ defmodule EmbersWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug(
     Plug.Session,
-    store: :cookie,
-    # 7 days
-    max_age: 24 * 60 * 60 * 7,
-    key: "_embers_key",
-    signing_salt: "8LHeFKPR",
-    same_site: "Strict"
+    @session_options
   )
 
   plug(EmbersWeb.Router)

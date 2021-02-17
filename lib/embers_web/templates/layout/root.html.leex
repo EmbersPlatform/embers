@@ -1,0 +1,5 @@
+<%= if @current_user do
+  render("logged_in.html", assigns)
+else
+  render("guest.html", assigns)
+end %>

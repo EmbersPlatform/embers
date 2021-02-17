@@ -1,23 +1,14 @@
 <div class="disabled-post">
-  <article
-    data-post-id="<%= @post.id %>"
-    data-author="<%= @post.user.canonical %>"
-    class="post"
-    data-controller="<%= attr_list [
+  <article data-post-id="<%= @post.id %>" data-author="<%= @post.user.canonical %>" class="post" data-controller="<%= attr_list [
       "medias",
       {"content-warning", @post.nsfw }
-    ] %>"
-    <%= if @post.nsfw, do: "nsfw" %>
-    data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>"
-    >
+    ] %>" <%= if @post.nsfw, do: "nsfw" %>
+    data-tags="<%= Enum.join(@post.tags |> Enum.map(fn x -> x.name end), " ") %>">
     <div class="content-warnings">
       <div class="content-warning warning-nsfw">
         <span>NSFW: </span>
-        <button
-          class="button danger button-small"
-          data-target="content-warning.button"
-          data-action="content-warning#toggle"
-        >
+        <button class="button danger button-small" data-target="content-warning.button"
+          data-action="content-warning#toggle">
           <%= gettext("Show") %>
         </button>
       </div>
@@ -35,16 +26,13 @@
             %>
           </div>
           <div class="details-bottom">
-            <%= link(to: post_path(Endpoint, :show, @post.id), itemprop: "url") do %>
-              <time
-                datetime="<%= @post.inserted_at %>"
-                pubdate="<%= @post.inserted_at %>"
-                itemprop="datePublished">
-                <%= time_ago(@post.inserted_at) %>
-              </time>
+            <%= link(to: Routes.post_path(Endpoint, :show, @post.id), itemprop: "url") do %>
+            <time datetime="<%= @post.inserted_at %>" pubdate="<%= @post.inserted_at %>" itemprop="datePublished">
+              <%= time_ago(@post.inserted_at) %>
+            </time>
             <% end %>
-            <%= link(to: post_path(Endpoint, :show, @post.id), class: "post-id-link") do %>
-              >><%= @post.id %>
+            <%= link(to: Routes.post_path(Endpoint, :show, @post.id), class: "post-id-link") do %>
+            >><%= @post.id %>
             <% end %>
           </div>
         </div>
@@ -53,45 +41,39 @@
         <section class="post-body" itemprop="articleBody">
           <leg-markdown><%= @post.body %></leg-markdown>
           <%= if !is_nil(@post.related_to_id) do %>
-            <%= link(to: post_path(Endpoint, :show, @post.related_to_id), class: "related-link") do %>
-              <%= " " <> post_url(Endpoint, :show, @post.related_to_id) %>
-            <% end %>
+          <%= link(to: Routes.post_path(Endpoint, :show, @post.related_to_id), class: "related-link") do %>
+          <%= " " <> Routes.post_url(Endpoint, :show, @post.related_to_id) %>
+          <% end %>
           <% end %>
         </section>
         <%= if length(@post.media) > 0 do %>
-          <section class="post-medias">
-            <%= EmbersWeb.Web.PostView.render("_media_group.html", medias: @post.media) %>
-          </section>
+        <section class="post-medias">
+          <%= EmbersWeb.Web.PostView.render("_media_group.html", medias: @post.media) %>
+        </section>
         <% end %>
         <%= if length(@post.links) > 0 do %>
-          <%= for link <- @post.links do %>
-            <%= EmbersWeb.Web.LinkView.render("link.html", link: link) %>
-          <% end %>
+        <%= for link <- @post.links do %>
+        <%= EmbersWeb.Web.LinkView.render("link.html", link: link) %>
+        <% end %>
         <% end %>
       </section>
       <post-tags data-post_id="<%= @post.id %>"></post-tags>
     </section>
     <media-gallery data-target="medias.gallery">
       <%= if (length @post.links) > 0 do %>
-        <%= for link <- @post.links do %>
-          <gallery-item
-            data-id="<%= link.id %>"
-            data-type="image"
-            data-src="<%= link.embed.thumbnail_url %>"
-          ></gallery-item>
-        <% end %>
+      <%= for link <- @post.links do %>
+      <gallery-item data-id="<%= link.id %>" data-type="image" data-src="<%= link.embed.thumbnail_url %>">
+      </gallery-item>
+      <% end %>
       <% end %>
       <%= for media <- @post.media do %>
-        <gallery-item
-          data-id="<%= media.id %>"
-          data-type="<%= media.type %>"
-          data-src="<%= Embers.Media.format_url media.url %>"
-        ></gallery-item>
+      <gallery-item data-id="<%= media.id %>" data-type="<%= media.type %>"
+        data-src="<%= Embers.Media.format_url media.url %>"></gallery-item>
       <% end %>
-    </media-galley>
+      </media-galley>
   </article>
   <aside>
-    <button class="button" data-action="restore" ><%= gettext("Restore post") %></button>
+    <button class="button" data-action="restore"><%= gettext("Restore post") %></button>
     <button class="button" data-action="ban-user"><%= gettext("Ban user") %></button>
   </aside>
 </div>

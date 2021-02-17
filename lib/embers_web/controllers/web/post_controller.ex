@@ -98,7 +98,7 @@ defmodule EmbersWeb.Web.PostController do
     og_tags = [
       title: "#{post.user.username} en Embers",
       type: "article",
-      url: post_path(conn, :show, post.id)
+      url: Routes.post_path(conn, :show, post.id)
     ]
 
     og_tags =

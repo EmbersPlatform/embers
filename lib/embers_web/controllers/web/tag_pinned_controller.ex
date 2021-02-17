@@ -13,6 +13,7 @@ defmodule EmbersWeb.Web.TagPinnedController do
     user = conn.assigns.current_user
     pinned_tags = Tags.list_pinned(user.id)
 
-    render(conn, "list_pinned.json", tags: pinned_tags)
+    conn
+    |> render("list_pinned.json", tags: pinned_tags)
   end
 end

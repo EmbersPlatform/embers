@@ -12,6 +12,10 @@ input, select {
   }
 }
 
+input:not([type=checkbox]):not([type=radio]) {
+  height: 2rem;
+}
+
 input.form-control, select.form-control {
   height: 3em;
   width: 100%;

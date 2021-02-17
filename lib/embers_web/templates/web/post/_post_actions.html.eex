@@ -1,4 +1,4 @@
-<%= if authenticated?(@conn) do %>
+<%= if not is_nil(@current_user) do %>
 <div class="post-actions">
   <%= if Embers.Authorization.can?(@conn.assigns.current_user, "access_mod_tools") do %>
     <div class="hover-menu-wrapper">

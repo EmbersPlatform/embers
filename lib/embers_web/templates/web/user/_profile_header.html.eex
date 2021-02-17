@@ -27,7 +27,7 @@
     </div>
   </div>
   <div class="profile-details">
-    <%= if authenticated?(@conn) and @user.id != @conn.assigns.current_user.id do %>
+    <%= if not is_nil(@current_user) and @user.id != @conn.assigns.current_user.id do %>
       <div class="profile-actions">
         <button
           is="follow-button"

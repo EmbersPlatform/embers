@@ -9,7 +9,7 @@
   <%= render("_profile_header.html", assigns) %>
   <main class="padded"
     infinite-scroll
-    data-source="<%= user_path(@conn, :show_following, @user.canonical) %>"
+    data-source="<%= Routes.user_path(@conn, :show_following, @user.canonical) %>"
     data-last-page="<%= @users.last_page %>"
     data-next="<%= @users.next %>"
   >

@@ -14,7 +14,7 @@ defmodule EmbersWeb.Web.UserController do
   action_fallback(EmbersWeb.FallbackController)
 
   def show(conn, %{"username" => username}) do
-    with user <- Accounts.get_populated(%{"canonical" => username}) do
+    with user <- Accounts.get_user_by_username(username) do
       current_user = conn.assigns.current_user
       %{entries: followers} = Subscriptions.list_followers_paginated(user.id, limit: 10)
       %{entries: following} = Subscriptions.list_following_paginated(user.id, limit: 10)
@@ -28,6 +28,7 @@ defmodule EmbersWeb.Web.UserController do
           |> Accounts.load_following_status(current_user.id)
           |> Accounts.load_follows_me_status(current_user.id)
           |> Accounts.load_blocked_status(current_user.id)
+          |> Accounts.load_stats_map()
         else
           user
         end
@@ -46,7 +47,7 @@ defmodule EmbersWeb.Web.UserController do
   end
 
   def show_card(conn, %{"username" => username}) do
-    with user <- Accounts.get_populated(%{"canonical" => username}) do
+    with user <- Accounts.get_user_by_username(username) do
       current_user = conn.assigns.current_user
 
       user =
@@ -82,7 +83,7 @@ defmodule EmbersWeb.Web.UserController do
   end
 
   def show_followers(conn, %{"username" => canonical} = params) do
-    with user <- Accounts.get_populated(%{"canonical" => canonical}) do
+    with user <- Accounts.get_user_by_username(canonical) do
       followers =
         Subscriptions.list_followers_paginated(user.id,
           after: params["after"],
@@ -107,7 +108,7 @@ defmodule EmbersWeb.Web.UserController do
   end
 
   def show_following(conn, %{"username" => canonical} = params) do
-    with user <- Accounts.get_populated(%{"canonical" => canonical}) do
+    with user <- Accounts.get_user_by_username(canonical) do
       following =
         Subscriptions.list_following_paginated(user.id,
           after: params["after"],

@@ -22,20 +22,13 @@ defmodule Embers.AccountsTest do
   test "get_user/1 returns a user by it's id" do
     user = insert(:user)
 
-    assert user == Accounts.get_user(user.id)
-  end
-
-  test "get_by_identifier/1 returns the user by id or canonical" do
-    user = insert(:user)
-
-    assert user == Accounts.get_by_identifier(user.canonical)
-    assert user == Accounts.get_by_identifier(user.id)
+    assert user == Accounts.get_user_by_id(user.id)
   end
 
   test "get_populated/2 returns the user with it's Meta and Settings" do
     user = insert(:user)
 
-    retrieved_user = Accounts.get_populated(user.id)
+    retrieved_user = Accounts.get_user_by_id(user.id)
 
     assert user.id == retrieved_user.id
     assert %Embers.Profile.Meta{} = retrieved_user.meta

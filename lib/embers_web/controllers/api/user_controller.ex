@@ -9,7 +9,7 @@ defmodule EmbersWeb.Api.UserController do
 
   def show(%Plug.Conn{assigns: %{current_user: current_user}} = conn, %{"id" => id})
       when not is_nil(current_user) do
-    case Accounts.get_populated(id) do
+    case Accounts.get_user_by_id(id) do
       nil ->
         conn |> put_status(:not_found) |> json(:not_found)
 
@@ -25,7 +25,7 @@ defmodule EmbersWeb.Api.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Accounts.get_populated(id) do
+    case Accounts.get_user_by_id(id) do
       nil ->
         conn |> put_status(:not_found) |> json(:not_found)
 

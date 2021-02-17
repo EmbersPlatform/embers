@@ -37,8 +37,6 @@ const build_headers = (options) => {
     if (content_type) headers["Content-Type"] = content_type;
   }
 
-  console.debug(options);
-
   let accept = {
     json: "application/json",
     html: "text/html",

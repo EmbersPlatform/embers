@@ -1,31 +1,31 @@
 <h1><%= gettext("Home") %></h1>
 <ul>
   <li>
-    <%= active_link(@conn,
+    <%= link(
       to: "/",
       active: :exact,
       "aria-label": gettext("Activity"),
       title: gettext("Activity"),
       "up-preload": true
     ) do %>
-      <span>
-        <%= svg_image("activity") %>
-      </span>
-      <span><%= gettext("Activity") %></span>
+    <span>
+      <%= svg_image("activity") %>
+    </span>
+    <span><%= gettext("Activity") %></span>
     <% end %>
   </li>
   <li>
-    <%= active_link(@conn,
-      to: favorite_path(@conn, :list),
+    <%= link(
+      to: Routes.favorite_path(Endpoint, :list),
       active: :exact,
       "aria-label": gettext("Favorites"),
       title: gettext("Favorites"),
       "up-preload": true
     ) do %>
-      <span>
-        <%= svg_image("icons/star_outline") %>
-      </span>
-      <span><%= gettext("Favorites") %></span>
+    <span>
+      <%= svg_image("icons/star_outline") %>
+    </span>
+    <span><%= gettext("Favorites") %></span>
     <% end %>
   </li>
   <li>

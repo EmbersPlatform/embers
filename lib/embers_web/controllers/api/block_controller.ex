@@ -42,7 +42,7 @@ defmodule EmbersWeb.Api.BlockController do
         %Plug.Conn{assigns: %{current_user: user}} = conn,
         %{"name" => name} = _params
       ) do
-    source = Embers.Accounts.get_by_identifier(name)
+    source = Embers.Accounts.get_user_by_username(name)
 
     do_create_block(conn, user.id, source.id)
   end

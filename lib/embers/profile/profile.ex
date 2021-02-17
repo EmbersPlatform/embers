@@ -161,4 +161,16 @@ defmodule Embers.Profile do
   def change_meta(%Meta{} = meta) do
     Meta.changeset(meta, %{})
   end
+
+  @doc """
+  Loads the meta, avatar and cover for the given user
+  """
+  def load_profile_for_user(user) do
+    user
+    |> Repo.preload(:meta)
+    |> case do
+      nil -> nil
+      user -> Map.update!(user, :meta, &Meta.populate/1)
+    end
+  end
 end

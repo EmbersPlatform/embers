@@ -1,73 +1,81 @@
 <h1><%= gettext("Settings") %></h1>
 <ul>
   <li>
-    <%= active_link(@conn,
-      to: settings_path(@conn, :show_profile),
-      active: :exact,
+    <%= link(
+      to: Routes.settings_path(Endpoint, :show_profile),
+      class: attr_list([
+        {"active", @sidebar == :profile}
+      ]),
       "aria-label": gettext("Profile"),
       title: gettext("Profile"),
       "up-preload": true
     ) do %>
-      <span>
-        <%= svg_image("account") %>
-      </span>
-      <span><%= gettext("Profile") %></span>
+    <span>
+      <%= svg_image("account") %>
+    </span>
+    <span><%= gettext("Profile") %></span>
     <% end %>
   </li>
   <li>
-    <%= active_link(@conn,
-      to: settings_path(@conn, :show_content),
-      active: :exact,
+    <%= link(
+      to: Routes.settings_path(Endpoint, :show_content),
+      class: attr_list([
+        {"active", @sidebar == :content}
+      ]),
       "aria-label": gettext("Content"),
       title: gettext("Content"),
       "up-preload": true
     ) do %>
-      <span>
-        <%= svg_image("content") %>
-      </span>
-      <span><%= gettext("Content") %></span>
+    <span>
+      <%= svg_image("content") %>
+    </span>
+    <span><%= gettext("Content") %></span>
     <% end %>
   </li>
   <li>
-    <%= active_link(@conn,
-      to: settings_path(@conn, :show_design),
-      active: :exact,
+    <%= link(
+      to: Routes.settings_path(Endpoint, :show_design),
+      class: attr_list([
+        {"active", @sidebar == :design}
+      ]),
       "aria-label": gettext("Design"),
       title: gettext("Design"),
       "up-preload": true
     ) do %>
-      <span>
-        <%= svg_image("appearance") %>
-      </span>
-      <span><%= gettext("Design") %></span>
+    <span>
+      <%= svg_image("appearance") %>
+    </span>
+    <span><%= gettext("Design") %></span>
     <% end %>
   </li>
   <li>
-    <%= active_link(@conn,
-      to: settings_path(@conn, :show_privacy),
-      active: :exact,
+    <%= live_redirect(
+      to: Routes.privacy_index_path(Endpoint, :index),
+      class: attr_list([
+        {"active", @sidebar == :privacy}
+      ]),
       "aria-label": gettext("Privacy"),
-      title: gettext("Privacy"),
-      "up-preload": true
+      title: gettext("Privacy")
     ) do %>
-      <span>
-        <%= svg_image("privacy") %>
-      </span>
-      <span><%= gettext("Privacy") %></span>
+    <span>
+      <%= svg_image("privacy") %>
+    </span>
+    <span><%= gettext("Privacy") %></span>
     <% end %>
   </li>
   <li>
-    <%= active_link(@conn,
-      to: settings_path(@conn, :show_security),
-      active: :exact,
+    <%= live_redirect(
+      to: Routes.security_index_path(Endpoint, :index),
+      class: attr_list([
+        {"active", @sidebar == :security}
+      ]),
       "aria-label": gettext("Security"),
-      title: gettext("Security"),
-      "up-preload": true
+      title: gettext("Security")
     ) do %>
-      <span>
-        <%= svg_image("security") %>
-      </span>
-      <span><%= gettext("Security") %></span>
+    <span>
+      <%= svg_image("security") %>
+    </span>
+    <span><%= gettext("Security") %></span>
     <% end %>
   </li>
 </ul>

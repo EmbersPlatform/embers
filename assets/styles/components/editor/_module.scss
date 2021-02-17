@@ -62,7 +62,7 @@ post-editor {
       padding: 0.5em;
 
       @include media(">=tablet") {
-        border: 0.1em solid var(--secondary-accent);
+        border: var(--border);
       }
 
       textarea {

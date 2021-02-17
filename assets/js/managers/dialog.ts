@@ -29,20 +29,18 @@ export const confirm = (contents: ConfirmOptions) =>
 
     const dialog = html.node`
   <confirm-dialog padded onaccept=${accept} oncancel=${cancel}>
-    <p class="confirm-dialog-title">${
-      contents.title
-        ? typeof contents.title === "function"
-          ? contents.title(accept, cancel)
-          : contents.title
-        : ``
-    }</p>
-    <p class="confirm-dialog-content">${
-      contents.text
-        ? typeof contents.text === "function"
-          ? contents.text(accept, cancel)
-          : contents.text
-        : ``
-    }</p>
+    <p class="confirm-dialog-title">${contents.title
+      ? typeof contents.title === "function"
+      ? contents.title(accept, cancel)
+      : contents.title
+      : ``
+        }</p>
+    <p class="confirm-dialog-content">${contents.text
+      ? typeof contents.text === "function"
+      ? contents.text(accept, cancel)
+      : contents.text
+      : ``
+        }</p>
   </confirm-dialog>
   ` as ConfirmDialog;
 
@@ -61,7 +59,7 @@ type DialogCallback = (dialog: ModalDialog, close: () => void) => DialogContent;
  * a function, the dialog itself will be passed as first argument, and a
  * function to close it as second argument.
  */
-export const show_dialog = (contents: DialogCallback) => {
+export const show_dialog = (contents: DialogCallback, container = document.body) => {
   const close = () => dialog.remove();
 
   const dialog = html.node`<modal-dialog padded onclose=${close}></modal-dialog>` as ModalDialog;
@@ -79,6 +77,12 @@ export const show_dialog = (contents: DialogCallback) => {
       : null
   );
 
-  document.body.append(dialog);
-  dialog.showModal();
+  container.append(dialog);
+
+  // It seems that in polyfilled browsers(firefox), dialogs won't be fixed
+  // until they're inserted to the dom, so we just wait for the next
+  // macrotask.
+  setTimeout(() => {
+    dialog.showModal();
+  })
 };

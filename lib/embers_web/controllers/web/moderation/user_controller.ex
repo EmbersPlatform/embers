@@ -36,16 +36,16 @@ defmodule EmbersWeb.Web.Moderation.UserController do
         filters
       end)
 
-    page = Accounts.list_users_paginated(opts)
+    page = Accounts.list_users(opts)
 
     render(conn, "users.json", page: page)
   end
 
   def update(conn, %{"user_id" => user_id} = params) do
-    with %{} = user <- Accounts.get_populated(user_id),
+    with %{} = user <- Accounts.get_user_by_id(user_id),
          {user_data, new_roles} <- parse_update_params(params),
          {:ok, _} <- Accounts.update_user(user, user_data, roles: new_roles) do
-      user = Accounts.get_populated(user_id) |> Embers.Repo.preload(:roles)
+      user = Accounts.get_user_by_id(user_id) |> Embers.Repo.preload(:roles)
       render(conn, "user.json", user: user)
     end
   end

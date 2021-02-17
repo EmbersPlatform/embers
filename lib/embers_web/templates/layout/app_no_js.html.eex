@@ -27,10 +27,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title><%= assigns[:page_title] || "Embers" %></title>
   <link rel="icon" href="/favicon.ico?v=3" />
-  <link href="<%= static_path(@conn, "/css/landing.css") %>" rel="stylesheet">
+  <link href="<%= Routes.static_path(@conn, "/css/landing.css") %>" rel="stylesheet">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css"
     integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous">
-  <link href="<%= static_path(@conn, "/css/main.css") %>" rel="stylesheet">
+  <link href="<%= Routes.static_path(@conn, "/css/main.css") %>" rel="stylesheet">
   <style>
     body {
       background: #26272b;

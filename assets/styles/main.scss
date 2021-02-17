@@ -52,7 +52,7 @@ body {
   opacity: 1;
 }
 
-body.loading-page #board{
+body.loading-page #view > main{
   opacity: 0.2;
   pointer-events: none;
 }
@@ -82,4 +82,62 @@ body.loading-page #board{
   @include media(">=desktop") {
     display: none !important;
   }
+}
+
+.global-flash-bar {
+  width: 100%;
+  padding: 1em 0.5em;
+
+  &.info {
+    background: var(--info);
+    color: var(--info-alt);
+  }
+
+  &.success {
+    background: var(--success);
+    color: var(--success-alt);
+  }
+
+  &.danger {
+    background: var(--danger);
+    color: var(--danger-alt);
+  }
+
+&.warning {
+    background: var(--warning);
+    color: var(--warning-alt);
+  }
+}
+
+.g-margin-bottom {
+  margin-bottom: 1em;
+}
+
+.g-padded-1\/2 {
+  padding: 0.5em;
+}
+
+.g-padded-1 {
+  padding: 1em;
+}
+
+.g-small-text {
+  font-size: 0.75em;
+}
+
+.g-text-danger {
+  color: var(--danger);
+}
+
+.g-text-warning {
+  color: var(--warning);
+}
+
+.g-text-success {
+  color: var(--success);
+}
+
+.g-title {
+  text-transform: uppercase;
+  font-weight: 600;
 }

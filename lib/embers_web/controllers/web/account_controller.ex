@@ -58,7 +58,7 @@ defmodule EmbersWeb.Web.AccountController do
         "Tu cuenta ha sido creada, pero antes debes activarla.
         Te enviamos un email con un enlace para activarla."
       )
-      |> redirect(to: Routes.session_path(conn, :new))
+      |> redirect(to: Routes.user_session_path(conn, :new))
     else
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

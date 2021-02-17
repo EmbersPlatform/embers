@@ -298,7 +298,7 @@ defmodule Embers.Posts.Post do
     user_id = get_change(changeset, :user_id)
 
     parent_owner =
-      Embers.Accounts.get_user(parent.user_id)
+      Embers.Accounts.get_user_by_id(parent.user_id)
       |> Repo.preload([:settings])
       |> Embers.Accounts.load_follows_me_status(user_id)
 

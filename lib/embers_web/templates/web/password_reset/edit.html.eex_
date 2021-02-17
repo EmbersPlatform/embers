@@ -1,7 +1,7 @@
 <div class="block" data-layout-type="form">
   <h2><%= gettext("Reset password") %></h2>
 
-  <%= form_for @conn, password_reset_path(@conn, :update), [as: :password_reset, method: :put], fn f -> %>
+  <%= form_for @conn, Routes.password_reset_path(@conn, :update), [as: :password_reset, method: :put], fn f -> %>
     <%= if error = get_flash(@conn, :error) do %>
       <div class="error">
           <%= for {_k, [message | _t]} <- error do %>

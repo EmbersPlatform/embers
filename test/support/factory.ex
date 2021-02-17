@@ -8,7 +8,7 @@ defmodule Embers.Factory do
       username: name,
       canonical: name,
       email: sequence(:email, &"user_#{&1}@example.com"),
-      password_hash: Pbkdf2.hash_pwd_salt("yayapapaya")
+      hashed_password: Pbkdf2.hash_pwd_salt("yayapapaya")
     }
   end
 

@@ -35,7 +35,7 @@
           %>
         </div>
         <div class="details-bottom">
-          <%= link(to: post_path(Endpoint, :show, @post.id), itemprop: "url") do %>
+          <%= link(to: Routes.post_path(Endpoint, :show, @post.id), itemprop: "url") do %>
           <time datetime="<%= @post.inserted_at %>" pubdate="<%= @post.inserted_at %>" itemprop="datePublished">
             <%= time_ago(@post.inserted_at) %>
           </time>
@@ -91,8 +91,8 @@
       <section class="post-body" itemprop="articleBody">
         <leg-markdown><%= @post.body %></leg-markdown>
         <%= if !is_nil(@post.related_to_id) and assigns[:embedded] do %>
-        <%= link(to: post_path(Endpoint, :show, @post.related_to_id), class: "related-link") do %>
-        <%= " " <> post_url(Endpoint, :show, @post.related_to_id) %>
+        <%= link(to: Routes.post_path(Endpoint, :show, @post.related_to_id), class: "related-link") do %>
+        <%= " " <> Routes.post_url(Endpoint, :show, @post.related_to_id) %>
         <% end %>
         <% end %>
       </section>
@@ -119,7 +119,7 @@
         <e-spacer></e-spacer>
         <div>
           <%= if @post.replies_count > 0 do %>
-          <a href="<%= post_path(@conn, :show, @post.id) %>" class="stat replies-stat">
+          <a href="<%= Routes.post_path(@conn, :show, @post.id) %>" class="stat replies-stat">
             <%= ngettext("1 comment", "%{count} comments", @post.replies_count) %>
           </a>
           <% end %>
@@ -136,7 +136,7 @@
         <%= render("reaction_picker.html") %>
         <% end %>
         <e-spacer></e-spacer>
-        <%= link(to: post_path(Endpoint, :show, @post.id), class: "button-link",
+        <%= link(to: Routes.post_path(Endpoint, :show, @post.id), class: "button-link",
             "data-post-id": @post.id
           ) do %>
         <%= svg_image("comment") %>

@@ -13,7 +13,8 @@ defmodule EmbersWeb.Plugs.InitialData do
         _options
       )
       when not is_nil(current_user) do
-    user = Accounts.get_populated(current_user.id, with_settings: true)
+    user = Accounts.get_user_by_id(current_user.id)
+    put_in(user.settings, Embers.Profile.Settings.get_setting!(user.id))
 
     tags = Subscriptions.Tags.list_subscribed_tags(user.id)
 

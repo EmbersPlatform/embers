@@ -1,10 +1,10 @@
 <%= EmbersWeb.LayoutView.sidebar assigns %>
 <div id="view" view="user" class="has-sidebar" data-controller="user-profile" data-user="<%= @user.id %>"
   data-next="<%= @activities.next %>">
-  <%= if authenticated?(@conn), do: render_shared("top_bar.html", assigns) %>
+  <%= if not is_nil(@current_user), do: render_shared("top_bar.html", assigns) %>
   <%= render("_profile_header.html", assigns) %>
   <main class="padded columns-layout">
-    <div class="main-content" infinite-scroll data-source="<%= user_path(@conn, :timeline, @user.id) %>"
+    <div class="main-content" infinite-scroll data-source="<%= Routes.user_path(@conn, :timeline, @user.id) %>"
       data-last-page="<%= @activities.last_page %>" data-next="<%= @activities.next %>">
       <%= if length(@activities.entries) <= 0 do %>
       <p class="reached-bottom-notice">

@@ -1,6 +1,6 @@
 .alert {
   padding: 1em;
-  border-left: .3em solid;
+  border: var(--border);
   background: var(--alert-bg, var(--primary));
   border-radius: .3em;
   margin-bottom: 1em;

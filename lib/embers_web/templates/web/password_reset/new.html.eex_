@@ -1,7 +1,7 @@
 <div class="block" data-layout-type="form">
   <h2><%= gettext("Reset password") %></h2>
 
-  <%= form_for @conn, password_reset_path(@conn, :create), [as: :password_reset], fn f -> %>
+  <%= form_for @conn, Routes.password_reset_path(@conn, :create), [as: :password_reset], fn f -> %>
     <%= if f.errors != [] do %>
       <div class="error">
         <p><%= gettext("There were problems resetting your password") %></p>

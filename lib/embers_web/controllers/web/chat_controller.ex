@@ -21,7 +21,7 @@ defmodule EmbersWeb.Web.ChatController do
   end
 
   def show(conn, %{"username" => username} = _params) do
-    with %User{} = user <- Embers.Accounts.get_populated(%{"canonical" => username}) do
+    with %User{} = user <- Embers.Accounts.get_user_by_username(username) do
       render(conn, "show.html", user: user)
     end
   end
@@ -33,7 +33,7 @@ defmodule EmbersWeb.Web.ChatController do
   end
 
   def show_messages(conn, %{"id" => user_id} = params) do
-    with %User{} = user <- Embers.Accounts.get_populated(user_id) do
+    with %User{} = user <- Embers.Accounts.get_user_by_id(user_id) do
       messages =
         Chat.list_messages_for(conn.assigns.current_user.id, user.id, before: params["before"])
 

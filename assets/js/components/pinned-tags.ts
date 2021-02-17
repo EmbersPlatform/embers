@@ -17,7 +17,7 @@ customElements.define(
 
     async connectedCallback() {
       this.classList.add("tags-widget");
-      const res = await Fetch.get("/tags/pinned");
+      const res = await Fetch.get("/tags/pinned", {type: "json"});
       if (res.tag === "Success") {
         const subs = await res.value.json();
         this.subs = subs;

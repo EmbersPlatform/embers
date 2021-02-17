@@ -10,17 +10,17 @@
       <img class="avatar" src="<%= @user.meta.avatar.medium %>">
       <span class="display-name">
         <bdi><%= @user.username %></bdi>
-        <%= if authenticated?(@conn) and @user.follows_me do %>
+        <%= if not is_nil(@current_user) and @user.follows_me do %>
           <small class="badge">Te sigue</small>
         <% end %>
       </span>
     <% end %>
-    <%= if authenticated?(@conn) && @user.id != @conn.assigns.current_user.id do %>
+    <%= if not is_nil(@current_user) && @user.id != @conn.assigns.current_user.id do %>
       <button
         is="follow-button"
         class="button"
         data-id="<%= @user.id %>"
-        <%= if authenticated?(@conn) and @user.following, do: "following" %>
+        <%= if not is_nil(@current_user) and @user.following, do: "following" %>
         textless
       ></button>
     <% end %>

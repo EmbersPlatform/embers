@@ -1,68 +1,23 @@
 defmodule Embers.Accounts.User do
-  @moduledoc """
-  El esquema de los usuarios.
-
-  ## Campos
-  - `:username` - Es el nombre del usuario. Puede tener entre 2 y 30 letras,
-    números, - y _.
-  - `:canonical` - Igual que `:username`, pero todas las letras son minúsculas.
-    Es preferible utilizar siempre este campo para buscar usuarios.
-  - `:email` - El email del usuario.
-  - `:password` - Es el campo que se recibe al crear el usuario, en texto
-    plano. Es un campo virtual: no se persiste en la db.
-  - `:password_hash` - Es el hash de la contraseña, que sí es almacenado en la
-    db. El algoritmo usado es `Pbkdf2` con `sha-256`.
-  - `:confirmed_at` - La fecha en que se confirmó la cuenta. Si este campo es
-    `nil`, el usuario no podrá iniciar sesión hasta que confirme su cuenta.
-  - `:reset_sent_at` - La fecha en que se envió el último mail para restablecer
-    la contraseña.
-
-  ## Asociaciones
-
-  - `:sessions`: Son las sesiones abiertas por el usuario. Hay más información sobre las
-  sesiones en el módulo `Embers.Sessions`
-
-  - `:meta`: Es la información adicional del usuario, como la descripción de su perfil,
-  o su avatar y portada.
-
-  - `:settings`: Es la configuración del usuario.
-
-  - `:posts`: Los posts creados por el usuario.
-
-  ## Campos virtuales
-
-  - `:following`: Usado para saber si el usuario actualmente autenticado está
-  siguiendo al usuario en cuestión.
-  - `:blocked`: Similar a `:following`, pero para saber si el usuario fue bloqueado.
-  - `:stats`: Usado para mostrar estadisticas del usuario, como la cantidad de
-  seguidores o de posts creados.
-  """
   use Ecto.Schema
-
   import Ecto.Changeset
-  import Ecto.Query, only: [from: 2]
-
-  alias Embers.Accounts.User
-  alias Embers.Sessions.Session
-
-  @type t() :: %__MODULE__{}
+  import Ecto.Query
 
   @primary_key {:id, Embers.Hashid, autogenerate: true}
   schema "users" do
-    field(:username, :string)
-    field(:canonical, :string)
     field(:email, :string)
     field(:password, :string, virtual: true)
-    field(:password_hash, :string)
-    field(:confirmed_at, :utc_datetime)
-    field(:reset_sent_at, :utc_datetime)
+    field(:hashed_password, :string)
+    field(:confirmed_at, :naive_datetime)
+
+    field(:username, :string)
+    field(:canonical, :string)
     field(:banned_at, :utc_datetime)
-    has_many(:sessions, Session, on_delete: :delete_all)
 
     field(:following, :boolean, virtual: true, default: false)
     field(:follows_me, :boolean, virtual: true, default: false)
     field(:blocked, :boolean, virtual: true)
-    field(:stats, :map, virtual: true, default: false)
+    field(:stats, :map, virtual: true)
 
     has_one(:meta, Embers.Profile.Meta)
     has_one(:settings, Embers.Profile.Settings.Setting)
@@ -76,57 +31,40 @@ defmodule Embers.Accounts.User do
     timestamps()
   end
 
-  def changeset(%User{} = user, attrs) do
-    user
-    |> cast(attrs, [:email, :username])
-    |> validate_required([:email, :username])
-    |> validate_non_temporary_email()
-    |> validate_unique_email()
-    |> validate_username()
-    |> cast_assoc(:meta)
-  end
+  @doc """
+  A user changeset for registration.
 
-  def create_changeset(%User{} = user, attrs) do
+  It is important to validate the length of both email and password.
+  Otherwise databases may truncate the email without warnings, which
+  could lead to unpredictable or insecure behaviour. Long passwords may
+  also be very expensive to hash for certain algorithms.
+
+  ## Options
+
+    * `:hash_password` - Hashes the password so it can be stored securely
+      in the database and ensures the password field is cleared to prevent
+      leaks in the logs. If password hashing is not needed and clearing the
+      password field is not desired (like when using this changeset for
+      validations on a LiveView form), this option can be set to `false`.
+      Defaults to `true`.
+  """
+  def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:username, :email, :password])
-    |> validate_required([:username, :email, :password])
-    |> validate_confirmation(:password)
+    |> validate_email()
+    |> validate_password(opts)
     |> validate_username()
+    |> put_canonical_username()
+  end
+
+  defp validate_email(changeset) do
+    changeset
+    |> validate_required([:email])
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_length(:email, max: 160)
+    |> unsafe_validate_unique(:email, Embers.Repo)
+    |> unique_constraint(:email)
     |> validate_non_temporary_email()
-    |> validate_unique_email()
-    |> validate_password(:password)
-    |> put_pass_hash()
-    |> put_canonical_username()
-  end
-
-  @doc """
-  Used when batch importing users
-  """
-  @deprecated "Batch user import should not be needed anymore"
-  def create_changeset_raw(%User{} = user, attrs) do
-    user
-    |> cast(attrs, [:username, :email, :password_hash, :id])
-    |> validate_required([:username, :email, :password_hash, :id])
-    |> validate_unique_email()
-    |> put_canonical_username()
-  end
-
-  @doc """
-    Sets the `confirmed_at` field to the current date
-  """
-  def confirm_changeset(user) do
-    confirmation_date =
-      DateTime.utc_now()
-      |> DateTime.truncate(:second)
-
-    change(user, %{confirmed_at: confirmation_date})
-  end
-
-  @doc """
-    Sets the `reset_sent_at` field to the provided date
-  """
-  def password_reset_changeset(user, reset_sent_at) do
-    change(user, %{reset_sent_at: reset_sent_at})
   end
 
   defp validate_non_temporary_email(%{valid?: false} = changeset), do: changeset
@@ -144,37 +82,114 @@ defmodule Embers.Accounts.User do
     end
   end
 
-  defp validate_unique_email(changeset) do
-    changeset
-    |> validate_format(:email, ~r/@/)
-    |> validate_length(:email, max: 254)
-    |> unique_constraint(:email)
-  end
-
   defp validate_username(changeset) do
     changeset
+    |> validate_required([:username])
     |> validate_format(:username, ~r/^([A-Za-z0-9]+(?:[_-][A-Za-z0-9]+)*)$/)
     |> validate_length(:username, max: 30, min: 2)
     |> unique_constraint(:username)
   end
 
-  defp validate_password(changeset, field, options \\ []) do
-    validate_change(changeset, field, fn _, password ->
+  defp validate_password(changeset, opts) do
+    changeset
+    |> validate_required([:password])
+    |> validate_length(:password, min: 12, max: 80)
+    # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
+    # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
+    # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
+    |> maybe_hash_password(opts)
+    |> validate_change(:password, fn _, password ->
       case strong_password?(password) do
         {:ok, _} -> []
-        {:error, msg} -> [{field, options[:message] || msg}]
+        {:error, msg} -> [{:password, opts[:message] || msg}]
       end
     end)
   end
 
-  # If you are using Argon2 or Pbkdf2, change Bcrypt to Argon2 or Pbkdf2
-  defp put_pass_hash(%Ecto.Changeset{valid?: true, changes: %{password: password}} = changeset) do
-    change(changeset, Pbkdf2.add_hash(password))
+  defp maybe_hash_password(changeset, opts) do
+    hash_password? = Keyword.get(opts, :hash_password, true)
+    password = get_change(changeset, :password)
+
+    if hash_password? && password && changeset.valid? do
+      changeset
+      |> put_change(:hashed_password, Pbkdf2.hash_pwd_salt(password))
+      |> delete_change(:password)
+    else
+      changeset
+    end
   end
 
-  defp put_pass_hash(changeset), do: changeset
+  @doc """
+  A user changeset for changing the email.
 
-  # See the documentation for NotQwerty123.PasswordStrength.strong_password?
+  It requires the email to change otherwise an error is added.
+  """
+  def email_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email])
+    |> validate_email()
+    |> case do
+      %{changes: %{email: _}} = changeset -> changeset
+      %{} = changeset -> add_error(changeset, :email, "did not change")
+    end
+  end
+
+  @doc """
+  A user changeset for changing the password.
+
+  ## Options
+
+    * `:hash_password` - Hashes the password so it can be stored securely
+      in the database and ensures the password field is cleared to prevent
+      leaks in the logs. If password hashing is not needed and clearing the
+      password field is not desired (like when using this changeset for
+      validations on a LiveView form), this option can be set to `false`.
+      Defaults to `true`.
+  """
+  def password_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:password])
+    |> validate_confirmation(:password, message: "does not match password")
+    |> validate_password(opts)
+  end
+
+  @doc """
+  Confirms the account by setting `confirmed_at`.
+  """
+  def confirm_changeset(user) do
+    now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+    change(user, confirmed_at: now)
+  end
+
+  @doc """
+  Verifies the password.
+
+  If there is no user or the user doesn't have a password, we call
+  `Pbkdf2.no_user_verify/0` to avoid timing attacks.
+  """
+  @spec valid_password?(User.t(), String.t()) :: boolean
+  def valid_password?(%Embers.Accounts.User{hashed_password: hashed_password}, password)
+      when is_binary(hashed_password) and byte_size(password) > 0 do
+    Pbkdf2.verify_pass(password, hashed_password)
+  end
+
+  def valid_password?(_, _) do
+    Pbkdf2.no_user_verify()
+    false
+  end
+
+  @doc """
+  Validates the current password otherwise adds an error to the changeset.
+  """
+  @spec validate_current_password(Ecto.Changeset.t(), String.t()) :: Ecto.Changeset.t()
+  def validate_current_password(changeset, password) do
+    if valid_password?(changeset.data, password) do
+      changeset
+    else
+      add_error(changeset, :current_password, "is not valid")
+    end
+  end
+
   defp strong_password?(password) when byte_size(password) > 7 do
     NotQwerty123.PasswordStrength.strong_password?(password)
   end
@@ -196,12 +211,25 @@ defmodule Embers.Accounts.User do
     changeset
     |> prepare_changes(fn changeset ->
       canonical = get_change(changeset, :canonical)
-      query = from(u in User, where: u.canonical == ^canonical)
+      query = from(u in __MODULE__, where: u.canonical == ^canonical)
 
       case changeset.repo.exists?(query) do
         false -> changeset
         true -> add_error(changeset, :username, "has already been taken")
       end
     end)
+  end
+
+  @doc """
+  Returns a query to retrieve users and preload their `meta`
+  """
+  @spec user_with_profile_query() :: Ecto.Query.t()
+  def user_with_profile_query() do
+    from(user in __MODULE__,
+      join: meta in assoc(user, :meta),
+      preload: [
+        meta: meta
+      ]
+    )
   end
 end

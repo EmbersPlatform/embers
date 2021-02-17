@@ -1,4 +1,4 @@
-defmodule Embers.Accounts do
+defmodule Embers.Accounts.Old do
   @moduledoc """
   La interfaz para las cuentas.
   Las cuentas en este caso son lo mismo que los usuarios.
