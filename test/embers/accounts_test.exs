@@ -87,7 +87,7 @@ defmodule Embers.AccountsTest do
       email = unique_user_email()
       {:ok, user} = Accounts.register_user(%{email: email, password: valid_user_password()})
       assert user.email == email
-      assert is_binary(user.hashed_password)
+      assert is_binary(user.password_hash)
       assert is_nil(user.confirmed_at)
       assert is_nil(user.password)
     end
@@ -109,7 +109,7 @@ defmodule Embers.AccountsTest do
       assert changeset.valid?
       assert get_change(changeset, :email) == email
       assert get_change(changeset, :password) == password
-      assert is_nil(get_change(changeset, :hashed_password))
+      assert is_nil(get_change(changeset, :password_hash))
     end
   end
 
@@ -246,7 +246,7 @@ defmodule Embers.AccountsTest do
 
       assert changeset.valid?
       assert get_change(changeset, :password) == "new valid password"
-      assert is_nil(get_change(changeset, :hashed_password))
+      assert is_nil(get_change(changeset, :password_hash))
     end
   end
 

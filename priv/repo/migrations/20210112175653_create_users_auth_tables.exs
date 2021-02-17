@@ -4,7 +4,7 @@ defmodule Embers.Repo.Migrations.CreateUsersAuthTables do
   def change do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
-    rename table(:users), :password_hash, to: :hashed_password
+    rename table(:users), :password_hash, to: :password_hash
 
     create table(:users_tokens) do
       add :user_id, references(:users, on_delete: :delete_all), null: false

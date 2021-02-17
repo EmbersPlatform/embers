@@ -7,7 +7,7 @@ defmodule Embers.Accounts.User do
   schema "users" do
     field(:email, :string)
     field(:password, :string, virtual: true)
-    field(:hashed_password, :string)
+    field(:password_hash, :string)
     field(:confirmed_at, :naive_datetime)
 
     field(:username, :string)
@@ -112,7 +112,7 @@ defmodule Embers.Accounts.User do
 
     if hash_password? && password && changeset.valid? do
       changeset
-      |> put_change(:hashed_password, Pbkdf2.hash_pwd_salt(password))
+      |> put_change(:password_hash, Pbkdf2.hash_pwd_salt(password))
       |> delete_change(:password)
     else
       changeset
@@ -168,9 +168,9 @@ defmodule Embers.Accounts.User do
   `Pbkdf2.no_user_verify/0` to avoid timing attacks.
   """
   @spec valid_password?(User.t(), String.t()) :: boolean
-  def valid_password?(%Embers.Accounts.User{hashed_password: hashed_password}, password)
-      when is_binary(hashed_password) and byte_size(password) > 0 do
-    Pbkdf2.verify_pass(password, hashed_password)
+  def valid_password?(%Embers.Accounts.User{password_hash: password_hash}, password)
+      when is_binary(password_hash) and byte_size(password) > 0 do
+    Pbkdf2.verify_pass(password, password_hash)
   end
 
   def valid_password?(_, _) do
