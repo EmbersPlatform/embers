@@ -1,4 +1,6 @@
 defmodule EmbersWeb.UrlProvider do
+  alias EmbersWeb.Router.Helpers, as: Routes
+
   @behaviour Embers.UrlProvider
 
   def confirmation(token) do
