@@ -68,12 +68,12 @@ end
 
 case System.fetch_env!("MAIL_ADAPTER") do
   "sendgrid" ->
-    config :embers, EmbersWeb.Mailer,
+    config :embers, Embers.Mailer,
       adapter: Swoosh.Adapters.Sendgrid,
       api_key: System.fetch_env!("SENDGRID_API_KEY")
 
   "smtp" ->
-    config :embers, EmbersWeb.Mailer,
+    config :embers, Embers.Mailer,
       adapter: Swoosh.Adapters.SMTP,
       relay: System.fetch_env!("MAIL_RELAY"),
       username: System.fetch_env!("MAIL_USERNAME"),

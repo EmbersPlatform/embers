@@ -200,7 +200,7 @@ defmodule Embers.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def register_user(attrs) do
+  def register_user(attrs, url_provider) do
     user_changeset = User.registration_changeset(%User{}, attrs)
 
     multi =
@@ -209,6 +209,9 @@ defmodule Embers.Accounts do
       |> Multi.run(:meta, &attach_meta_multi/2)
       |> Multi.run(:role, &attach_role_multi/2)
       |> Multi.run(:settings, &attach_settings_multi/2)
+      |> Multi.run(:notify, fn _repo, %{user: user} ->
+        deliver_user_confirmation_instructions(user, url_provider.confirmation)
+      end)
 
     case Repo.transaction(multi) do
       {:ok, %{user: user}} ->

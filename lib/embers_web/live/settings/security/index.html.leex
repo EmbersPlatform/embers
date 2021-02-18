@@ -25,7 +25,8 @@
             <span><%= session.ua_name %></span>
             <%= if session.token == @session_token do %>
             <span class="g-text-success"><%= gettext "Current session" %></span>
-            <%= end %></div>
+            <% end %>
+          </div>
           <div class="ua-details">
             <div class="ua-device">
               <%= device_icon(session.ua_device) %>
