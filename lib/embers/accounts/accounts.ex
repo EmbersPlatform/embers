@@ -11,11 +11,12 @@ defmodule Embers.Accounts.Old do
   `:confirmed_at`, mediante la función `confirm_user/1`.
   """
 
+  @moduledoc deprecated: "Use `Embers.Accounts` instead"
+
   import Ecto.{Query, Changeset}, warn: false
   alias Ecto.Multi
 
   alias Embers.{
-    Accounts.User,
     Authorization.Roles,
     Paginator,
     Profile.Meta,
@@ -23,6 +24,8 @@ defmodule Embers.Accounts.Old do
     Repo,
     Sessions
   }
+
+  alias Embers.Accounts.User.Old, as: User
 
   @doc """
   Devuelve todos los usuarios existentes.

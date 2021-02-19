@@ -37,6 +37,9 @@ defmodule Embers.Accounts.User.Old do
   - `:stats`: Usado para mostrar estadisticas del usuario, como la cantidad de
   seguidores o de posts creados.
   """
+
+  @moduledoc deprecated: "Use `Embers.Accounts.User` instead"
+
   use Ecto.Schema
 
   import Ecto.Changeset
