@@ -28,6 +28,8 @@ defmodule EmbersWeb.Router do
       cldr: EmbersWeb.Cldr
     )
 
+    plug(:put_locale_to_session)
+
     plug(GetPermissions)
     plug(EmbersWeb.Plugs.LoadSettings)
     plug(EmbersWeb.Plugs.SelectLayout)
@@ -42,6 +44,13 @@ defmodule EmbersWeb.Router do
   pipeline :admin do
     plug(:accepts, ["html"])
     plug(CheckPermissions, permission: "access_backoffice")
+  end
+
+  defp put_locale_to_session(conn, _opts) do
+    locale = Cldr.get_locale().language
+
+    conn
+    |> put_session(:locale, locale)
   end
 
   scope "/" do
