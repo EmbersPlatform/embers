@@ -10,8 +10,6 @@ defmodule EmbersWeb.MountHelpers do
   Assign default values on the socket.
   """
   def assign_defaults(socket, _params, session) do
-    IO.inspect(session, label: "========== SESSION")
-
     socket
     |> assign_locale(session)
     |> assign_current_user(session)
@@ -32,7 +30,6 @@ defmodule EmbersWeb.MountHelpers do
   # region [helpers]
 
   defp assign_locale(socket, %{"locale" => locale}) do
-    IO.inspect(locale, label: "============ LOCALE")
     Gettext.put_locale(EmbersWeb.Gettext, locale)
 
     socket
@@ -69,7 +66,7 @@ defmodule EmbersWeb.MountHelpers do
         %{}
         |> Map.put(:pending_reports_count, pending_reports)
 
-      assign_new(socket, :mod, fn -> mod_data end)
+      assign(socket, :mod, mod_data)
     else
       socket
     end
