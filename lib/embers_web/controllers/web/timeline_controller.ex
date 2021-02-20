@@ -8,7 +8,7 @@ defmodule EmbersWeb.Web.TimelineController do
 
   plug(:user_check when action in [:show, :hide_activity])
 
-  action_fallback(EmbersWeb.FallbackController)
+  action_fallback(EmbersWeb.Web.FallbackController)
 
   def index(conn, params) do
     user = conn.assigns.current_user

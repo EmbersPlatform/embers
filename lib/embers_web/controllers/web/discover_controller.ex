@@ -8,7 +8,7 @@ defmodule EmbersWeb.Web.DiscoverController do
 
   plug(:user_check)
 
-  action_fallback(EmbersWeb.FallbackController)
+  action_fallback(EmbersWeb.Web.FallbackController)
 
   def index(conn, params) do
     # TODO This should be changed to get a list of blocked tags instead of a page

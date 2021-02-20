@@ -11,38 +11,42 @@ defmodule EmbersWeb.Web.UserController do
   alias Embers.Profile.Meta
   alias Embers.Subscriptions
 
-  action_fallback(EmbersWeb.FallbackController)
+  action_fallback(EmbersWeb.Web.FallbackController)
 
   def show(conn, %{"username" => username}) do
-    with user <- Accounts.get_user_by_username(username) do
-      current_user = conn.assigns.current_user
-      %{entries: followers} = Subscriptions.list_followers_paginated(user.id, limit: 10)
-      %{entries: following} = Subscriptions.list_following_paginated(user.id, limit: 10)
-      activities = Feed.User.get(user_id: user.id)
-      followers = subs_to_user(followers)
-      following = subs_to_user(following)
+    case Accounts.get_user_by_username(username) do
+      nil ->
+        {:error, :not_found}
 
-      user =
-        unless is_nil(current_user) do
-          user
-          |> Accounts.load_following_status(current_user.id)
-          |> Accounts.load_follows_me_status(current_user.id)
-          |> Accounts.load_blocked_status(current_user.id)
-          |> Accounts.load_stats_map()
-        else
-          user
-        end
+      user ->
+        current_user = conn.assigns.current_user
+        %{entries: followers} = Subscriptions.list_followers_paginated(user.id, limit: 10)
+        %{entries: following} = Subscriptions.list_following_paginated(user.id, limit: 10)
+        activities = Feed.User.get(user_id: user.id)
+        followers = subs_to_user(followers)
+        following = subs_to_user(following)
 
-      title = gettext("@%{username}'s profile", username: user.username)
+        user =
+          unless is_nil(current_user) do
+            user
+            |> Accounts.load_following_status(current_user.id)
+            |> Accounts.load_follows_me_status(current_user.id)
+            |> Accounts.load_blocked_status(current_user.id)
+            |> Accounts.load_stats_map()
+          else
+            user
+          end
 
-      conn
-      |> assign(:page_title, title)
-      |> assign(:user, user)
-      |> assign(:followers, followers)
-      |> assign(:following, following)
-      |> assign(:activities, activities)
-      |> assign(:og_metatags, title: title, image: user.meta.avatar.medium)
-      |> render(:show)
+        title = gettext("@%{username}'s profile", username: user.username)
+
+        conn
+        |> assign(:page_title, title)
+        |> assign(:user, user)
+        |> assign(:followers, followers)
+        |> assign(:following, following)
+        |> assign(:activities, activities)
+        |> assign(:og_metatags, title: title, image: user.meta.avatar.medium)
+        |> render(:show)
     end
   end
 
