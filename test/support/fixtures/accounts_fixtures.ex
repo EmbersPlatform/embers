@@ -14,7 +14,7 @@ defmodule Embers.AccountsFixtures do
         email: unique_user_email(),
         password: valid_user_password()
       })
-      |> Embers.Accounts.register_user()
+      |> Embers.Accounts.register_user(EmbersWeb.UrlProvider)
 
     user
   end

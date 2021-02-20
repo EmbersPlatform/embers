@@ -14,7 +14,7 @@ defmodule EmbersWeb.Auth.Login do
 
   @impl true
   def authenticate(%{"password" => password} = params, _user_context, opts) do
-    case Accounts.get_by(params) do
+    case Accounts.Old.get_by(params) do
       nil ->
         {:error, gettext("invalid credentials")}
 

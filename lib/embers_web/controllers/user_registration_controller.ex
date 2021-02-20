@@ -14,7 +14,12 @@ defmodule EmbersWeb.UserRegistrationController do
     case Accounts.register_user(user_params, EmbersWeb.UrlProvider) do
       {:ok, user} ->
         conn
-        |> put_flash(:info, "User created successfully.")
+        |> put_flash(
+          :info,
+          gettext(
+            "Your account has been created. We've sent you an email with a confirmation link to activate it."
+          )
+        )
         |> UserAuth.log_in_user(user)
 
       {:error, %Ecto.Changeset{} = changeset} ->

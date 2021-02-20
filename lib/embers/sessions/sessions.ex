@@ -3,6 +3,8 @@ defmodule Embers.Sessions do
   The Sessions context
   """
 
+  @moduledoc deprecated: "Use `Embers.Accounts.Sessions` instead"
+
   import Ecto.Query, warn: false
 
   alias Embers.Accounts.User
