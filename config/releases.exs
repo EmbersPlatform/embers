@@ -62,7 +62,7 @@ case System.get_env("EMBERS_STORAGE_DRIVER", "local") do
     config :embers, Embers.FileStorage,
       store: Embers.FileStorage.Store.S3,
       bucket: System.get_env("S3_BUCKET", "uploads"),
-      bucket_root: System.get_env("S3_BUCKET", ""),
+      bucket_root: System.get_env("S3_BUCKET_ROOT", ""),
       schema: "https://",
       host: System.fetch_env!("S3_HOST_URL")
 end
