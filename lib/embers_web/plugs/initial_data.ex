@@ -19,7 +19,7 @@ defmodule EmbersWeb.Plugs.InitialData do
     tags = Subscriptions.Tags.list_subscribed_tags(user.id)
 
     tags =
-      EmbersWeb.Web.TagView.render(
+      EmbersWeb.TagView.render(
         "tags.json",
         %{tags: tags}
       )
@@ -27,7 +27,7 @@ defmodule EmbersWeb.Plugs.InitialData do
     notifications = Notifications.list_notifications_paginated(user.id)
 
     notifications =
-      EmbersWeb.Web.NotificationView.render(
+      EmbersWeb.NotificationView.render(
         "notifications.json",
         notifications
       )

@@ -1,4 +1,4 @@
-defmodule EmbersWeb.Web.Settings.PrivacyLive.Index do
+defmodule EmbersWeb.Settings.PrivacyLive.Index do
   use EmbersWeb, :live_view
 
   alias EmbersWeb.MountHelpers

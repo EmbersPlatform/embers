@@ -91,7 +91,7 @@ defmodule EmbersWeb.Router do
     get("/users/confirm/:token", UserConfirmationController, :confirm)
   end
 
-  scope "/", EmbersWeb.Web do
+  scope "/", EmbersWeb do
     pipe_through(:browser)
 
     get("/", PageController, :index)

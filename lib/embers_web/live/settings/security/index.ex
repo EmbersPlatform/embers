@@ -1,4 +1,4 @@
-defmodule EmbersWeb.Web.Settings.SecurityLive.Index do
+defmodule EmbersWeb.Settings.SecurityLive.Index do
   @moduledoc false
   use EmbersWeb, :live_view
 

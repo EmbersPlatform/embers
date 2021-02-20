@@ -5,7 +5,7 @@ defmodule EmbersWeb.NotificationSubscriber do
     topics:
       ~w(notification_created post_reacted comment_reacted notification_read all_notifications_read)
 
-  alias EmbersWeb.Web.NotificationView
+  alias EmbersWeb.NotificationView
   alias Embers.Profile.Meta
 
   require Logger

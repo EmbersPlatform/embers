@@ -1,5 +1,5 @@
 <%= EmbersWeb.LayoutView.sidebar assigns do %>
-<%= render(EmbersWeb.Web.SettingsView, "_sidebar.html", assigns) %>
+<%= render(EmbersWeb.SettingsView, "_sidebar.html", assigns) %>
 <% end %>
 <div id="view" view="settings" subview="security" class="has-sidebar" phx-hook="PhxCustomEvent"
   phx-custom-event-close_all="close_all" phx-custom-event-confirm_delete="confirm_delete">

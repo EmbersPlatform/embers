@@ -14,7 +14,7 @@ defmodule EmbersWeb.ActivitySubscriber do
     EmbersWeb.Cldr.put_locale(locale)
 
     encoded_post =
-      EmbersWeb.Web.PostView.render("post.html",
+      EmbersWeb.PostView.render("post.html",
         post: post,
         with_replies: true,
         conn: EmbersWeb.Endpoint

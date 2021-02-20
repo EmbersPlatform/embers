@@ -1,3 +1,0 @@
-<%= for post <- @posts.entries do %>
-  <%= render(EmbersWeb.Web.PostView, "post.html", conn: @conn, post: post) %>
-<% end %>

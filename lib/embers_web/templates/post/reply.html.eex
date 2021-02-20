@@ -1,0 +1,89 @@
+<article id="reply-<%= @reply.id %>" data-id="<%= @reply.id %>" data-author-id="<%= @reply.user.id %>"
+  data-author="<%= @reply.user.canonical %>" data-depth="<%= @reply.nesting_level %>" class="reply" data-controller="<%= attr_list([
+    "reply",
+    "reactable",
+    "medias",
+    {"content-warning", @reply.nsfw}
+  ]) %>" <%= if @reply.nsfw, do: "nsfw" %>>
+  <%= render(EmbersWeb.UserView, "avatar.html", avatar: @reply.user.meta.avatar.small, size: "small") %>
+  <section class="reply-content">
+    <header>
+      <div class="reply-details">
+        <%= labeled_link(@reply.user.username,
+          to: decoded_path(:user_path, @conn, :show, @reply.user.canonical),
+          label: @reply.user.username,
+          class: "username")
+        %>
+        <%= link(to: Routes.post_path(@conn, :show, @reply.id), itemprop: "url",
+
+            "up-instant": true,
+            "up-preload": true,
+            "up-target": "#embers") do %>
+        <time datetime="<%= @reply.inserted_at %>" pubdate="<%= @reply.inserted_at %>" itemprop="datePublished">
+          <%= time_ago(@reply.inserted_at) %>
+        </time>
+        <% end %>
+      </div>
+      <e-spacer></e-spacer>
+      <post-actions></post-actions>
+    </header>
+    <section class="reply-contents">
+      <section class="reply-body" itemprop="articleBody">
+        <leg-markdown><%= @reply.body %></leg-markdown>
+      </section>
+      <%= if length(@reply.media) > 0 do %>
+      <section class="reply-medias">
+        <%= render("_media_group.html", medias: @reply.media) %>
+      </section>
+      <% end %>
+      <%= if length(@reply.links) > 0 do %>
+      <%= for link <- @reply.links do %>
+      <%= EmbersWeb.LinkView.render("link.html", link: link) %>
+      <% end %>
+      <% end %>
+    </section>
+    <footer>
+      <div class="stats">
+        <div class="reactions" data-target="reactable.reactions">
+          <%= build_reactions(@reply, @conn) %>
+        </div>
+        <e-spacer></e-spacer>
+        <div>
+          <%= if @reply.replies_count > 0 do %>
+          <a href="<%= Routes.post_path(@conn, :show, @reply.id) %>" class="stat replies-stat">
+            <%= ngettext("1 reply", "%{count} replies", @reply.replies_count) %>
+          </a>
+          <% end %>
+        </div>
+      </div>
+      <%= if authenticated?(@conn) do %>
+      <div class="actions">
+        <%= unless is_owner?(@conn, @reply) do %>
+        <%= render("reaction_picker.html") %>
+        <% end %>
+        <e-spacer></e-spacer>
+        <button class="plain-button content-warning-button" data-target="content-warning.button"
+          data-action="content-warning#toggle">
+          <%= gettext("Show") %>
+        </button>
+        <button class="plain-button" data-action="click->replyable#reply" <%= if @reply.nesting_level >= 2 do %>
+          data-author="<%= @reply.user.canonical %>" <% end %>>
+          <%= svg_image("reply") %>
+          <span><%= gettext("Reply") %></span>
+        </button>
+      </div>
+      <% end %>
+    </footer>
+  </section>
+  <media-gallery data-target="medias.gallery">
+    <%= if (length @reply.links) > 0 do %>
+    <%= for link <- @reply.links do %>
+    <gallery-item data-id="<%= link.id %>" data-type="image" data-src="<%= link.embed.thumbnail_url %>"></gallery-item>
+    <% end %>
+    <% end %>
+    <%= for media <- @reply.media do %>
+    <gallery-item data-id="<%= media.id %>" data-type="<%= media.type %>"
+      data-src="<%= Embers.Media.format_url media.url %>"></gallery-item>
+    <% end %>
+    </media-galley>
+</article>

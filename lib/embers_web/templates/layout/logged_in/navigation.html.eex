@@ -41,7 +41,7 @@
     data-last_page="<%= notifications.last_page %>" data-unread-count="<%= unread_notifications_count %>" up-keep>
     <header><%= gettext "Notifications" %></header>
     <section>
-      <%= render(EmbersWeb.Web.NotificationView, "notifications.html",
+      <%= render(EmbersWeb.NotificationView, "notifications.html",
         notifications: notifications.entries
       ) %>
     </section>
