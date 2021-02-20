@@ -28,7 +28,7 @@ const infer_result = (response: Response): NetResult<Response, Response> => {
 };
 
 const build_headers = (options) => {
-  let headers = default_headers;
+  let headers = { ...default_headers }; // I hate this language
 
   if (options.type) {
     let content_type = {
