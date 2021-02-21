@@ -1,17 +1,27 @@
 defmodule EmbersWeb.NotificationSubscriber do
   @moduledoc false
 
-  use Embers.EventSubscriber,
-    topics:
-      ~w(notification_created post_reacted comment_reacted notification_read all_notifications_read)
+  use GenServer
 
   alias EmbersWeb.NotificationView
   alias Embers.Profile.Meta
 
   require Logger
 
-  def handle_event(:notification_created, event) do
-    notification = event.data
+  def start_link(defaults) when is_list(defaults) do
+    GenServer.start_link(__MODULE__, defaults)
+  end
+
+  def init(init_args) do
+    Embers.Notifications.Manager.subscribe()
+    Embers.Reactions.subscribe()
+    Embers.Notifications.subscribe()
+    EmbersWeb.NotificationController.subscribe()
+
+    {:ok, init_args}
+  end
+
+  def handle_info({Embers.Notifications.Manager, [:notification, :created], notification}, state) do
     recipient = notification.recipient_id
 
     Logger.info("Sending ws notification to #{recipient}")
@@ -23,9 +33,11 @@ defmodule EmbersWeb.NotificationSubscriber do
         notification: %{notification | status: 0}
       })
     )
+
+    {:noreply, state}
   end
 
-  def handle_event(:post_reacted, %{data: %{reaction: reaction}} = _event) do
+  def handle_info({Embers.Reactions, [:post_reacted], reaction}, state) do
     reaction = Embers.Repo.preload(reaction, user: :meta)
 
     reaction = %{
@@ -47,9 +59,11 @@ defmodule EmbersWeb.NotificationSubscriber do
         avatar: reaction.user.meta.avatar.small
       }
     )
+
+    {:noreply, state}
   end
 
-  def handle_event(:comment_reacted, %{data: %{reaction: reaction}} = _event) do
+  def handle_info({Embers.Reactions, [:comment_reacted], reaction}, state) do
     reaction = Embers.Repo.preload(reaction, user: :meta)
 
     reaction = %{
@@ -74,9 +88,11 @@ defmodule EmbersWeb.NotificationSubscriber do
         avatar: reaction.user.meta.avatar.small
       }
     )
+
+    {:noreply, state}
   end
 
-  def handle_event(:notification_read, %{data: notification}) do
+  def handle_info({EmbersWeb.NotificationController, [:notification, :read], notification}, state) do
     recipient = notification.user_id
 
     EmbersWeb.Endpoint.broadcast!(
@@ -84,9 +100,11 @@ defmodule EmbersWeb.NotificationSubscriber do
       "notification_read",
       %{id: notification.id}
     )
+
+    {:noreply, state}
   end
 
-  def handle_event(:all_notifications_read, %{data: user_id}) do
+  def handle_info({Embers.Notifications, [:notifications, :all_read], user_id}, state) do
     recipient = user_id
 
     EmbersWeb.Endpoint.broadcast!(
@@ -94,5 +112,9 @@ defmodule EmbersWeb.NotificationSubscriber do
       "all_notifications_read",
       %{}
     )
+
+    {:noreply, state}
   end
+
+  def handle_info(_, state), do: {:noreply, state}
 end

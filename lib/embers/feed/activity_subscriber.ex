@@ -1,5 +1,6 @@
 defmodule Embers.Feed.ActivitySubscriber do
-  use Embers.EventSubscriber, topics: ~w(post_created)
+  use GenServer
+  use Embers.PubSubBroadcaster
 
   alias Embers.Blocks
   alias Embers.Feed.Timeline
@@ -9,12 +10,29 @@ defmodule Embers.Feed.ActivitySubscriber do
 
   require Logger
 
-  def handle_event(:post_created, event) do
-    post = event.data
+  def start_link(default) when is_list(default) do
+    GenServer.start_link(__MODULE__, default)
+  end
 
+  @impl GenServer
+  def init(init_arg) do
+    :ok = Embers.Posts.subscribe()
+    Logger.debug("#{inspect(__MODULE__)} initialized")
+    {:ok, init_arg}
+  end
+
+  @impl GenServer
+  def handle_info({Embers.Posts, [:post, :created], post}, state) do
     if post.nesting_level == 0 do
       create_activity_and_push(post)
     end
+
+    {:noreply, state}
+  end
+
+  def handle_info(event, state) do
+    Logger.debug(message: "unhandled message in #{inspect(__MODULE__)}", data: event)
+    {:noreply, state}
   end
 
   defp create_activity_and_push(post) do
@@ -73,6 +91,6 @@ defmodule Embers.Feed.ActivitySubscriber do
     # Create activity entries for the post
     Timeline.push_activity(post, recipients)
 
-    Embers.Event.emit(:new_activity, %{post: post, recipients: recipients})
+    broadcast(:new_activity, %{post: post, recipients: recipients})
   end
 end

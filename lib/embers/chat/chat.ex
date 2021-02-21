@@ -2,23 +2,34 @@ defmodule Embers.Chat do
   @moduledoc """
   TODO document this
   """
+  use Embers.PubSubBroadcaster
+
   import Ecto.Query
 
   alias Embers.Chat.Message
   alias Embers.Paginator
   alias Embers.Repo
 
+  @doc """
+  Creates a chat message
+
+  ## Options
+
+  - `nonce` - A string is used to uniquely identify the message in the frontend,
+    useful for optimistic UI.
+  """
   def create(attrs, opts \\ []) when is_map(attrs) do
     message =
       %Message{}
       |> Message.changeset(attrs)
 
-    nonce = Keyword.get(opts, :nonce, nil)
-
     case Repo.insert(message) do
       {:ok, message} ->
         message = message |> Repo.preload(sender: :meta, receiver: :meta)
-        Embers.Event.emit(:chat_message_created, %{message: %{message | nonce: nonce}})
+
+        nonce = Keyword.get(opts, :nonce, nil)
+        broadcast([:message, :created], %{message | nonce: nonce})
+
         {:ok, message}
 
       error ->

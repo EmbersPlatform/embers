@@ -1,6 +1,8 @@
 defmodule Embers.Feed.Timeline do
   @behaviour Embers.Feed
 
+  use Embers.PubSubBroadcaster
+
   import Ecto.Query
   import Embers.Feed.Utils
 
@@ -85,12 +87,8 @@ defmodule Embers.Feed.Timeline do
   Deletes an activity
   """
   def delete_activity(%Activity{} = activity) do
-    with {:ok, activity} <- Repo.delete(activity) do
-      Embers.Event.emit(:activity_deleted, activity)
-      {:ok, activity}
-    else
-      error -> {:error, error}
-    end
+    Repo.delete(activity)
+    |> broadcast_result([:activity, :deleted])
   end
 
   @doc """

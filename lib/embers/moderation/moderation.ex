@@ -1,12 +1,16 @@
 defmodule Embers.Moderation do
   # TODO document
+
+  use Embers.PubSubBroadcaster
+
+  import Ecto.Query, only: [from: 2]
+
   alias Embers.Accounts.User
   alias Embers.Moderation.Ban
   alias Embers.Sessions
 
   alias Embers.Paginator
   alias Embers.Repo
-  import Ecto.Query, only: [from: 2]
 
   def banned?(nil), do: false
 
@@ -103,7 +107,7 @@ defmodule Embers.Moderation do
         {:ok, ban} ->
           Sessions.delete_user_sessions(user_id)
           actor = Keyword.get(opts, :actor, nil)
-          Embers.Event.emit(:user_banned, %{ban: ban, actor: actor})
+          broadcast([:user, :banned], %{ban: ban, actor: actor})
           {:ok, ban}
 
         error ->

@@ -2,7 +2,6 @@ defmodule EmbersWeb.Endpoint do
   use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :embers
 
-  plug(Unpoly)
   plug(RemoteIp)
 
   @session_options [

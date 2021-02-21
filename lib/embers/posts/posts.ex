@@ -1,6 +1,8 @@
 defmodule Embers.Posts do
   import Ecto.Query
 
+  use Embers.PubSubBroadcaster
+
   alias Embers.Paginator
   alias Embers.Posts.Post
   alias Embers.Repo
@@ -100,7 +102,7 @@ defmodule Embers.Posts do
       emit_event? = Keyword.get(opts, :emit_event?, true)
 
       if emit_event? do
-        Embers.Event.emit(:post_created, post)
+        broadcast([:post, :created], post)
       end
 
       {:ok, post}
@@ -151,7 +153,7 @@ defmodule Embers.Posts do
 
     with {:ok, post} <- Repo.soft_delete(post) do
       actor = Keyword.get(opts, :actor)
-      Embers.Event.emit(:post_disabled, %{post: post, actor: actor})
+      broadcast([:post, :disabled], %{post: post, actor: actor})
       {:ok, post}
     else
       error -> error
@@ -184,7 +186,7 @@ defmodule Embers.Posts do
 
     with {:ok, post} <- Repo.restore_entry(post) do
       actor = Keyword.get(opts, :actor)
-      Embers.Event.emit(:post_restored, %{post: post, actor: actor})
+      broadcast([:post, :restored], %{post: post, actor: actor})
       {:ok, post}
     else
       error -> error
@@ -228,7 +230,7 @@ defmodule Embers.Posts do
     end
 
     with {:ok, deleted_post} <- Repo.delete(post) do
-      Embers.Event.emit(:post_deleted, %{post: deleted_post, actor: actor})
+      broadcast([:post, :deleted], %{post: deleted_post, actor: actor})
       {:ok, deleted_post}
     else
       error -> error

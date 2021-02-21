@@ -1,10 +1,20 @@
 defmodule EmbersWeb.ChatSubscriber do
   @moduledoc false
-  use Embers.EventSubscriber, topics: ~w(chat_message_created)
+  use GenServer
 
   alias EmbersWeb.Api.ChatView
 
-  def handle_event(:chat_message_created, %{data: %{message: message} = _data}) do
+  def start_link(defaults) when is_list(defaults) do
+    GenServer.start_link(__MODULE__, defaults)
+  end
+
+  def init(init_args) do
+    Embers.Chat.subscribe()
+
+    {:ok, init_args}
+  end
+
+  def handle_info({Embers.Chat, [:message, :created], message}, state) do
     %{sender_id: sender, receiver_id: receiver} = message
 
     EmbersWeb.Endpoint.broadcast!(
@@ -20,5 +30,9 @@ defmodule EmbersWeb.ChatSubscriber do
         ChatView.render("message.json", message: message)
       )
     end
+
+    {:noreply, state}
   end
+
+  def handle_info(_, state), do: {:noreply, state}
 end

@@ -3,6 +3,8 @@ defmodule EmbersWeb.NotificationController do
 
   use EmbersWeb, :controller
 
+  use Embers.PubSubBroadcaster
+
   import EmbersWeb.Authorize
 
   alias Embers.Notifications
@@ -33,7 +35,7 @@ defmodule EmbersWeb.NotificationController do
     id = id
 
     Notifications.set_status(id, 2)
-    Embers.Event.emit(:notification_read, %{id: id, user_id: user.id})
+    broadcast([:notification, :read], %{id: id, user_id: user.id})
 
     conn
     |> json(nil)

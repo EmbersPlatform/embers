@@ -1,7 +1,8 @@
 defmodule Embers.Notifications.Manager do
   @moduledoc false
 
-  use Embers.EventSubscriber, topics: ~w(post_created post_comment user_mentioned user_followed)
+  use GenServer
+  use Embers.PubSubBroadcaster
 
   require Logger
 
@@ -13,48 +14,67 @@ defmodule Embers.Notifications.Manager do
   alias Embers.Notifications
   alias Embers.Repo
 
+  def start_link(default) when is_list(default) do
+    GenServer.start_link(__MODULE__, default)
+  end
+
+  def init(init_arg) do
+    __MODULE__.subscribe()
+    Posts.subscribe()
+    Embers.Subscriptions.subscribe()
+
+    {:ok, init_arg}
+  end
+
   @doc false
-  def handle_event(:post_created, event) do
-    post = event.data
+  def handle_info({Posts, [:post, :created], post}, state) do
     handle_mentions(post)
     handle_comment(post)
+
+    {:noreply, state}
   end
 
-  def handle_event(:user_mentioned, event) do
-    unless Blocks.blocked?(event.data.from, event.data.recipient) do
+  def handle_info({__MODULE__, [:user_mentioned], event}, state) do
+    unless Blocks.blocked?(event.from, event.recipient) do
       case Notifications.create_notification(%{
              type: "mention",
-             from_id: event.data.from,
-             recipient_id: event.data.recipient,
-             source_id: event.data.source
+             from_id: event.from,
+             recipient_id: event.recipient,
+             source_id: event.source
            }) do
         {:ok, notification} ->
           notification = notification |> Embers.Repo.preload(from: :meta)
-          Embers.Event.emit(:notification_created, notification)
+          broadcast([:notification, :created], notification)
 
         {:error, reason} ->
-          Embers.Event.emit(:create_notification_failed, reason)
+          broadcast([:notification, :create_failed], reason)
       end
     end
+
+    {:noreply, state}
   end
 
-  def handle_event(:user_followed, event) do
-    if not Blocks.blocked?(event.data.from, event.data.recipient) do
+  def handle_info({Embers.Subscriptions, [:user, :followed], event}, state) do
+    if not Blocks.blocked?(event.from, event.recipient) do
       case Notifications.create_notification(%{
              type: "follow",
-             from_id: event.data.from,
-             recipient_id: event.data.recipient,
-             source_id: event.data.from
+             from_id: event.from,
+             recipient_id: event.recipient,
+             source_id: event.from
            }) do
         {:ok, notification} ->
           notification = notification |> Embers.Repo.preload(from: :meta)
-          Embers.Event.emit(:notification_created, notification)
+          broadcast([:notification, :created], notification)
 
         {:error, reason} ->
-          Embers.Event.emit(:create_notification_failed, reason)
+          broadcast([:notification, :create_failed], reason)
       end
     end
+
+    {:noreply, state}
   end
+
+  def handle_info(_, state), do: {:noreply, state}
 
   defp handle_mentions(%Post{body: body} = post) when not is_nil(body) do
     mentions = extract_mentions(body) |> Enum.map(&String.downcase/1)
@@ -108,7 +128,7 @@ defmodule Embers.Notifications.Manager do
   defp create_mention_notifications(recipients, post) do
     recipients
     |> Enum.each(fn recipient ->
-      Embers.Event.emit(:user_mentioned, %{
+      broadcast([:user_mentioned], %{
         from: post.user_id,
         recipient: recipient,
         source: post.id
@@ -130,7 +150,7 @@ defmodule Embers.Notifications.Manager do
           })
 
         notification = notification |> Embers.Repo.preload(from: :meta)
-        Embers.Event.emit(:notification_created, notification)
+        broadcast([:notification, :created], notification)
       end
     end
   end

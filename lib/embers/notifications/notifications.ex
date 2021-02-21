@@ -16,6 +16,8 @@ defmodule Embers.Notifications do
   Notification types are validated against a `@valid_types` list in `Embers.Notifications.Notification` module(wich is where the `Notification` schema is defined)
   """
 
+  use Embers.PubSubBroadcaster
+
   alias Embers.Notifications.Notification
   alias Embers.Paginator
   alias Embers.Repo
@@ -157,7 +159,7 @@ defmodule Embers.Notifications do
       if mark_as_read do
         ids = Enum.map(results.entries, fn o -> o.id end)
         set_status(ids, 1)
-        Embers.Event.emit(:all_notifications_read, user_id)
+        broadcast([:notifications, :all_read], user_id)
 
         %{
           results

@@ -19,6 +19,8 @@ defmodule Embers.Subscriptions do
 
   import Ecto.Query
 
+  use Embers.PubSubBroadcaster
+
   alias Embers.Subscriptions.UserSubscription
   alias Embers.Paginator
   alias Embers.Repo
@@ -59,7 +61,7 @@ defmodule Embers.Subscriptions do
     subscription = UserSubscription.changeset(%UserSubscription{}, attrs)
     result = Repo.insert(subscription)
 
-    Embers.Event.emit(:user_followed, %{
+    broadcast([:user, :followed], %{
       from: attrs.user_id,
       recipient: attrs.source_id
     })

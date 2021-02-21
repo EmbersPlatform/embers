@@ -5,6 +5,9 @@ defmodule Embers.Reactions do
   laught. A user can react with may reactions to the same resource, as long as
   they're different reactions.
   """
+
+  use Embers.PubSubBroadcaster
+
   alias Embers.Reactions.Reaction
   alias Embers.Paginator
   alias Embers.Profile.Settings
@@ -22,11 +25,14 @@ defmodule Embers.Reactions do
       setting = Settings.get_setting!(reaction.user_id)
 
       if setting.privacy_show_reactions do
-        case reaction.post.nesting_level do
-          0 -> Embers.Event.emit(:post_reacted, %{reaction: reaction})
-          1 -> Embers.Event.emit(:comment_reacted, %{reaction: reaction})
-          2 -> Embers.Event.emit(:comment_reacted, %{reaction: reaction})
-        end
+        event =
+          case reaction.post.nesting_level do
+            0 -> :post_reacted
+            1 -> :comment_reacted
+            2 -> :comment_reacted
+          end
+
+        broadcast([event], reaction)
       end
 
       {:ok, reaction}

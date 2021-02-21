@@ -21,6 +21,8 @@ defmodule Embers.Reports do
   Ejemplos de reportables son los Posts.
   """
 
+  use Embers.PubSubBroadcaster
+
   import Ecto.Query
 
   alias Embers.Repo
@@ -31,7 +33,7 @@ defmodule Embers.Reports do
   def report(reportable, reporter, params) do
     case Reportable.report(reportable, reporter, params) do
       {:ok, report} = res ->
-        Embers.Event.emit(:report_created, %{report: report})
+        broadcast([:report, :created], report)
         res
 
       res ->
@@ -45,7 +47,7 @@ defmodule Embers.Reports do
 
   def resolve(report) do
     Report.resolve(report)
-    Embers.Event.emit(:report_resolved, %{reportable_id: report.post_id})
+    broadcast([:report, :resolved], report.post_id)
     :ok
   end
 
@@ -99,7 +101,7 @@ defmodule Embers.Reports do
     )
     |> Repo.update_all([])
 
-    Embers.Event.emit(:report_resolved, %{reportable_id: reportable.id})
+    broadcast([:report, :resolved], reportable.id)
 
     :ok
   end
@@ -122,7 +124,7 @@ defmodule Embers.Reports do
       )
       |> Repo.delete_all()
 
-    Embers.Event.emit(:reports_pruned, %{})
+    broadcast([:reports, :pruned], nil)
 
     count
   end

@@ -3,6 +3,8 @@ defmodule Embers.Audit do
 
   import Ecto.Query
 
+  use Embers.PubSubBroadcaster
+
   alias Embers.AuditDetail, as: Detail
   alias Embers.AuditEntry, as: Entry
   alias Embers.Repo
@@ -35,14 +37,7 @@ defmodule Embers.Audit do
     %Entry{}
     |> Entry.changeset(attrs)
     |> Repo.insert()
-    |> case do
-      {:ok, entry} ->
-        Embers.Event.emit(:audit_created, %{entry: entry})
-        {:ok, entry}
-
-      res ->
-        res
-    end
+    |> broadcast_result([:audit, :created])
   end
 
   def add_detail(%Entry{} = entry, detail_attrs) do
