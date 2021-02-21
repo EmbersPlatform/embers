@@ -18,6 +18,7 @@ defmodule Embers.Notifications.Manager do
     GenServer.start_link(__MODULE__, default)
   end
 
+  @impl GenServer
   def init(init_arg) do
     __MODULE__.subscribe()
     Posts.subscribe()
@@ -27,6 +28,7 @@ defmodule Embers.Notifications.Manager do
   end
 
   @doc false
+  @impl GenServer
   def handle_info({Posts, [:post, :created], post}, state) do
     handle_mentions(post)
     handle_comment(post)

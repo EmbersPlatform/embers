@@ -46,4 +46,11 @@
   .password-mismatch emb-hash-identicon {
     color: var(--danger);
   }
+
+  .password-match emb-hash-identicon {
+    color: var(--success);
+  }
+  .password-mismatch emb-hash-identicon {
+    color: var(--danger);
+  }
 }
