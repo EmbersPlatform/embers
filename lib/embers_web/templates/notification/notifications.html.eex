@@ -1,0 +1,3 @@
+<%= for n <- @notifications do %>
+  <%= render("notification.html", notification: n) %>
+<% end %>

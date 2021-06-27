@@ -1,0 +1,23 @@
+toast-zone {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+toast-zone[bottom-left] {
+  top: auto;
+  bottom: 1em;
+  left: calc(var(--navigation-width) + 0.5em);
+  width: calc(var(--sidebar-width) - 1em);
+}
+
+toast-zone[top-center] {
+  top: 0.5em;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(var(--sidebar-width) - 1em);
+}

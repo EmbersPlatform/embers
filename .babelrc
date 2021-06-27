@@ -1,0 +1,14 @@
+{
+  "plugins": [
+    "@babel/plugin-transform-runtime",
+    [
+      "module-resolver", {
+        "root": ["./assets"],
+        "alias": {
+          "#": "./assets/js",
+          "~": "./assets"
+        }
+      }
+    ]
+  ]
+}

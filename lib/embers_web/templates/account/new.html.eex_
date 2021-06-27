@@ -1,0 +1,42 @@
+<section id="login">
+  <h1><%= gettext("Create account") %></h1>
+
+  <%= form_for @changeset, Routes.account_path(@conn, :create), fn f -> %>
+    <%= if error = get_flash(@conn, :error) do %>
+      <div class="alert alert--danger">
+        <%= error %>
+      </div>
+    <% end %>
+    <%= if info = get_flash(@conn, :info) do %>
+      <div class="alert alert--info">
+        <%= info %>
+      </div>
+    <% end %>
+  <fieldset>
+    <legend><%= gettext("User name") %></legend>
+    <%= text_input f, :username, class: "form-control", placeholder: gettext("user_name1"), required: true %>
+    <%= error_tag f, :username %>
+  </fieldset>
+
+  <fieldset>
+    <legend><%= gettext("Email") %></legend>
+    <%= email_input f, :email, class: "form-control", placeholder: gettext("my_email@provider.com"), required: true %>
+    <%= error_tag f, :email %>
+  </fieldset>
+
+  <fieldset is="emb-password-confirm">
+    <legend>gettext("Password")</legend>
+    <password-input>
+      <%= password_input f, :password, class: "form-control", placeholder: gettext("my secret password"), required: true %>
+    </password-input>
+    <%= error_tag f, :password %>
+    <password-input>
+      <%= password_input f, :password_confirmation, class: "form-control", placeholder: gettext("my secret password again"), required: true %>
+    </password-input>
+    <%= error_tag f, :password_confirmation %>
+  </fieldset>
+  <button type="submit" class="button primary">
+    <%= gettext("Create account") %>
+  </button>
+  <% end %>
+</section>

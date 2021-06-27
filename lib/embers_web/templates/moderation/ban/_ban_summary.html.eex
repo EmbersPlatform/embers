@@ -1,0 +1,9 @@
+<div class="ban-summary"
+  data-reason="<%= @ban.reason %>"
+  data-expires-at="<%= @ban.expires_at %>"
+  data-user="<%= @ban.user.username %>"
+  data-user-id="<%= @ban.user.id %>"
+>
+  <%= render(EmbersWeb.UserView, "avatar.html", avatar: @ban.user.meta.avatar.small) %>
+  <span class="username"><%= @ban.user.username %></span>
+</div>

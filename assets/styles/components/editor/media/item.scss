@@ -1,0 +1,74 @@
+.media-item-preview {
+  width: 8em;
+  height: 8em;
+  border-radius: var(--border-radius);
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 0.2em solid var(--border-color);
+  flex-shrink: 0;
+
+  &[data-status=pending],
+  &[data-status=uploading],
+  &[data-status=error] {
+    .media-preview {
+      opacity: 0.5;
+    }
+  }
+
+  .media-type {
+    display: block;
+    position: absolute;
+    left: 0.2em;
+    top: 0.2em;
+    background: #0009;
+    color: #fff;
+    border-radius: 0.2em;
+    padding: 0.2em 0.4em;
+    border: 1px solid #fff;
+
+    svg {
+      width: 0.8em;
+      height: 0.8em;
+      fill: #fff;
+    }
+  }
+
+  .media-preview {
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: inherit;
+  }
+
+  p.error {
+    color: var(--link);
+    background-color: var(--danger);
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+    padding: 0.25em;
+    text-align: center;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  &>button {
+    position: absolute;
+    top: 0.2em;
+    right: 0.2em;
+    background-color: #0009;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+  }
+
+  button svg * {
+    fill: var(--link);
+  }
+}

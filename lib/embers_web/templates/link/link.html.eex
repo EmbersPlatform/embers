@@ -1,0 +1,25 @@
+<div class="link" itemprop="sharedContent" itemscope itemtype="http://schema.org/WebContent">
+  <%= if @link.embed.html do %>
+    <div class="responsive-embed">
+      <%= raw @link.embed.html %>
+    </div>
+  <% else %>
+    <div class="link-preview">
+      <link itemprop="thumbnailUrl" href="<%= @link.embed.thumbnail_url %>" />
+      <img src="<%= @link.embed.thumbnail_url %>" />
+    </div>
+  <% end %>
+  <div class="link-description">
+    <%= link(to: @link.url, target: "_blank") do %>
+      <%= if @link.embed.title != @link.url do %>
+        <h3 itemprop="text">
+          <encoded-text>
+            <%= @link.embed.title %>
+          </encoded-text>
+        </h3>
+      <% end %>
+      <p itemprop="description"><encoded-text><%= @link.embed.description %></encoded-text></p>
+      <p itemprop="url"><%= @link.url%></p>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+avatar-editor {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &>img {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    box-shadow: var(--box-shadow);
+  }
+
+  &> button {
+    margin-top: 1em;
+  }
+
+  .cr-viewport {
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+}

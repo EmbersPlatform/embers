@@ -1,0 +1,18 @@
+#top-nav ul {
+  list-style: none;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#top-nav ul li {
+  margin: 0 1em;
+}
+
+#top-nav ul a {
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+  text-decoration: none;
+}

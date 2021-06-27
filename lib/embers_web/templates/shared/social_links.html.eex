@@ -1,0 +1,12 @@
+<%= unless is_nil(System.get_env("SOCIAL_DISCORD_INVITE")) do %>
+<a href="<%= System.get_env("SOCIAL_DISCORD_INVITE") %>" class="join-discord-notice" target="_blank">
+  <span><%= gettext "Join our discord!" %></span>
+  <img src="/img/external/discord_logo.svg" alt="discord logo">
+</a>
+<% end %>
+<%= unless is_nil(System.get_env("SOCIAL_KOFI_URL")) do %>
+<a href="<%= System.get_env("SOCIAL_KOFI_URL") %>" class="donate-kofi-notice" target="_blank">
+  <img src="/img/external/ko-fi.svg" alt="ko-fi logo">
+  <span><%= gettext "Donate on ko-fi" %></span>
+</a>
+<% end %>

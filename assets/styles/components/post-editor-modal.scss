@@ -1,0 +1,27 @@
+post-editor-modal {
+  dialog-box {
+    width: 660px;
+    padding: 1em;
+    box-sizing: border-box;
+
+    &>header {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: row;
+      font-size: 1.4em;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--primary);
+      padding: 0.5em 0;
+
+      /* @include media(">=tablet") {
+        display: none;
+      } */
+
+      button {
+        width: 3em;
+      }
+    }
+  }
+}

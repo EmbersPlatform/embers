@@ -1,0 +1,24 @@
+.disabled-post {
+  display: flex;
+  flex-direction: row;
+  padding: 0.5em;
+  @include box;
+
+  &+* {
+    margin-top: 1em;
+  }
+
+  &>article {
+    flex-basis: 60%;
+  }
+  &>aside {
+    flex-basis: 40%;
+    flex-shrink: 0;
+    padding: 1em;
+  }
+
+  @include media("<=tablet") {
+    flex-basis: initial;
+    flex-direction: column-reverse;
+  }
+}

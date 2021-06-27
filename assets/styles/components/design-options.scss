@@ -1,0 +1,40 @@
+design-options {
+  div.group {
+    max-width: 100%;
+    display: flex;
+    flex-direction: row;
+
+    @include media("<tablet") {
+      flex-direction: column;
+      &>*+* {
+        margin-top: 1em;
+      }
+    }
+
+    @include media(">=tablet") {
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+
+      &>*+* {
+        margin-top: 1em;
+      }
+
+      &>span {
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+    }
+
+    .post {
+      width: 320px;
+    }
+  }
+}

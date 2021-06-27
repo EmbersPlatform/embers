@@ -1,0 +1,51 @@
+[is=mod-role] {
+  padding: 0.5em;
+
+  .permissions-list {
+    padding: 0 1em;
+
+    .permission {
+      display: inline-block;
+    }
+  }
+
+  .role-editor {
+    @include box;
+    margin: 1em 0;
+
+    .actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0.5em;
+    }
+  }
+
+  .role-editor-details {
+    width: 100%;
+    padding: 0.5em;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .permissions {
+      columns: 2;
+
+      &>label {
+        display: block;
+      }
+    }
+  }
+}
+
+[is=mod-roles-index] {
+
+  table {
+    width: 100%;
+  }
+
+  [is=mod-role] + * {
+    border-top: var(--border);
+  }
+}

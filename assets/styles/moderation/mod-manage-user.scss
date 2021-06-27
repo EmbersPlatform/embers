@@ -1,0 +1,77 @@
+mod-manage-user {
+
+  header {
+    padding: 1em;
+  }
+
+  div.cover-header{
+    width: 600px;
+    height: 200px;
+    background-position: center;
+    position: relative;
+    max-width: 100%;
+
+    @include media("<=tablet") {
+      width: 100%;
+    }
+
+    .cover-avatar{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+
+  }
+
+  section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 1em;
+    padding: 1em;
+
+    .details {
+      flex-basis: 60%;
+
+      &>*+* {
+        margin-top: 1em;
+      }
+
+      label {
+        display: block;
+      }
+
+      input, textarea {
+        width: 100%;
+      }
+
+      textarea {
+        resize: none;
+      }
+    }
+
+    .other {
+      flex-basis: 40%;
+
+      &>*+* {
+        margin-top: 1em;
+      }
+
+      label {
+        display: block;
+      }
+
+      select {
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+
+  footer {
+    padding: 1em;
+  }
+}

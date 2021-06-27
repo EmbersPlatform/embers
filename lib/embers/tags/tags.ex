@@ -1,0 +1,236 @@
+defmodule Embers.Tags do
+  @moduledoc """
+  Tags are used to grop similar content under a name. They're also a
+  subscription source.
+  """
+
+  alias Embers.Posts.Post
+  alias Embers.Subscriptions.TagSubscription
+  alias Embers.Repo
+  alias Embers.Paginator
+  alias Embers.Tags.{Tag, TagPost}
+
+  import Ecto.Query
+
+  def get(id) do
+    Repo.get(Tag, id)
+  end
+
+  def get_by(clauses, opts \\ []) do
+    Repo.get_by(Tag, clauses, opts)
+  end
+
+  def get_by_name(name) when is_binary(name) do
+    name = String.downcase(name)
+
+    Repo.one(
+      from(tag in Tag,
+        where: fragment("LOWER(?) = ?", tag.name, ^name),
+        limit: 1,
+        order_by: tag.id
+      )
+    )
+  end
+
+  def create_tag(name) do
+    case get_by_name(name) do
+      nil -> insert_tag(name)
+      tag -> tag
+    end
+  end
+
+  @doc """
+  Inserts the given tags, ignoring invalid ones.
+  Returns the ids of the inserted tags
+  """
+  def bulk_create_tags(tags \\ []) do
+    tags =
+      tags
+      |> Enum.map(fn tag ->
+        attrs = %{name: tag}
+        changeset = Tag.create_changeset(%Tag{}, attrs)
+
+        if changeset.valid? do
+          changeset.changes
+        end
+      end)
+      |> Enum.reject(&is_nil/1)
+      |> Enum.uniq_by(& &1.name)
+
+    {_count, records} =
+      Repo.insert_all(
+        Tag,
+        tags,
+        on_conflict: :replace_all_except_primary_key,
+        conflict_target: [:name],
+        returning: [:id]
+      )
+
+    records
+    |> Enum.map(fn tag -> tag.id end)
+  end
+
+  def get_hot_tags(opts \\ []) do
+    limit = Keyword.get(opts, :limit, 10)
+
+    since_date =
+      Timex.now()
+      |> Timex.shift(days: -1)
+      |> Timex.beginning_of_day()
+
+    query =
+      from(
+        tag_post in TagPost,
+        where: tag_post.inserted_at >= ^since_date,
+        left_join: tag in assoc(tag_post, :tag),
+        left_join: post in assoc(tag_post, :post),
+        where: not ilike(tag.name, "nsfw"),
+        where: is_nil(post.deleted_at),
+        group_by: tag.id,
+        select: %{
+          tag: tag,
+          count: fragment("count(?) as tag_count", tag_post.id)
+        },
+        order_by: [desc: fragment("tag_count")],
+        limit: ^limit
+      )
+
+    Repo.all(query)
+  end
+
+  def get_popular_tags(opts \\ []) do
+    limit = Keyword.get(opts, :limit, 10)
+
+    query =
+      from(
+        tag_user in TagSubscription,
+        left_join: tag in assoc(tag_user, :source),
+        left_join: user in assoc(tag_user, :user),
+        where: not ilike(tag.name, "nsfw"),
+        group_by: tag.id,
+        select: %{tag: tag, count: fragment("count(?) as user_count", user.id)},
+        order_by: [desc: fragment("user_count")],
+        limit: ^limit
+      )
+
+    Repo.all(query)
+  end
+
+  def list_post_tags_ids(post_id) do
+    query =
+      from(
+        tp in TagPost,
+        where: tp.post_id == ^post_id,
+        select: tp.tag_id
+      )
+
+    Repo.all(query)
+  end
+
+  def list_post_tag_names(post_id) do
+    query =
+      from(
+        tp in TagPost,
+        where: tp.post_id == ^post_id,
+        left_join: tag in assoc(tp, :tag),
+        select: tag.name
+      )
+
+    Repo.all(query)
+  end
+
+  defp insert_tag(name) do
+    tag = Tag.create_changeset(%Tag{}, %{"name" => name})
+    Repo.insert!(tag)
+  end
+
+  @doc """
+  Adds a tag to a post. If the post already hast that tag associated, it's
+  a noop.
+  """
+  def add_tag(post, tag_name) when is_binary(tag_name) do
+    tag = create_tag(tag_name)
+    add_tag(post, tag)
+  end
+
+  def add_tag(%Post{id: pid} = post, %Tag{id: tid} = tag) do
+    tags = get_tags_for_post(post)
+
+    if tag in tags do
+      {:ok, tag}
+    else
+      %TagPost{}
+      |> TagPost.create_changeset(%{post_id: pid, tag_id: tid})
+      |> Repo.insert()
+    end
+  end
+
+  def remove_tag(post, tag_name) when is_binary(tag_name) do
+    case Repo.get_by(Tag, %{name: tag_name}) do
+      nil -> nil
+      tag -> remove_tag(post, tag)
+    end
+  end
+
+  def remove_tag(%Post{id: pid}, %Tag{id: tid}) do
+    case Repo.get_by(TagPost, %{post_id: pid, tag_id: tid}) do
+      nil -> nil
+      tag_post -> Repo.delete(tag_post)
+    end
+  end
+
+  def tags_loaded(%Post{tags: tags}) do
+    tags |> Enum.map(& &1.name)
+  end
+
+  defp get_tags_for_post(post) do
+    if Ecto.assoc_loaded?(post.tags) do
+      post.tags
+    else
+      post |> Ecto.assoc(:tags) |> Repo.all()
+    end
+  end
+
+  def update_tags(post, new_tags) when is_list(new_tags) do
+    old_tags = tags_loaded(post)
+    Enum.each(new_tags -- old_tags, &add_tag(post, &1))
+    Enum.each(old_tags -- new_tags, &remove_tag(post, &1))
+  end
+
+  def update_tag(tag, attrs) do
+    tag
+    |> Tag.create_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @spec list_tag_posts(String.t(), keyword) :: Embers.Paginator.Page.t()
+  def list_tag_posts(tag, params \\ []) when is_binary(tag) do
+    from(
+      post in Post,
+      where: is_nil(post.deleted_at),
+      where: post.nesting_level == 0,
+      where: is_nil(post.related_to_id),
+      order_by: [desc: post.id],
+      left_join: user in assoc(post, :user),
+      left_join: meta in assoc(user, :meta),
+      left_join: tags in assoc(post, :tags),
+      where: ilike(tags.name, ^tag),
+      preload: [
+        [:media, :links, :reactions, :tags]
+      ],
+      preload: [
+        user: {user, meta: meta}
+      ]
+    )
+    |> Paginator.paginate(params)
+    |> fill_nsfw()
+    |> Paginator.map(&Embers.Posts.populate_user/1)
+  end
+
+  defp fill_nsfw(page) do
+    %{
+      page
+      | entries: Enum.map(page.entries, fn post -> Post.fill_nsfw(post) end)
+    }
+  end
+end

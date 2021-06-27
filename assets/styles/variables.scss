@@ -1,0 +1,10 @@
+$breakpoints: (phone: 320px,
+  tablet: 768px,
+  desktop: 1024px);
+
+$query-mobile: "(max-width: 644px)";
+$query-tablet: "(min-width: 645px) and (max-width: 1023px)";
+$query-desktop: "(min-width: 1024px)";
+
+$font-family: 'Work Sans',
+sans-serif;

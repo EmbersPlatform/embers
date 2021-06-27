@@ -1,0 +1,10 @@
+<%= EmbersWeb.LayoutView.sidebar assigns do %>
+<%= render("_sidebar.html", assigns) %>
+<% end %>
+<div id="view" view="settings" subview="security" class="has-sidebar">
+  <%= render_shared("top_bar.html", assigns) %>
+  <main class="padded">
+    <h1><%= gettext("Security") %></h1>
+    <security-options></security-options>
+  </main>
+</div>

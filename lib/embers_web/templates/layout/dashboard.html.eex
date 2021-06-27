@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="<%= Routes.static_path(@conn, "/admin/css/main.css") %>" rel="stylesheet">
+
+  <title>Panel de administracion - Embers</title>
+</head>
+
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/admin">
+          <h3>Embers</h3>
+        </a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="columns">
+      <div class="menu column is-one-quarter">
+        <p class="menu-label">
+          General
+        </p>
+        <ul class="menu-list">
+          <li><a href="/admin">Tablero</a></li>
+          <li><a href="/admin/users">Usuarios</a></li>
+        </ul>
+        <p class="menu-label">
+          Moderacion
+        </p>
+        <ul class="menu-list">
+          <li><a href="/admin/reports">Reportes</a></li>
+          <li><a href="/admin/audit">Auditoría</a></li>
+          <li><a href="/admin/bans">Suspensiones</a></li>
+        </ul>
+        <p class="menu-label">
+          Desarrollo
+        </p>
+        <ul class="menu-list">
+          <li><a href="/admin/dev/monitor">Monitor // todo</a></li>
+        </ul>
+        <p class="menu-label">
+          Contenido
+        </p>
+        <ul class="menu-list">
+          <li><a href="/admin/tags">Tags // todo</a></li>
+          <li><a href="/admin/deleted_posts">Posts eliminados // todo</a></li>
+        </ul>
+        <p class="menu-label">
+          Configuracion
+        </p>
+        <ul class="menu-list">
+          <li><a href="/admin/roles">Roles</a></li>
+          <li><a href="/flags">Flags</a></li>
+          <li><a href="/admin/loading">Mensajes de carga</a></li>
+          <li><a href="/admin/settings">Configuracion</a></li>
+        </ul>
+      </div>
+      <div class="column">
+        <%= render @view_module, @view_template, assigns %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.csrf_token = < %= raw Poison.encode!(Plug.CSRFProtection.get_csrf_token()) % > ;
+
+  </script>
+  <script src="<%= Routes.static_path(@conn, "/admin/js/app.js") %>" async></script>
+</body>
+
+</html>

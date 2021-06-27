@@ -1,0 +1,68 @@
+switch-input {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+
+  * + * {
+    margin-left: 0.3em;
+  }
+
+  &.vertical {
+    flex-direction: column;
+    justify-content: center;
+    font-size: 0.7em;
+
+    * + * {
+      margin-left: 0!important;
+      margin-bottom: 0.2em;
+    }
+  }
+
+  label {
+    cursor: pointer;
+  }
+
+  .tip {
+    text-indent: -9999px;
+    width: 4em;
+    min-width: 4em;
+    height: 2em;
+    background: rgba(0, 0, 0, 0.1);
+    display: block;
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    user-select: none;
+    touch-action: manipulation;
+    border-radius: 1em;
+    transition: 0.3s all ease-out;
+    box-sizing: border-box;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: .3em;
+      width: 1.4em;
+      height: 1.4em;
+      background: #fff;
+      transform: translate(0, -50%);
+      border-radius: 50%;
+      border: var(--border);
+      transition: 0.3s all ease-out;
+    }
+  }
+
+  input[type="checkbox"]:checked + .tip {
+    background: var(--accent);
+
+    &:after {
+      left: calc(100% - .3em);
+      transform: translate(-100%, -50%);
+    }
+  }
+
+  input[type="checkbox"][disabled] + .tip {
+    filter: grayscale(50%);
+    opacity: 0.6;
+  }
+}

@@ -1,0 +1,18 @@
+<%= EmbersWeb.LayoutView.sidebar(assigns) do %>
+<%= render(EmbersWeb.Moderation.SharedView, "_sidebar.html", assigns) %>
+<% end %>
+<div id="view" view="moderation-roles" class="has-sidebar" is="mod-roles-index">
+  <%= render_shared("top_bar.html", assigns) %>
+  <script type="data"><%=
+    raw Jason.encode!(
+      for role <- @roles do
+        %{id: role.id, name: role.name, permissions: role.permissions}
+      end
+    )
+  %></script>
+  <main class="padded">
+    <h1><%= gettext("Roles") %></h1>
+
+    <section ref="list"></section>
+  </main>
+</div>

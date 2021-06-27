@@ -1,0 +1,27 @@
+<div class="block" data-layout-type="form">
+  <h2><%= gettext("Reset password") %></h2>
+
+  <%= form_for @conn, Routes.password_reset_path(@conn, :update), [as: :password_reset, method: :put], fn f -> %>
+    <%= if error = get_flash(@conn, :error) do %>
+      <div class="error">
+          <%= for {_k, [message | _t]} <- error do %>
+            <%= message %>
+          <% end %>
+      </div>
+    <% end %>
+
+    <%= label f, :password, class: "control-label" %>
+    <%= password_input f, :password, class: "form-control" %>
+    <%= error_tag f, :password %>
+
+    <%= label f, :password_confirmation, class: "control-label" %>
+    <%= password_input f, :password_confirmation, class: "form-control" %>
+    <%= error_tag f, :password_confirmation %>
+
+    <%= hidden_input f, :key, value: @key %>
+
+    <button type="submit" class="button" data-button-size="big" data-button-font="medium" data-button-uppercase data-button-important>
+      <%= gettext("Reset password") %>
+    </button>
+  <% end %>
+</div>

@@ -1,0 +1,95 @@
+post-editor {
+  @import "./media/zone.scss";
+  @import "./media/item.scss";
+
+  display: block;
+  padding: 0.6em;
+  box-sizing: border-box;
+
+  &:not([compact]) {
+    margin-bottom: 1.5em;
+  }
+
+  form {
+    box-sizing: border-box;
+  }
+
+  textarea,
+  input {
+    border: none;
+    width: 100%;
+    flex-grow: 1;
+    padding: 0.25em;
+    background: none;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: 1px dotted var(--accent);
+    }
+  }
+
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    resize: none;
+    box-sizing: border-box;
+    background: none;
+  }
+
+  .editor-body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .editor-actions {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5em;
+    justify-content: flex-end;
+
+    *+* {
+      margin-left: 0.5em;
+    }
+  }
+
+  &[compact] {
+    .editor-body {
+      display: flex;
+      flex-direction: row;
+      border: none;
+      padding: 0.5em;
+
+      @include media(">=tablet") {
+        border: var(--border);
+      }
+
+      textarea {
+        flex-grow: 1;
+      }
+
+      button,
+      .plain-button {
+        align-self: flex-end;
+        flex-shrink: 0;
+      }
+    }
+
+    .media-zone:not(:empty) {
+      padding: 0.5em;
+    }
+  }
+
+  .remove-link-button {
+    margin-left: 5%;
+  }
+
+  .editor-errors {
+    color: var(--danger);
+    padding: 0;
+  }
+  .editor-errors:empty {
+      display: none;
+  }
+}

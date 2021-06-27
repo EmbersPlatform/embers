@@ -1,0 +1,36 @@
+<div class="block" data-layout-type="form">
+  <h1>Reset password</h1>
+
+  <%= form_for @changeset, Routes.user_reset_password_path(@conn, :update, @token), fn f -> %>
+  <%= if @changeset.action do %>
+  <p class="alert alert--danger">
+    Oops, something went wrong! Please check the errors below.
+  </p>
+  <% end %>
+
+  <fieldset>
+    <%= label f, :password, "New password" %>
+    <emb-password-input>
+      <%= password_input f, :password, required: true %>
+    </emb-password-input>
+    <%= error_tag f, :password %>
+  </fieldset>
+
+  <fieldset>
+    <%= label f, :password_confirmation, "Confirm new password" %>
+    <emb-password-input>
+      <%= password_input f, :password_confirmation, required: true %>
+    </emb-password-input>
+    <%= error_tag f, :password_confirmation %>
+  </fieldset>
+
+  <div>
+    <%= submit "Reset password", class: "button primary" %>
+  </div>
+  <% end %>
+
+  <p>
+    <%= link "Register", to: Routes.user_registration_path(@conn, :new) %> |
+    <%= link "Log in", to: Routes.user_session_path(@conn, :new) %>
+  </p>
+</div>

@@ -1,0 +1,184 @@
+:root {
+  --font-size: 14px;
+  --navigation-width: 55px;
+  --sidebar-width: 230px;
+
+  --success: #54b54f;
+  --success-alt: #fff;
+  --danger: #ff4c4c;
+  --danger-alt: #fff;
+  --warning: #ffc107;
+  --warning-alt: #fff;
+  --info: #2e9aff;
+  --info-alt: #fff;
+
+  --accent: #eb3d2d;
+
+  --outline-color: #eb3d2d75;
+  --selection-background: #eb3d2d8a;
+
+  --border-radius: 3px;
+
+  --warning-nsfw-background: #ff4c4c66;
+  --warning-nsfw-foreground: #fff;
+
+  --link-foreground: var(--link);
+
+  --greentext: #54b54f;
+}
+
+[theme=dark] {
+  --primary: #1f2023;
+  --secondary: #26272b;
+  --secondary-accent: #1a1a1d;
+
+  --background: var(--secondary);
+  --text: #ccc;
+  --text-secondary: #ffffff4d;
+  --link: #fff;
+  --link-hover: var(--link);
+  --accent-foreground: #fff;
+
+  --logo-foreground: var(--accent);
+
+  --top-nav-background: #222327;
+
+  --navigation-background: #1a1b1d;
+  --navigation-foreground: var(--link);
+  --navigation-accent: var(--accent);
+
+  --notification-counter-background: var(--accent);
+  --notification-counter-foreground: var(--primary);
+  --notification-unseen-background: #4d2c2d;
+
+  --sidebar-background: var(--primary);
+  --sidebar-background-hover: hsla(0, 0%, 100%, 0.1);
+  --sidebar-background-accent: var(--accent);
+  --sidebar-foreground: var(--text);
+  --sidebar-foreground-hover: var(--link);
+  --sidebar-foreground-accent: var(--primary);
+  --sidebar-title-color: #ffffff4d;
+
+  --top-nav-background: var(--secondary);
+  --top-nav-foreground: var(--text);
+
+  --box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
+  --border-color: hsla(0, 0%, 0%, 0.33);
+  --border: 1px solid var(--border-color);
+
+  --scrollbar-background: var(--navigation-background);
+  --scrollbar-thumb-background: var(--accent);
+  --scrollbar-thumb-foreground: var(--scrollbar-background);
+
+  --flat-button-foreground: #848484;
+
+  --post-commentbox-background: #2c2d32;
+
+  --button-background: #3b3c40;
+  --button-foreground: #ddd;
+  --button-border-foreground: #ffffff38;
+  --button-border-background: #00000099;
+  --button-hover-filter: brightness(120%);
+  --button-text-shadow: 1px 1px 1px #000c;
+
+  --badge-background:  #37383f;
+  --badge-foreground: var(--link);
+
+  --avatar-border: #ccc;
+  --avatar-hover-border: var(--link);
+
+  --warning-nsfw-background: #ff4c4c66;
+  --warning-nsfw-foreground: #fff;
+  --post-username-color: var(--text);
+  --post-footer-foreground: var(--text);
+
+  --reaction-background: rgba(0, 0, 0, 0.2);
+  --reaction-foreground: rgba(255, 255, 255, 0.3);
+  --reaction-border: transparent;
+  --reaction-hover-background: rgba(255, 255, 255, 0.1);
+  --reaction-hover-foreground: rgba(255, 255, 255, 0.7);
+  --reaction-hover-border: transparent;
+  --reaction-reacted-background: rgba(0, 0, 0, 0.2);
+  --reaction-reacted-foreground: auto;
+  --reaction-reacted-border: #eb3d2d75;
+
+  --link-background: #2b2d31;
+
+  --toast-background: #111;
+  --toast-foreground: var(--text);
+}
+
+[theme=light] {
+  --primary: #fff;
+  --secondary: #f3f3f3;
+  --secondary-accent: #f2f2f2;
+
+  --warning: #BD5500;
+  --success: #177F12;
+
+  --background: var(--secondary);
+  --text: #222327;
+  --text-secondary: #222327;
+  --link: #000;
+  --link-hover: var(--link);
+  --accent-foreground: #000;
+
+  --logo-foreground: var(--primary);
+
+  --top-nav-background: var(--secondary);
+
+  --navigation-background: var(--accent);
+  --navigation-foreground: var(--primary);
+  --navigation-accent: #fff;
+
+  --notification-counter-background: #fff;
+  --notification-counter-foreground: #000;
+  --notification-unseen-background: #f5c1bc;
+
+  --sidebar-background: var(--primary);
+  --sidebar-background-hover: var(--secondary-accent);
+  --sidebar-background-accent: var(--accent);
+  --sidebar-foreground: var(--text);
+  --sidebar-foreground-hover: var(--link);
+  --sidebar-foreground-accent: var(--primary);
+  --sidebar-title-color: var(--text);
+
+  --box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  --border-color: #0003;
+  --border: 1px solid var(--border-color);
+
+  --scrollbar-background: var(--primary);
+  --scrollbar-thumb-background: var(--accent);
+  --scrollbar-thumb-foreground: var(--scrollbar-background);
+
+  --warning-nsfw-background: var(--danger);
+  --warning-nsfw-foreground: #fff;
+  --post-commentbox-background: #fff;
+  --post-footer-foreground: var(--text);
+
+  --button-background: hsla(0, 0%, 96%, 1);
+  --button-foreground: var(--text);
+  --button-border-foreground: #ffffff75;
+  --button-border-background: #0000004a;
+  --button-hover-filter: brightness(110%);
+
+  --badge-background:  #dedede;
+  --badge-foreground: var(--text);
+
+  --avatar-border: #222;
+  --avatar-hover-border: var(--link);
+
+  --post-username-color: var(--text);
+
+  --reaction-background: var(--secondary-accent);
+  --reaction-foreground: var(--text);
+  --reaction-border: transparent;
+  --reaction-hover-background: var(--secondary);
+  --reaction-hover-foreground: var(--link);
+  --reaction-hover-border: transparent;
+  --reaction-reacted-background: #eb3d2d40;
+  --reaction-reacted-foreground: auto;
+  --reaction-reacted-border: #eb3d2d6e;
+
+  --link-background: var(--secondary);
+}

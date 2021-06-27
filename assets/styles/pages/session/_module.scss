@@ -1,0 +1,56 @@
+#login, [data-layout-type=form] {
+  padding: 1.5em;
+  margin: 0 auto;
+  margin-top: 2rem;
+  --input-height: 3em;
+
+  @include media(">=desktop") {
+    max-width: 40vw;
+  }
+
+  form fieldset {
+    margin-bottom: 1em;
+
+    legend, label {
+      display: block;
+      margin-bottom: 0.5em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+  }
+
+  label {
+    margin-bottom: 0.5em;
+    &>div {
+      margin-bottom: 0.5em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+  }
+
+  [type=submit] {
+    margin-bottom: 1em;
+    height: var(--input-height);
+    text-transform: uppercase;
+  }
+
+  input[type=text], input[type=password], input[type=email] {
+    width: 100%;
+    height: var(--input-height);
+    margin-bottom: 1em;
+  }
+
+  .password-match emb-hash-identicon {
+    color: var(--success);
+  }
+  .password-mismatch emb-hash-identicon {
+    color: var(--danger);
+  }
+
+  .password-match emb-hash-identicon {
+    color: var(--success);
+  }
+  .password-mismatch emb-hash-identicon {
+    color: var(--danger);
+  }
+}

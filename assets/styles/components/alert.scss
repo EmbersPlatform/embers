@@ -1,0 +1,27 @@
+.alert {
+  padding: 1em;
+  border: var(--border);
+  background: var(--alert-bg, var(--primary));
+  border-radius: .3em;
+  margin-bottom: 1em;
+}
+
+.alert--danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.alert--info {
+  color: var(--info);
+  border-color: var(--info);
+}
+
+.alert--warning {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.alert--success {
+  color: var(--success);
+  border-color: var(--success);
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>&hellip;</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Clear Sans:100,300" rel="stylesheet" type="text/css">
+
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      display: table;
+      font-family: 'Clear Sans', sans-serif;
+      background: #f44336;
+    }
+
+    .container {
+      text-align: center;
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    .content {
+      text-align: center;
+      display: inline-block;
+      font-size: 20px;
+      color: white;
+    }
+
+    .title {
+      font-size: 48px;
+      margin-bottom: 16px;
+      color: white;
+      font-weight: 100;
+    }
+
+    .logo {
+      display: block;
+      margin: 72px auto 0 auto;
+      width: 32px;
+      height: 32px;
+      background: url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAEAAAABRCAMAAABVPVDSAAABS2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxMzggNzkuMTU5ODI0LCAyMDE2LzA5LzE0LTAxOjA5OjAxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+IEmuOgAAAARnQU1BAACxjwv8YQUAAAABc1JHQgCuzhzpAAAAdVBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5WX1YAAAAJ3RSTlMmAyACDREjACUhHAUBGwoUHwgSGg8eBhUHDAQiFhMdFyQZDgsYEAlLY/VnAAACl0lEQVRYw6WY2RKiMBBFLzsKyKKCuIGjM///iQOKCqTTCbFfrALuISS9ikDfdgVxEdryMsEvACcFwtwcUJ8AnBxTwDFBb+vAEOC1Tz3OZoBojcE8I8BffKw2AFjrrx7/lgNcf6QPy8WACmPzjwsBUTbR42QtA9TtVI+VswiQYm72EkC8xU+AMhP1Sz4hbwn9gk10Q0oPP9IE7CCxgx6gkOmx0QJcpHrsdACpXI9KA8C8XysjFZwevqUC/AFvtQLgKvRoeMAhVAEoZ/4CjjaU5nKARK3H9V2nCEAKHXOHTB8JgLuWHnbcP7wZ1ZgBYJ30AC9lNUrxA6CBrnUVOu62ex9PALW2HvvB34oJINMHYOuu+p+2HAE8GFjzBVgrE8CQX6CKYVV0dwDHbAHDEsAkUZUlA+BqCnh6E4LcWI/HE5CaA9qoB+zNAX3bhTL8AdD5Neof9H3zi8svAFwC3PhXVPmhYr0RrBecckW694/gcrEdCd2q4M5gAiFx1CXLgzwZbnWK3lm+gtu05ZetEpmihrztTD+WYS25IZRy2uVt0Ak9FBuqnPT5FeiPowa8ggZsdDbg1f7a5CeQKXlDT65UPCLYanZT3RKIE7uB8vSNbHgWH01BZPW9dIYRm3AXxO7upFOMEPth2QEif35RZ4j85AOxu7nK5zChkfOo4lrJAXNX6CZBiCnHZSbJ2Zmn7wYj4cNAFpP9KAqhyfQdBnCZ15V3kzWKiCzm/kqgqvPszjrQBLyGsE+n2ky4MiuE5v/bKz+IXMrN867Q7m81VvAQ/B3CIbN78E6M4Z0ceW6qU7CGsFnlkqHrLButpj39LZaOfR7vic+w811u8LyHXCz0pTy1+NE3CuXH0PlrEymH79KT7uKlEffnP9lrVkTLPJVHAAAAAElFTkSuQmCC ') no-repeat center;
+      background-size: auto 100%;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="content">
+      <h1 class="title">&hellip;</h1>
+      <%= gettext("We couldn't find what you're looking for :(") %>
+      <span class="logo"></span>
+    </div>
+  </div>
+</body>
+
+</html>

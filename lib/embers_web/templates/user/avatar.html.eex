@@ -1,0 +1,5 @@
+<figure class="avatar"
+size="<%= assigns[:size] || "medium" %>"
+class="<%= if assigns[:bordered], do: "bordered", else: "" %>">
+  <img src="<%= @avatar %>"/>
+</figure>

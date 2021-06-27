@@ -1,0 +1,17 @@
+<article class="tag-card d-flex">
+  <figure class="tag-card-icon flex-shrink-0">
+    <%= if !Map.get(@tag, :icon) do %><span>#</span><% end %>
+  </figure>
+  <div class="tag-card-summary d-flex flex-auto">
+    <a href="<%= Routes.tag_path(@conn, :show, @tag.name) %>" class="flex-auto">
+      <p class="tag-card-name"><%= @tag.name %></p>
+      <%= if @tag.description do %>
+      <p class="tag-card-description"><%= @tag.description %></p>
+      <% end %>
+    </a>
+    <%= if authenticated?(@conn) do %>
+    <follow-tag class="flex-shrink-0" data-tag-id="<%= @tag.id %>" data-level="<%= if assigns[:level], do: @level %>">
+    </follow-tag>
+    <% end %>
+  </div>
+</article>

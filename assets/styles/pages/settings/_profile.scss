@@ -1,0 +1,89 @@
+[view=settings][subview=profile] {
+  .profile-settings {
+    display: flex;
+    flex-direction: column;
+
+    @include media(">=tablet") {
+      flex-direction: row;
+    }
+  }
+
+  profile-options {
+    padding: 1em;
+    @include media(">=tablet") {
+      width: 60%;
+    }
+
+    &>label {
+      display: block;
+    }
+
+    &>label>strong {
+      display: block;
+      margin-bottom: 0.5em;
+    }
+
+    &>label+label {
+      margin-top: 1em;
+    }
+
+    textarea {
+      resize: none;
+      width: 100%;
+      min-height: 6em;
+    }
+
+    input[type=text] {
+      width: 100%;
+    }
+  }
+  .pic-editors {
+    order: -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &>*+* {
+      margin-top: 1em;
+    }
+    @include media(">=tablet") {
+      order: 2;
+      width: 40%;
+    }
+  }
+}
+
+emb-change-password-form {
+  display: block;
+  width: 22em;
+  max-width: 100%;
+
+  label.field {
+    display: block;
+  }
+
+  label.field >*+* {
+    margin-left: 0;
+  }
+
+  label > div {
+    margin-bottom: 0.4rem;
+  }
+
+  div.error {
+    color: var(--danger);
+  }
+
+  div.error:first-letter {
+    text-transform: capitalize;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .actions > *+* {
+    margin-left: 1em;
+  }
+}

@@ -1,0 +1,12 @@
+<%= EmbersWeb.LayoutView.sidebar assigns do %>
+<%= render(EmbersWeb.SettingsView, "_sidebar.html", assigns) %>
+<% end %>
+<div id="view" view="settings" subview="design" class="has-sidebar">
+  <%= EmbersWeb.SharedView.render_shared("top_bar.html", assigns) %>
+  <main class="padded">
+    <h1><%= gettext("Privacy") %></h1>
+    <privacy-options phx-update="ignore" data-show_status="<%= @current_user.settings.privacy_show_status %>"
+      data-show_reactions="<%= @current_user.settings.privacy_show_reactions %>"
+      data-trust_level="<%= @current_user.settings.privacy_trust_level %>"></privacy-options>
+  </main>
+</div>

@@ -1,0 +1,45 @@
+<div class="block" data-layout-type="form">
+  <h1>Register</h1>
+
+  <%= form_for @changeset, Routes.user_registration_path(@conn, :create), fn f -> %>
+  <%= if @changeset.action do %>
+  <p class="alert alert--danger">
+    <%= gettext("Oops, something went wrong! Please check the errors below.") %>
+  </p>
+  <% end %>
+
+  <fieldset>
+    <%= label f, :username, gettext("Username") %>
+    <%= text_input f, :username, placeholder: gettext("user_name1"), required: true %>
+    <%= error_tag f, :username %>
+  </fieldset>
+
+  <fieldset>
+    <%= label f, :email, gettext("Email") %>
+    <%= email_input f, :email, placeholder: gettext("my_mail@provider.com"), required: true %>
+    <%= error_tag f, :email %>
+  </fieldset>
+
+  <fieldset is="emb-password-confirm">
+    <%= label f, :password, gettext("Password") %>
+    <emb-password-input>
+      <%= password_input f, :password, placeholder: gettext("my secret password"), required: true, new_password: true %>
+    </emb-password-input>
+    <%= error_tag f, :password %>
+    <%= label f, :password_confirmation, gettext("Password confirmation") %>
+    <emb-password-input>
+      <%= password_input f, :password_confirmation, placeholder: gettext("my secret password again"), required: true, new_password_confirmation: true %>
+    </emb-password-input>
+    <%= error_tag f, :password_confirmation %>
+  </fieldset>
+
+  <button type="submit" class="button primary">
+    <%= gettext("Create account") %>
+  </button>
+  <% end %>
+
+  <p>
+    <%= link gettext("Log in"), to: Routes.user_session_path(@conn, :new) %> |
+    <%= link gettext("Forgot your password?"), to: Routes.user_reset_password_path(@conn, :new) %>
+  </p>
+</div>

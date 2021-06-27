@@ -1,0 +1,26 @@
+<%= EmbersWeb.LayoutView.sidebar(assigns) %>
+<div id="view" view="home" class="has-sidebar">
+  <%= render_shared("top_bar.html", assigns) %>
+  <main class="padded columns-layout">
+    <div id="timeline" class="main-content" data-controller="timeline" data-next="<%= @timeline.next %>">
+      <post-editor class="boxed" data-target="timeline.editor" data-action="publish->timeline#onNewActivity">
+      </post-editor>
+      <button class="new-activity-alert" data-target="timeline.newActivityAlert"
+        data-action="timeline#flush_activities"></button>
+      <div class="feed" data-target="timeline.feed">
+        <%= for activity <- @timeline.entries do %>
+        <%= render(EmbersWeb.TimelineView, "activity.html", conn: @conn, activity: activity, with_replies: true) %>
+        <% end %>
+      </div>
+      <intersect-observer data-action="intersect->timeline#loadMore"></intersect-observer>
+      <loading-indicator data-target="timeline.loadingIndicator"></loading-indicator>
+    </div>
+    <aside>
+      <div class="content">
+        <popular-tags class="tags-widget"></popular-tags>
+        <emb-pinned-tags></emb-pinned-tags>
+        <%= render_shared("social_links.html") %>
+      </div>
+    </aside>
+  </main>
+</div>

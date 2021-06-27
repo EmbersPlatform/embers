@@ -1,0 +1,33 @@
+online-friends {
+  display: block;
+
+  .presence {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 0.2em;
+    overflow: hidden;
+
+    &:hover {
+      background: var(--sidebar-background-hover);
+      color: var(--sidebar-foreground-hover);
+    }
+
+    &:not(:hover) .button-link {
+      display: none;
+    }
+  }
+
+  .row-user {
+    flex: 1 auto;
+  }
+
+  .button-link {
+    padding: 0.5em;
+    flex-shrink: 0;
+  }
+}
+
+#sidebar > section > online-friends {
+  padding: 0;
+}

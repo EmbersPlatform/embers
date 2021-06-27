@@ -1,0 +1,125 @@
+reactions-dialog {
+  dialog-box{
+    width: 100%;
+    height: 75%;
+    display: flex!important;
+    flex-direction: column;
+
+    @include media(">=tablet") {
+      max-width: 600px;
+    }
+  }
+
+  header {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    font-size: 1.4em;
+
+    @include media(">=tablet") {
+      display: none;
+    }
+
+    button {
+      width: 3em;
+    }
+  }
+
+  .dialog-content {
+    width: 100%;
+    flex-grow: 1;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    @include media(">=tablet") {
+      flex-direction: row;
+    }
+  }
+
+  .reactions-overview {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.6em;
+    box-sizing: border-box;
+
+    @include media("<tablet") {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    @include media(">=tablet") {
+      flex-direction: column;
+    }
+
+    * + * {
+      @include media("<tablet") {
+        margin-left: 0.3em;
+      }
+      @include media(">=tablet") {
+        margin-top: 0.3em;
+      }
+    }
+
+    button:last-child {
+      margin-top: auto;
+      width: 4em;
+      @include media("<tablet") {
+        display: none;
+        width: auto;
+      }
+    }
+
+    .reaction[selected] {
+      border-color: var(--link);
+    }
+  }
+
+  .reactions-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5em;
+
+    * + * {
+      margin-top: 0.3em;
+    }
+
+    .reaction-user {
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .avatar {
+        width: 2em;
+        height: 2em;
+        margin-right: 1.2em;
+      }
+
+      .reaction-icon {
+        position: absolute;
+        left: 20px;
+        bottom: 0;
+        width: 20px;
+        height: 20px;
+        display: block;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        border-radius: 50%;
+        background: var(--primary);
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          box-sizing: border-box;
+          padding: 0.2em;
+        }
+      }
+    }
+  }
+}

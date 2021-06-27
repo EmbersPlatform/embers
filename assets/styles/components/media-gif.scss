@@ -1,0 +1,21 @@
+[is="emb-media-gif"] {
+  position: relative;
+
+  &[playing] {
+    .gif-label {
+      display: none;
+    }
+  }
+}
+
+[is="emb-media-gif"] .gif-label {
+  position: absolute;
+  display: block;
+  bottom: 0.5em;
+  left: 0.5em;
+  content: "GIF";
+  padding: 0.2em 0.5em;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  border-radius: 0.2em;
+}

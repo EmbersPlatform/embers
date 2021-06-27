@@ -1,0 +1,53 @@
+# App artifacts
+/_build
+/db
+/deps
+/*.ez
+/benchs
+/.vagrant
+/artifacts
+/.cache
+# Generated on crash by the VM
+erl_crash.dump
+*.log
+
+# Generated on crash by NPM
+npm-debug.log
+
+# Static artifacts
+/node_modules
+node_modules/.yarn-integrity
+/old_assets
+/assets/node_modules
+/assets/admin/node_modules
+/assets/mix-manifest.json
+
+# Since we are building assets from assets/,
+# we ignore priv/static. You may want to comment
+# this depending on your deployment strategy.
+/priv/static/
+/uploads/**
+/legacy/**
+
+# Files matching config/*.secret.exs pattern contain sensitive
+# data and you should not commit them into version control.
+#
+# Alternatively, you may comment the line below and commit the
+# secrets files as long as you replace their contents by environment
+# variables.
+/config/*.secret.exs
+
+/.elixir_ls
+/.vscode
+/.sobelow
+/.cache
+/node_modules
+/Mnesia.*
+
+/.env
+
+# Documentation
+/doc
+/jsdocs
+
+/Mnesia*

@@ -1,0 +1,53 @@
+<div class="block" data-layout-type="form">
+  <h1><%= gettext("Log in") %></h1>
+
+  <%= form_for @conn, Routes.user_session_path(@conn, :create), [as: :user], fn f -> %>
+  <%= if @error_message do %>
+  <p class="alert alert--danger">
+    <%= @error_message %>
+  </p>
+  <% end %>
+  <%= if get_flash(@conn, :info) do %>
+  <p class="alert alert--danger">
+    <%= get_flash(@conn, :info) %>
+  </p>
+  <% end %>
+  <%= if get_flash(@conn, :error) do %>
+  <p class="alert alert--danger">
+    <%= get_flash(@conn, :error) %>
+  </p>
+  <% end %>
+
+  <label>
+    <div><%= gettext "Username or email" %></div>
+    <%= text_input f, :identifier, placeholder: gettext("Username or email"), required: true %>
+  </label>
+  <%= error_tag f, :identifier %>
+
+  <label>
+    <div><%= gettext "Password" %></div>
+
+    <emb-password-input>
+      <%= password_input f, :password, placeholder: gettext("Password"), required: true %>
+    </emb-password-input>
+  </label>
+  <%= error_tag f, :password %>
+
+
+  <div class="g-margin-bottom">
+    <%= checkbox f, :remember_me, checked: true %>
+    <%= label f, :remember_me, gettext("Keep me logged in for 60 days") %>
+  </div>
+
+  <div>
+    <button type="submit" class="button primary">
+      <%= gettext("Log in") %>
+    </button>
+  </div>
+  <% end %>
+
+  <p>
+    <%= link gettext("Register"), to: Routes.user_registration_path(@conn, :new) %> |
+    <%= link gettext("Forgot your password?"), to: Routes.user_reset_password_path(@conn, :new) %>
+  </p>
+</div>

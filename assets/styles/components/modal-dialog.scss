@@ -1,0 +1,93 @@
+.custom-dialog {
+  dialog {
+    position: fixed;
+    padding: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: none;
+    border: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  dialog[open] {
+    display: flex;
+  }
+
+  dialog::backdrop,
+  dialog+.backdrop,
+  dialog+._dialog_overlay {
+    visibility: hidden;
+  }
+
+  dialog-box {
+    display: block;
+    z-index: 1;
+    box-sizing: border-box;
+
+    background: var(--dialog-background, var(--primary));
+    color: var(--dialog-foreground, var(--text));
+    border: var(--border);
+    box-shadow: var(--box-shadow);
+    border-radius: var(--border-radius);
+    max-width: 600px;
+    margin: 2em auto;
+
+    @include media("<tablet") {
+      max-width: 100%;
+      margin: 0.6em auto;
+      margin-top: 2.5em;
+    }
+
+    .dialog-title {
+      font-size: 1.5em;
+      margin-top: 0;
+    }
+
+    footer {
+      display: flex;
+      justify-content: flex-end;
+
+      *+*{
+        margin-left: 0.5em;
+      }
+    }
+  }
+
+  &[padded] dialog-box {
+    padding: 1em 1.5em;
+  }
+
+  &[no-background] dialog-box {
+    background: none;
+    border: none;
+    box-shadow: none;
+    border-radius: none;
+  }
+
+  &[centered] dialog-box>header,
+  &[centered] dialog-box>content,
+  &[centered] dialog-box>footer {
+    text-align: center;
+  }
+
+  dialog-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0009;
+    z-index: -1;
+  }
+}
+
+confirm-dialog > *:not(dialog) {
+  display: none;
+}
